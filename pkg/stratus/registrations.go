@@ -1,5 +1,9 @@
 package stratus
 
+import (
+	"github.com/datadog/stratus-red-team/pkg/stratus/mitreattack"
+)
+
 var techniques []*AttackTechnique
 
 func RegisterAttackTechnique(technique *AttackTechnique) {
@@ -20,10 +24,39 @@ func GetAttackTechniqueByName(name string) *AttackTechnique {
 	return nil
 }
 
-func GetAttackTechniquesForPlatform(platform Platform) []*AttackTechnique {
+type AttackTechniqueFilter struct {
+	Platform Platform
+	Tactic   mitreattack.Tactic
+}
+
+func (m *AttackTechniqueFilter) matches(technique *AttackTechnique) bool {
+	var platformMatches = false
+	var mitreAttackTacticMatches = false
+
+	if m.Platform == "" || technique.Platform == m.Platform {
+		platformMatches = true
+	}
+
+	if m.Tactic == "" {
+		mitreAttackTacticMatches = true
+	} else {
+		for i := range technique.MitreAttackTactics {
+			if technique.MitreAttackTactics[i] == m.Tactic {
+				mitreAttackTacticMatches = true
+				break
+			}
+		}
+	}
+
+	return platformMatches && mitreAttackTacticMatches
+}
+
+func GetAttackTechniques(filter *AttackTechniqueFilter) []*AttackTechnique {
 	var ret = []*AttackTechnique{}
+
 	for i := range techniques {
-		if technique := techniques[i]; technique.Platform == platform {
+		technique := techniques[i]
+		if filter.matches(technique) {
 			ret = append(ret, technique)
 		}
 	}

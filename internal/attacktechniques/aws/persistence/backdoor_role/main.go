@@ -6,9 +6,9 @@ import (
 	"errors"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
-	"github.com/datadog/stratus-red-team/internal/mitreattack"
 	"github.com/datadog/stratus-red-team/internal/providers"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
+	"github.com/datadog/stratus-red-team/pkg/stratus/mitreattack"
 	"log"
 )
 
@@ -20,9 +20,15 @@ var maliciousIamPolicy string
 
 func init() {
 	stratus.RegisterAttackTechnique(&stratus.AttackTechnique{
-		Name:                       "aws.persistence.backdoor-iam-role",
+		Name: "aws.persistence.backdoor-iam-role",
+		Description: `
+Establishes persistence by backdooring an existing IAM role, allowing it to be assumed from an external AWS account.
+
+Warm-up: Creates the pre-requisite IAM role.
+Detonation: Updates the assume role policy of the IAM role to backdoor it.
+`,
 		Platform:                   stratus.AWS,
-		MitreAttackTechnique:       []mitreattack.Tactic{mitreattack.Persistence},
+		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence},
 		PrerequisitesTerraformCode: tf,
 		Detonate: func(terraformOutputs map[string]string) error {
 			iamClient := iam.NewFromConfig(providers.GetAWSProvider())

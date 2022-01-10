@@ -7,9 +7,9 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
 	"github.com/aws/aws-sdk-go-v2/service/iam/types"
-	"github.com/datadog/stratus-red-team/internal/mitreattack"
 	"github.com/datadog/stratus-red-team/internal/providers"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
+	"github.com/datadog/stratus-red-team/pkg/stratus/mitreattack"
 	"log"
 )
 
@@ -18,9 +18,15 @@ func init() {
 	var adminPolicyArn = aws.String("arn:aws:iam::aws:policy/AdministratorAccess")
 
 	stratus.RegisterAttackTechnique(&stratus.AttackTechnique{
-		Name:                 "aws.persistence.malicious-iam-user",
-		Platform:             stratus.AWS,
-		MitreAttackTechnique: []mitreattack.Tactic{mitreattack.Persistence},
+		Name: "aws.persistence.malicious-iam-user",
+		Description: `
+Establishes persistence by creating a new IAM user with administrative permissions.
+
+Warm-up: None.
+Detonation: Creates the IAM user and attached 'AdministratorAccess' to it.
+`,
+		Platform:           stratus.AWS,
+		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Persistence},
 		Detonate: func(terraformOutputs map[string]string) error {
 			iamClient := iam.NewFromConfig(providers.GetAWSProvider())
 			log.Println("Creating a malicious IAM user")

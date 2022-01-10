@@ -5,9 +5,9 @@ import (
 	_ "embed"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
-	"github.com/datadog/stratus-red-team/internal/mitreattack"
 	"github.com/datadog/stratus-red-team/internal/providers"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
+	"github.com/datadog/stratus-red-team/pkg/stratus/mitreattack"
 	"log"
 )
 
@@ -16,9 +16,15 @@ var tf []byte
 
 func init() {
 	stratus.RegisterAttackTechnique(&stratus.AttackTechnique{
-		Name:                       "aws.persistence.backdoor-iam-user",
+		Name: "aws.persistence.backdoor-iam-user",
+		Description: `
+Establishes persistence by creating an access key on an existing IAM user.
+
+Warm-up: Create the pre-requisite IAM user.
+Detonation: Create the access key.
+`,
 		Platform:                   stratus.AWS,
-		MitreAttackTechnique:       []mitreattack.Tactic{mitreattack.Persistence},
+		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence},
 		PrerequisitesTerraformCode: tf,
 		Detonate: func(terraformOutputs map[string]string) error {
 			iamClient := iam.NewFromConfig(providers.GetAWSProvider())

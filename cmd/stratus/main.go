@@ -6,28 +6,28 @@ import (
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques"
 	"github.com/datadog/stratus-red-team/internal/runner"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
+	"github.com/datadog/stratus-red-team/pkg/stratus/mitreattack"
 	"github.com/spf13/cobra"
 	"log"
 )
 
 var flagPlatform string
+var flagMitreAttackTactic string
 var dontCleanUpPrerequisiteResources bool
 var dontWarmUp bool
 
 var rootCmd = &cobra.Command{
 	Use: "stratus-red-team",
-	Run: func(cmd *cobra.Command, args []string) {
-		// Do Stuff Here
-		fmt.Println("Main entrypoint")
-	},
 }
 
 func init() {
 	listCmd := buildListCmd()
+	showCmd := buildShowCmd()
 	warmupCmd := buildWarmupCmd()
 	detonateCmd := buildDetonateCmd()
 
 	rootCmd.AddCommand(listCmd)
+	rootCmd.AddCommand(showCmd)
 	rootCmd.AddCommand(warmupCmd)
 	rootCmd.AddCommand(detonateCmd)
 }
@@ -35,26 +35,56 @@ func init() {
 func buildListCmd() *cobra.Command {
 	listCmd := &cobra.Command{
 		Use:   "list",
-		Short: "List all attack techniques",
+		Short: "List attack techniques",
 		Run: func(cmd *cobra.Command, args []string) {
 			var techniques []*stratus.AttackTechnique
-			if flagPlatform == "" {
-				techniques = stratus.ListAttackTechniques()
-			} else {
+
+			filter := stratus.AttackTechniqueFilter{}
+			if flagPlatform != "" {
 				platform, err := stratus.PlatformFromString(flagPlatform)
 				if err != nil {
 					log.Fatal(err)
 				}
-				techniques = stratus.GetAttackTechniquesForPlatform(platform)
+				filter.Platform = platform
 			}
+			if flagMitreAttackTactic != "" {
+				tactic, err := mitreattack.AttackTacticFromString(flagMitreAttackTactic)
+				if err != nil {
+					log.Fatal(err)
+				}
+				filter.Tactic = tactic
+			}
+			techniques = stratus.GetAttackTechniques(&filter)
+
 			for i := range techniques {
 				fmt.Println(techniques[i])
 			}
 		},
 	}
 	listCmd.Flags().StringVarP(&flagPlatform, "platform", "", "", "Filter on specific platform")
-
+	listCmd.Flags().StringVarP(&flagMitreAttackTactic, "mitre-attack-tactic", "", "", "Filter on a specific MITRE ATT&CK tactic.")
 	return listCmd
+}
+
+func buildShowCmd() *cobra.Command {
+	warmupCmd := &cobra.Command{
+		Use:   "show",
+		Short: "Displays detailed information about an attack technique.",
+		Args: func(cmd *cobra.Command, args []string) error {
+			if len(args) == 0 {
+				return errors.New("you must specify at least one attack technique")
+			}
+			_, err := resolveTechniques(args)
+			return err
+		},
+		Run: func(cmd *cobra.Command, args []string) {
+			techniques, _ := resolveTechniques(args)
+			for i := range techniques {
+				fmt.Println(techniques[i].Description)
+			}
+		},
+	}
+	return warmupCmd
 }
 
 func resolveTechniques(names []string) ([]*stratus.AttackTechnique, error) {
