@@ -32,7 +32,7 @@ func init() {
 		Cleanup: func() error {
 			iamClient := iam.NewFromConfig(providers.GetAWSProvider())
 			log.Println("Removing access key from IAM user")
-			result, err := iamClient.ListAccessKeys(context.TODO(), &iam.ListAccessKeysInput{UserName: aws.String("sample-legit-user")})
+			result, err := iamClient.ListAccessKeys(context.Background(), &iam.ListAccessKeysInput{UserName: aws.String("sample-legit-user")})
 			if err != nil {
 				return err
 			}

