@@ -1,4 +1,8 @@
-package attacktechnique
+package stratus
+
+import (
+	"github.com/datadog/stratus-red-team/internal/mitreattack"
+)
 
 /*
 Each attack technique has:
@@ -9,7 +13,8 @@ Each attack technique has:
 type AttackTechnique struct {
 	Name                       string
 	Description                string
-	Platform                   string
+	MitreAttackTechnique       []mitreattack.Tactic
+	Platform                   Platform
 	Detonate                   func(terraformOutputs map[string]string) error
 	Cleanup                    func() error
 	PrerequisitesTerraformCode []byte

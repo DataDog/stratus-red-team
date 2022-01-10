@@ -6,9 +6,10 @@ import (
 	"errors"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
+	"github.com/datadog/stratus-red-team/internal/mitreattack"
 	"github.com/datadog/stratus-red-team/internal/providers"
 	"github.com/datadog/stratus-red-team/internal/registrations"
-	"github.com/datadog/stratus-red-team/pkg/attacktechnique"
+	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"log"
 )
 
@@ -19,9 +20,10 @@ var tf []byte
 var maliciousIamPolicy string
 
 func init() {
-	registrations.RegisterAttackTechnique(attacktechnique.AttackTechnique{
+	registrations.RegisterAttackTechnique(&stratus.AttackTechnique{
 		Name:                       "aws.persistence.backdoor-iam-role",
-		Platform:                   "aws",
+		Platform:                   stratus.AWS,
+		MitreAttackTechnique:       []mitreattack.Tactic{mitreattack.Persistence},
 		PrerequisitesTerraformCode: tf,
 		Detonate: func(terraformOutputs map[string]string) error {
 			iamClient := iam.NewFromConfig(providers.GetAWSProvider())

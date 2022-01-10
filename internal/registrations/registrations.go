@@ -1,32 +1,31 @@
 package registrations
 
 import (
-	"github.com/datadog/stratus-red-team/pkg/attacktechnique"
+	"github.com/datadog/stratus-red-team/pkg/stratus"
 )
 
-//TODO: use pointers
-var techniques []attacktechnique.AttackTechnique
+var techniques []*stratus.AttackTechnique
 
-func RegisterAttackTechnique(technique attacktechnique.AttackTechnique) {
+func RegisterAttackTechnique(technique *stratus.AttackTechnique) {
 	techniques = append(techniques, technique)
 }
 
-func ListAttackTechniques() []attacktechnique.AttackTechnique {
+func ListAttackTechniques() []*stratus.AttackTechnique {
 	return techniques
 }
 
-func GetAttackTechniqueByName(name string) *attacktechnique.AttackTechnique {
+func GetAttackTechniqueByName(name string) *stratus.AttackTechnique {
 	for i := range techniques {
 		if techniques[i].Name == name {
-			return &techniques[i]
+			return techniques[i]
 		}
 	}
 
 	return nil
 }
 
-func GetAttackTechniquesForPlatform(platform string) []attacktechnique.AttackTechnique {
-	var ret = []attacktechnique.AttackTechnique{}
+func GetAttackTechniquesForPlatform(platform stratus.Platform) []*stratus.AttackTechnique {
+	var ret = []*stratus.AttackTechnique{}
 	for i := range techniques {
 		if technique := techniques[i]; technique.Platform == platform {
 			ret = append(ret, technique)

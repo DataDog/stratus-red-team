@@ -7,9 +7,10 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
+	"github.com/datadog/stratus-red-team/internal/mitreattack"
 	"github.com/datadog/stratus-red-team/internal/providers"
 	"github.com/datadog/stratus-red-team/internal/registrations"
-	"github.com/datadog/stratus-red-team/pkg/attacktechnique"
+	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"log"
 )
 
@@ -17,9 +18,10 @@ import (
 var tf []byte
 
 func init() {
-	registrations.RegisterAttackTechnique(attacktechnique.AttackTechnique{
+	registrations.RegisterAttackTechnique(&stratus.AttackTechnique{
 		Name:                       "aws.exfiltration.ebs-snapshot-shared-with-external-account",
-		Platform:                   "aws",
+		Platform:                   stratus.AWS,
+		MitreAttackTechnique:       []mitreattack.Tactic{mitreattack.Exfiltration},
 		PrerequisitesTerraformCode: tf,
 		Detonate: func(terraformOutputs map[string]string) error {
 			ec2Client := ec2.NewFromConfig(providers.GetAWSProvider())

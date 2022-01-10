@@ -6,12 +6,12 @@ import (
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques"
 	"github.com/datadog/stratus-red-team/internal/registrations"
 	"github.com/datadog/stratus-red-team/internal/runner"
-	"github.com/datadog/stratus-red-team/pkg/attacktechnique"
+	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"github.com/spf13/cobra"
 	"log"
 )
 
-var platform string
+var flagPlatform string
 var dontCleanUpPrerequisiteResources bool
 var dontWarmUp bool
 
@@ -38,10 +38,14 @@ func buildListCmd() *cobra.Command {
 		Use:   "list",
 		Short: "List all attack techniques",
 		Run: func(cmd *cobra.Command, args []string) {
-			var techniques []attacktechnique.AttackTechnique
-			if platform == "" {
+			var techniques []*stratus.AttackTechnique
+			if flagPlatform == "" {
 				techniques = registrations.ListAttackTechniques()
 			} else {
+				platform, err := stratus.PlatformFromString(flagPlatform)
+				if err != nil {
+					log.Fatal(err)
+				}
 				techniques = registrations.GetAttackTechniquesForPlatform(platform)
 			}
 			for i := range techniques {
@@ -49,13 +53,13 @@ func buildListCmd() *cobra.Command {
 			}
 		},
 	}
-	listCmd.Flags().StringVarP(&platform, "platform", "", "", "Filter on specific platform")
+	listCmd.Flags().StringVarP(&flagPlatform, "platform", "", "", "Filter on specific platform")
 
 	return listCmd
 }
 
-func resolveTechniques(names []string) ([]*attacktechnique.AttackTechnique, error) {
-	var result []*attacktechnique.AttackTechnique
+func resolveTechniques(names []string) ([]*stratus.AttackTechnique, error) {
+	var result []*stratus.AttackTechnique
 	for i := range names {
 		technique := registrations.GetAttackTechniqueByName(names[i])
 		if technique == nil {

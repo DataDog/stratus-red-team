@@ -4,14 +4,14 @@ import (
 	"errors"
 	"github.com/datadog/stratus-red-team/internal/state"
 	"github.com/datadog/stratus-red-team/internal/utils"
-	"github.com/datadog/stratus-red-team/pkg/attacktechnique"
+	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"github.com/hashicorp/terraform-exec/tfexec"
 	"log"
 	"os"
 	"path/filepath"
 )
 
-func extractTerraformFile(technique *attacktechnique.AttackTechnique) (string, error) {
+func extractTerraformFile(technique *stratus.AttackTechnique) (string, error) {
 	dir := state.GetStateDirectory()
 	terraformDir := filepath.Join(dir, technique.Name)
 	terraformFilePath := filepath.Join(terraformDir, "main.tf")
@@ -31,7 +31,7 @@ func extractTerraformFile(technique *attacktechnique.AttackTechnique) (string, e
 	return terraformDir, nil
 }
 
-func WarmUp(technique *attacktechnique.AttackTechnique, warmup bool) (*tfexec.Terraform, error) {
+func WarmUp(technique *stratus.AttackTechnique, warmup bool) (*tfexec.Terraform, error) {
 	terraformDir, err := extractTerraformFile(technique)
 	if err != nil {
 		return nil, err
@@ -51,7 +51,7 @@ func WarmUp(technique *attacktechnique.AttackTechnique, warmup bool) (*tfexec.Te
 	return terraformHandle, nil
 }
 
-func RunAttackTechnique(technique *attacktechnique.AttackTechnique, cleanup bool, warmup bool) error {
+func RunAttackTechnique(technique *stratus.AttackTechnique, cleanup bool, warmup bool) error {
 	terraformHandle, err := WarmUp(technique, warmup)
 	if err != nil {
 		return err
