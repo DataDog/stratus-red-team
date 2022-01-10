@@ -11,6 +11,11 @@ import (
 	"path/filepath"
 )
 
+type RunOptions struct {
+	Cleanup bool
+	Warmup  bool
+}
+
 func extractTerraformFile(technique *stratus.AttackTechnique) (string, error) {
 	dir := state.GetStateDirectory()
 	terraformDir := filepath.Join(dir, technique.Name)
@@ -51,15 +56,15 @@ func WarmUp(technique *stratus.AttackTechnique, warmup bool) (*tfexec.Terraform,
 	return terraformHandle, nil
 }
 
-func RunAttackTechnique(technique *stratus.AttackTechnique, cleanup bool, warmup bool) error {
-	terraformHandle, err := WarmUp(technique, warmup)
+func RunAttackTechnique(technique *stratus.AttackTechnique, options RunOptions) error {
+	terraformHandle, err := WarmUp(technique, options.Warmup)
 	if err != nil {
 		return err
 	}
 
 	// Detonate
 	err = technique.Detonate(map[string]string{})
-	if cleanup {
+	if options.Cleanup {
 		defer func() {
 			if technique.Cleanup != nil {
 				err := technique.Cleanup()

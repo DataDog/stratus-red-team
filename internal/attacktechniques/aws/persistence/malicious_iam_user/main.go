@@ -9,7 +9,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/iam/types"
 	"github.com/datadog/stratus-red-team/internal/mitreattack"
 	"github.com/datadog/stratus-red-team/internal/providers"
-	"github.com/datadog/stratus-red-team/internal/registrations"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"log"
 )
@@ -18,7 +17,7 @@ func init() {
 	var userName = aws.String("malicious-iam-user")
 	var adminPolicyArn = aws.String("arn:aws:iam::aws:policy/AdministratorAccess")
 
-	registrations.RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.RegisterAttackTechnique(&stratus.AttackTechnique{
 		Name:                 "aws.persistence.malicious-iam-user",
 		Platform:             stratus.AWS,
 		MitreAttackTechnique: []mitreattack.Tactic{mitreattack.Persistence},

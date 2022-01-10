@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques"
-	"github.com/datadog/stratus-red-team/internal/registrations"
 	"github.com/datadog/stratus-red-team/internal/runner"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"github.com/spf13/cobra"
@@ -40,13 +39,13 @@ func buildListCmd() *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 			var techniques []*stratus.AttackTechnique
 			if flagPlatform == "" {
-				techniques = registrations.ListAttackTechniques()
+				techniques = stratus.ListAttackTechniques()
 			} else {
 				platform, err := stratus.PlatformFromString(flagPlatform)
 				if err != nil {
 					log.Fatal(err)
 				}
-				techniques = registrations.GetAttackTechniquesForPlatform(platform)
+				techniques = stratus.GetAttackTechniquesForPlatform(platform)
 			}
 			for i := range techniques {
 				fmt.Println(techniques[i])
@@ -61,7 +60,7 @@ func buildListCmd() *cobra.Command {
 func resolveTechniques(names []string) ([]*stratus.AttackTechnique, error) {
 	var result []*stratus.AttackTechnique
 	for i := range names {
-		technique := registrations.GetAttackTechniqueByName(names[i])
+		technique := stratus.GetAttackTechniqueByName(names[i])
 		if technique == nil {
 			return nil, errors.New("unknown technique name " + names[i])
 		}
@@ -107,8 +106,9 @@ func buildDetonateCmd() *cobra.Command {
 		},
 		Run: func(cmd *cobra.Command, args []string) {
 			techniques, _ := resolveTechniques(args)
+			options := runner.RunOptions{Warmup: !dontWarmUp, Cleanup: !dontCleanUpPrerequisiteResources}
 			for i := range techniques {
-				err := runner.RunAttackTechnique(techniques[i], !dontCleanUpPrerequisiteResources, !dontWarmUp)
+				err := runner.RunAttackTechnique(techniques[i], options)
 				if err != nil {
 					log.Fatal(err)
 				}
