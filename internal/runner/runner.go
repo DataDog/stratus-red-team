@@ -2,11 +2,11 @@ package runner
 
 import (
 	"errors"
-	"github.com/datadog/stratus-red-team/internal/state"
 	"github.com/datadog/stratus-red-team/internal/utils"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"log"
 	"os"
+	"path"
 	"path/filepath"
 )
 
@@ -21,21 +21,24 @@ type Runner struct {
 	ShouldCleanup    bool
 	ShouldWarmUp     bool
 	TerraformManager *TerraformManager
+	StateManager     *StateManager
 }
 
 func NewRunner(technique *stratus.AttackTechnique, warmup bool, cleanup bool) Runner {
+	stateManager := NewStateManager()
 	return Runner{
 		Technique:        technique,
 		ShouldWarmUp:     warmup,
 		ShouldCleanup:    cleanup,
-		TerraformManager: NewTerraformManager(),
+		TerraformManager: NewTerraformManager(path.Join(stateManager.GetRootDirectory(), "terraform")),
+		StateManager:     stateManager,
 	}
 }
 
 // Utility function to extract the Terraform file of a technique
 // to the filesystem
 func (m *Runner) extractTerraformFile() (string, error) {
-	dir := state.GetStateDirectory()
+	dir := m.StateManager.GetRootDirectory()
 	terraformDir := filepath.Join(dir, m.Technique.Name)
 	terraformFilePath := filepath.Join(terraformDir, "main.tf")
 	if utils.FileExists(terraformDir) {

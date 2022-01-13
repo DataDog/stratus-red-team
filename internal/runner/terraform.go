@@ -3,14 +3,13 @@ package runner
 import (
 	"context"
 	"errors"
-	"github.com/datadog/stratus-red-team/internal/state"
+	"fmt"
 	"github.com/datadog/stratus-red-team/internal/utils"
 	"github.com/hashicorp/go-version"
 	"github.com/hashicorp/hc-install/product"
 	"github.com/hashicorp/hc-install/releases"
 	"github.com/hashicorp/terraform-exec/tfexec"
 	"log"
-	"path/filepath"
 )
 
 const TerraformVersion = "1.1.2"
@@ -21,11 +20,12 @@ type TerraformManager struct {
 	terraformHandles    map[string]*tfexec.Terraform
 }
 
-func NewTerraformManager() *TerraformManager {
+func NewTerraformManager(terraformBinaryPath string) *TerraformManager {
+	fmt.Println(terraformBinaryPath)
 	manager := TerraformManager{
-		terraformVersion: TerraformVersion,
-		terraformHandles: map[string]*tfexec.Terraform{},
-		// todo state manager
+		terraformVersion:    TerraformVersion,
+		terraformHandles:    map[string]*tfexec.Terraform{},
+		terraformBinaryPath: terraformBinaryPath,
 	}
 	manager.initialize()
 	return &manager
@@ -33,12 +33,11 @@ func NewTerraformManager() *TerraformManager {
 
 func (m *TerraformManager) initialize() {
 	// Download the Terraform binary if it doesn't exist already
-	m.terraformBinaryPath = filepath.Join(state.GetStateDirectory(), "terraform")
 	if !utils.FileExists(m.terraformBinaryPath) {
 		terraformInstaller := &releases.ExactVersion{
 			Product:                  product.Terraform,
 			Version:                  version.Must(version.NewVersion(TerraformVersion)),
-			InstallDir:               state.GetStateDirectory(),
+			InstallDir:               m.terraformBinaryPath,
 			SkipChecksumVerification: false,
 		}
 		log.Println("Installing Terraform")
