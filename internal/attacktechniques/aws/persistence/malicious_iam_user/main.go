@@ -17,7 +17,7 @@ func init() {
 	var userName = aws.String("malicious-iam-user")
 	var adminPolicyArn = aws.String("arn:aws:iam::aws:policy/AdministratorAccess")
 
-	stratus.RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
 		Name: "aws.persistence.malicious-iam-user",
 		Description: `
 Establishes persistence by creating a new IAM user with administrative permissions.

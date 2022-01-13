@@ -19,7 +19,7 @@ var tf []byte
 var maliciousIamPolicy string
 
 func init() {
-	stratus.RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
 		Name: "aws.persistence.backdoor-iam-role",
 		Description: `
 Establishes persistence by backdooring an existing IAM role, allowing it to be assumed from an external AWS account.

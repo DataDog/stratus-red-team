@@ -6,3 +6,4 @@ TODO:
     * Initial
     * Warm
 * TODO: "Info" command
+* TODO: Check region and creds before detonation/warmup

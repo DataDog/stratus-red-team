@@ -7,8 +7,10 @@ require (
 	github.com/aws/aws-sdk-go-v2/config v1.11.1
 	github.com/aws/aws-sdk-go-v2/service/ec2 v1.26.0
 	github.com/aws/aws-sdk-go-v2/service/iam v1.14.0
+	github.com/aws/aws-sdk-go-v2/service/sts v1.12.0
 	github.com/hashicorp/terraform-exec v0.15.0
 	github.com/spf13/cobra v1.3.0
+	github.com/stretchr/testify v1.7.0
 )
 
 require (
@@ -20,10 +22,13 @@ require (
 	github.com/aws/aws-sdk-go-v2/internal/ini v1.3.2 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.5.2 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sso v1.7.0 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sts v1.12.0 // indirect
 	github.com/aws/smithy-go v1.9.0 // indirect
+	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/stretchr/objx v0.1.1 // indirect
+	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
 
 require (

