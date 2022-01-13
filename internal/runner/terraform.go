@@ -10,6 +10,8 @@ import (
 	"github.com/hashicorp/hc-install/releases"
 	"github.com/hashicorp/terraform-exec/tfexec"
 	"log"
+	"os"
+	"path"
 )
 
 const TerraformVersion = "1.1.2"
@@ -48,13 +50,17 @@ func (m *TerraformManager) initialize() {
 	}
 }
 
-func (m *TerraformManager) TerraformApply(directory string) error {
+func (m *TerraformManager) TerraformInitAndApply(directory string) error {
 	terraform, err := tfexec.NewTerraform(directory, m.terraformBinaryPath)
+	terraformInitializedFile := path.Join(directory, ".terraform-initialized")
+	if !utils.FileExists(terraformInitializedFile) {
+		log.Println("Initializing Terraform")
+		err = terraform.Init(context.Background())
+		if err != nil {
+			return errors.New("unable to initialize Terraform: " + err.Error())
+		}
+		os.Create(terraformInitializedFile)
 
-	log.Println("Initializing Terraform")
-	err = terraform.Init(context.Background())
-	if err != nil {
-		return errors.New("unable to initalize Terraform: " + err.Error())
 	}
 
 	log.Println("Applying Terraform")

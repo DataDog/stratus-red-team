@@ -70,7 +70,7 @@ func (m *Runner) WarmUp() (string, error) {
 	}
 
 	log.Println("Warming up " + m.Technique.Name)
-	err = m.TerraformManager.TerraformApply(terraformDir)
+	err = m.TerraformManager.TerraformInitAndApply(terraformDir)
 	if err != nil {
 		return "", errors.New("Unable to run terraform apply on pre-requisite: " + err.Error())
 	}
