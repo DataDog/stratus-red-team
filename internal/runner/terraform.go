@@ -19,14 +19,12 @@ const TerraformVersion = "1.1.2"
 type TerraformManager struct {
 	terraformBinaryPath string
 	terraformVersion    string
-	terraformHandles    map[string]*tfexec.Terraform
 }
 
 func NewTerraformManager(terraformBinaryPath string) *TerraformManager {
 	fmt.Println(terraformBinaryPath)
 	manager := TerraformManager{
 		terraformVersion:    TerraformVersion,
-		terraformHandles:    map[string]*tfexec.Terraform{},
 		terraformBinaryPath: terraformBinaryPath,
 	}
 	manager.initialize()

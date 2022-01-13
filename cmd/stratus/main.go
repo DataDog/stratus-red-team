@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"github.com/spf13/cobra"
@@ -55,9 +54,7 @@ func buildShowCmd() *cobra.Command {
 		},
 		Run: func(cmd *cobra.Command, args []string) {
 			techniques, _ := resolveTechniques(args)
-			for i := range techniques {
-				fmt.Println(techniques[i].Description)
-			}
+			do_show_cmd(techniques)
 		},
 	}
 	return warmupCmd
