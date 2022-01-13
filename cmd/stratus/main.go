@@ -4,10 +4,8 @@ import (
 	"errors"
 	"fmt"
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques"
-	"github.com/datadog/stratus-red-team/internal/runner"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"github.com/spf13/cobra"
-	"log"
 )
 
 var flagPlatform string
@@ -90,12 +88,7 @@ func buildWarmupCmd() *cobra.Command {
 		},
 		Run: func(cmd *cobra.Command, args []string) {
 			techniques, _ := resolveTechniques(args)
-			for i := range techniques {
-				_, err := runner.WarmUp(techniques[i], !dontWarmUp)
-				if err != nil {
-					log.Fatal(err)
-				}
-			}
+			do_warmup_cmd(techniques, !dontWarmUp)
 		},
 	}
 	return warmupCmd
@@ -114,13 +107,7 @@ func buildDetonateCmd() *cobra.Command {
 		},
 		Run: func(cmd *cobra.Command, args []string) {
 			techniques, _ := resolveTechniques(args)
-			options := runner.RunOptions{Warmup: !dontWarmUp, Cleanup: !dontCleanUpPrerequisiteResources}
-			for i := range techniques {
-				err := runner.RunAttackTechnique(techniques[i], options)
-				if err != nil {
-					log.Fatal(err)
-				}
-			}
+			do_detonate_cmd(techniques, !dontWarmUp, !dontCleanUpPrerequisiteResources)
 		},
 	}
 	detonateCmd.Flags().BoolVarP(&dontCleanUpPrerequisiteResources, "no-cleanup", "", false, "Do not clean up the infrastructure that was spun up as part of the technique pre-requisites")

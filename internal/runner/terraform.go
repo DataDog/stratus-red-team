@@ -2,6 +2,7 @@ package runner
 
 import (
 	"context"
+	"errors"
 	"github.com/datadog/stratus-red-team/internal/state"
 	"github.com/datadog/stratus-red-team/internal/utils"
 	"github.com/hashicorp/go-version"
@@ -12,14 +13,28 @@ import (
 	"path/filepath"
 )
 
-var terraformBinaryPath string
-
 const TerraformVersion = "1.1.2"
 
-func init() {
+type TerraformManager struct {
+	terraformBinaryPath string
+	terraformVersion    string
+	terraformHandles    map[string]*tfexec.Terraform
+}
+
+func NewTerraformManager() *TerraformManager {
+	manager := TerraformManager{
+		terraformVersion: TerraformVersion,
+		terraformHandles: map[string]*tfexec.Terraform{},
+		// todo state manager
+	}
+	manager.initialize()
+	return &manager
+}
+
+func (m *TerraformManager) initialize() {
 	// Download the Terraform binary if it doesn't exist already
-	terraformBinaryPath = filepath.Join(state.GetStateDirectory(), "terraform")
-	if !utils.FileExists(terraformBinaryPath) {
+	m.terraformBinaryPath = filepath.Join(state.GetStateDirectory(), "terraform")
+	if !utils.FileExists(m.terraformBinaryPath) {
 		terraformInstaller := &releases.ExactVersion{
 			Product:                  product.Terraform,
 			Version:                  version.Must(version.NewVersion(TerraformVersion)),
@@ -34,28 +49,30 @@ func init() {
 	}
 }
 
-func TerraformApply(directory string) (*tfexec.Terraform, error) {
-	tf, err := TerraformHandleForDirectory(directory)
-	if err != nil {
-		return nil, err
-	}
+func (m *TerraformManager) TerraformApply(directory string) error {
+	terraform, err := tfexec.NewTerraform(directory, m.terraformBinaryPath)
 
 	log.Println("Initializing Terraform")
-	tf.Init(context.Background())
-	log.Println("Applying Terraform")
-	err = tf.Apply(context.Background())
+	err = terraform.Init(context.Background())
 	if err != nil {
-		return nil, err
+		return errors.New("unable to initalize Terraform: " + err.Error())
 	}
 
-	return tf, nil
+	log.Println("Applying Terraform")
+	err = terraform.Apply(context.Background())
+	if err != nil {
+		return errors.New("unable to apply Terraform: " + err.Error())
+	}
+
+	return nil
 }
 
-func TerraformHandleForDirectory(directory string) (*tfexec.Terraform, error) {
-	return tfexec.NewTerraform(directory, terraformBinaryPath)
-}
+func (m *TerraformManager) TerraformDestroy(directory string) error {
+	terraform, err := tfexec.NewTerraform(directory, m.terraformBinaryPath)
+	if err != nil {
+		return err
+	}
 
-func TerraformDestroy(terraform *tfexec.Terraform) error {
 	log.Println("Destroying Terraform")
 	return terraform.Destroy(context.Background())
 }

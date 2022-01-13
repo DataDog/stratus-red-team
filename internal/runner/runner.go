@@ -5,7 +5,6 @@ import (
 	"github.com/datadog/stratus-red-team/internal/state"
 	"github.com/datadog/stratus-red-team/internal/utils"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
-	"github.com/hashicorp/terraform-exec/tfexec"
 	"log"
 	"os"
 	"path/filepath"
@@ -16,9 +15,28 @@ type RunOptions struct {
 	Warmup  bool
 }
 
-func extractTerraformFile(technique *stratus.AttackTechnique) (string, error) {
+type Runner struct {
+	Technique        *stratus.AttackTechnique
+	TerraformDir     string
+	ShouldCleanup    bool
+	ShouldWarmUp     bool
+	TerraformManager *TerraformManager
+}
+
+func NewRunner(technique *stratus.AttackTechnique, warmup bool, cleanup bool) Runner {
+	return Runner{
+		Technique:        technique,
+		ShouldWarmUp:     warmup,
+		ShouldCleanup:    cleanup,
+		TerraformManager: NewTerraformManager(),
+	}
+}
+
+// Utility function to extract the Terraform file of a technique
+// to the filesystem
+func (m *Runner) extractTerraformFile() (string, error) {
 	dir := state.GetStateDirectory()
-	terraformDir := filepath.Join(dir, technique.Name)
+	terraformDir := filepath.Join(dir, m.Technique.Name)
 	terraformFilePath := filepath.Join(terraformDir, "main.tf")
 	if utils.FileExists(terraformDir) {
 		return terraformDir, nil
@@ -28,7 +46,7 @@ func extractTerraformFile(technique *stratus.AttackTechnique) (string, error) {
 		return "", err
 	}
 
-	err = os.WriteFile(terraformFilePath, technique.PrerequisitesTerraformCode, 0644)
+	err = os.WriteFile(terraformFilePath, m.Technique.PrerequisitesTerraformCode, 0644)
 	if err != nil {
 		return "", err
 	}
@@ -36,51 +54,65 @@ func extractTerraformFile(technique *stratus.AttackTechnique) (string, error) {
 	return terraformDir, nil
 }
 
-func WarmUp(technique *stratus.AttackTechnique, warmup bool) (*tfexec.Terraform, error) {
-	terraformDir, err := extractTerraformFile(technique)
+func (m *Runner) WarmUp() (string, error) {
+	terraformDir, err := m.extractTerraformFile()
 	if err != nil {
-		return nil, err
+		return "", errors.New("unable to extract Terraform file: " + err.Error())
+	}
+	m.TerraformDir = terraformDir
+
+	// If we don't want to warm up the technique or if the technique has no pre-requisites, nothing to do
+	if !m.ShouldWarmUp || m.Technique.PrerequisitesTerraformCode == nil {
+		return terraformDir, nil
 	}
 
-	// If we don't want to warm up the technique or if the technique has no pre-requisites, just return
-	// the Terraform handle that will allow for a destroy later on
-	if !warmup || technique.PrerequisitesTerraformCode == nil {
-		return TerraformHandleForDirectory(terraformDir)
+	log.Println("Warming up " + m.Technique.Name)
+	err = m.TerraformManager.TerraformApply(terraformDir)
+	if err != nil {
+		return "", errors.New("Unable to run terraform apply on pre-requisite: " + err.Error())
 	}
 
-	log.Println("Spinning up pre-requisites")
-	terraformHandle, err := TerraformApply(terraformDir)
-	if err != nil {
-		return nil, errors.New("Unable to run terraform apply on pre-requisite: " + err.Error())
-	}
-	return terraformHandle, nil
+	return terraformDir, nil
 }
 
-func RunAttackTechnique(technique *stratus.AttackTechnique, options RunOptions) error {
-	terraformHandle, err := WarmUp(technique, options.Warmup)
+func (m *Runner) Detonate() error {
+	terraformDir, err := m.WarmUp()
 	if err != nil {
 		return err
 	}
+	m.TerraformDir = terraformDir
 
 	// Detonate
-	err = technique.Detonate(map[string]string{})
-	if options.Cleanup {
+	err = m.Technique.Detonate(map[string]string{})
+	if m.ShouldCleanup {
 		defer func() {
-			if technique.Cleanup != nil {
-				err := technique.Cleanup()
-				if err != nil {
-					log.Println("Error during cleanup: " + err.Error())
-				}
-			}
-			if technique.PrerequisitesTerraformCode != nil {
-				log.Println("Cleaning up with terraform destroy")
-				TerraformDestroy(terraformHandle)
+			err := m.CleanUp()
+			if err != nil {
+				log.Println("unable to clean up pre-requisites: " + err.Error())
 			}
 		}()
 	}
 	if err != nil {
-		return errors.New("Error while detonating attack technique " + technique.Name + ": " + err.Error())
+		return errors.New("Error while detonating attack technique " + m.Technique.Name + ": " + err.Error())
 	}
 
 	return nil
+}
+
+func (m *Runner) CleanUp() error {
+	var techniqueCleanupErr error
+	var prerequisitesCleanupErr error
+	if m.Technique.Cleanup != nil {
+		techniqueCleanupErr = m.Technique.Cleanup()
+	}
+	if m.Technique.PrerequisitesTerraformCode != nil {
+		log.Println("Cleaning up with terraform destroy")
+		prerequisitesCleanupErr = m.TerraformManager.TerraformDestroy(m.TerraformDir)
+	}
+
+	if techniqueCleanupErr != nil {
+		return techniqueCleanupErr
+	} else {
+		return prerequisitesCleanupErr
+	}
 }
