@@ -49,6 +49,10 @@ func (m *Registry) GetAttackTechniques(filter *AttackTechniqueFilter) []*AttackT
 	return ret
 }
 
+func (m *Registry) ListAttackTechniques() []*AttackTechnique {
+	return m.techniques
+}
+
 type AttackTechniqueFilter struct {
 	Platform Platform
 	Tactic   mitreattack.Tactic

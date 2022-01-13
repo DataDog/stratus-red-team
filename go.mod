@@ -25,6 +25,9 @@ require (
 	github.com/aws/smithy-go v1.9.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
+	github.com/jedib0t/go-pretty/v6 v6.2.4 // indirect
+	github.com/mattn/go-runewidth v0.0.9 // indirect
+	github.com/pkg/profile v1.6.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/stretchr/objx v0.1.1 // indirect

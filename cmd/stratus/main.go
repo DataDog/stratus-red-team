@@ -4,6 +4,7 @@ import (
 	"errors"
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
+	"github.com/pkg/profile"
 	"github.com/spf13/cobra"
 )
 
@@ -21,11 +22,15 @@ func init() {
 	showCmd := buildShowCmd()
 	warmupCmd := buildWarmupCmd()
 	detonateCmd := buildDetonateCmd()
+	statusCmd := buildStatusCmd()
+	cleanupCmd := buildCleanupCmd()
 
 	rootCmd.AddCommand(listCmd)
 	rootCmd.AddCommand(showCmd)
 	rootCmd.AddCommand(warmupCmd)
 	rootCmd.AddCommand(detonateCmd)
+	rootCmd.AddCommand(statusCmd)
+	rootCmd.AddCommand(cleanupCmd)
 }
 
 func buildListCmd() *cobra.Command {
@@ -112,6 +117,55 @@ func buildDetonateCmd() *cobra.Command {
 	return detonateCmd
 }
 
+func buildStatusCmd() *cobra.Command {
+	statusCmd := &cobra.Command{
+		Use:   "status",
+		Short: "Display the status of TTPs.",
+		Args: func(cmd *cobra.Command, args []string) error {
+			if len(args) == 0 {
+				return nil // no technique specified == all techniques
+			}
+			_, err := resolveTechniques(args)
+			return err
+		},
+		Run: func(cmd *cobra.Command, args []string) {
+			if len(args) > 0 {
+				techniques, _ := resolveTechniques(args)
+				do_status_cmd(techniques)
+			} else {
+				do_status_cmd(stratus.GetRegistry().ListAttackTechniques())
+			}
+		},
+	}
+	return statusCmd
+}
+
+func buildCleanupCmd() *cobra.Command {
+	statusCmd := &cobra.Command{
+		Use:   "cleanup",
+		Short: "Cleans up any leftover infrastructure or configuration from a TTP.",
+		Args: func(cmd *cobra.Command, args []string) error {
+			if len(args) == 0 {
+				return nil // no technique specified == all techniques
+			}
+			_, err := resolveTechniques(args)
+			return err
+		},
+		Run: func(cmd *cobra.Command, args []string) {
+			if len(args) > 0 {
+				techniques, _ := resolveTechniques(args)
+				do_cleanup_cmd(techniques)
+			} else {
+				do_cleanup_cmd(stratus.GetRegistry().ListAttackTechniques())
+			}
+		},
+	}
+	return statusCmd
+}
+
 func main() {
+	p := profile.Start(profile.ProfilePath("."))
+	defer p.Stop()
 	rootCmd.Execute()
+
 }
