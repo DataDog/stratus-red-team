@@ -50,26 +50,34 @@ func (m *TerraformManager) initialize() {
 	}
 }
 
-func (m *TerraformManager) TerraformInitAndApply(directory string) error {
+func (m *TerraformManager) TerraformInitAndApply(directory string) (map[string]string, error) {
 	terraform, err := tfexec.NewTerraform(directory, m.terraformBinaryPath)
 	terraformInitializedFile := path.Join(directory, ".terraform-initialized")
 	if !utils.FileExists(terraformInitializedFile) {
 		log.Println("Initializing Terraform")
 		err = terraform.Init(context.Background())
 		if err != nil {
-			return errors.New("unable to initialize Terraform: " + err.Error())
+			return nil, errors.New("unable to initialize Terraform: " + err.Error())
 		}
 		os.Create(terraformInitializedFile)
 
 	}
 
 	log.Println("Applying Terraform")
-	err = terraform.Apply(context.Background())
+	err = terraform.Apply(context.Background(), tfexec.Refresh(false))
 	if err != nil {
-		return errors.New("unable to apply Terraform: " + err.Error())
+		return nil, errors.New("unable to apply Terraform: " + err.Error())
 	}
 
-	return nil
+	rawOutputs, _ := terraform.Output(context.Background())
+	outputs := make(map[string]string, len(rawOutputs))
+	for outputName, outputRawValue := range rawOutputs {
+		outputValue := string(outputRawValue.Value)
+		// Strip the first and last quote which gets added for some reason
+		outputValue = outputValue[1 : len(outputValue)-1]
+		outputs[outputName] = outputValue
+	}
+	return outputs, nil
 }
 
 func (m *TerraformManager) TerraformDestroy(directory string) error {

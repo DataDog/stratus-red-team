@@ -1,9 +1,11 @@
 package runner
 
 import (
+	"encoding/json"
 	"errors"
 	"github.com/datadog/stratus-red-team/internal/utils"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
+	"io/ioutil"
 	"log"
 	"os"
 	"path"
@@ -57,36 +59,51 @@ func (m *Runner) extractTerraformFile() (string, error) {
 	return terraformDir, nil
 }
 
-func (m *Runner) WarmUp() (string, error) {
+func (m *Runner) WarmUp() (string, map[string]string, error) {
 	terraformDir, err := m.extractTerraformFile()
 	if err != nil {
-		return "", errors.New("unable to extract Terraform file: " + err.Error())
+		return "", nil, errors.New("unable to extract Terraform file: " + err.Error())
 	}
 	m.TerraformDir = terraformDir
+	outputPath := path.Join(terraformDir, ".terraform-outputs")
 
-	// If we don't want to warm up the technique or if the technique has no pre-requisites, nothing to do
-	if !m.ShouldWarmUp || m.Technique.PrerequisitesTerraformCode == nil {
-		return terraformDir, nil
+	// No pre-requisites to spin-up
+	if m.Technique.PrerequisitesTerraformCode == nil {
+		return terraformDir, nil, nil
+	}
+
+	// We don't want to warm up the technique
+	if !m.ShouldWarmUp {
+		outputs := make(map[string]string)
+		if utils.FileExists(outputPath) {
+			outputString, _ := ioutil.ReadFile(outputPath)
+			json.Unmarshal(outputString, &outputs)
+		}
+		return terraformDir, outputs, nil
 	}
 
 	log.Println("Warming up " + m.Technique.Name)
-	err = m.TerraformManager.TerraformInitAndApply(terraformDir)
+	outputs, err := m.TerraformManager.TerraformInitAndApply(terraformDir)
 	if err != nil {
-		return "", errors.New("Unable to run terraform apply on pre-requisite: " + err.Error())
+		return "", nil, errors.New("Unable to run terraform apply on pre-requisite: " + err.Error())
 	}
 
-	return terraformDir, nil
+	// Persist outputs to disk
+	outputString, _ := json.Marshal(outputs)
+	ioutil.WriteFile(outputPath, outputString, 0744)
+
+	return terraformDir, outputs, nil
 }
 
 func (m *Runner) Detonate() error {
-	terraformDir, err := m.WarmUp()
+	terraformDir, outputs, err := m.WarmUp()
 	if err != nil {
 		return err
 	}
 	m.TerraformDir = terraformDir
 
 	// Detonate
-	err = m.Technique.Detonate(map[string]string{})
+	err = m.Technique.Detonate(outputs)
 	if m.ShouldCleanup {
 		defer func() {
 			err := m.CleanUp()
