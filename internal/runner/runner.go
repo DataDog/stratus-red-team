@@ -93,7 +93,20 @@ func (m *Runner) WarmUp() (string, map[string]string, error) {
 	}
 
 	// We don't want to warm up the technique
-	if !m.ShouldWarmUp {
+	var willWarmUp = m.ShouldWarmUp
+
+	// Technique is already warm (TODO --force)?
+	if m.TechniqueState == AttackTechniqueWarm {
+		log.Println("Not warming up - " + m.Technique.Name + " is already warm")
+		willWarmUp = false
+	}
+
+	if m.TechniqueState == AttackTechniqueDetonated {
+		log.Println(m.Technique.Name + " has not been cleaned up, not warming up")
+		willWarmUp = false
+	}
+
+	if !willWarmUp {
 		outputs := make(map[string]string)
 		// If we have persisted Terraform outputs on disk, read them
 		if utils.FileExists(outputPath) {
@@ -101,17 +114,6 @@ func (m *Runner) WarmUp() (string, map[string]string, error) {
 			json.Unmarshal(outputString, &outputs)
 		}
 		return m.TerraformDir, outputs, nil
-	}
-
-	// Technique is already warm (TODO --force)?
-	if m.TechniqueState == AttackTechniqueWarm {
-		log.Println(m.Technique.Name + " is already warm!")
-		return m.TerraformDir, nil, nil
-	}
-
-	if m.TechniqueState == AttackTechniqueDetonated {
-		log.Println(m.Technique.Name + " has not been cleaned up, not warming up")
-		return m.TerraformDir, nil, nil
 	}
 
 	log.Println("Warming up " + m.Technique.Name)

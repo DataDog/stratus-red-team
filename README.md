@@ -14,7 +14,27 @@ Each attack technique provides a Terraform file for its pre-requisites. When ran
 
 ## Usage
 
-You can list the available techniques using:
+```
+Usage:
+  stratus-red-team [command]
+
+Available Commands:
+  cleanup     Cleans up any leftover infrastructure or configuration from a TTP.
+  completion  Generate the autocompletion script for the specified shell
+  detonate    Detonate one or multiple attack techniques
+  help        Help about any command
+  list        List attack techniques
+  show        Displays detailed information about an attack technique.
+  status      Display the status of TTPs.
+  warmup      "Warm up" an attack technique by spinning up the pre-requisite infrastructure or configuration, without detonating it
+
+Flags:
+  -h, --help   help for stratus-red-team
+```
+
+## Examples
+
+List available TTPs using:
 
 ```bash
 # List all techniques
@@ -27,7 +47,7 @@ stratus list --mitre-attack-tactic persistence
 stratus list --platform aws
 ```
 
-View the detail of a specific technique using:
+View the detail of a specific technique:
 
 ```bash
 $ stratus show aws.exfiltration.ebs-snapshot-shared-with-external-account
@@ -37,7 +57,7 @@ Warm-up: Creates an EBS volume and a snapshot.
 Detonation: Calls ModifySnapshotAttribute to share the snapshot.
 ```
 
-You can detonate an attack technique using:
+Detonate an attack technique using:
 
 ```bash
 stratus detonate aws.exfiltration.ebs-snapshot-shared-with-external-account
@@ -49,16 +69,35 @@ Alternatively, you can handle warm-up and detonation independently:
 
 ```bash
 stratus warmup aws.exfiltration.ebs-snapshot-shared-with-external-account
-stratus detonate aws.exfiltration.ebs-snapshot-shared-with-external-account --no-warmup
+stratus detonate aws.exfiltration.ebs-snapshot-shared-with-external-account
 ```
 
-You can detonate an attack technique without cleaning it up, for instance to see which forensics artifacts it leaves:
+You can detonate an attack technique without cleaning it up, for instance to see which forensics artifacts it leaves behind:
 
 ```
 stratus detonate aws.exfiltration.ebs-snapshot-shared-with-external-account --no-cleanup 
 ```
 
-TODO: `stratus cleanup`
+Manual cleanup can be done through:
+
+```bash
+stratus cleanup aws.exfiltration.ebs-snapshot-shared-with-external-account
+```
+
+At any time, you can view the state of the TTPs:
+
+```bash
+stratus status
+
++------------------------------------------------------------+-----------+
+| TECHNIQUE                                                  | STATUS    |
++------------------------------------------------------------+-----------+
+| aws.exfiltration.ebs-snapshot-shared-with-external-account | WARM      |
+| aws.persistence.backdoor-iam-user                          | DETONATED |
+| aws.persistence.backdoor-iam-role                          | WARM      |
+| aws.persistence.malicious-iam-user                         | COLD      |
++------------------------------------------------------------+-----------+
+```
 
 ## Supported platforms
 
