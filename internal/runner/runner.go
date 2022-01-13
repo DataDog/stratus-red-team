@@ -3,6 +3,7 @@ package runner
 import (
 	"encoding/json"
 	"errors"
+	"github.com/datadog/stratus-red-team/internal/providers"
 	"github.com/datadog/stratus-red-team/internal/utils"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"io/ioutil"
@@ -28,13 +29,20 @@ type Runner struct {
 
 func NewRunner(technique *stratus.AttackTechnique, warmup bool, cleanup bool) Runner {
 	stateManager := NewStateManager()
-	return Runner{
+	runner := Runner{
 		Technique:        technique,
 		ShouldWarmUp:     warmup,
 		ShouldCleanup:    cleanup,
 		TerraformManager: NewTerraformManager(path.Join(stateManager.GetRootDirectory(), "terraform")),
 		StateManager:     stateManager,
 	}
+	runner.initialize()
+
+	return runner
+}
+
+func (m *Runner) initialize() {
+	m.ValidatePlatformRequirements()
 }
 
 // Utility function to extract the Terraform file of a technique
@@ -134,5 +142,14 @@ func (m *Runner) CleanUp() error {
 		return techniqueCleanupErr
 	} else {
 		return prerequisitesCleanupErr
+	}
+}
+
+func (m *Runner) ValidatePlatformRequirements() {
+	switch m.Technique.Platform {
+	case stratus.AWS:
+		if !providers.AWS().IsAuthenticatedAgainstAWS() {
+			log.Fatal("You are not authenticated against AWS, or you have not set your region.")
+		}
 	}
 }

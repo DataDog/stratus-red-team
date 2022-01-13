@@ -32,7 +32,7 @@ Detonation: Calls ModifySnapshotAttribute to share the snapshot.
 }
 
 func detonate(params map[string]string) error {
-	ec2Client := ec2.NewFromConfig(providers.GetAWSProvider())
+	ec2Client := ec2.NewFromConfig(providers.AWS().GetConnection())
 
 	// Find the snapshot to exfiltrate
 	ourSnapshotId := params["snapshot_id"]

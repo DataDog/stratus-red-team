@@ -4,26 +4,35 @@ import (
 	"context"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/sts"
 	"log"
 )
 
-var isAuthenticated = false
-var hasDeterminedIfAuthenticated = false
+var awsProvider = AWSProvider{}
 
-func init() {
-	/*aws, _ := config.LoadDefaultConfig(context.TODO())
-	stsClient := sts.NewFromConfig(aws)
-	_, err := stsClient.GetCallerIdentity(context.Background(), &sts.GetCallerIdentityInput{})
-	isAuthenticated = err == nil*/
+func AWS() *AWSProvider {
+	return &awsProvider
 }
 
-func GetAWSProvider() aws.Config {
-	/*if !isAuthenticated {
-		log.Fatal("You are not authenticated to AWS, or have not set your default AWS region.")
-	}*/
-	cfg, err := config.LoadDefaultConfig(context.TODO())
-	if err != nil {
-		log.Fatalf("unable to load SDK config, %v", err)
+type AWSProvider struct {
+	awsConfig *aws.Config
+}
+
+func (m *AWSProvider) GetConnection() aws.Config {
+	if m.awsConfig == nil {
+		cfg, err := config.LoadDefaultConfig(context.Background())
+		if err != nil {
+			log.Fatalf("unable to load AWS configuration, %v", err)
+		}
+		m.awsConfig = &cfg
 	}
-	return cfg
+
+	return *m.awsConfig
+}
+
+func (m *AWSProvider) IsAuthenticatedAgainstAWS() bool {
+	m.GetConnection()
+	stsClient := sts.NewFromConfig(m.GetConnection())
+	_, err := stsClient.GetCallerIdentity(context.Background(), &sts.GetCallerIdentityInput{})
+	return err == nil
 }

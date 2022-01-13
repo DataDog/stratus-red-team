@@ -31,7 +31,7 @@ Detonation: Updates the assume role policy of the IAM role to backdoor it.
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence},
 		PrerequisitesTerraformCode: tf,
 		Detonate: func(terraformOutputs map[string]string) error {
-			iamClient := iam.NewFromConfig(providers.GetAWSProvider())
+			iamClient := iam.NewFromConfig(providers.AWS().GetConnection())
 			log.Println("Backdooring IAM role by allowing sts:AssumeRole from an extenral AWS account")
 			_, err := iamClient.UpdateAssumeRolePolicy(context.Background(), &iam.UpdateAssumeRolePolicyInput{
 				RoleName:       aws.String("sample-legit-role"),

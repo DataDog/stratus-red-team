@@ -3,7 +3,6 @@ package runner
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/datadog/stratus-red-team/internal/utils"
 	"github.com/hashicorp/go-version"
 	"github.com/hashicorp/hc-install/product"
@@ -22,7 +21,6 @@ type TerraformManager struct {
 }
 
 func NewTerraformManager(terraformBinaryPath string) *TerraformManager {
-	fmt.Println(terraformBinaryPath)
 	manager := TerraformManager{
 		terraformVersion:    TerraformVersion,
 		terraformBinaryPath: terraformBinaryPath,
