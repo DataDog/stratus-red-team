@@ -4,7 +4,6 @@ import (
 	"errors"
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
-	"github.com/pkg/profile"
 	"github.com/spf13/cobra"
 )
 
@@ -164,8 +163,5 @@ func buildCleanupCmd() *cobra.Command {
 }
 
 func main() {
-	p := profile.Start(profile.ProfilePath("."))
-	defer p.Stop()
 	rootCmd.Execute()
-
 }
