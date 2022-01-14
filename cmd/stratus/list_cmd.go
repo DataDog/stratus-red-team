@@ -4,11 +4,28 @@ import (
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"github.com/datadog/stratus-red-team/pkg/stratus/mitreattack"
 	"github.com/jedib0t/go-pretty/v6/table"
+	"github.com/spf13/cobra"
 	"log"
 	"strings"
 )
 
-func do_list_cmd(mitreAttackTactic string, platform string) {
+var listPlatform string
+var listMitreAttackTactic string
+
+func buildListCmd() *cobra.Command {
+	listCmd := &cobra.Command{
+		Use:   "list",
+		Short: "List attack techniques",
+		Run: func(cmd *cobra.Command, args []string) {
+			doListCmd(listMitreAttackTactic, listPlatform)
+		},
+	}
+	listCmd.Flags().StringVarP(&listPlatform, "platform", "", "", "Filter on specific platform")
+	listCmd.Flags().StringVarP(&listMitreAttackTactic, "mitre-attack-tactic", "", "", "Filter on a specific MITRE ATT&CK tactic.")
+	return listCmd
+}
+
+func doListCmd(mitreAttackTactic string, platform string) {
 	filter := stratus.AttackTechniqueFilter{}
 	if platform != "" {
 		platform, err := stratus.PlatformFromString(platform)
