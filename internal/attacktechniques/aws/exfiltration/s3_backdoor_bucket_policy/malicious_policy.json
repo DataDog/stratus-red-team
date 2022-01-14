@@ -1,0 +1,20 @@
+{
+  "Version":"2012-10-17",
+  "Statement":[
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS":"arn:aws:iam::193672423079:root"
+      },
+      "Action": [
+        "s3:GetObject",
+        "s3:GetBucketLocation",
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::%s/*",
+        "arn:aws:s3:::%s"
+      ]
+    }
+  ]
+}
