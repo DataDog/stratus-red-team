@@ -57,15 +57,15 @@ func (m *Runner) initialize() {
 	}
 }
 
-func (m *Runner) WarmUp() (string, map[string]string, error) {
+func (m *Runner) WarmUp() (map[string]string, error) {
 	err := m.StateManager.ExtractTechniqueTerraformFile()
 	if err != nil {
-		return "", nil, errors.New("unable to extract Terraform file: " + err.Error())
+		return nil, errors.New("unable to extract Terraform file: " + err.Error())
 	}
 
 	// No pre-requisites to spin-up
 	if m.Technique.PrerequisitesTerraformCode == nil {
-		return m.TerraformDir, nil, nil
+		return map[string]string{}, nil
 	}
 
 	// We don't want to warm up the technique
@@ -84,13 +84,13 @@ func (m *Runner) WarmUp() (string, map[string]string, error) {
 
 	if !willWarmUp {
 		outputs, err := m.StateManager.GetTechniqueOutputs()
-		return m.TerraformDir, outputs, err
+		return outputs, err
 	}
 
 	log.Println("Warming up " + m.Technique.ID)
 	outputs, err := m.TerraformManager.TerraformInitAndApply(m.TerraformDir)
 	if err != nil {
-		return "", nil, errors.New("Unable to run terraform apply on pre-requisite: " + err.Error())
+		return nil, errors.New("Unable to run terraform apply on pre-requisite: " + err.Error())
 	}
 
 	// Persist outputs to disk
@@ -100,16 +100,14 @@ func (m *Runner) WarmUp() (string, map[string]string, error) {
 	if display, ok := outputs["display"]; ok {
 		log.Println(display)
 	}
-	return m.TerraformDir, outputs, err
+	return outputs, err
 }
 
 func (m *Runner) Detonate() error {
-	terraformDir, outputs, err := m.WarmUp()
+	outputs, err := m.WarmUp()
 	if err != nil {
 		return err
 	}
-	m.TerraformDir = terraformDir
-
 	// Detonate
 	err = m.Technique.Detonate(outputs)
 	if m.ShouldCleanup {

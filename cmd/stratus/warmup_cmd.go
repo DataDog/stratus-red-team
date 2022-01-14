@@ -33,7 +33,7 @@ func buildWarmupCmd() *cobra.Command {
 func doWarmupCmd(techniques []*stratus.AttackTechnique, warmup bool) {
 	for i := range techniques {
 		runner := runner.NewRunner(techniques[i], warmup, true, forceWarmup)
-		_, _, err := runner.WarmUp()
+		_, err := runner.WarmUp()
 		if err != nil {
 			log.Fatal(err)
 		}
