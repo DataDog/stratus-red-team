@@ -5,7 +5,8 @@ import (
 )
 
 type AttackTechnique struct {
-	Name                       string
+	ID                         string
+	FriendlyName               string
 	Description                string
 	MitreAttackTactics         []mitreattack.Tactic
 	Platform                   Platform
@@ -15,5 +16,5 @@ type AttackTechnique struct {
 }
 
 func (m AttackTechnique) String() string {
-	return m.Name
+	return m.ID
 }

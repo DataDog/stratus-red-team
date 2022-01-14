@@ -2,44 +2,45 @@ package mitreattack
 
 import "errors"
 
-type Tactic string
+type Tactic int
+
+var tactics = []string{
+	"Unknown",
+	"Initial Access",
+	"Execution",
+	"Persistence",
+	"Privilege Escalation",
+	"Defense Evasion",
+	"Credential Access",
+	"Discovery",
+	"Lateral Movement",
+	"Collection",
+	"Exfiltration",
+}
 
 const (
-	InitialAccess       Tactic = "initial-access"
-	Execution                  = "execution"
-	Persistence                = "persistence"
-	PrivilegeEscalation        = "privilege-escalation"
-	DefenseEvasion             = "defense-evasion"
-	CredentialAccess           = "credential-access"
-	Discovery                  = "discovery"
-	LateralMovement            = "lateral-movement"
-	Collection                 = "collection"
-	Exfiltration               = "exfiltration"
+	UNSPECIFIED Tactic = iota
+	InitialAccess
+	Execution
+	Persistence
+	PrivilegeEscalation
+	DefenseEvasion
+	CredentialAccess
+	Discovery
+	LateralMovement
+	Collection
+	Exfiltration
 )
 
 func AttackTacticFromString(name string) (Tactic, error) {
-	switch name {
-	case "initial-access":
-		return InitialAccess, nil
-	case "execution":
-		return Execution, nil
-	case "persistence":
-		return Persistence, nil
-	case "privilege-escalation":
-		return PrivilegeEscalation, nil
-	case "defense-evasion":
-		return DefenseEvasion, nil
-	case "credential-access":
-		return CredentialAccess, nil
-	case "discovery":
-		return Discovery, nil
-	case "lateral-movement":
-		return LateralMovement, nil
-	case "collection":
-		return Collection, nil
-	case "exfiltration":
-		return Exfiltration, nil
-	default:
-		return "", errors.New("unknown MITRE ATT&CK tactic: " + name)
+	for i := range tactics {
+		if tactics[i] == name {
+			return Tactic(i), nil
+		}
 	}
+	return -1, errors.New("unknown MITRE ATT&CK tactic: " + name)
+}
+
+func AttackTacticToString(tactic Tactic) string {
+	return tactics[tactic]
 }

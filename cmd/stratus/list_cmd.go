@@ -1,10 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"github.com/datadog/stratus-red-team/pkg/stratus/mitreattack"
+	"github.com/jedib0t/go-pretty/v6/table"
 	"log"
+	"strings"
 )
 
 func do_list_cmd(mitreAttackTactic string, platform string) {
@@ -24,7 +25,30 @@ func do_list_cmd(mitreAttackTactic string, platform string) {
 		filter.Tactic = tactic
 	}
 	techniques := stratus.GetRegistry().GetAttackTechniques(&filter)
+	t := GetDisplayTable()
+	t.AppendHeader(table.Row{"Technique ID", "Technique name", "Platform", "MITRE ATT&CK Tactic"})
+
 	for i := range techniques {
-		fmt.Println(techniques[i])
+		displayName := techniques[i].ID
+		if friendlyName := techniques[i].FriendlyName; friendlyName != "" {
+			displayName = friendlyName
+		}
+		t.AppendRow(table.Row{
+			techniques[i].ID,
+			displayName,
+			techniques[i].Platform,
+			getTacticsString(techniques[i].MitreAttackTactics),
+		})
 	}
+
+	t.Render()
+}
+
+func getTacticsString(tactics []mitreattack.Tactic) string {
+	var names []string
+	for i := range tactics {
+		names = append(names, mitreattack.AttackTacticToString(tactics[i]))
+	}
+
+	return strings.Join(names, "\n")
 }

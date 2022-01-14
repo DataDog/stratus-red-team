@@ -52,7 +52,7 @@ func NewRunner(technique *stratus.AttackTechnique, warmup bool, cleanup bool) Ru
 
 func (m *Runner) initialize() {
 	m.ValidatePlatformRequirements()
-	m.TerraformDir = filepath.Join(m.StateManager.GetRootDirectory(), m.Technique.Name)
+	m.TerraformDir = filepath.Join(m.StateManager.GetRootDirectory(), m.Technique.ID)
 	rawState, _ := ioutil.ReadFile(filepath.Join(m.TerraformDir, ".state"))
 	m.TechniqueState = AttackTechniqueState(rawState)
 	if m.TechniqueState == "" {
@@ -97,12 +97,12 @@ func (m *Runner) WarmUp() (string, map[string]string, error) {
 
 	// Technique is already warm (TODO --force)?
 	if m.TechniqueState == AttackTechniqueWarm {
-		log.Println("Not warming up - " + m.Technique.Name + " is already warm")
+		log.Println("Not warming up - " + m.Technique.ID + " is already warm")
 		willWarmUp = false
 	}
 
 	if m.TechniqueState == AttackTechniqueDetonated {
-		log.Println(m.Technique.Name + " has not been cleaned up, not warming up")
+		log.Println(m.Technique.ID + " has not been cleaned up, not warming up")
 		willWarmUp = false
 	}
 
@@ -116,7 +116,7 @@ func (m *Runner) WarmUp() (string, map[string]string, error) {
 		return m.TerraformDir, outputs, nil
 	}
 
-	log.Println("Warming up " + m.Technique.Name)
+	log.Println("Warming up " + m.Technique.ID)
 	outputs, err := m.TerraformManager.TerraformInitAndApply(m.TerraformDir)
 	if err != nil {
 		return "", nil, errors.New("Unable to run terraform apply on pre-requisite: " + err.Error())
@@ -148,7 +148,7 @@ func (m *Runner) Detonate() error {
 		}()
 	}
 	if err != nil {
-		return errors.New("Error while detonating attack technique " + m.Technique.Name + ": " + err.Error())
+		return errors.New("Error while detonating attack technique " + m.Technique.ID + ": " + err.Error())
 	}
 	m.setState(AttackTechniqueDetonated)
 	return nil

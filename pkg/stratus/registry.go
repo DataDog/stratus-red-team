@@ -28,7 +28,7 @@ func (m *Registry) RegisterAttackTechnique(technique *AttackTechnique) {
 
 func (m *Registry) GetAttackTechniqueByName(name string) *AttackTechnique {
 	for i := range m.techniques {
-		if m.techniques[i].Name == name {
+		if m.techniques[i].ID == name {
 			return m.techniques[i]
 		}
 	}
@@ -66,7 +66,7 @@ func (m *AttackTechniqueFilter) matches(technique *AttackTechnique) bool {
 		platformMatches = true
 	}
 
-	if m.Tactic == "" {
+	if m.Tactic == 0 {
 		mitreAttackTacticMatches = true
 	} else {
 		for i := range technique.MitreAttackTactics {
