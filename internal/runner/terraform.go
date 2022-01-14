@@ -11,6 +11,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"path/filepath"
 )
 
 const TerraformVersion = "1.1.2"
@@ -35,7 +36,7 @@ func (m *TerraformManager) initialize() {
 		terraformInstaller := &releases.ExactVersion{
 			Product:                  product.Terraform,
 			Version:                  version.Must(version.NewVersion(TerraformVersion)),
-			InstallDir:               m.terraformBinaryPath,
+			InstallDir:               filepath.Dir(m.terraformBinaryPath),
 			SkipChecksumVerification: false,
 		}
 		log.Println("Installing Terraform")

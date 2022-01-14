@@ -1,15 +1,11 @@
 package runner
 
 import (
-	"encoding/json"
 	"errors"
 	"github.com/datadog/stratus-red-team/internal/providers"
-	"github.com/datadog/stratus-red-team/internal/utils"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
-	"io/ioutil"
 	"log"
 	"os"
-	"path"
 	"path/filepath"
 )
 
@@ -24,6 +20,7 @@ type Runner struct {
 	TerraformDir     string
 	ShouldCleanup    bool
 	ShouldWarmUp     bool
+	ShouldForce      bool
 	TerraformManager *TerraformManager
 	StateManager     *StateManager
 }
@@ -36,13 +33,14 @@ const (
 	AttackTechniqueDetonated = "DETONATED"
 )
 
-func NewRunner(technique *stratus.AttackTechnique, warmup bool, cleanup bool) Runner {
-	stateManager := NewStateManager()
+func NewRunner(technique *stratus.AttackTechnique, warmup bool, cleanup bool, force bool) Runner {
+	stateManager := NewStateManager(technique)
 	runner := Runner{
 		Technique:        technique,
 		ShouldWarmUp:     warmup,
 		ShouldCleanup:    cleanup,
-		TerraformManager: NewTerraformManager(path.Join(stateManager.GetRootDirectory(), "terraform")),
+		ShouldForce:      force,
+		TerraformManager: NewTerraformManager(filepath.Join(stateManager.GetRootDirectory(), "terraform")),
 		StateManager:     stateManager,
 	}
 	runner.initialize()
@@ -53,39 +51,17 @@ func NewRunner(technique *stratus.AttackTechnique, warmup bool, cleanup bool) Ru
 func (m *Runner) initialize() {
 	m.ValidatePlatformRequirements()
 	m.TerraformDir = filepath.Join(m.StateManager.GetRootDirectory(), m.Technique.ID)
-	rawState, _ := ioutil.ReadFile(filepath.Join(m.TerraformDir, ".state"))
-	m.TechniqueState = AttackTechniqueState(rawState)
+	m.TechniqueState = m.StateManager.GetTechniqueState()
 	if m.TechniqueState == "" {
 		m.TechniqueState = AttackTechniqueCold
 	}
 }
 
-// Utility function to extract the Terraform file of a technique
-// to the filesystem
-func (m *Runner) extractTerraformFile() error {
-	if utils.FileExists(m.TerraformDir) {
-		return nil
-	}
-	err := os.Mkdir(m.TerraformDir, 0744)
-	if err != nil {
-		return err
-	}
-
-	terraformFilePath := filepath.Join(m.TerraformDir, "main.tf")
-	err = os.WriteFile(terraformFilePath, m.Technique.PrerequisitesTerraformCode, 0644)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (m *Runner) WarmUp() (string, map[string]string, error) {
-	err := m.extractTerraformFile()
+	err := m.StateManager.ExtractTechniqueTerraformFile()
 	if err != nil {
 		return "", nil, errors.New("unable to extract Terraform file: " + err.Error())
 	}
-	outputPath := path.Join(m.TerraformDir, ".terraform-outputs")
 
 	// No pre-requisites to spin-up
 	if m.Technique.PrerequisitesTerraformCode == nil {
@@ -95,25 +71,20 @@ func (m *Runner) WarmUp() (string, map[string]string, error) {
 	// We don't want to warm up the technique
 	var willWarmUp = m.ShouldWarmUp
 
-	// Technique is already warm (TODO --force)?
-	if m.TechniqueState == AttackTechniqueWarm {
-		log.Println("Not warming up - " + m.Technique.ID + " is already warm")
+	// Technique is already warm
+	if m.TechniqueState == AttackTechniqueWarm && !m.ShouldForce {
+		log.Println("Not warming up - " + m.Technique.ID + " is already warm. Use --force to force")
 		willWarmUp = false
 	}
 
 	if m.TechniqueState == AttackTechniqueDetonated {
-		log.Println(m.Technique.ID + " has not been cleaned up, not warming up")
+		log.Println(m.Technique.ID + " has been detonated but not cleaned up, not warming up as it should be warm already.")
 		willWarmUp = false
 	}
 
 	if !willWarmUp {
-		outputs := make(map[string]string)
-		// If we have persisted Terraform outputs on disk, read them
-		if utils.FileExists(outputPath) {
-			outputString, _ := ioutil.ReadFile(outputPath)
-			json.Unmarshal(outputString, &outputs)
-		}
-		return m.TerraformDir, outputs, nil
+		outputs, err := m.StateManager.GetTechniqueOutputs()
+		return m.TerraformDir, outputs, err
 	}
 
 	log.Println("Warming up " + m.Technique.ID)
@@ -123,10 +94,12 @@ func (m *Runner) WarmUp() (string, map[string]string, error) {
 	}
 
 	// Persist outputs to disk
-	outputString, _ := json.Marshal(outputs)
-	ioutil.WriteFile(outputPath, outputString, 0744)
+	m.StateManager.WriteTerraformOutputs(outputs)
 	m.setState(AttackTechniqueWarm)
 
+	if display, ok := outputs["display"]; ok {
+		log.Println(display)
+	}
 	return m.TerraformDir, outputs, nil
 }
 
@@ -157,6 +130,11 @@ func (m *Runner) Detonate() error {
 func (m *Runner) CleanUp() error {
 	var techniqueCleanupErr error
 	var prerequisitesCleanupErr error
+
+	// Has the technique already been cleaned up?
+	if m.TechniqueState == AttackTechniqueCold && !m.ShouldForce {
+		return errors.New(m.Technique.ID + " is already COLD and should be clean, use --force to force cleanup")
+	}
 
 	// Revert detonation
 	if m.Technique.Cleanup != nil {
@@ -199,7 +177,6 @@ func (m *Runner) GetState() AttackTechniqueState {
 }
 
 func (m *Runner) setState(state AttackTechniqueState) {
-	file := filepath.Join(m.TerraformDir, ".state")
-	ioutil.WriteFile(file, []byte(state), 0744)
+	m.StateManager.SetTechniqueState(state)
 	m.TechniqueState = state
 }

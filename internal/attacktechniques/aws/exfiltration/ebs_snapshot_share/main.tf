@@ -7,10 +7,10 @@ terraform {
   }
 }
 provider "aws" {
-  skip_region_validation = true
+  skip_region_validation      = true
   skip_credentials_validation = true
-  skip_get_ec2_platforms = true
-  skip_metadata_api_check = true
+  skip_get_ec2_platforms      = true
+  skip_metadata_api_check     = true
 }
 
 data "aws_availability_zones" "available" {
@@ -22,7 +22,7 @@ resource "aws_ebs_volume" "volume" {
   size              = 1
 
   tags = {
-    Name = "StratusRedTeamVolume"
+    Name           = "StratusRedTeamVolume"
     StratusRedTeam = true
   }
 }
@@ -35,6 +35,6 @@ resource "aws_ebs_snapshot" "snapshot" {
   }
 }
 
-output "snapshot_id"{
+output "snapshot_id" {
   value = aws_ebs_snapshot.snapshot.id
 }
