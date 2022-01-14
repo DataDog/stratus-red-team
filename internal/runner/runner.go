@@ -94,13 +94,13 @@ func (m *Runner) WarmUp() (string, map[string]string, error) {
 	}
 
 	// Persist outputs to disk
-	m.StateManager.WriteTerraformOutputs(outputs)
+	err = m.StateManager.WriteTerraformOutputs(outputs)
 	m.setState(AttackTechniqueWarm)
 
 	if display, ok := outputs["display"]; ok {
 		log.Println(display)
 	}
-	return m.TerraformDir, outputs, nil
+	return m.TerraformDir, outputs, err
 }
 
 func (m *Runner) Detonate() error {
