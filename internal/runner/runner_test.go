@@ -99,7 +99,7 @@ func TestRunnerWarmUp(t *testing.T) {
 		state.On("GetRootDirectory").Return("/root")
 		state.On("ExtractTechnique").Return(nil)
 		state.On("GetTechniqueState", mock.Anything).Return(stratus.AttackTechniqueState(scenario[i].InitialTechniqueState), nil)
-		state.On("GetTechniqueOutputs").Return(scenario[i].PersistedOutputs, nil)
+		state.On("GetTerraformOutputs").Return(scenario[i].PersistedOutputs, nil)
 		terraform.On("TerraformInitAndApply", mock.Anything).Return(scenario[i].TerraformOutputs, nil)
 		state.On("WriteTerraformOutputs", mock.Anything).Return(nil)
 		state.On("SetTechniqueState", mock.Anything).Return(nil)

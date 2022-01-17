@@ -70,7 +70,7 @@ func (m *Runner) WarmUp() (map[string]string, error) {
 	}
 
 	if !willWarmUp {
-		outputs, err := m.StateManager.GetTechniqueOutputs()
+		outputs, err := m.StateManager.GetTerraformOutputs()
 		return outputs, err
 	}
 

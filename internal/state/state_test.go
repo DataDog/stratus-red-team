@@ -95,7 +95,7 @@ func TestStateManagerRetrievesTechniqueOutputs(t *testing.T) {
 		FileSystem:    fsMock,
 	}
 	statemanager.Initialize()
-	outputs, err := statemanager.GetTechniqueOutputs()
+	outputs, err := statemanager.GetTerraformOutputs()
 
 	assert.Nil(t, err)
 	assert.Len(t, outputs, 1)
