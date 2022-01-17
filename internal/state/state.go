@@ -1,4 +1,4 @@
-package runner
+package state
 
 import (
 	"encoding/json"
@@ -10,9 +10,10 @@ import (
 	"path/filepath"
 )
 
+//TODO other constants
 const StratusStateDirectoryName = ".stratus-red-team"
 
-type StateManager struct {
+type FileSystemStateManager struct {
 	RootDirectory string
 	Technique     *stratus.AttackTechnique
 	FileSystem    FileSystem
@@ -43,9 +44,20 @@ func (m *LocalFileSystem) ReadFile(file string) ([]byte, error) {
 	return os.ReadFile(file)
 }
 
-func NewStateManager(technique *stratus.AttackTechnique) *StateManager {
+type StateManager interface {
+	initialize()
+	GetRootDirectory()
+	ExtractTechniqueTerraformFile() error
+	//TODO renaming
+	GetTechniqueOutputs() (map[string]string, error)
+	WriteTerraformOutputs(outputs map[string]string) error
+	GetTechniqueState() stratus.AttackTechniqueState
+	SetTechniqueState(state stratus.AttackTechniqueState)
+}
+
+func NewFileSystemStateManager(technique *stratus.AttackTechnique) *FileSystemStateManager {
 	homeDirectory, _ := os.UserHomeDir()
-	stateManager := StateManager{
+	stateManager := FileSystemStateManager{
 		RootDirectory: filepath.Join(homeDirectory, StratusStateDirectoryName),
 		Technique:     technique,
 		FileSystem:    &LocalFileSystem{},
@@ -54,7 +66,7 @@ func NewStateManager(technique *stratus.AttackTechnique) *StateManager {
 	return &stateManager
 }
 
-func (m *StateManager) initialize() {
+func (m *FileSystemStateManager) initialize() {
 	if !m.FileSystem.FileExists(m.RootDirectory) {
 		log.Println("Creating " + m.RootDirectory + " as it doesn't exist yet")
 		err := m.FileSystem.CreateDirectory(m.RootDirectory, 0744)
@@ -64,7 +76,7 @@ func (m *StateManager) initialize() {
 	}
 }
 
-func (m *StateManager) ExtractTechniqueTerraformFile() error {
+func (m *FileSystemStateManager) ExtractTechniqueTerraformFile() error {
 	terraformDirectory := filepath.Join(m.RootDirectory, m.Technique.ID)
 	terraformFile := filepath.Join(terraformDirectory, "main.tf")
 
@@ -78,7 +90,7 @@ func (m *StateManager) ExtractTechniqueTerraformFile() error {
 	return m.FileSystem.WriteFile(terraformFile, m.Technique.PrerequisitesTerraformCode, 0644)
 }
 
-func (m *StateManager) GetTechniqueOutputs() (map[string]string, error) {
+func (m *FileSystemStateManager) GetTechniqueOutputs() (map[string]string, error) {
 	outputPath := path.Join(m.RootDirectory, m.Technique.ID, ".terraform-outputs")
 	outputs := make(map[string]string)
 
@@ -97,7 +109,7 @@ func (m *StateManager) GetTechniqueOutputs() (map[string]string, error) {
 	return outputs, nil
 }
 
-func (m *StateManager) WriteTerraformOutputs(outputs map[string]string) error {
+func (m *FileSystemStateManager) WriteTerraformOutputs(outputs map[string]string) error {
 	outputPath := path.Join(m.RootDirectory, m.Technique.ID, ".terraform-outputs")
 	outputString, err := json.Marshal(outputs)
 	if err != nil {
@@ -106,16 +118,16 @@ func (m *StateManager) WriteTerraformOutputs(outputs map[string]string) error {
 	return m.FileSystem.WriteFile(outputPath, outputString, 0744)
 }
 
-func (m *StateManager) GetTechniqueState() AttackTechniqueState {
+func (m *FileSystemStateManager) GetTechniqueState() stratus.AttackTechniqueState {
 	rawState, _ := m.FileSystem.ReadFile(filepath.Join(m.RootDirectory, m.Technique.ID, ".state"))
-	return AttackTechniqueState(rawState)
+	return stratus.AttackTechniqueState(rawState)
 }
 
-func (m *StateManager) SetTechniqueState(state AttackTechniqueState) error {
+func (m *FileSystemStateManager) SetTechniqueState(state stratus.AttackTechniqueState) error {
 	file := filepath.Join(m.RootDirectory, m.Technique.ID, ".state")
 	return m.FileSystem.WriteFile(file, []byte(state), 0744)
 }
 
-func (m *StateManager) GetRootDirectory() string {
+func (m *FileSystemStateManager) GetRootDirectory() string {
 	return m.RootDirectory
 }

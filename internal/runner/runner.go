@@ -3,38 +3,26 @@ package runner
 import (
 	"errors"
 	"github.com/datadog/stratus-red-team/internal/providers"
+	"github.com/datadog/stratus-red-team/internal/state"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"log"
 	"os"
 	"path/filepath"
 )
 
-type RunOptions struct {
-	Cleanup bool
-	Warmup  bool
-}
-
 type Runner struct {
 	Technique        *stratus.AttackTechnique
-	TechniqueState   AttackTechniqueState
+	TechniqueState   stratus.AttackTechniqueState
 	TerraformDir     string
 	ShouldCleanup    bool
 	ShouldWarmUp     bool
 	ShouldForce      bool
 	TerraformManager *TerraformManager
-	StateManager     *StateManager
+	StateManager     *state.FileSystemStateManager
 }
 
-type AttackTechniqueState string
-
-const (
-	AttackTechniqueCold      = "COLD"
-	AttackTechniqueWarm      = "WARM"
-	AttackTechniqueDetonated = "DETONATED"
-)
-
 func NewRunner(technique *stratus.AttackTechnique, warmup bool, cleanup bool, force bool) Runner {
-	stateManager := NewStateManager(technique)
+	stateManager := state.NewFileSystemStateManager(technique)
 	runner := Runner{
 		Technique:        technique,
 		ShouldWarmUp:     warmup,
@@ -53,7 +41,7 @@ func (m *Runner) initialize() {
 	m.TerraformDir = filepath.Join(m.StateManager.GetRootDirectory(), m.Technique.ID)
 	m.TechniqueState = m.StateManager.GetTechniqueState()
 	if m.TechniqueState == "" {
-		m.TechniqueState = AttackTechniqueCold
+		m.TechniqueState = stratus.AttackTechniqueCold
 	}
 }
 
@@ -72,12 +60,12 @@ func (m *Runner) WarmUp() (map[string]string, error) {
 	var willWarmUp = m.ShouldWarmUp
 
 	// Technique is already warm
-	if m.TechniqueState == AttackTechniqueWarm && !m.ShouldForce {
+	if m.TechniqueState == stratus.AttackTechniqueWarm && !m.ShouldForce {
 		log.Println("Not warming up - " + m.Technique.ID + " is already warm. Use --force to force")
 		willWarmUp = false
 	}
 
-	if m.TechniqueState == AttackTechniqueDetonated {
+	if m.TechniqueState == stratus.AttackTechniqueDetonated {
 		log.Println(m.Technique.ID + " has been detonated but not cleaned up, not warming up as it should be warm already.")
 		willWarmUp = false
 	}
@@ -95,7 +83,7 @@ func (m *Runner) WarmUp() (map[string]string, error) {
 
 	// Persist outputs to disk
 	err = m.StateManager.WriteTerraformOutputs(outputs)
-	m.setState(AttackTechniqueWarm)
+	m.setState(stratus.AttackTechniqueWarm)
 
 	if display, ok := outputs["display"]; ok {
 		log.Println(display)
@@ -121,7 +109,7 @@ func (m *Runner) Detonate() error {
 	if err != nil {
 		return errors.New("Error while detonating attack technique " + m.Technique.ID + ": " + err.Error())
 	}
-	m.setState(AttackTechniqueDetonated)
+	m.setState(stratus.AttackTechniqueDetonated)
 	return nil
 }
 
@@ -130,7 +118,7 @@ func (m *Runner) CleanUp() error {
 	var prerequisitesCleanupErr error
 
 	// Has the technique already been cleaned up?
-	if m.TechniqueState == AttackTechniqueCold && !m.ShouldForce {
+	if m.TechniqueState == stratus.AttackTechniqueCold && !m.ShouldForce {
 		return errors.New(m.Technique.ID + " is already COLD and should be clean, use --force to force cleanup")
 	}
 
@@ -152,7 +140,7 @@ func (m *Runner) CleanUp() error {
 	}
 
 	if techniqueCleanupErr == nil && prerequisitesCleanupErr == nil {
-		m.setState(AttackTechniqueCold)
+		m.setState(stratus.AttackTechniqueCold)
 		return nil
 	} else if techniqueCleanupErr != nil {
 		return techniqueCleanupErr
@@ -170,11 +158,11 @@ func (m *Runner) ValidatePlatformRequirements() {
 	}
 }
 
-func (m *Runner) GetState() AttackTechniqueState {
+func (m *Runner) GetState() stratus.AttackTechniqueState {
 	return m.TechniqueState
 }
 
-func (m *Runner) setState(state AttackTechniqueState) {
+func (m *Runner) setState(state stratus.AttackTechniqueState) {
 	m.StateManager.SetTechniqueState(state)
 	m.TechniqueState = state
 }
