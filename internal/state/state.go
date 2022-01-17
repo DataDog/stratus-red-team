@@ -45,14 +45,14 @@ func (m *LocalFileSystem) ReadFile(file string) ([]byte, error) {
 }
 
 type StateManager interface {
-	initialize()
-	GetRootDirectory()
+	Initialize()
+	GetRootDirectory() string
 	ExtractTechniqueTerraformFile() error
 	//TODO renaming
 	GetTechniqueOutputs() (map[string]string, error)
 	WriteTerraformOutputs(outputs map[string]string) error
 	GetTechniqueState() stratus.AttackTechniqueState
-	SetTechniqueState(state stratus.AttackTechniqueState)
+	SetTechniqueState(state stratus.AttackTechniqueState) error
 }
 
 func NewFileSystemStateManager(technique *stratus.AttackTechnique) *FileSystemStateManager {
@@ -62,11 +62,11 @@ func NewFileSystemStateManager(technique *stratus.AttackTechnique) *FileSystemSt
 		Technique:     technique,
 		FileSystem:    &LocalFileSystem{},
 	}
-	stateManager.initialize()
+	stateManager.Initialize()
 	return &stateManager
 }
 
-func (m *FileSystemStateManager) initialize() {
+func (m *FileSystemStateManager) Initialize() {
 	if !m.FileSystem.FileExists(m.RootDirectory) {
 		log.Println("Creating " + m.RootDirectory + " as it doesn't exist yet")
 		err := m.FileSystem.CreateDirectory(m.RootDirectory, 0744)

@@ -17,8 +17,8 @@ type Runner struct {
 	ShouldCleanup    bool
 	ShouldWarmUp     bool
 	ShouldForce      bool
-	TerraformManager *TerraformManager
-	StateManager     *state.FileSystemStateManager
+	TerraformManager TerraformManager
+	StateManager     state.StateManager
 }
 
 func NewRunner(technique *stratus.AttackTechnique, warmup bool, cleanup bool, force bool) Runner {
@@ -46,14 +46,14 @@ func (m *Runner) initialize() {
 }
 
 func (m *Runner) WarmUp() (map[string]string, error) {
-	err := m.StateManager.ExtractTechniqueTerraformFile()
-	if err != nil {
-		return nil, errors.New("unable to extract Terraform file: " + err.Error())
-	}
-
 	// No pre-requisites to spin-up
 	if m.Technique.PrerequisitesTerraformCode == nil {
 		return map[string]string{}, nil
+	}
+
+	err := m.StateManager.ExtractTechniqueTerraformFile()
+	if err != nil {
+		return nil, errors.New("unable to extract Terraform file: " + err.Error())
 	}
 
 	// We don't want to warm up the technique
@@ -134,6 +134,7 @@ func (m *Runner) CleanUp() error {
 	}
 
 	// Remove terraform directory
+	//TODO: this should be in statemanager
 	err := os.RemoveAll(m.TerraformDir)
 	if err != nil {
 		log.Println("Unable to remove technique directory " + m.TerraformDir + ": " + err.Error())

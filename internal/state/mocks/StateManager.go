@@ -28,8 +28,17 @@ func (_m *StateManager) ExtractTechniqueTerraformFile() error {
 }
 
 // GetRootDirectory provides a mock function with given fields:
-func (_m *StateManager) GetRootDirectory() {
-	_m.Called()
+func (_m *StateManager) GetRootDirectory() string {
+	ret := _m.Called()
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func() string); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	return r0
 }
 
 // GetTechniqueOutputs provides a mock function with given fields:
@@ -69,9 +78,23 @@ func (_m *StateManager) GetTechniqueState() stratus.AttackTechniqueState {
 	return r0
 }
 
+// Initialize provides a mock function with given fields:
+func (_m *StateManager) Initialize() {
+	_m.Called()
+}
+
 // SetTechniqueState provides a mock function with given fields: _a0
-func (_m *StateManager) SetTechniqueState(_a0 stratus.AttackTechniqueState) {
-	_m.Called(_a0)
+func (_m *StateManager) SetTechniqueState(_a0 stratus.AttackTechniqueState) error {
+	ret := _m.Called(_a0)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(stratus.AttackTechniqueState) error); ok {
+		r0 = rf(_a0)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
 }
 
 // WriteTerraformOutputs provides a mock function with given fields: outputs
@@ -86,9 +109,4 @@ func (_m *StateManager) WriteTerraformOutputs(outputs map[string]string) error {
 	}
 
 	return r0
-}
-
-// initialize provides a mock function with given fields:
-func (_m *StateManager) initialize() {
-	_m.Called()
 }

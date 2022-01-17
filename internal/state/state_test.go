@@ -25,7 +25,7 @@ func TestStateManagerCreatesRootDirectoryIfNotExists(t *testing.T) {
 		Technique:     &stratus.AttackTechnique{ID: "foo", Detonate: noop},
 		FileSystem:    fsMock,
 	}
-	statemanager.initialize()
+	statemanager.Initialize()
 	fsMock.AssertCalled(t, "CreateDirectory", "/root/.stratus-red-team", mock.Anything)
 }
 
@@ -42,7 +42,7 @@ func TestStateManagerDoesTryToCreateRootDirectoryIfExists(t *testing.T) {
 		Technique:     &stratus.AttackTechnique{ID: "foo", Detonate: noop},
 		FileSystem:    fsMock,
 	}
-	statemanager.initialize()
+	statemanager.Initialize()
 	fsMock.AssertNotCalled(t, "CreateDirectory", mock.Anything, mock.Anything)
 }
 
@@ -60,7 +60,7 @@ func TestStateManagerExtractsTechniqueTerraformFile(t *testing.T) {
 		Technique:     &stratus.AttackTechnique{ID: "my-technique", PrerequisitesTerraformCode: []byte("terraform"), Detonate: noop},
 		FileSystem:    fsMock,
 	}
-	statemanager.initialize()
+	statemanager.Initialize()
 	err := statemanager.ExtractTechniqueTerraformFile()
 
 	assert.Nil(t, err)
@@ -94,7 +94,7 @@ func TestStateManagerRetrievesTechniqueOutputs(t *testing.T) {
 		Technique:     &stratus.AttackTechnique{ID: "my-technique", Detonate: noop},
 		FileSystem:    fsMock,
 	}
-	statemanager.initialize()
+	statemanager.Initialize()
 	outputs, err := statemanager.GetTechniqueOutputs()
 
 	assert.Nil(t, err)
@@ -114,7 +114,7 @@ func TestStateManagerWritesTechniqueOutputs(t *testing.T) {
 		Technique:     &stratus.AttackTechnique{ID: "my-technique", Detonate: noop},
 		FileSystem:    fsMock,
 	}
-	statemanager.initialize()
+	statemanager.Initialize()
 	err := statemanager.WriteTerraformOutputs(map[string]string{"bar": "foo"})
 
 	assert.Nil(t, err)
@@ -131,7 +131,7 @@ func TestStateManagerReadsTechniqueState(t *testing.T) {
 		Technique:     &stratus.AttackTechnique{ID: "my-technique", Detonate: noop},
 		FileSystem:    fsMock,
 	}
-	statemanager.initialize()
+	statemanager.Initialize()
 
 	state := statemanager.GetTechniqueState()
 	assert.Equal(t, stratus.AttackTechniqueState(stratus.AttackTechniqueCold), state)
@@ -148,7 +148,7 @@ func TestStateManagerSetsTechniqueState(t *testing.T) {
 		Technique:     &stratus.AttackTechnique{ID: "my-technique", Detonate: noop},
 		FileSystem:    fsMock,
 	}
-	statemanager.initialize()
+	statemanager.Initialize()
 
 	err := statemanager.SetTechniqueState(stratus.AttackTechniqueDetonated)
 	assert.Nil(t, err)

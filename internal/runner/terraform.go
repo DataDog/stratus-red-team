@@ -16,21 +16,27 @@ import (
 
 const TerraformVersion = "1.1.2"
 
-type TerraformManager struct {
+type TerraformManager interface {
+	Initialize()
+	TerraformInitAndApply(directory string) (map[string]string, error)
+	TerraformDestroy(directory string) error
+}
+
+type TerraformManagerImpl struct {
 	terraformBinaryPath string
 	terraformVersion    string
 }
 
-func NewTerraformManager(terraformBinaryPath string) *TerraformManager {
-	manager := TerraformManager{
+func NewTerraformManager(terraformBinaryPath string) TerraformManager {
+	manager := TerraformManagerImpl{
 		terraformVersion:    TerraformVersion,
 		terraformBinaryPath: terraformBinaryPath,
 	}
-	manager.initialize()
+	manager.Initialize()
 	return &manager
 }
 
-func (m *TerraformManager) initialize() {
+func (m *TerraformManagerImpl) Initialize() {
 	// Download the Terraform binary if it doesn't exist already
 	if !utils.FileExists(m.terraformBinaryPath) {
 		terraformInstaller := &releases.ExactVersion{
@@ -47,14 +53,14 @@ func (m *TerraformManager) initialize() {
 	}
 }
 
-func (m *TerraformManager) TerraformInitAndApply(directory string) (map[string]string, error) {
+func (m *TerraformManagerImpl) TerraformInitAndApply(directory string) (map[string]string, error) {
 	terraform, err := tfexec.NewTerraform(directory, m.terraformBinaryPath)
 	terraformInitializedFile := path.Join(directory, ".terraform-initialized")
 	if !utils.FileExists(terraformInitializedFile) {
 		log.Println("Initializing Terraform")
 		err = terraform.Init(context.Background())
 		if err != nil {
-			return nil, errors.New("unable to initialize Terraform: " + err.Error())
+			return nil, errors.New("unable to Initialize Terraform: " + err.Error())
 		}
 		os.Create(terraformInitializedFile)
 
@@ -77,7 +83,7 @@ func (m *TerraformManager) TerraformInitAndApply(directory string) (map[string]s
 	return outputs, nil
 }
 
-func (m *TerraformManager) TerraformDestroy(directory string) error {
+func (m *TerraformManagerImpl) TerraformDestroy(directory string) error {
 	terraform, err := tfexec.NewTerraform(directory, m.terraformBinaryPath)
 	if err != nil {
 		return err
