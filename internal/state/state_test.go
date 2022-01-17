@@ -61,7 +61,7 @@ func TestStateManagerExtractsTechniqueTerraformFile(t *testing.T) {
 		FileSystem:    fsMock,
 	}
 	statemanager.Initialize()
-	err := statemanager.ExtractTechniqueTerraformFile()
+	err := statemanager.ExtractTechnique()
 
 	assert.Nil(t, err)
 
@@ -159,6 +159,24 @@ func TestStateManagerSetsTechniqueState(t *testing.T) {
 		mock.Anything,
 	)
 
+}
+
+func TestStateManagerCleanupTechnique(t *testing.T) {
+	fsMock := new(mocks.FileSystemMock)
+	fsMock.On("FileExists", mock.Anything).Return(true)
+	fsMock.On("WriteFile", mock.Anything, mock.Anything, mock.Anything).Return(nil)
+	fsMock.On("RemoveDirectory", mock.Anything).Return(nil)
+	statemanager := FileSystemStateManager{
+		RootDirectory: "/root/.stratus-red-team",
+		Technique:     &stratus.AttackTechnique{ID: "my-technique", Detonate: noop},
+		FileSystem:    fsMock,
+	}
+	statemanager.Initialize()
+
+	err := statemanager.CleanupTechnique()
+
+	assert.Nil(t, err)
+	fsMock.AssertCalled(t, "RemoveDirectory", "/root/.stratus-red-team/my-technique")
 }
 
 // characteristics:

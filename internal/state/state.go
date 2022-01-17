@@ -22,6 +22,7 @@ type FileSystemStateManager struct {
 type FileSystem interface {
 	FileExists(string) bool
 	CreateDirectory(string, os.FileMode) error
+	RemoveDirectory(string) error
 	WriteFile(string, []byte, os.FileMode) error
 	ReadFile(string) ([]byte, error)
 }
@@ -36,6 +37,10 @@ func (m *LocalFileSystem) CreateDirectory(dir string, mode os.FileMode) error {
 	return os.Mkdir(dir, mode)
 }
 
+func (m *LocalFileSystem) RemoveDirectory(dir string) error {
+	return os.RemoveAll(dir)
+}
+
 func (m *LocalFileSystem) WriteFile(file string, content []byte, mode os.FileMode) error {
 	return os.WriteFile(file, content, mode)
 }
@@ -47,7 +52,8 @@ func (m *LocalFileSystem) ReadFile(file string) ([]byte, error) {
 type StateManager interface {
 	Initialize()
 	GetRootDirectory() string
-	ExtractTechniqueTerraformFile() error
+	ExtractTechnique() error
+	CleanupTechnique() error
 	//TODO renaming
 	GetTechniqueOutputs() (map[string]string, error)
 	WriteTerraformOutputs(outputs map[string]string) error
@@ -76,7 +82,7 @@ func (m *FileSystemStateManager) Initialize() {
 	}
 }
 
-func (m *FileSystemStateManager) ExtractTechniqueTerraformFile() error {
+func (m *FileSystemStateManager) ExtractTechnique() error {
 	terraformDirectory := filepath.Join(m.RootDirectory, m.Technique.ID)
 	terraformFile := filepath.Join(terraformDirectory, "main.tf")
 
@@ -88,6 +94,12 @@ func (m *FileSystemStateManager) ExtractTechniqueTerraformFile() error {
 		return err
 	}
 	return m.FileSystem.WriteFile(terraformFile, m.Technique.PrerequisitesTerraformCode, 0644)
+}
+
+func (m *FileSystemStateManager) CleanupTechnique() error {
+	// TODO extract to state var
+	terraformDirectory := filepath.Join(m.RootDirectory, m.Technique.ID)
+	return m.FileSystem.RemoveDirectory(terraformDirectory)
 }
 
 func (m *FileSystemStateManager) GetTechniqueOutputs() (map[string]string, error) {

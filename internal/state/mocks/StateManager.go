@@ -13,8 +13,22 @@ type StateManager struct {
 	mock.Mock
 }
 
-// ExtractTechniqueTerraformFile provides a mock function with given fields:
-func (_m *StateManager) ExtractTechniqueTerraformFile() error {
+// CleanupTechnique provides a mock function with given fields:
+func (_m *StateManager) CleanupTechnique() error {
+	ret := _m.Called()
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func() error); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// ExtractTechnique provides a mock function with given fields:
+func (_m *StateManager) ExtractTechnique() error {
 	ret := _m.Called()
 
 	var r0 error

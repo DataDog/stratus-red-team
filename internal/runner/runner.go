@@ -6,7 +6,6 @@ import (
 	"github.com/datadog/stratus-red-team/internal/state"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"log"
-	"os"
 	"path/filepath"
 )
 
@@ -51,7 +50,7 @@ func (m *Runner) WarmUp() (map[string]string, error) {
 		return map[string]string{}, nil
 	}
 
-	err := m.StateManager.ExtractTechniqueTerraformFile()
+	err := m.StateManager.ExtractTechnique()
 	if err != nil {
 		return nil, errors.New("unable to extract Terraform file: " + err.Error())
 	}
@@ -134,8 +133,7 @@ func (m *Runner) CleanUp() error {
 	}
 
 	// Remove terraform directory
-	//TODO: this should be in statemanager
-	err := os.RemoveAll(m.TerraformDir)
+	err := m.StateManager.CleanupTechnique()
 	if err != nil {
 		log.Println("Unable to remove technique directory " + m.TerraformDir + ": " + err.Error())
 	}
