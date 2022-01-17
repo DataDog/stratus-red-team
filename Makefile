@@ -1,5 +1,9 @@
-all:
-	go build -o bin/stratus cmd/stratus/*.go
+BUILD_VERSION=dev-snapshot
+
+all: build
+
+build:
+	go build -ldflags="-X main.BuildVersion=$(BUILD_VERSION)" -o bin/stratus cmd/stratus/*.go
 
 test:
 	go test ./... -v

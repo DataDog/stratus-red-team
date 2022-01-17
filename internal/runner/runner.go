@@ -40,7 +40,7 @@ func (m *Runner) initialize() {
 	m.TerraformDir = filepath.Join(m.StateManager.GetRootDirectory(), m.Technique.ID)
 	m.TechniqueState = m.StateManager.GetTechniqueState()
 	if m.TechniqueState == "" {
-		m.TechniqueState = stratus.AttackTechniqueCold
+		m.TechniqueState = stratus.AttackTechniqueStatusCold
 	}
 }
 
@@ -59,12 +59,12 @@ func (m *Runner) WarmUp() (map[string]string, error) {
 	var willWarmUp = m.ShouldWarmUp
 
 	// Technique is already warm
-	if m.TechniqueState == stratus.AttackTechniqueWarm && !m.ShouldForce {
+	if m.TechniqueState == stratus.AttackTechniqueStatusWarm && !m.ShouldForce {
 		log.Println("Not warming up - " + m.Technique.ID + " is already warm. Use --force to force")
 		willWarmUp = false
 	}
 
-	if m.TechniqueState == stratus.AttackTechniqueDetonated {
+	if m.TechniqueState == stratus.AttackTechniqueStatusDetonated {
 		log.Println(m.Technique.ID + " has been detonated but not cleaned up, not warming up as it should be warm already.")
 		willWarmUp = false
 	}
@@ -82,7 +82,7 @@ func (m *Runner) WarmUp() (map[string]string, error) {
 
 	// Persist outputs to disk
 	err = m.StateManager.WriteTerraformOutputs(outputs)
-	m.setState(stratus.AttackTechniqueWarm)
+	m.setState(stratus.AttackTechniqueStatusWarm)
 
 	if display, ok := outputs["display"]; ok {
 		log.Println(display)
@@ -108,7 +108,7 @@ func (m *Runner) Detonate() error {
 	if err != nil {
 		return errors.New("Error while detonating attack technique " + m.Technique.ID + ": " + err.Error())
 	}
-	m.setState(stratus.AttackTechniqueDetonated)
+	m.setState(stratus.AttackTechniqueStatusDetonated)
 	return nil
 }
 
@@ -117,7 +117,7 @@ func (m *Runner) CleanUp() error {
 	var prerequisitesCleanupErr error
 
 	// Has the technique already been cleaned up?
-	if m.TechniqueState == stratus.AttackTechniqueCold && !m.ShouldForce {
+	if m.TechniqueState == stratus.AttackTechniqueStatusCold && !m.ShouldForce {
 		return errors.New(m.Technique.ID + " is already COLD and should be clean, use --force to force cleanup")
 	}
 
@@ -139,7 +139,7 @@ func (m *Runner) CleanUp() error {
 	}
 
 	if techniqueCleanupErr == nil && prerequisitesCleanupErr == nil {
-		m.setState(stratus.AttackTechniqueCold)
+		m.setState(stratus.AttackTechniqueStatusCold)
 		return nil
 	} else if techniqueCleanupErr != nil {
 		return techniqueCleanupErr
@@ -151,6 +151,7 @@ func (m *Runner) CleanUp() error {
 func (m *Runner) ValidatePlatformRequirements() {
 	switch m.Technique.Platform {
 	case stratus.AWS:
+		log.Println("Checking your authentication against the AWS API")
 		if !providers.AWS().IsAuthenticatedAgainstAWS() {
 			log.Fatal("You are not authenticated against AWS, or you have not set your region.")
 		}

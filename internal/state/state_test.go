@@ -124,7 +124,7 @@ func TestStateManagerWritesTechniqueOutputs(t *testing.T) {
 func TestStateManagerReadsTechniqueState(t *testing.T) {
 	fsMock := new(mocks.FileSystemMock)
 	fsMock.On("FileExists", mock.Anything).Return(true)
-	fsMock.On("ReadFile", "/root/.stratus-red-team/my-technique/.state").Return([]byte(stratus.AttackTechniqueCold), nil)
+	fsMock.On("ReadFile", "/root/.stratus-red-team/my-technique/.state").Return([]byte(stratus.AttackTechniqueStatusCold), nil)
 
 	statemanager := FileSystemStateManager{
 		RootDirectory: "/root/.stratus-red-team",
@@ -134,7 +134,7 @@ func TestStateManagerReadsTechniqueState(t *testing.T) {
 	statemanager.Initialize()
 
 	state := statemanager.GetTechniqueState()
-	assert.Equal(t, stratus.AttackTechniqueState(stratus.AttackTechniqueCold), state)
+	assert.Equal(t, stratus.AttackTechniqueState(stratus.AttackTechniqueStatusCold), state)
 
 }
 
@@ -150,12 +150,12 @@ func TestStateManagerSetsTechniqueState(t *testing.T) {
 	}
 	statemanager.Initialize()
 
-	err := statemanager.SetTechniqueState(stratus.AttackTechniqueDetonated)
+	err := statemanager.SetTechniqueState(stratus.AttackTechniqueStatusDetonated)
 	assert.Nil(t, err)
 	fsMock.AssertCalled(t,
 		"WriteFile",
 		"/root/.stratus-red-team/my-technique/.state",
-		[]byte(stratus.AttackTechniqueDetonated),
+		[]byte(stratus.AttackTechniqueStatusDetonated),
 		mock.Anything,
 	)
 

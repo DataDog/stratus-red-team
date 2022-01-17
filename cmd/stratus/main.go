@@ -16,6 +16,7 @@ func init() {
 	detonateCmd := buildDetonateCmd()
 	statusCmd := buildStatusCmd()
 	cleanupCmd := buildCleanupCmd()
+	versionCmd := buildVersionCmd()
 
 	rootCmd.AddCommand(listCmd)
 	rootCmd.AddCommand(showCmd)
@@ -23,6 +24,7 @@ func init() {
 	rootCmd.AddCommand(detonateCmd)
 	rootCmd.AddCommand(statusCmd)
 	rootCmd.AddCommand(cleanupCmd)
+	rootCmd.AddCommand(versionCmd)
 }
 
 func main() {

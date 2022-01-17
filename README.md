@@ -26,6 +26,7 @@ Available Commands:
   list        List attack techniques
   show        Displays detailed information about an attack technique.
   status      Display the status of TTPs.
+  version     Display the current CLI version
   warmup      "Warm up" an attack technique by spinning up the pre-requisite infrastructure or configuration, without detonating it
 
 Flags:
