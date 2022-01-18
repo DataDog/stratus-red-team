@@ -118,7 +118,7 @@ func (m *Runner) CleanUp() error {
 
 	// Has the technique already been cleaned up?
 	if m.TechniqueState == stratus.AttackTechniqueStatusCold && !m.ShouldForce {
-		return errors.New(m.Technique.ID + " is already COLD and should be clean, use --force to force cleanup")
+		return errors.New(m.Technique.ID + " is already COLD and should already be clean, use --force to force cleanup")
 	}
 
 	// Revert detonation

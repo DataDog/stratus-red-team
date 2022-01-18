@@ -45,7 +45,7 @@ func (m *TerraformManagerImpl) Initialize() {
 			InstallDir:               filepath.Dir(m.terraformBinaryPath),
 			SkipChecksumVerification: false,
 		}
-		log.Println("Installing Terraform")
+		log.Println("Installing Terraform in " + m.terraformBinaryPath)
 		_, err := terraformInstaller.Install(context.Background())
 		if err != nil {
 			log.Fatalf("error installing Terraform: %s", err)
@@ -62,7 +62,11 @@ func (m *TerraformManagerImpl) TerraformInitAndApply(directory string) (map[stri
 		if err != nil {
 			return nil, errors.New("unable to Initialize Terraform: " + err.Error())
 		}
-		os.Create(terraformInitializedFile)
+
+		_, err = os.Create(terraformInitializedFile)
+		if err != nil {
+			return nil, errors.New("unable to initialize Terraform: " + err.Error())
+		}
 
 	}
 
