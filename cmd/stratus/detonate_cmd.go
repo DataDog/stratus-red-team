@@ -27,14 +27,14 @@ func buildDetonateCmd() *cobra.Command {
 			doDetonateCmd(techniques, !detonateNoWarmup, detonateCleanup)
 		},
 	}
-	detonateCmd.Flags().BoolVarP(&detonateCleanup, "no-cleanup", "", false, "Clean up the infrastructure that was spun up as part of the technique pre-requisites")
+	detonateCmd.Flags().BoolVarP(&detonateCleanup, "cleanup", "", false, "Clean up the infrastructure that was spun up as part of the technique pre-requisites")
 	detonateCmd.Flags().BoolVarP(&detonateNoWarmup, "no-warmup", "", false, "Do not spin up pre-requisite infrastructure or configuration. Requires that 'warmup' was used before.")
 	return detonateCmd
 }
 
 func doDetonateCmd(techniques []*stratus.AttackTechnique, warmup bool, cleanup bool) {
 	for i := range techniques {
-		runner := runner.NewRunner(techniques[i], warmup, cleanup, false)
+		runner := runner.NewRunner(techniques[i], !detonateNoWarmup, detonateCleanup, false)
 		err := runner.Detonate()
 		if err != nil {
 			log.Fatal(err)
