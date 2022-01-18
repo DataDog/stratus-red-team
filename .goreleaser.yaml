@@ -11,8 +11,7 @@ builds:
     ldflags:
       - -X main.BuildVersion={{.Version}}
 
-    dir: .
-    main: cmd/stratus/main.go
+    dir: cmd/stratus
     binary: stratus
 
 archives:
