@@ -9,5 +9,6 @@ import (
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/aws/exfiltration/securitygroup-open-port-22-to-internet"
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/aws/persistence/iam-role-backdoor-existing"
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/aws/persistence/iam-user-backdoor-existing"
+	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/aws/persistence/iam-user-create-login-profile"
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/aws/persistence/iam-user-create-new"
 )
