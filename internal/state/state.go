@@ -80,19 +80,19 @@ func (m *FileSystemStateManager) Initialize() {
 			panic("Unable to create persistent directory: " + err.Error())
 		}
 	}
+
+	if !m.FileSystem.FileExists(m.getTechniqueStateDirectory()) {
+		err := m.FileSystem.CreateDirectory(m.getTechniqueStateDirectory(), 0744)
+		if err != nil {
+			panic("Unable to create persistent directory: " + err.Error())
+		}
+	}
 }
 
 func (m *FileSystemStateManager) ExtractTechnique() error {
 	terraformDirectory := m.getTechniqueStateDirectory()
 	terraformFile := filepath.Join(terraformDirectory, "main.tf")
 
-	if m.FileSystem.FileExists(terraformDirectory) {
-		return nil
-	}
-	err := m.FileSystem.CreateDirectory(terraformDirectory, 0744)
-	if err != nil {
-		return err
-	}
 	return m.FileSystem.WriteFile(terraformFile, m.Technique.PrerequisitesTerraformCode, 0644)
 }
 

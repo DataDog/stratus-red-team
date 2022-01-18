@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/datadog/stratus-red-team/internal/providers"
 	"github.com/datadog/stratus-red-team/internal/state"
+	"github.com/datadog/stratus-red-team/internal/utils"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"log"
 	"path/filepath"
@@ -121,31 +122,34 @@ func (m *Runner) CleanUp() error {
 		return errors.New(m.Technique.ID + " is already COLD and should already be clean, use --force to force cleanup")
 	}
 
+	log.Println("Cleaning up " + m.Technique.ID)
+
 	// Revert detonation
 	if m.Technique.Cleanup != nil {
 		techniqueCleanupErr = m.Technique.Cleanup()
+		if techniqueCleanupErr != nil {
+			log.Println("Warning: unable to clean up TTP: " + techniqueCleanupErr.Error())
+		}
 	}
 
 	// Nuke pre-requisites
 	if m.Technique.PrerequisitesTerraformCode != nil {
 		log.Println("Cleaning up with terraform destroy")
 		prerequisitesCleanupErr = m.TerraformManager.TerraformDestroy(m.TerraformDir)
+		if prerequisitesCleanupErr != nil {
+			log.Println("Warning: unable to cleanup TTP pre-requisites: " + prerequisitesCleanupErr.Error())
+		}
 	}
+
+	m.setState(stratus.AttackTechniqueStatusCold)
 
 	// Remove terraform directory
 	err := m.StateManager.CleanupTechnique()
 	if err != nil {
-		log.Println("Unable to remove technique directory " + m.TerraformDir + ": " + err.Error())
+		log.Println("Warning: unable to remove technique directory " + m.TerraformDir + ": " + err.Error())
 	}
 
-	if techniqueCleanupErr == nil && prerequisitesCleanupErr == nil {
-		m.setState(stratus.AttackTechniqueStatusCold)
-		return nil
-	} else if techniqueCleanupErr != nil {
-		return techniqueCleanupErr
-	} else {
-		return prerequisitesCleanupErr
-	}
+	return utils.CoalesceErr(techniqueCleanupErr, prerequisitesCleanupErr, err)
 }
 
 func (m *Runner) ValidatePlatformRequirements() {
@@ -163,6 +167,9 @@ func (m *Runner) GetState() stratus.AttackTechniqueState {
 }
 
 func (m *Runner) setState(state stratus.AttackTechniqueState) {
-	m.StateManager.SetTechniqueState(state)
+	err := m.StateManager.SetTechniqueState(state)
+	if err != nil {
+		log.Println("Warning: unable to set technique state: " + err.Error())
+	}
 	m.TechniqueState = state
 }

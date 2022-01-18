@@ -15,9 +15,7 @@ func noop(map[string]string) error {
 func TestStateManagerCreatesRootDirectoryIfNotExists(t *testing.T) {
 	fsMock := new(mocks.FileSystemMock)
 
-	fsMock.On("FileExists", mock.MatchedBy(func(file string) bool {
-		return file == "/root/.stratus-red-team"
-	})).Return(false)
+	fsMock.On("FileExists", mock.Anything).Return(false)
 	fsMock.On("CreateDirectory", mock.Anything, mock.Anything).Return(nil)
 
 	statemanager := FileSystemStateManager{
@@ -27,13 +25,15 @@ func TestStateManagerCreatesRootDirectoryIfNotExists(t *testing.T) {
 	}
 	statemanager.Initialize()
 	fsMock.AssertCalled(t, "CreateDirectory", "/root/.stratus-red-team", mock.Anything)
+	fsMock.AssertCalled(t, "CreateDirectory", "/root/.stratus-red-team/foo", mock.Anything)
+
 }
 
-func TestStateManagerDoesTryToCreateRootDirectoryIfExists(t *testing.T) {
+func TestStateManagerDoesNotTryToCreateRootDirectoryIfExists(t *testing.T) {
 	fsMock := new(mocks.FileSystemMock)
 
 	fsMock.On("FileExists", mock.MatchedBy(func(file string) bool {
-		return file == "/root/.stratus-red-team"
+		return file == "/root/.stratus-red-team" || file == "/root/.stratus-red-team/foo"
 	})).Return(true)
 	fsMock.On("CreateDirectory", mock.Anything, mock.Anything).Return(nil)
 
@@ -158,7 +158,38 @@ func TestStateManagerSetsTechniqueState(t *testing.T) {
 		[]byte(stratus.AttackTechniqueStatusDetonated),
 		mock.Anything,
 	)
+}
 
+func TestStateManagerSetsTechniqueStateWhenTechniqueDirDoesNotExist(t *testing.T) {
+	fsMock := new(mocks.FileSystemMock)
+	fsMock.On("FileExists", mock.MatchedBy(func(path string) bool {
+		return path == "/root/.stratus-red-team"
+	})).Return(true)
+	fsMock.On("FileExists", mock.Anything).Return(false)
+	fsMock.On("WriteFile", mock.Anything, mock.Anything, mock.Anything).Return(nil)
+	fsMock.On("CreateDirectory", mock.Anything, mock.Anything).Return(nil)
+
+	statemanager := FileSystemStateManager{
+		RootDirectory: "/root/.stratus-red-team",
+		Technique:     &stratus.AttackTechnique{ID: "my-technique", Detonate: noop},
+		FileSystem:    fsMock,
+	}
+	statemanager.Initialize()
+
+	err := statemanager.SetTechniqueState(stratus.AttackTechniqueStatusDetonated)
+	assert.Nil(t, err)
+
+	fsMock.AssertCalled(t,
+		"CreateDirectory",
+		"/root/.stratus-red-team/my-technique",
+		mock.Anything,
+	)
+	fsMock.AssertCalled(t,
+		"WriteFile",
+		"/root/.stratus-red-team/my-technique/.state",
+		[]byte(stratus.AttackTechniqueStatusDetonated),
+		mock.Anything,
+	)
 }
 
 func TestStateManagerCleanupTechnique(t *testing.T) {
