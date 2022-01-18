@@ -19,6 +19,6 @@ Detonation: Assume the role and run a number of ec2:GetPasswordData calls (which
 
 ## Instructions
 
-```bash title="Detonate me!"
+```bash title="Detonate with Stratus Red Team"
 stratus detonate aws.credential-access.ec2-get-password-data
 ```

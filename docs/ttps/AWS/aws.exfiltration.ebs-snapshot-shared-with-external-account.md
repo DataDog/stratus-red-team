@@ -18,6 +18,6 @@ Detonation: Calls ModifySnapshotAttribute to share the snapshot.
 
 ## Instructions
 
-```bash title="Detonate me!"
+```bash title="Detonate with Stratus Red Team"
 stratus detonate aws.exfiltration.ebs-snapshot-shared-with-external-account
 ```

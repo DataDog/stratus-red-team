@@ -20,6 +20,6 @@ Detonation: Create the login profile.
 
 ## Instructions
 
-```bash title="Detonate me!"
+```bash title="Detonate with Stratus Red Team"
 stratus detonate aws.persistence.iam-user-create-login-profile
 ```

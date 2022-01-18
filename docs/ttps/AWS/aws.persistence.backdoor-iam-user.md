@@ -19,6 +19,6 @@ Detonation: Create the access key.
 
 ## Instructions
 
-```bash title="Detonate me!"
+```bash title="Detonate with Stratus Red Team"
 stratus detonate aws.persistence.backdoor-iam-user
 ```

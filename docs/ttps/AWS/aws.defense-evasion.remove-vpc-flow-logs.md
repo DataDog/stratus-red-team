@@ -18,6 +18,6 @@ Detonation: Removes the VPC Flow Logs configuration.
 
 ## Instructions
 
-```bash title="Detonate me!"
+```bash title="Detonate with Stratus Red Team"
 stratus detonate aws.defense-evasion.remove-vpc-flow-logs
 ```

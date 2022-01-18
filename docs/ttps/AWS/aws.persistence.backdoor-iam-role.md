@@ -18,6 +18,6 @@ Detonation: Updates the assume role policy of the IAM role to backdoor it.
 
 ## Instructions
 
-```bash title="Detonate me!"
+```bash title="Detonate with Stratus Red Team"
 stratus detonate aws.persistence.backdoor-iam-role
 ```

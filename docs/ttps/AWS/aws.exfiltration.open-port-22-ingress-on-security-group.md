@@ -18,6 +18,6 @@ Detonation: Calls AuthorizeSecurityGroupIngress
 
 ## Instructions
 
-```bash title="Detonate me!"
+```bash title="Detonate with Stratus Red Team"
 stratus detonate aws.exfiltration.open-port-22-ingress-on-security-group
 ```

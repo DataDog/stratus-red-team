@@ -18,6 +18,6 @@ Detonation: Backdoors the S3 bucket policy.
 
 ## Instructions
 
-```bash title="Detonate me!"
+```bash title="Detonate with Stratus Red Team"
 stratus detonate aws.exfiltration.backdoor-s3-bucket-policy
 ```

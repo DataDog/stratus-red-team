@@ -18,6 +18,6 @@ Detonation: Calls cloudtrail:StopLogging
 
 ## Instructions
 
-```bash title="Detonate me!"
+```bash title="Detonate with Stratus Red Team"
 stratus detonate aws.defense-evasion.stop-cloudtrail
 ```

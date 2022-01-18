@@ -23,6 +23,6 @@ Detonation: Run the commands, over SSM.
 
 ## Instructions
 
-```bash title="Detonate me!"
+```bash title="Detonate with Stratus Red Team"
 stratus detonate aws.discovery.basic-enumeration-from-ec2-instance
 ```

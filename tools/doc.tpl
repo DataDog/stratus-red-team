@@ -12,6 +12,6 @@ Platform: {{.Platform}}
 
 ## Instructions
 
-```bash title="Detonate me!"
+```bash title="Detonate with Stratus Red Team"
 stratus detonate {{.ID}}
 ```

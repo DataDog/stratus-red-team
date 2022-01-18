@@ -19,6 +19,6 @@ Detonation: Creates the IAM user and attached 'AdministratorAccess' to it.
 
 ## Instructions
 
-```bash title="Detonate me!"
+```bash title="Detonate with Stratus Red Team"
 stratus detonate aws.persistence.malicious-iam-user
 ```
