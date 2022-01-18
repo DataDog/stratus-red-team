@@ -1,9 +1,9 @@
 package runner
 
 import (
-	"github.com/datadog/stratus-red-team/internal/runner/mocks"
 	statemocks "github.com/datadog/stratus-red-team/internal/state/mocks"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
+	"github.com/datadog/stratus-red-team/pkg/stratus/runner/mocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"testing"

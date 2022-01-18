@@ -2,8 +2,8 @@ package main
 
 import (
 	"errors"
-	"github.com/datadog/stratus-red-team/internal/runner"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
+	"github.com/datadog/stratus-red-team/pkg/stratus/runner"
 	"github.com/spf13/cobra"
 	"log"
 )
