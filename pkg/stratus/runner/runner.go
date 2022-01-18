@@ -10,23 +10,22 @@ import (
 	"path/filepath"
 )
 
+const StratusRunnerForce = true
+const StratusRunnerNoForce = false
+
 type Runner struct {
 	Technique        *stratus.AttackTechnique
 	TechniqueState   stratus.AttackTechniqueState
 	TerraformDir     string
-	ShouldCleanup    bool
-	ShouldWarmUp     bool
 	ShouldForce      bool
 	TerraformManager TerraformManager
 	StateManager     state.StateManager
 }
 
-func NewRunner(technique *stratus.AttackTechnique, warmup bool, cleanup bool, force bool) Runner {
+func NewRunner(technique *stratus.AttackTechnique, force bool) Runner {
 	stateManager := state.NewFileSystemStateManager(technique)
 	runner := Runner{
 		Technique:        technique,
-		ShouldWarmUp:     warmup,
-		ShouldCleanup:    cleanup,
 		ShouldForce:      force,
 		TerraformManager: NewTerraformManager(filepath.Join(stateManager.GetRootDirectory(), "terraform")),
 		StateManager:     stateManager,
@@ -57,7 +56,7 @@ func (m *Runner) WarmUp() (map[string]string, error) {
 	}
 
 	// We don't want to warm up the technique
-	var willWarmUp = m.ShouldWarmUp
+	var willWarmUp = true
 
 	// Technique is already warm
 	if m.TechniqueState == stratus.AttackTechniqueStatusWarm && !m.ShouldForce {
@@ -98,14 +97,6 @@ func (m *Runner) Detonate() error {
 	}
 	// Detonate
 	err = m.Technique.Detonate(outputs)
-	if m.ShouldCleanup {
-		defer func() {
-			err := m.CleanUp()
-			if err != nil {
-				log.Println("unable to clean up pre-requisites: " + err.Error())
-			}
-		}()
-	}
 	if err != nil {
 		return errors.New("Error while detonating attack technique " + m.Technique.ID + ": " + err.Error())
 	}

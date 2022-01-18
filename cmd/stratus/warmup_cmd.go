@@ -23,16 +23,16 @@ func buildWarmupCmd() *cobra.Command {
 		},
 		Run: func(cmd *cobra.Command, args []string) {
 			techniques, _ := resolveTechniques(args)
-			doWarmupCmd(techniques, !detonateNoWarmup)
+			doWarmupCmd(techniques)
 		},
 	}
 	warmupCmd.Flags().BoolVarP(&forceWarmup, "force", "f", false, "Force re-ensuring the pre-requisite infrastructure or configuration is up to date")
 	return warmupCmd
 }
 
-func doWarmupCmd(techniques []*stratus.AttackTechnique, warmup bool) {
+func doWarmupCmd(techniques []*stratus.AttackTechnique) {
 	for i := range techniques {
-		runner := runner.NewRunner(techniques[i], warmup, true, forceWarmup)
+		runner := runner.NewRunner(techniques[i], forceWarmup)
 		_, err := runner.WarmUp()
 		if err != nil {
 			log.Fatal(err)

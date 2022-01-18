@@ -106,7 +106,6 @@ func TestRunnerWarmUp(t *testing.T) {
 
 		runner := Runner{
 			Technique:        scenario[i].Technique,
-			ShouldWarmUp:     true,
 			ShouldForce:      scenario[i].ShouldForce,
 			TerraformManager: terraform,
 			StateManager:     state,
@@ -137,7 +136,6 @@ func TestRunnerDetonate(t *testing.T) {
 				return nil
 			},
 		},
-		ShouldWarmUp:     true,
 		TerraformManager: terraform,
 		StateManager:     state,
 	}
@@ -207,7 +205,6 @@ func TestRunnerCleanup(t *testing.T) {
 		terraform.On("TerraformDestroy", mock.Anything).Return(nil)
 		runner := Runner{
 			Technique:        scenario[i].Technique,
-			ShouldCleanup:    true,
 			ShouldForce:      scenario[i].ShouldForce,
 			TerraformManager: terraform,
 			StateManager:     state,
