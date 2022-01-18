@@ -1,4 +1,4 @@
-package suspicious_commands_from_ec2_instance
+package aws
 
 import (
 	"context"

@@ -25,7 +25,7 @@ Warm-up: Create the pre-requisite IAM user.
 Detonation: Create the access key.
 `,
 		Platform:                   stratus.AWS,
-		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence},
+		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence, mitreattack.PrivilegeEscalation},
 		PrerequisitesTerraformCode: tf,
 		Detonate: func(terraformOutputs map[string]string) error {
 			iamClient := iam.NewFromConfig(providers.AWS().GetConnection())
