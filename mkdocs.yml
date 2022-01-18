@@ -3,11 +3,32 @@ theme:
   name: material
   palette:
     primary: purple
-#nav:
-#- 'Attack Techniques': '/docs/ttps/'
+  features:
+  - navigation.expand
+  - navigation.indexes
+  - navigation.top
+  - navigation.tabs
+use_directory_urls: true
 markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.superfences
+  - tables
+  - meta
+  - abbr
+  - def_list
+
+extra_javascript:
+  - https://cdnjs.cloudflare.com/ajax/libs/tablesort/5.2.1/tablesort.min.js
+  - javascripts/tablesort.js
+extra_css:
+  - css/extra.css
+
+#nav:
+#  - "<b>Home</b>": "index.md"
+#  - "<b>user-guide</b>":
+#      - Introduction: 'user-guide/overview.md'
+#      - Installation: 'user-guide/install.md'
+#  - Attack Techniques: 'Attack Techniques/'

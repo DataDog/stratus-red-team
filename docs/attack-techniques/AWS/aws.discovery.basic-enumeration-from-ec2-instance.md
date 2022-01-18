@@ -4,6 +4,7 @@ Platform: AWS
 
 ## MITRE ATT&CK Tactics
 
+
 - Discovery
 
 ## Description

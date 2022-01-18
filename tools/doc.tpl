@@ -4,7 +4,7 @@ Platform: {{.Platform}}
 
 ## MITRE ATT&CK Tactics
 
-{{JoinTactics .MitreAttackTactics}}
+{{JoinTactics .MitreAttackTactics "\n- " "\n- "}}
 
 ## Description
 
