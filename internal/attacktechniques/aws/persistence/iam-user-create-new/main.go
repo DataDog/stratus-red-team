@@ -24,6 +24,7 @@ func init() {
 Establishes persistence by creating a new IAM user with administrative permissions.
 
 Warm-up: None.
+
 Detonation: Creates the IAM user and attached 'AdministratorAccess' to it.
 `,
 		Platform:           stratus.AWS,

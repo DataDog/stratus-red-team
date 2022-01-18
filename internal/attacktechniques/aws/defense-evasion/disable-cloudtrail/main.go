@@ -25,6 +25,7 @@ func init() {
 Stops a CloudTrail trail from logging.
 
 Warm-up: Creates a CloudTrail trail.
+
 Detonation: Calls cloudtrail:StopLogging
 `,
 		PrerequisitesTerraformCode: tf,

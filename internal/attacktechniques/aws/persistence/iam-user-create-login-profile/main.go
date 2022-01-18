@@ -25,6 +25,7 @@ Establishes persistence by creating a login profile on an existing IAM user. Thi
 user intended to be used programmatically through the AWS console usual login process. 
 
 Warm-up: Create the pre-requisite IAM user.
+
 Detonation: Create the login profile.
 `,
 		Platform:                   stratus.AWS,

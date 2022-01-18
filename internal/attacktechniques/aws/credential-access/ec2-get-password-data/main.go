@@ -28,6 +28,7 @@ Runs ec2:GetPasswordData from a role that does not have permission to do so. Thi
 retrieve RDP passwords of Windows EC2 instances.
 
 Warm-up: Create an IAM role without permissions to run ec2:GetPasswordData
+
 Detonation: Assume the role and run a number of ec2:GetPasswordData calls (which will be denied
 `,
 		Platform:                   stratus.AWS,

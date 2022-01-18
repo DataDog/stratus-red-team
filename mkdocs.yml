@@ -1,0 +1,13 @@
+site_name: Stratus Red Team
+theme:
+  name: material
+  palette:
+    primary: purple
+#nav:
+#- 'Attack Techniques': '/docs/ttps/'
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences

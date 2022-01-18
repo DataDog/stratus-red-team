@@ -25,6 +25,7 @@ func init() {
 Exfiltrates an EBS snapshot by sharing it with an external AWS account.
 
 Warm-up: Creates an EBS volume and a snapshot.
+
 Detonation: Calls ModifySnapshotAttribute to share the snapshot.
 `,
 		PrerequisitesTerraformCode: tf,

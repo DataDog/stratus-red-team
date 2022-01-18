@@ -30,6 +30,7 @@ Runs several suspicious discovery commands on an EC2 instance:
 
 
 Warm-up: Create the pre-requisite EC2 instance and VPC (takes a few minutes).
+
 Detonation: Run the commands, over SSM.
 `,
 		Platform:                   stratus.AWS,

@@ -19,6 +19,7 @@ func init() {
 Exfiltrates an EBS snapshot by using the EBS Direct API.
 
 Warm-up: Creates an EBS volume and a snapshot.
+
 Detonation: Uses the EBS Direct API to access the raw data of the volume.
 `,
 		PrerequisitesTerraformCode: tf,

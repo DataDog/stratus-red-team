@@ -5,7 +5,7 @@ import "errors"
 type Platform string
 
 const (
-	AWS = "aws"
+	AWS = "AWS"
 )
 
 func PlatformFromString(name string) (Platform, error) {

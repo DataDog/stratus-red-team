@@ -22,6 +22,7 @@ func init() {
 Establishes persistence by creating an access key on an existing IAM user.
 
 Warm-up: Create the pre-requisite IAM user.
+
 Detonation: Create the access key.
 `,
 		Platform:                   stratus.AWS,

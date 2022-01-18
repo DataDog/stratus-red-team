@@ -25,6 +25,7 @@ func init() {
 Opens ingress traffic on port 22 from the Internet.
 
 Warm-up: Creates a security group.
+
 Detonation: Calls AuthorizeSecurityGroupIngress
 `,
 		PrerequisitesTerraformCode: tf,

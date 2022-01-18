@@ -28,6 +28,7 @@ func init() {
 Exfiltrates data from an S3 bucket by backdooring its bucket policy to allow access from an external AWS account.
 
 Warm-up: Creates an S3 bucket.
+
 Detonation: Backdoors the S3 bucket policy.
 `,
 		PrerequisitesTerraformCode: tf,
