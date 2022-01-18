@@ -64,7 +64,7 @@ Detonate an attack technique using:
 stratus detonate aws.exfiltration.ebs-snapshot-shared-with-external-account
 ```
 
-This will handle warm-up, detonation and clean-up.
+This will handle warm-up and detonation (but not clean-up - explicitly use `--clean-up` for this).
 
 Alternatively, you can handle warm-up and detonation independently:
 
@@ -73,13 +73,7 @@ stratus warmup aws.exfiltration.ebs-snapshot-shared-with-external-account
 stratus detonate aws.exfiltration.ebs-snapshot-shared-with-external-account
 ```
 
-You can detonate an attack technique without cleaning it up, for instance to see which forensics artifacts it leaves behind:
-
-```
-stratus detonate aws.exfiltration.ebs-snapshot-shared-with-external-account --no-cleanup 
-```
-
-Manual cleanup can be done through:
+Cleanup can be done through:
 
 ```bash
 stratus cleanup aws.exfiltration.ebs-snapshot-shared-with-external-account
@@ -103,3 +97,25 @@ stratus status
 ## Supported platforms
 
 - AWS (you need to be authenticated to AWS before running Stratus Red Team)
+
+## Installation
+
+### Building locally
+
+``` bash
+make
+./bin/stratus --help
+```
+
+### Docker
+
+```bash
+docker build . -t stratus-red-team
+docker run --rm stratus-red-team list
+```
+
+### Running locally
+
+```bash
+go run cmd/stratus/*.go list
+```
