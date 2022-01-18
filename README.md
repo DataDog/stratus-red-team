@@ -18,8 +18,24 @@ docker build . -t stratus-red-team
 docker run --rm stratus-red-team list
 ```
 
-### Running locally for development
+## Development
+
+### Running locally
 
 ```bash
 go run cmd/stratus/*.go list
+```
+
+### Running the tests
+
+```bash
+make test
+```
+
+### Building the documentation
+
+For local usage:
+```
+make docs
+mkdocs serve
 ```
