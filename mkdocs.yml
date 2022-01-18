@@ -1,4 +1,6 @@
 site_name: Stratus Red Team
+site_url: https://stratus-red-team.cloud
+repo_url: https://github.com/DataDog/stratus-red-team
 theme:
   name: material
   palette:
