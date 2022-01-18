@@ -21,7 +21,7 @@ func SHA256(buf []byte) []byte {
 }
 
 func RandomString(length int) string {
-	const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	const letterBytes = "abcdefghijklmnopqrstuvwxyz0123456789"
 	b := make([]byte, length)
 	for i := range b {
 		b[i] = letterBytes[rand.Intn(len(letterBytes))]
