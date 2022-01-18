@@ -18,7 +18,7 @@ var tf []byte
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
 		ID:                 "aws.defense-evasion.stop-cloudtrail",
-		FriendlyName:       "Stops a CloudTrail trail",
+		FriendlyName:       "Stop a CloudTrail Trail",
 		Platform:           stratus.AWS,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.DefenseEvasion},
 		Description: `

@@ -1,4 +1,4 @@
-# Runs discovery commands on an EC2 instance.
+# Execute discovery commands on an EC2 instance
 
 Platform: AWS
 

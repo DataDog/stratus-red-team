@@ -20,7 +20,7 @@ var tf []byte
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
 		ID:           "aws.discovery.basic-enumeration-from-ec2-instance",
-		FriendlyName: "Runs discovery commands on an EC2 instance.",
+		FriendlyName: "Execute discovery commands on an EC2 instance",
 		Description: `
 Runs several suspicious discovery commands on an EC2 instance:
 

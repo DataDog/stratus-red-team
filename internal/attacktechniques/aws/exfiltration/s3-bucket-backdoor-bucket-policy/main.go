@@ -21,7 +21,7 @@ var backdooredPolicy string
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
 		ID:                 "aws.exfiltration.backdoor-s3-bucket-policy",
-		FriendlyName:       "Backdoor S3 bucket policy",
+		FriendlyName:       "Backdoor an S3 Bucket via its Bucket Policy",
 		Platform:           stratus.AWS,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Exfiltration},
 		Description: `

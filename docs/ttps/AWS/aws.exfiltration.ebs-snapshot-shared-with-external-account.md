@@ -1,4 +1,4 @@
-# EBS Snapshot Exfiltration
+# Exfiltrate EBS Snapshot through snapshot sharing
 
 Platform: AWS
 

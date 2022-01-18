@@ -1,4 +1,4 @@
-# Stops a CloudTrail trail
+# Stop a CloudTrail Trail
 
 Platform: AWS
 

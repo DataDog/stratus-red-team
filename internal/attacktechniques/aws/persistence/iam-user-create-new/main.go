@@ -19,7 +19,7 @@ func init() {
 
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
 		ID:           "aws.persistence.malicious-iam-user",
-		FriendlyName: "Create an administrative IAM user",
+		FriendlyName: "Create an administrative IAM User",
 		Description: `
 Establishes persistence by creating a new IAM user with administrative permissions.
 

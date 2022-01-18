@@ -1,4 +1,4 @@
-# Attempts to retrieve EC2 password data with access denied errors
+# Retrieve EC2 password data
 
 Platform: AWS
 

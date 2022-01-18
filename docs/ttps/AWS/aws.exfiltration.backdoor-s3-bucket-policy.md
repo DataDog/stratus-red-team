@@ -1,4 +1,4 @@
-# Backdoor S3 bucket policy
+# Backdoor an S3 Bucket via its Bucket Policy
 
 Platform: AWS
 

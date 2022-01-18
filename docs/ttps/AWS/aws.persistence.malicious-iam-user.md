@@ -1,4 +1,4 @@
-# Create an administrative IAM user
+# Create an administrative IAM User
 
 Platform: AWS
 

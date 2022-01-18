@@ -1,4 +1,4 @@
-# Create an access key on an existing IAM user
+# Create an IAM Access Key on an IAM User
 
 Platform: AWS
 

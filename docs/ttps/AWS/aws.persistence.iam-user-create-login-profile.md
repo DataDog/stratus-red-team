@@ -1,4 +1,4 @@
-# Create a login profile on an IAM user
+# Create a Login Profile on an IAM user
 
 Platform: AWS
 

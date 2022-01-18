@@ -22,7 +22,7 @@ var tf []byte
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
 		ID:           "aws.credential-access.ec2-get-password-data",
-		FriendlyName: "Attempts to retrieve EC2 password data with access denied errors",
+		FriendlyName: "Retrieve EC2 password data",
 		Description: `
 Runs ec2:GetPasswordData from a role that does not have permission to do so. This simulates an attacker attempting to
 retrieve RDP passwords of Windows EC2 instances.
