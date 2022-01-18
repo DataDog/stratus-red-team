@@ -28,10 +28,6 @@ resource "aws_iam_role" "legit-role" {
       },
     ]
   })
-
-  tags = {
-    StratusRedTeam = true
-  }
 }
 
 resource "aws_iam_role_policy_attachment" "role-policy" {

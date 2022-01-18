@@ -11,6 +11,11 @@ provider "aws" {
   skip_credentials_validation = true
   skip_get_ec2_platforms      = true
   skip_metadata_api_check     = true
+  default_tags {
+    tags = {
+      StratusRedTeam = true
+    }
+  }
 }
 
 resource "random_string" "suffix" {
@@ -22,10 +27,6 @@ resource "random_string" "suffix" {
 resource "aws_s3_bucket" "bucket" {
   bucket = "stratus-red-team-${random_string.suffix.result}"
   acl    = "private"
-
-  tags = {
-    StratusRedTeam = true
-  }
 }
 
 output "bucket_name" {

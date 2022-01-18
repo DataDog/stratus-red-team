@@ -11,6 +11,11 @@ provider "aws" {
   skip_credentials_validation = true
   skip_get_ec2_platforms      = true
   skip_metadata_api_check     = true
+  default_tags {
+    tags = {
+      StratusRedTeam = true
+    }
+  }
 }
 
 resource "aws_iam_user" "legit-user" {

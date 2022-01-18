@@ -11,12 +11,17 @@ provider "aws" {
   skip_credentials_validation = true
   skip_get_ec2_platforms      = true
   skip_metadata_api_check     = true
+  default_tags {
+    tags = {
+      StratusRedTeam = true
+    }
+  }
 }
+
 resource "aws_vpc" "vpc" {
   cidr_block       = "10.0.0.0/16"
   tags = {
     Name = "StratusRedTeamVpc",
-    StratusRedTeam = true
   }
 }
 
@@ -43,7 +48,6 @@ resource "aws_security_group" "allow_tls" {
 
   tags = {
     Name = "allow_tls",
-    StratusRedTeam = true
   }
 }
 

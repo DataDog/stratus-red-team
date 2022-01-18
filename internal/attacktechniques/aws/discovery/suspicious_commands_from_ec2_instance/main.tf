@@ -11,6 +11,11 @@ provider "aws" {
   skip_credentials_validation = true
   skip_get_ec2_platforms      = true
   skip_metadata_api_check     = true
+  default_tags {
+    tags = {
+      StratusRedTeam = true
+    }
+  }
 }
 
 
@@ -83,10 +88,6 @@ resource "aws_instance" "dev" {
   ami                  = data.aws_ami.amazon-2.id
   instance_type        = "t3.micro"
   iam_instance_profile = aws_iam_instance_profile.instance.name
-
-  tags = {
-    StratusRedTeam = true
-  }
 }
 
 output "instance_id" {
