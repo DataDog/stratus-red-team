@@ -36,6 +36,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 ## Persistence
 
+- [Backdoor Lambda Function Through Resource-Based Policy](./aws.persistence.backdoor-lambda-function.md)
+
 - [Backdoor an existing IAM Role](./aws.persistence.backdoor-iam-role.md)
 
 - [Create an IAM Access Key on an IAM User](./aws.persistence.backdoor-iam-user.md)

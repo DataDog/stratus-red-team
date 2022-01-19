@@ -18,6 +18,7 @@ This page contains the list of all Stratus Attack Techniques.
 | [Exfiltrate EBS Snapshot through snapshot sharing](./AWS/aws.exfiltration.ebs-snapshot-shared-with-external-account.md) | [AWS](./AWS/index.md) | Exfiltration |
 | [Backdoor an S3 Bucket via its Bucket Policy](./AWS/aws.exfiltration.backdoor-s3-bucket-policy.md) | [AWS](./AWS/index.md) | Exfiltration |
 | [Open Ingress Port 22 on a Security Group](./AWS/aws.exfiltration.open-port-22-ingress-on-security-group.md) | [AWS](./AWS/index.md) | Exfiltration |
+| [Backdoor Lambda Function Through Resource-Based Policy](./AWS/aws.persistence.backdoor-lambda-function.md) | [AWS](./AWS/index.md) | Persistence |
 | [Backdoor an existing IAM Role](./AWS/aws.persistence.backdoor-iam-role.md) | [AWS](./AWS/index.md) | Persistence |
 | [Create an IAM Access Key on an IAM User](./AWS/aws.persistence.backdoor-iam-user.md) | [AWS](./AWS/index.md) | Persistence, Privilege Escalation |
 | [Create a Login Profile on an IAM user](./AWS/aws.persistence.iam-user-create-login-profile.md) | [AWS](./AWS/index.md) | Persistence, Privilege Escalation |
