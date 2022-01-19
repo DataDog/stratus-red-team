@@ -30,8 +30,11 @@ Detonation: Calls ModifySnapshotAttribute to share the snapshot.
 `,
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,
+		Revert:                     revert,
 	})
 }
+
+const ShareWithAccountId = "012345678912"
 
 func detonate(params map[string]string) error {
 	ec2Client := ec2.NewFromConfig(providers.AWS().GetConnection())
@@ -46,7 +49,22 @@ func detonate(params map[string]string) error {
 		SnapshotId: aws.String(ourSnapshotId),
 		Attribute:  types.SnapshotAttributeNameCreateVolumePermission,
 		CreateVolumePermission: &types.CreateVolumePermissionModifications{
-			Add: []types.CreateVolumePermission{{UserId: aws.String("012345678912")}},
+			Add: []types.CreateVolumePermission{{UserId: aws.String(ShareWithAccountId)}},
+		},
+	})
+	return err
+}
+
+func revert(params map[string]string) error {
+	ec2Client := ec2.NewFromConfig(providers.AWS().GetConnection())
+	ourSnapshotId := params["snapshot_id"]
+
+	log.Println("Unsharing the volume snapshot " + ourSnapshotId)
+	_, err := ec2Client.ModifySnapshotAttribute(context.Background(), &ec2.ModifySnapshotAttributeInput{
+		SnapshotId: aws.String(ourSnapshotId),
+		Attribute:  types.SnapshotAttributeNameCreateVolumePermission,
+		CreateVolumePermission: &types.CreateVolumePermissionModifications{
+			Remove: []types.CreateVolumePermission{{UserId: aws.String(ShareWithAccountId)}},
 		},
 	})
 	return err

@@ -10,8 +10,8 @@ type AttackTechnique struct {
 	Description                string
 	MitreAttackTactics         []mitreattack.Tactic
 	Platform                   Platform
-	Detonate                   func(terraformOutputs map[string]string) error
-	Cleanup                    func() error
+	Detonate                   func(params map[string]string) error
+	Revert                     func(params map[string]string) error
 	PrerequisitesTerraformCode []byte
 }
 

@@ -41,17 +41,27 @@ Detonation: Create the access key.
 			log.Println("Successfully created access key " + *result.AccessKey.AccessKeyId)
 			return nil
 		},
-		Cleanup: func() error {
-			// TODO: https://github.com/DataDog/stratus-red-team/issues/12
-			/*iamClient := iam.NewFromConfig(providers.AWS().GetConnection())
-			log.Println("Removing access key from IAM user")
-			result, err := iamClient.ListAccessKeys(context.Background(), &iam.ListAccessKeysInput{UserName: aws.String("sample-legit-user")})
+		Revert: func(params map[string]string) error {
+			iamClient := iam.NewFromConfig(providers.AWS().GetConnection())
+			userName := params["user_name"]
+			log.Println("Removing access key from IAM user " + userName)
+			result, err := iamClient.ListAccessKeys(context.Background(), &iam.ListAccessKeysInput{
+				UserName: aws.String(userName),
+			})
 			if err != nil {
 				return err
 			}
 			for i := range result.AccessKeyMetadata {
-				iamClient.DeleteAccessKey(context.Background(), &iam.DeleteAccessKeyInput{AccessKeyId: result.AccessKeyMetadata[i].AccessKeyId})
-			}*/
+				accessKeyId := result.AccessKeyMetadata[i].AccessKeyId
+				log.Println("Removing access key " + *accessKeyId)
+				_, err := iamClient.DeleteAccessKey(context.Background(), &iam.DeleteAccessKeyInput{
+					AccessKeyId: accessKeyId,
+					UserName:    aws.String(userName),
+				})
+				if err != nil {
+					log.Println("failed: " + err.Error())
+				}
+			}
 
 			return nil
 		},

@@ -104,8 +104,32 @@ func (m *Runner) Detonate() error {
 	return nil
 }
 
+func (m *Runner) Revert() error {
+	if m.GetState() != stratus.AttackTechniqueStatusDetonated && !m.ShouldForce {
+		return errors.New(m.Technique.ID + " is not in DETONATED state and should not need to be reverted, use --force to force")
+	}
+
+	outputs, err := m.StateManager.GetTerraformOutputs()
+	if err != nil {
+		return errors.New("unable to retrieve outputs of " + m.Technique.ID + ": " + err.Error())
+	}
+
+	log.Println("Reverting detonation of technique " + m.Technique.ID)
+
+	if m.Technique.Revert != nil {
+		err = m.Technique.Revert(outputs)
+		if err != nil {
+			return errors.New("unable to revert detonation of " + m.Technique.ID + ": " + err.Error())
+		}
+	}
+
+	m.setState(stratus.AttackTechniqueStatusWarm)
+
+	return nil
+}
+
 func (m *Runner) CleanUp() error {
-	var techniqueCleanupErr error
+	var techniqueRevertErr error
 	var prerequisitesCleanupErr error
 
 	// Has the technique already been cleaned up?
@@ -116,10 +140,10 @@ func (m *Runner) CleanUp() error {
 	log.Println("Cleaning up " + m.Technique.ID)
 
 	// Revert detonation
-	if m.Technique.Cleanup != nil {
-		techniqueCleanupErr = m.Technique.Cleanup()
-		if techniqueCleanupErr != nil {
-			log.Println("Warning: unable to clean up TTP: " + techniqueCleanupErr.Error())
+	if m.Technique.Revert != nil && m.GetState() == stratus.AttackTechniqueStatusDetonated {
+		techniqueRevertErr = m.Revert()
+		if techniqueRevertErr != nil {
+			log.Println("Warning: unable to revert detonation of " + m.Technique.ID + ": " + techniqueRevertErr.Error())
 		}
 	}
 
@@ -140,7 +164,7 @@ func (m *Runner) CleanUp() error {
 		log.Println("Warning: unable to remove technique directory " + m.TerraformDir + ": " + err.Error())
 	}
 
-	return utils.CoalesceErr(techniqueCleanupErr, prerequisitesCleanupErr, err)
+	return utils.CoalesceErr(techniqueRevertErr, prerequisitesCleanupErr, err)
 }
 
 func (m *Runner) ValidatePlatformRequirements() {

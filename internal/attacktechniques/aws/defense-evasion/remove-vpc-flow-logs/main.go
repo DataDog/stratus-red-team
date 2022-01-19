@@ -49,3 +49,6 @@ func detonate(params map[string]string) error {
 
 	return nil
 }
+
+// The technique is non-revertible once it has been detonated, otherwise it would require re-creating the VPC
+// flow log programmatically, which we don't want as it's implemented in the Terraform for the warm-up phase

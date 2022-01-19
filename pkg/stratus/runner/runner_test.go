@@ -147,6 +147,90 @@ func TestRunnerDetonate(t *testing.T) {
 	state.AssertCalled(t, "SetTechniqueState", stratus.AttackTechniqueState(stratus.AttackTechniqueStatusDetonated))
 }
 
+func TestRunnerRevert(t *testing.T) {
+	type TestRevertScenario struct {
+		Name                        string
+		TechniqueState              stratus.AttackTechniqueState
+		Force                       bool
+		ExpectDidCallRevertFunction bool
+		ExpectDidChangeStateToWarm  bool
+		ExpectError                 bool
+	}
+	scenario := []TestRevertScenario{
+		{
+			Name:                        "DetonatedTechniqueIsReverted",
+			TechniqueState:              stratus.AttackTechniqueStatusDetonated,
+			Force:                       false,
+			ExpectDidCallRevertFunction: true,
+			ExpectDidChangeStateToWarm:  true,
+			ExpectError:                 false,
+		},
+		{
+			Name:                        "WarmTechniqueIsNotReverted",
+			TechniqueState:              stratus.AttackTechniqueStatusWarm,
+			Force:                       false,
+			ExpectDidCallRevertFunction: false,
+			ExpectDidChangeStateToWarm:  false,
+			ExpectError:                 true,
+		},
+		{
+			Name:                        "WarmTechniqueIsRevertedWithForce",
+			TechniqueState:              stratus.AttackTechniqueStatusWarm,
+			Force:                       true,
+			ExpectDidCallRevertFunction: true,
+			ExpectDidChangeStateToWarm:  true,
+			ExpectError:                 false,
+		},
+	}
+
+	for i := range scenario {
+		t.Run(scenario[i].Name, func(t *testing.T) {
+			state := new(statemocks.StateManager)
+			state.On("GetRootDirectory").Return("/root")
+			state.On("ExtractTechnique").Return(nil)
+			state.On("GetTerraformOutputs").Return(map[string]string{"foo": "bar"}, nil)
+			state.On("GetTechniqueState", mock.Anything).Return(scenario[i].TechniqueState)
+			state.On("SetTechniqueState", mock.Anything).Return(nil)
+
+			var wasReverted = false
+			runner := Runner{
+				Technique: &stratus.AttackTechnique{
+					ID:       "foo",
+					Detonate: func(map[string]string) error { return nil },
+					Revert: func(params map[string]string) error {
+						wasReverted = true
+						return nil
+					},
+				},
+				ShouldForce:  scenario[i].Force,
+				StateManager: state,
+			}
+			runner.initialize()
+
+			err := runner.Revert()
+
+			if scenario[i].ExpectError {
+				assert.NotNil(t, err)
+			} else {
+				assert.Nil(t, err)
+			}
+
+			if scenario[i].ExpectDidCallRevertFunction {
+				assert.True(t, wasReverted)
+			} else {
+				assert.False(t, wasReverted)
+			}
+
+			if scenario[i].ExpectDidChangeStateToWarm {
+				state.AssertCalled(t, "SetTechniqueState", stratus.AttackTechniqueState(stratus.AttackTechniqueStatusWarm))
+			} else {
+				state.AssertNotCalled(t, "SetTechniqueState", stratus.AttackTechniqueState(stratus.AttackTechniqueStatusWarm))
+			}
+		})
+	}
+
+}
+
 func TestRunnerCleanup(t *testing.T) {
 	type RunnerCleanupTestScenario struct {
 		Name                  string

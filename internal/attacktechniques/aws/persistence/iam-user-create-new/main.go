@@ -62,15 +62,20 @@ Detonation: Creates the IAM user and attached 'AdministratorAccess' to it.
 
 			return nil
 		},
-		Cleanup: func() error {
+		Revert: func(params map[string]string) error {
 			iamClient := iam.NewFromConfig(providers.AWS().GetConnection())
-			result, err := iamClient.ListAccessKeys(context.Background(), &iam.ListAccessKeysInput{UserName: userName})
+			result, err := iamClient.ListAccessKeys(context.Background(), &iam.ListAccessKeysInput{
+				UserName: userName,
+			})
 			if err != nil {
 				return errors.New("unable to clean up IAM user access keys: " + err.Error())
 			}
 			for i := range result.AccessKeyMetadata {
 				accessKeyId := result.AccessKeyMetadata[i].AccessKeyId
-				_, err := iamClient.DeleteAccessKey(context.Background(), &iam.DeleteAccessKeyInput{UserName: userName, AccessKeyId: accessKeyId})
+				_, err := iamClient.DeleteAccessKey(context.Background(), &iam.DeleteAccessKeyInput{
+					UserName:    userName,
+					AccessKeyId: accessKeyId,
+				})
 				if err != nil {
 					return errors.New("unable to remove IAM user access key " + *accessKeyId + ": " + err.Error())
 				}
