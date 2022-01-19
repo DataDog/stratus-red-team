@@ -5,24 +5,23 @@ builds:
   - env:
       - CGO_ENABLED=0
     goos:
-      - linux
-      - windows
+      #- linux
+      #- windows
       - darwin
     ldflags:
       - -X main.BuildVersion={{.Version}}
 
     dir: cmd/stratus
     binary: stratus
-dockers:
-  - image_templates:
-      - "ghcr.io/datadog/stratus-red-team:latest"
-      - "ghcr.io/datadog/stratus-red-team:v{{ .Version }}"
-    build_flag_templates:
-      - "--pull"
-      - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.title={{.ProjectName}}"
-      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-      - "--label=org.opencontainers.image.version={{.Version}}"
+brews:
+- name: stratus-red-team
+  tap:
+    owner: datadog
+    name: stratus-red-team
+  folder: Formula
+  url_template: "https://github.com/DataDog/stratus-red-team/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
+  license: Apache-2.0
+  homepage: "https://stratus-red-team.cloud"
 archives:
   - replacements:
       darwin: Darwin
