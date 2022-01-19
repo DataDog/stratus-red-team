@@ -1,6 +1,9 @@
 package mitreattack
 
-import "errors"
+import (
+	"errors"
+	"strings"
+)
 
 type Tactic int
 
@@ -33,8 +36,9 @@ const (
 )
 
 func AttackTacticFromString(name string) (Tactic, error) {
+	lowerName := strings.ToLower(name)
 	for i := range tactics {
-		if tactics[i] == name {
+		if strings.ToLower(tactics[i]) == lowerName {
 			return Tactic(i), nil
 		}
 	}

@@ -1,6 +1,9 @@
 package stratus
 
-import "errors"
+import (
+	"errors"
+	"strings"
+)
 
 type Platform string
 
@@ -9,8 +12,8 @@ const (
 )
 
 func PlatformFromString(name string) (Platform, error) {
-	switch name {
-	case AWS:
+	switch strings.ToLower(name) {
+	case strings.ToLower(AWS):
 		return AWS, nil
 	default:
 		return "", errors.New("unknown platform: " + name)
