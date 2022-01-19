@@ -86,5 +86,5 @@ output "flow_logs_id" {
 }
 
 output "display" {
-  value = format("VPC Flow Logs %s in VPC %s", aws_flow_log.flow-logs.id, aws_vpc.vpc.id)
+  value = format("VPC Flow Logs %s in VPC %s ready", aws_flow_log.flow-logs.id, aws_vpc.vpc.id)
 }

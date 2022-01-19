@@ -34,3 +34,11 @@ resource "aws_iam_role_policy_attachment" "role-policy" {
   role       = aws_iam_role.legit-role.name
   policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
 }
+
+output "role_name" {
+  value = aws_iam_role.legit-role.name
+}
+
+output "display" {
+  value = format("IAM role %s ready", aws_iam_role.legit-role.name)
+}

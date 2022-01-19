@@ -28,10 +28,13 @@ Detonation: Create the access key.
 		Platform:                   stratus.AWS,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence, mitreattack.PrivilegeEscalation},
 		PrerequisitesTerraformCode: tf,
-		Detonate: func(terraformOutputs map[string]string) error {
+		Detonate: func(params map[string]string) error {
 			iamClient := iam.NewFromConfig(providers.AWS().GetConnection())
+			userName := params["user_name"]
 			log.Println("Creating access key on legit IAM user to simulate backdoor")
-			result, err := iamClient.CreateAccessKey(context.Background(), &iam.CreateAccessKeyInput{UserName: aws.String("sample-legit-user")})
+			result, err := iamClient.CreateAccessKey(context.Background(), &iam.CreateAccessKeyInput{
+				UserName: aws.String(userName),
+			})
 			if err != nil {
 				return err
 			}
@@ -39,7 +42,8 @@ Detonation: Create the access key.
 			return nil
 		},
 		Cleanup: func() error {
-			iamClient := iam.NewFromConfig(providers.AWS().GetConnection())
+			// TODO: https://github.com/DataDog/stratus-red-team/issues/12
+			/*iamClient := iam.NewFromConfig(providers.AWS().GetConnection())
 			log.Println("Removing access key from IAM user")
 			result, err := iamClient.ListAccessKeys(context.Background(), &iam.ListAccessKeysInput{UserName: aws.String("sample-legit-user")})
 			if err != nil {
@@ -47,7 +51,7 @@ Detonation: Create the access key.
 			}
 			for i := range result.AccessKeyMetadata {
 				iamClient.DeleteAccessKey(context.Background(), &iam.DeleteAccessKeyInput{AccessKeyId: result.AccessKeyMetadata[i].AccessKeyId})
-			}
+			}*/
 
 			return nil
 		},

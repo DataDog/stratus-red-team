@@ -29,7 +29,7 @@ Detonation: Creates the IAM user and attached 'AdministratorAccess' to it.
 `,
 		Platform:           stratus.AWS,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Persistence, mitreattack.PrivilegeEscalation},
-		Detonate: func(terraformOutputs map[string]string) error {
+		Detonate: func(params map[string]string) error {
 			iamClient := iam.NewFromConfig(providers.AWS().GetConnection())
 			log.Println("Creating a malicious IAM user")
 			_, err := iamClient.CreateUser(context.TODO(), &iam.CreateUserInput{

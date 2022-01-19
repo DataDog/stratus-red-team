@@ -71,3 +71,7 @@ POLICY
 output "cloudtrail_trail_name" {
   value = aws_cloudtrail.trail.name
 }
+
+output "display" {
+  value = format("CloudTrail trail %s ready", aws_cloudtrail.trail.arn)
+}

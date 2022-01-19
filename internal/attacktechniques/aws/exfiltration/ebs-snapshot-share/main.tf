@@ -38,3 +38,7 @@ resource "aws_ebs_snapshot" "snapshot" {
 output "snapshot_id" {
   value = aws_ebs_snapshot.snapshot.id
 }
+
+output "display" {
+  value = format("Snapshot %s of %s ready", aws_ebs_snapshot.snapshot.id, aws_ebs_volume.volume.id)
+}

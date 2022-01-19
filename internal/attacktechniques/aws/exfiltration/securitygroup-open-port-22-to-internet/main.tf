@@ -56,5 +56,5 @@ output "security_group_id" {
 }
 
 output "display" {
-  value = format("Security group %s", aws_security_group.allow_tls.id)
+  value = format("Security group %s in VPC %s ready", aws_security_group.allow_tls.id, aws_vpc.vpc.id)
 }

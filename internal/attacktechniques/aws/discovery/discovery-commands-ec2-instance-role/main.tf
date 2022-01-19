@@ -95,5 +95,5 @@ output "instance_id" {
 }
 
 output "display" {
-  value = format("Instance id %s in %s", aws_instance.dev.id, data.aws_availability_zones.available.names[0])
+  value = format("Instance id %s in %s ready", aws_instance.dev.id, data.aws_availability_zones.available.names[0])
 }

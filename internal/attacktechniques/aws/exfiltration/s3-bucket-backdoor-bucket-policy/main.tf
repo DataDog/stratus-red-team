@@ -34,5 +34,5 @@ output "bucket_name" {
 }
 
 output "display" {
-  value = format("S3 bucket: %s", aws_s3_bucket.bucket.id)
+  value = format("S3 bucket %s ready", aws_s3_bucket.bucket.id)
 }

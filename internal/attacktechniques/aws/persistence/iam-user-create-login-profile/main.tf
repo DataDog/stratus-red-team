@@ -26,3 +26,7 @@ resource "aws_iam_user" "legit-user" {
 output "user_name" {
   value = aws_iam_user.legit-user.name
 }
+
+output "display" {
+  value = format("IAM user %s ready", aws_iam_user.legit-user.name)
+}

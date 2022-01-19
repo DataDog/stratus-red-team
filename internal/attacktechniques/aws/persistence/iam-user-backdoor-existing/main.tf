@@ -22,3 +22,11 @@ resource "aws_iam_user" "legit-user" {
   name          = "sample-legit-user" # TODO parametrize
   force_destroy = true
 }
+
+output "user_name" {
+  value = aws_iam_user.legit-user.name
+}
+
+output "display" {
+  value = format("IAM user %s ready", aws_iam_user.legit-user.name)
+}
