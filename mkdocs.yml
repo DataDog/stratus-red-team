@@ -31,10 +31,8 @@ extra_javascript:
   - javascripts/tablesort.js
 extra_css:
   - css/extra.css
-
-#nav:
-#  - "<b>Home</b>": "index.md"
-#  - "<b>user-guide</b>":
-#      - Introduction: 'user-guide/overview.md'
-#      - Installation: 'user-guide/install.md'
-#  - Attack Techniques: 'Attack Techniques/'
+extra:
+  social:
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/christophetd
+copyright: Copyright 2021-Present Datadog, Inc.
