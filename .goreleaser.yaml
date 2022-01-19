@@ -5,8 +5,8 @@ builds:
   - env:
       - CGO_ENABLED=0
     goos:
-      #- linux
-      #- windows
+      - linux
+      - windows
       - darwin
     ldflags:
       - -X main.BuildVersion={{.Version}}
