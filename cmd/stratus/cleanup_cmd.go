@@ -30,7 +30,7 @@ func buildCleanupCmd() *cobra.Command {
 			}
 		},
 	}
-	cleanupCmd.Flags().BoolVarP(&forceCleanup, "forceCleanup", "f", false, "Force cleanup even if the technique is already COLD")
+	cleanupCmd.Flags().BoolVarP(&forceCleanup, "force", "f", false, "Force cleanup even if the technique is already COLD")
 	return cleanupCmd
 }
 
