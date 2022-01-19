@@ -4,6 +4,8 @@
 
 Stratus Red Team is "[Atomic Red Team](https://github.com/redcanaryco/atomic-red-team)™" for the cloud, allowing to emulate offensive attack techniques in a granular and self-contained manner.
 
+[![asciicast](https://asciinema.org/a/ZQ1kfsmkVGM8icY2WwCPUMmCB.svg)](https://asciinema.org/a/ZQ1kfsmkVGM8icY2WwCPUMmCB)
+
 ## Getting Started
 
 Stratus Red Team is a self-contained Go binary.
