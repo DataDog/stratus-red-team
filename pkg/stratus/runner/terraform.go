@@ -57,7 +57,7 @@ func (m *TerraformManagerImpl) TerraformInitAndApply(directory string) (map[stri
 	terraform, err := tfexec.NewTerraform(directory, m.terraformBinaryPath)
 	terraformInitializedFile := path.Join(directory, ".terraform-initialized")
 	if !utils.FileExists(terraformInitializedFile) {
-		log.Println("Initializing Terraform")
+		log.Println("Initializing Terraform to spin up technique pre-requisites")
 		err = terraform.Init(context.Background())
 		if err != nil {
 			return nil, errors.New("unable to Initialize Terraform: " + err.Error())
@@ -70,7 +70,7 @@ func (m *TerraformManagerImpl) TerraformInitAndApply(directory string) (map[stri
 
 	}
 
-	log.Println("Applying Terraform")
+	log.Println("Applying Terraform to spin up technique pre-requisites")
 	err = terraform.Apply(context.Background(), tfexec.Refresh(false))
 	if err != nil {
 		return nil, errors.New("unable to apply Terraform: " + err.Error())
@@ -93,6 +93,5 @@ func (m *TerraformManagerImpl) TerraformDestroy(directory string) error {
 		return err
 	}
 
-	log.Println("Destroying Terraform")
 	return terraform.Destroy(context.Background())
 }

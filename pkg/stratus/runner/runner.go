@@ -149,7 +149,7 @@ func (m *Runner) CleanUp() error {
 
 	// Nuke pre-requisites
 	if m.Technique.PrerequisitesTerraformCode != nil {
-		log.Println("Cleaning up with terraform destroy")
+		log.Println("Cleaning up technique pre-requisites with terraform destroy")
 		prerequisitesCleanupErr = m.TerraformManager.TerraformDestroy(m.TerraformDir)
 		if prerequisitesCleanupErr != nil {
 			log.Println("Warning: unable to cleanup TTP pre-requisites: " + prerequisitesCleanupErr.Error())
