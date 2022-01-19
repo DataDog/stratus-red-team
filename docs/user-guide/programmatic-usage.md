@@ -8,16 +8,8 @@ Run:
 
 ```
 go get github.com/datadog/stratus-red-team
-go mod tidy
+go get -d
 ```
-
-For local development, use the following line in your `go.mod` instead:
-
-```
-replace github.com/datadog/stratus-red-team => ../stratus-red-team
-```
-
-... and run `go mod tidy && go get -d`
 
 ## Example usage
 
