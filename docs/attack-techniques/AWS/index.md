@@ -13,6 +13,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 ## Defense Evasion
 
+- [Delete a CloudTrail Trail](./aws.defense-evasion.delete-cloudtrail.md)
+
 - [Stop a CloudTrail Trail](./aws.defense-evasion.stop-cloudtrail.md)
 
 - [Attempt to Leave the AWS Organization](./aws.defense-evasion.leave-organization.md)
