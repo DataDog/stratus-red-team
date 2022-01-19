@@ -25,7 +25,7 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 ## Exfiltration
 
-- [Exfiltrate an AMI by Making it Public](./aws.exfiltration.ami-make-public.md)
+- [Exfiltrate an AMI by AMI Sharing](./aws.exfiltration.ami-sharing.md)
 
 - [Exfiltrate EBS Snapshot through snapshot sharing](./aws.exfiltration.ebs-snapshot-shared-with-external-account.md)
 
