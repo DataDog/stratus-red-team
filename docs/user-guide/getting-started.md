@@ -7,7 +7,6 @@
 An *attack technique* is a granular TTP that has *pre-requisites* infrastructure or configuration.
 You can see the list of attack techniques supported by Stratus Red Team [here](../attack-techniques/list.md).
 
-
 ### Warm-up Phase
 
 *Warming up* an attack technique means making sure its pre-requisites are met, without detonating it. 
@@ -20,12 +19,27 @@ Behind the scenes, Stratus Red Team transparently uses Terraform to spin up and 
 
 An attack technique can be *detonated* to execute it against a live environment, for instance against a test AWS account.
 
+### Reverting and Cleaning up an Attack Technique
+
+*Reverting* an attack technique means "cancelling" its detonation, it had a side effect. *Cleaning up* an Attack Technique means nuking all its pre-requisites and making sure no resource is left in your environment.
+
+### State Machine
+
+The diagram below illustrates the different states in which an attack technique can be.
+
+<figure markdown>
+![](./state-machine.png)
+<figcaption>State Machine of a Stratus Attack Technique</figcaption>
+</figure>
+
 ### Example
 
 Let's take an example. The attack technique [Exfiltrate EBS Snapshot through Snapshot Sharing](../../attack-techniques/AWS/aws.exfiltration.ebs-snapshot-shared-with-external-account/) is comprised of two phases:
 
 - Warm-up: Create an EBS volume and a snapshot of it
 - Detonation: Share the EBS snapshot with an external AWS account
+- Revert: Unshare the EBS snapshot with the external AWS account
+- Clean-up: Remove the EBS volume and its snapshot
 
 ## Sample Usage
 

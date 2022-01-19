@@ -2,6 +2,8 @@
 
 This page contains a full example of using Stratus Red Team.
 
+## Example 1: Basic usage
+
 ## Authenticating to AWS
 
 First, we'll authenticate to AWS using [aws-vault](https://github.com/99designs/aws-vault):
@@ -115,4 +117,91 @@ We can clean up any resources creates by Stratus Red Team using:
 
 ```
 stratus cleanup aws.persistence.backdoor-iam-role
+```
+
+## Example 2: Advanced usage
+
+In this example, we want to prepare our live environment with the pre-requisites ahead of time - say, a few hours before detonating our attack techniques.
+
+We start by warming up the techniques we're interested in:
+
+```bash
+stratus warmup aws.defense-evasion.stop-cloudtrail aws.defense-evasion.remove-vpc-flow-logs aws.persistence.backdoor-iam-user
+```
+
+We now have the pre-requisites ready:
+
+```
+CloudTrail trail arn:aws:cloudtrail:us-east-1:0123456789012:trail/my-cloudtrail-trail ready
+VPC Flow Logs fl-0ef2f69f9799cf52e in VPC vpc-072ec3075f9b5046a ready
+IAM user sample-legit-user ready
+```
+
+At this point, we can choose to detonate these attack techniques at any point we want. We can do it right away, or in a few hours / days:
+
+```bash
+stratus detonate aws.defense-evasion.stop-cloudtrail aws.defense-evasion.remove-vpc-flow-logs aws.persistence.backdoor-iam-user
+```
+
+```text
+Stopping CloudTrail trail my-cloudtrail-trail
+Removing VPC Flow Logs fl-0ef2f69f9799cf52e in VPC vpc-072ec3075f9b5046a
+Creating access key on legit IAM user to simulate backdoor
+```
+
+Now, say we want to replay (i.e., detonate again) an attack technique a few times, for testing and to iterate building our threat detection rules on the side:
+
+```
+stratus detonate aws.persistence.backdoor-iam-user
+stratus detonate aws.persistence.backdoor-iam-user
+```
+
+You will notice that the second call raises an error:
+
+```
+Error while detonating attack technique aws.persistence.backdoor-iam-user: 
+    operation error IAM: CreateAccessKey, 
+    https response error 
+    StatusCode: 
+    LimitExceeded: Cannot exceed quota for AccessKeysPerUser: 2
+```
+
+That's because detonating this attack technique has side-effects (here: creating an IAM user access key). Before replaying a technique, we should revert it:
+
+```
+stratus revert aws.persistence.backdoor-iam-user
+```
+
+``` 
+2022/01/19 15:43:35 Reverting detonation of technique aws.persistence.backdoor-iam-user
+2022/01/19 15:43:35 Removing access key from IAM user sample-legit-user
+2022/01/19 15:43:36 Removing access key AKIA254BBSGPJNHEDHNR
+2022/01/19 15:43:36 Removing access key AKIA254BBSGPBYLEHMVO
++-----------------------------------+-----------------------------------------+--------+
+| ID                                | NAME                                    | STATUS |
++-----------------------------------+-----------------------------------------+--------+
+| aws.persistence.backdoor-iam-user | Create an IAM Access Key on an IAM User | WARM   |
++-----------------------------------+-----------------------------------------+--------+
+```
+
+Our attack technique is now `WARM`, we can detonate it again:
+
+```bash
+stratus detonate aws.persistence.backdoor-iam-user
+```
+
+Generally, we can detonate then revert an attack technique indefinitely:
+
+```bash
+while true; do
+  stratus detonate aws.persistence.backdoor-iam-user
+  stratus revert aws.persistence.backdoor-iam-user
+  sleep 1
+done
+```
+
+Once we are done with our testing, we can clean up our techniques. Cleaning up a technique will revert its detonation logic (if applicable), then nuke all its pre-requisite resources and infrastructure:
+
+```bash
+stratus cleanup aws.defense-evasion.stop-cloudtrail aws.defense-evasion.remove-vpc-flow-logs aws.persistence.backdoor-iam-user
 ```
