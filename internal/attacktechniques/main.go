@@ -6,6 +6,7 @@ import (
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/aws/defense-evasion/disable-cloudtrail"
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/aws/defense-evasion/remove-vpc-flow-logs"
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/aws/discovery/discovery-commands-ec2-instance-role"
+	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/aws/exfiltration/ami-make-public"
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/aws/exfiltration/ebs-snapshot-share"
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/aws/exfiltration/s3-bucket-backdoor-bucket-policy"
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/aws/exfiltration/securitygroup-open-port-22-to-internet"

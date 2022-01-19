@@ -14,6 +14,7 @@ This page contains the list of all Stratus Attack Techniques.
 | [Stop a CloudTrail Trail](./AWS/aws.defense-evasion.stop-cloudtrail.md) | [AWS](./AWS/index.md) | Defense Evasion |
 | [Remove VPC flow logs](./AWS/aws.defense-evasion.remove-vpc-flow-logs.md) | [AWS](./AWS/index.md) | Defense Evasion |
 | [Execute discovery commands on an EC2 instance](./AWS/aws.discovery.basic-enumeration-from-ec2-instance.md) | [AWS](./AWS/index.md) | Discovery |
+| [Exfiltrate an AMI by Making it Public](./AWS/aws.exfiltration.ami-make-public.md) | [AWS](./AWS/index.md) | Exfiltration |
 | [Exfiltrate EBS Snapshot through snapshot sharing](./AWS/aws.exfiltration.ebs-snapshot-shared-with-external-account.md) | [AWS](./AWS/index.md) | Exfiltration |
 | [Backdoor an S3 Bucket via its Bucket Policy](./AWS/aws.exfiltration.backdoor-s3-bucket-policy.md) | [AWS](./AWS/index.md) | Exfiltration |
 | [Open Ingress Port 22 on a Security Group](./AWS/aws.exfiltration.open-port-22-ingress-on-security-group.md) | [AWS](./AWS/index.md) | Exfiltration |
