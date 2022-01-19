@@ -8,6 +8,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 - [Retrieve EC2 password data](./aws.credential-access.ec2-get-password-data.md)
 
+- [Steal EC2 Instance Credentials](./aws.credential-access.ec2-instance-credentials.md)
+
 
 ## Defense Evasion
 
