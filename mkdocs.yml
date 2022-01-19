@@ -23,6 +23,8 @@ markdown_extensions:
   - meta
   - abbr
   - def_list
+  - attr_list
+  - md_in_html
 
 extra_javascript:
   - https://cdnjs.cloudflare.com/ajax/libs/tablesort/5.2.1/tablesort.min.js
