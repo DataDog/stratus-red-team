@@ -1,5 +1,7 @@
 # Stratus Red team
 
+[![Tests](https://github.com/DataDog/stratus-red-team/actions/workflows/test.yml/badge.svg)](https://github.com/DataDog/stratus-red-team/actions/workflows/test.yml) [![release](https://github.com/DataDog/stratus-red-team/actions/workflows/release.yml/badge.svg)](https://github.com/DataDog/stratus-red-team/actions/workflows/release.yml)
+
 Stratus Red Team is "[Atomic Red Team](https://github.com/redcanaryco/atomic-red-team)™" for the cloud, allowing to emulate offensive attack techniques in a granular and self-contained manner.
 
 ## Getting Started
@@ -39,5 +41,7 @@ make test
 For local usage:
 ```
 make docs
+
+pip install mkdocs-material
 mkdocs serve
 ```
