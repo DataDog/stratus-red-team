@@ -66,8 +66,8 @@ For more information, see [Usage](./usage.md).
 - Mac OS: 
 
 ```
-brew tap datadog/stratus-red-team https://github.com/datadog/stratus-red-team
-brew install stratus-red-team
+brew tap datadog/stratus-red-team
+brew install datadog/stratus-red-team/stratus-red-team
 ```
 
 - Linux / Windows: Download one of the [pre-built binaries](https://github.com/datadog/stratus-red-team/releases).
