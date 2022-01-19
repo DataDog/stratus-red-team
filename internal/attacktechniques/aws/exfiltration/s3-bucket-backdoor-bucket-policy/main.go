@@ -33,6 +33,7 @@ Detonation: Backdoors the S3 bucket policy.
 `,
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,
+		Revert:                     revert,
 	})
 }
 
@@ -45,6 +46,18 @@ func detonate(params map[string]string) error {
 	_, err := s3Client.PutBucketPolicy(context.Background(), &s3.PutBucketPolicyInput{
 		Bucket: aws.String(bucketName),
 		Policy: aws.String(policy),
+	})
+
+	return err
+}
+
+func revert(params map[string]string) error {
+	s3Client := s3.NewFromConfig(providers.AWS().GetConnection())
+	bucketName := params["bucket_name"]
+
+	log.Println("Removing malicious bucket policy on " + bucketName)
+	_, err := s3Client.DeleteBucketPolicy(context.Background(), &s3.DeleteBucketPolicyInput{
+		Bucket: aws.String(bucketName),
 	})
 
 	return err

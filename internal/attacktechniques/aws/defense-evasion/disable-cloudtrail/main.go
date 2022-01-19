@@ -30,6 +30,7 @@ Detonation: Calls cloudtrail:StopLogging
 `,
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,
+		Revert:                     revert,
 	})
 }
 
@@ -48,4 +49,16 @@ func detonate(params map[string]string) error {
 	}
 
 	return nil
+}
+
+func revert(params map[string]string) error {
+	cloudtrailClient := cloudtrail.NewFromConfig(providers.AWS().GetConnection())
+	trailName := params["cloudtrail_trail_name"]
+
+	log.Println("Restarting CloudTrail trail " + trailName)
+	_, err := cloudtrailClient.StartLogging(context.Background(), &cloudtrail.StartLoggingInput{
+		Name: aws.String(trailName),
+	})
+
+	return err
 }
