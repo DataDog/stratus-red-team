@@ -10,6 +10,7 @@ theme:
   - navigation.indexes
   - navigation.top
   - navigation.tabs
+  - navigation.tabs.sticky
 use_directory_urls: true
 markdown_extensions:
   - pymdownx.highlight:
