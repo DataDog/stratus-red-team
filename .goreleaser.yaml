@@ -13,7 +13,10 @@ builds:
 
     dir: cmd/stratus
     binary: stratus
-
+dockers:
+  - image_templates:
+      - "ghcr.io/datadog/stratus-red-team:latest"
+      - "ghcr.io/datadog/stratus-red-team:v{{ .Version }}"
 archives:
   - replacements:
       darwin: Darwin
