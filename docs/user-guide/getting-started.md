@@ -72,5 +72,10 @@ brew install stratus-red-team
 
 - Linux / Windows: Download one of the [pre-built binaries](https://github.com/datadog/stratus-red-team/releases).
 
+- Docker:
 
+```
+docker pull ghcr.io/datadog/stratus-red-team
+docker run --rm ghcr.io/datadog/stratus-red-team
+```
 *[TTP]: Tactics, techniques and procedures
