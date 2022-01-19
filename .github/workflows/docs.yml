@@ -4,9 +4,9 @@ on:
     branches:
       - main
     paths:
-      - docs/
+      - 'docs/**'
       - mkdocs.yml
-      - tools/
+      - 'tools/**'
 jobs:
   deploy:
     runs-on: ubuntu-latest
