@@ -1,6 +1,6 @@
 # Stratus Red team
 
-Stratus Red Team is "[Atomic Red Team](https://github.com/redcanaryco/atomic-red-team)" for the cloud, allowing to emulate offensive attack techniques in a granular and self-contained manner.
+Stratus Red Team is "[Atomic Red Team](https://github.com/redcanaryco/atomic-red-team)™" for the cloud, allowing to emulate offensive attack techniques in a granular and self-contained manner.
 
 ## Installation
 
