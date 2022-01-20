@@ -6,7 +6,7 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use: "stratus-red-team",
+	Use: "stratus",
 }
 
 func init() {
