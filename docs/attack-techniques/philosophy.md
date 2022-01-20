@@ -19,7 +19,14 @@ It should always be possible to derive a reasonable detection rule from a Stratu
 
 - Good: Delete a CloudTrail trail
 - Bad: Run `sts:GetCallerIdentity`
-  - While attackers might use this API call, it is in no way indicative of attacker activity, as it's used by many services and client applications.
-  - It isn't emulating activity that could reasonably be thought to be malicious.
+    - While attackers might use this API call, it is in no way indicative of attacker activity, as it's used by many services and client applications.
+    - It isn't emulating activity that could reasonably be thought to be malicious.
 
 Stratus Red Team's goal is *not* to re-implement all AWS API calls that may be used by an attacker.
+
+## Be Self-Sufficient
+
+An attack technique should not be dependent on the state of the cloud environment it's run against.
+
+- Good: Create an EBS snapshot and share it
+- Bad: Expect an EBS snapshot exists in the account prior to running Stratus Red Team

@@ -45,6 +45,7 @@ nav:
   - <b>Stratus Red Team</b>:
       - index.md
       - Frequently Asked Questions: faq.md
+      - Stratus Red Team vs. Other Tools: comparison.md
   - <b>Attack Techniques</b>:
     - Philosophy: attack-techniques/philosophy.md
     - Supported Platforms: attack-techniques/supported-platforms.md
