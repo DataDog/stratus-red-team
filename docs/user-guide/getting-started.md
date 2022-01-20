@@ -92,4 +92,16 @@ brew install datadog/stratus-red-team/stratus-red-team
 docker pull ghcr.io/datadog/stratus-red-team
 docker run --rm ghcr.io/datadog/stratus-red-team
 ```
+
+## Connecting to your cloud account
+
+Stratus Red Team currently supports only AWS. In order to use Stratus attack techniques against AWS, you need to be authenticated prior to running it, for instance:
+
+- Using [`aws-vault`](https://github.com/99designs/aws-vault)
+
+- Using static credentials in `~/.aws/config`, and setting your desired AWS profile using `export AWS_PROFILE=my-profile`
+
+Before running an AWS attack technique, Stratus will attempt to call `sts:GetCallerIdentity` and raise an error if this fails.
+
+
 *[TTP]: Tactics, techniques and procedures
