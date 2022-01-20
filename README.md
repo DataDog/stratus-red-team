@@ -17,6 +17,24 @@ See the documentation at **[stratus-red-team.cloud](https://stratus-red-team.clo
 
 - [Available Attack Techniques](https://stratus-red-team.cloud/attack-techniques/list/), mapped to MITREA ATT&CK
 
+## Installation
+
+- Mac OS:
+
+```
+brew tap datadog/stratus-red-team
+brew install datadog/stratus-red-team/stratus-red-team
+```
+
+- Linux / Windows / Mac OS: Download one of the [pre-built binaries](https://github.com/datadog/stratus-red-team/releases).
+
+- Docker:
+
+```
+docker pull ghcr.io/datadog/stratus-red-team
+docker run --rm ghcr.io/datadog/stratus-red-team
+```
+
 ## Development
 
 ### Building locally
