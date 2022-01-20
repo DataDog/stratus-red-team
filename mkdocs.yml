@@ -2,6 +2,9 @@ site_name: Stratus Red Team
 site_url: https://stratus-red-team.cloud
 repo_url: https://github.com/DataDog/stratus-red-team
 repo_name: datadog/stratus-red-team
+plugins:
+  - search
+  - awesome-pages
 theme:
   name: material
   palette:
@@ -36,3 +39,18 @@ extra:
     - icon: fontawesome/brands/twitter
       link: https://twitter.com/christophetd
 copyright: Copyright 2021-Present Datadog, Inc.
+
+
+nav:
+  - Home: index.md
+  - Attack Techniques:
+    - Supported Platforms: attack-techniques/supported-platforms.md
+    - All Attack Techniques: attack-techniques/list.md
+    - Contributing: attack-techniques/contributing.md
+    - ... | attack-techniques/*/*.md
+  - User Guide:
+      - Getting Started: user-guide/getting-started.md
+      - Sample Usage: user-guide/examples.md
+      - Commands Reference: user-guide/usage.md
+      - Troubleshooting: user-guide/troubleshooting.md
+      - Programmatic Usage: user-guide/programmatic-usage.md
