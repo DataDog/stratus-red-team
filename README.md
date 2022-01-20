@@ -62,6 +62,6 @@ For local usage:
 ```
 make docs
 
-pip install mkdocs-material
+pip install mkdocs-material mkdocs-awesome-pages-plugin
 mkdocs serve
 ```
