@@ -34,8 +34,10 @@ While Stratus Red Team and Leonidas have similar goals, their implementation is 
 
 Stratus Red Team aims at being simpler to use (single binary) and does not require you to have prior infrastructure or configuration in your AWS account. Stratus Red Team focuses on a single thing: executing cloud attack tactics against a live environment, with minimal overhead. You can also use Stratus Red Team [programmatically](user-guide/programmatic-usage.md), from Go code, as a library.
 
-## [Pacu](https://github.com/RhinoSecurityLabs/pacu) by RhinoSecurityLabs
+## [Pacu](https://github.com/RhinoSecurityLabs/pacu) by Rhino Security  Labs
 
 > Pacu is an open-source AWS exploitation framework, designed for offensive security testing against cloud environments. Created and maintained by Rhino Security Labs, Pacu allows penetration testers to exploit configuration flaws within an AWS account, using modules to easily expand its functionality.
 
-Pacu is an offensive AWS exploitation framework, aimed at pentesters. TODO
+Pacu is an offensive AWS exploitation framework, aimed at penetration testers. It implements various enumeration and exploitation methods, some straightforward and some advanced. For instance, [lambda__backdoor_new_roles](https://github.com/RhinoSecurityLabs/pacu/blob/master/pacu/modules/lambda__backdoor_new_roles/main.py) creates a Lambda function and a CloudWatch Event causing all future IAM roles created in an AWS account to be backdoored automatically. Pacu aims at being used against existing AWS infrastructure. 
+
+Stratus Red Team is self-contained and does not necessitate prior infrastructure or configuration in your cloud environment. You can also use it [programmatically](user-guide/programmatic-usage.md), from Go code, as a library.
