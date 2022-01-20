@@ -12,6 +12,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/lambda v1.17.0
 	github.com/aws/aws-sdk-go-v2/service/organizations v1.12.0
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.23.0
+	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.13.0
 	github.com/aws/aws-sdk-go-v2/service/ssm v1.20.0
 	github.com/aws/aws-sdk-go-v2/service/sts v1.14.0
 	github.com/hashicorp/terraform-exec v0.15.0

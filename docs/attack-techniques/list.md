@@ -11,6 +11,7 @@ This page contains the list of all Stratus Attack Techniques.
 | :----: | :------: | :------------------: |
 | [Retrieve EC2 password data](./AWS/aws.credential-access.ec2-get-password-data.md) | [AWS](./AWS/index.md) | Credential Access |
 | [Steal EC2 Instance Credentials](./AWS/aws.credential-access.ec2-instance-credentials.md) | [AWS](./AWS/index.md) | Credential Access |
+| [Retrieve a High Number of Secrets Manager secrets](./AWS/aws.credential-access.secretsmanager-retrieve-secrets.md) | [AWS](./AWS/index.md) | Credential Access |
 | [Delete a CloudTrail Trail](./AWS/aws.defense-evasion.delete-cloudtrail.md) | [AWS](./AWS/index.md) | Defense Evasion |
 | [Stop a CloudTrail Trail](./AWS/aws.defense-evasion.stop-cloudtrail.md) | [AWS](./AWS/index.md) | Defense Evasion |
 | [Attempt to Leave the AWS Organization](./AWS/aws.defense-evasion.leave-organization.md) | [AWS](./AWS/index.md) | Defense Evasion |
