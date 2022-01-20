@@ -42,15 +42,19 @@ copyright: Copyright 2021-Present Datadog, Inc.
 
 
 nav:
-  - Home: index.md
-  - Attack Techniques:
+  - <b>Stratus Red Team</b>:
+      - index.md
+      - Frequently Asked Questions: faq.md
+  - <b>Attack Techniques</b>:
+    - Philosophy: attack-techniques/philosophy.md
     - Supported Platforms: attack-techniques/supported-platforms.md
     - All Attack Techniques: attack-techniques/list.md
     - Contributing: attack-techniques/contributing.md
     - ... | attack-techniques/*/*.md
-  - User Guide:
+  - <b>User Guide</b>:
       - Getting Started: user-guide/getting-started.md
       - Sample Usage: user-guide/examples.md
-      - Commands Reference: user-guide/usage.md
+      - Commands Reference:
+        - ... | flat | user-guide/commands/*.md
       - Troubleshooting: user-guide/troubleshooting.md
       - Programmatic Usage: user-guide/programmatic-usage.md
