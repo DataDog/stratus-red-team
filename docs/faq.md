@@ -11,4 +11,10 @@ While using Python would have made some things easier, we consider it is very ha
 
 In addition to that, the official Hashicorp Terraform wrapper ([tfexec](https://github.com/hashicorp/terraform-exec)) used by Stratus Red Team is written in Go. There is no solid, officially-supported wrapper for Python.
 
-Finally, distributing Go binaries is much easier and leads to a better end-user experience. 
+Finally, distributing Go binaries is much easier and leads to a better end-user experience.
+
+## Can I use Stratus Red Team to detonate attack techniques against my own infrastructure?
+
+This is currently not supported. Stratus Red Team takes care of spinning up all the required infrastructure before detonating attack techniques.
+
+Allowing to "bring your own detonation infrastructure" is on the roadmap.
