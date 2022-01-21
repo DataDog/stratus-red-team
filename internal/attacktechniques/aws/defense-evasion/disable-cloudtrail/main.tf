@@ -19,7 +19,7 @@ provider "aws" {
 }
 
 resource "aws_cloudtrail" "trail" {
-  name = "my-cloudtrail-trail"
+  name           = "my-cloudtrail-trail"
   s3_bucket_name = aws_s3_bucket.cloudtrail.id
 }
 

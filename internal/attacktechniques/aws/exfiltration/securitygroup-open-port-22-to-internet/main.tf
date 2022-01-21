@@ -19,7 +19,7 @@ provider "aws" {
 }
 
 resource "aws_vpc" "vpc" {
-  cidr_block       = "10.0.0.0/16"
+  cidr_block = "10.0.0.0/16"
   tags = {
     Name = "StratusRedTeamVpc",
   }
@@ -31,11 +31,11 @@ resource "aws_security_group" "allow_tls" {
   vpc_id      = aws_vpc.vpc.id
 
   ingress {
-    description      = "TLS from Internet"
-    from_port        = 443
-    to_port          = 443
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
+    description = "TLS from Internet"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {

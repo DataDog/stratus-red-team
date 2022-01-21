@@ -23,18 +23,18 @@ locals {
 }
 
 resource "random_string" "secrets" {
-  count = local.num_secrets
-  length = 16
+  count     = local.num_secrets
+  length    = 16
   min_lower = 16
 }
 
 resource "aws_secretsmanager_secret" "secrets" {
   count = local.num_secrets
-  name = "stratus-red-team-secret-${count.index}"
+  name  = "stratus-red-team-secret-${count.index}"
 }
 
 resource "aws_secretsmanager_secret_version" "secret-values" {
-  count = local.num_secrets
+  count         = local.num_secrets
   secret_id     = aws_secretsmanager_secret.secrets[count.index].id
   secret_string = random_string.secrets[count.index].result
 }

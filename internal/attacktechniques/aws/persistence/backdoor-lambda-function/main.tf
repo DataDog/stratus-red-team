@@ -45,8 +45,8 @@ resource "random_string" "suffix" {
 }
 
 resource "aws_s3_bucket" "bucket" {
-  bucket = "stratus-red-team-lambda-function-code-${random_string.suffix.result}"
-  acl    = "private"
+  bucket        = "stratus-red-team-lambda-function-code-${random_string.suffix.result}"
+  acl           = "private"
   force_destroy = true
 }
 resource "aws_s3_bucket_object" "code" {

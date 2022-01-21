@@ -45,7 +45,7 @@ data "aws_ami" "amazon-2" {
   most_recent = true
 
   filter {
-    name = "name"
+    name   = "name"
     values = ["amzn2-ami-hvm-*-x86_64-ebs"]
   }
   owners = ["amazon"]
@@ -75,7 +75,7 @@ resource "aws_iam_role" "instance-role" {
 }
 EOF
   inline_policy {
-    name = "inline"
+    name   = "inline"
     policy = <<EOF
 {
     "Version": "2012-10-17",

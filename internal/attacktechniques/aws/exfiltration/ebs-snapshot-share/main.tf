@@ -27,7 +27,7 @@ resource "aws_ebs_volume" "volume" {
   size              = 1
 
   tags = {
-    Name           = "StratusRedTeamVolume"
+    Name = "StratusRedTeamVolume"
   }
 }
 
