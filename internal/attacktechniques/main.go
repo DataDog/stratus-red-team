@@ -4,6 +4,7 @@ import (
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/aws/credential-access/ec2-get-password-data"
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/aws/credential-access/ec2-instance-credentials"
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/aws/credential-access/secretsmanager-retrieve-secrets"
+	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/aws/defense-evasion/cloudtrail-lifecycle-rule"
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/aws/defense-evasion/delete-cloudtrail"
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/aws/defense-evasion/disable-cloudtrail"
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/aws/defense-evasion/leave-organization"
