@@ -30,6 +30,7 @@ Detonation: Deletes the CloudTrail trail.
 `,
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,
+		Revert:                     revert,
 	})
 }
 
