@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 	"log"
 	"os"
+	"strings"
 )
 
 var detonateNoWarmup bool
@@ -14,9 +15,12 @@ var detonateCleanup bool
 
 func buildDetonateCmd() *cobra.Command {
 	detonateCmd := &cobra.Command{
-		Use:                   "detonate attack-technique-id [attack-technique-id]...",
-		Short:                 "Detonate one or multiple attack techniques",
-		Example:               "stratus detonate aws.defense-evasion.stop-cloudtrail",
+		Use:   "detonate attack-technique-id [attack-technique-id]...",
+		Short: "Detonate one or multiple attack techniques",
+		Example: strings.Join([]string{
+			"stratus detonate aws.defense-evasion.stop-cloudtrail",
+			"stratus detonate aws.defense-evasion.stop-cloudtrail --cleanup",
+		}, "\n"),
 		DisableFlagsInUseLine: true,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

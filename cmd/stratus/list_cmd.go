@@ -16,6 +16,10 @@ func buildListCmd() *cobra.Command {
 	listCmd := &cobra.Command{
 		Use:   "list",
 		Short: "List attack techniques",
+		Example: strings.Join([]string{
+			"stratus list",
+			"stratus list --platform aws --mitre-attack-tactic persistence",
+		}, "\n"),
 		Run: func(cmd *cobra.Command, args []string) {
 			doListCmd(listMitreAttackTactic, listPlatform)
 		},
