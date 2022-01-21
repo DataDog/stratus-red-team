@@ -6,6 +6,7 @@ import (
 	"github.com/datadog/stratus-red-team/pkg/stratus/runner"
 	"github.com/spf13/cobra"
 	"log"
+	"os"
 )
 
 var detonateNoWarmup bool
@@ -13,8 +14,17 @@ var detonateCleanup bool
 
 func buildDetonateCmd() *cobra.Command {
 	detonateCmd := &cobra.Command{
-		Use:   "detonate",
-		Short: "Detonate one or multiple attack techniques",
+		Use:                   "detonate attack-technique-id [attack-technique-id]...",
+		Short:                 "Detonate one or multiple attack techniques",
+		Example:               "stratus detonate aws.defense-evasion.stop-cloudtrail",
+		DisableFlagsInUseLine: true,
+		PreRunE: func(cmd *cobra.Command, args []string) error {
+			if len(args) == 0 {
+				cmd.Help()
+				os.Exit(0)
+			}
+			return nil
+		},
 		Args: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {
 				return errors.New("you must specify at least one attack technique")

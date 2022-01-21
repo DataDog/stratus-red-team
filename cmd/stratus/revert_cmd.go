@@ -6,14 +6,24 @@ import (
 	"github.com/datadog/stratus-red-team/pkg/stratus/runner"
 	"github.com/spf13/cobra"
 	"log"
+	"os"
 )
 
 var revertForce bool
 
 func buildRevertCmd() *cobra.Command {
 	detonateCmd := &cobra.Command{
-		Use:   "revert",
-		Short: "Revert the detonation of an attack technique",
+		Use:                   "revert attack-technique-id [attack-technique-id]...",
+		Short:                 "Revert the detonation of an attack technique",
+		Example:               "stratus revert aws.defense-evasion.stop-cloudtrail",
+		DisableFlagsInUseLine: true,
+		PreRunE: func(cmd *cobra.Command, args []string) error {
+			if len(args) == 0 {
+				cmd.Help()
+				os.Exit(0)
+			}
+			return nil
+		},
 		Args: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {
 				return errors.New("you must specify at least one attack technique")

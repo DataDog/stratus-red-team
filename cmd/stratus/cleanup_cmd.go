@@ -5,15 +5,25 @@ import (
 	"github.com/datadog/stratus-red-team/pkg/stratus/runner"
 	"github.com/spf13/cobra"
 	"log"
+	"os"
 )
 
 var forceCleanup bool
 
 func buildCleanupCmd() *cobra.Command {
 	cleanupCmd := &cobra.Command{
-		Use:     "cleanup",
-		Aliases: []string{"clean"},
-		Short:   "Cleans up any leftover infrastructure or configuration from a TTP.",
+		Use:                   "cleanup attack-technique-id [attack-technique-id]...",
+		Aliases:               []string{"clean"},
+		Short:                 "Cleans up any leftover infrastructure or configuration from a TTP.",
+		Example:               "stratus cleanup aws.defense-evasion.stop-cloudtrail",
+		DisableFlagsInUseLine: true,
+		PreRunE: func(cmd *cobra.Command, args []string) error {
+			if len(args) == 0 {
+				cmd.Help()
+				os.Exit(0)
+			}
+			return nil
+		},
 		Args: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {
 				return nil // no technique specified == all techniques

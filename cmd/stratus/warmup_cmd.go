@@ -6,14 +6,24 @@ import (
 	"github.com/datadog/stratus-red-team/pkg/stratus/runner"
 	"github.com/spf13/cobra"
 	"log"
+	"os"
 )
 
 var forceWarmup bool
 
 func buildWarmupCmd() *cobra.Command {
 	warmupCmd := &cobra.Command{
-		Use:   "warmup",
-		Short: "\"Warm up\" an attack technique by spinning up the pre-requisite infrastructure or configuration, without detonating it",
+		Use:                   "warmup attack-technique-id [attack-technique-id]...",
+		Short:                 "\"Warm up\" an attack technique by spinning up the pre-requisite infrastructure or configuration, without detonating it",
+		Example:               "stratus warmup aws.defense-evasion.stop-cloudtrail",
+		DisableFlagsInUseLine: true,
+		PreRunE: func(cmd *cobra.Command, args []string) error {
+			if len(args) == 0 {
+				cmd.Help()
+				os.Exit(0)
+			}
+			return nil
+		},
 		Args: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {
 				return errors.New("you must specify at least one attack technique")
