@@ -34,6 +34,8 @@ extra_javascript:
   - javascripts/tablesort.js
 extra_css:
   - css/extra.css
+  - css/w3.css
+
 extra:
   social:
     - icon: fontawesome/brands/twitter

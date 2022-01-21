@@ -24,6 +24,7 @@ func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
 		ID:           "aws.credential-access.ec2-instance-credentials",
 		FriendlyName: "Steal EC2 Instance Credentials",
+		IsSlow:       true,
 		Description: `
 Simulates the theft of EC2 instance credentials from the Instance Metadata Service.
 

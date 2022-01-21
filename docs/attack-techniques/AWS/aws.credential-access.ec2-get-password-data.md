@@ -1,4 +1,8 @@
-# Retrieve EC2 password data
+---
+title: Retrieve EC2 password data
+---
+
+# Retrieve EC2 password data 
 
 Platform: AWS
 

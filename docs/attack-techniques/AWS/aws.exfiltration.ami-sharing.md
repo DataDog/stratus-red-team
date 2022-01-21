@@ -1,4 +1,8 @@
-# Exfiltrate an AMI by AMI Sharing
+---
+title: Exfiltrate an AMI by AMI Sharing
+---
+
+# Exfiltrate an AMI by AMI Sharing 
 
 Platform: AWS
 

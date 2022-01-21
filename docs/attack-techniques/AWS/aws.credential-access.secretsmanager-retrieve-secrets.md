@@ -1,4 +1,8 @@
-# Retrieve a High Number of Secrets Manager secrets
+---
+title: Retrieve a High Number of Secrets Manager secrets
+---
+
+# Retrieve a High Number of Secrets Manager secrets 
 
 Platform: AWS
 

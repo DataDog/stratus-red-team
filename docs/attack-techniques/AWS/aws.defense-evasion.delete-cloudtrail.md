@@ -1,4 +1,8 @@
-# Delete a CloudTrail Trail
+---
+title: Delete a CloudTrail Trail
+---
+
+# Delete a CloudTrail Trail 
 
 Platform: AWS
 

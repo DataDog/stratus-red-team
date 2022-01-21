@@ -1,4 +1,8 @@
-# Attempt to Leave the AWS Organization
+---
+title: Attempt to Leave the AWS Organization
+---
+
+# Attempt to Leave the AWS Organization 
 
 Platform: AWS
 

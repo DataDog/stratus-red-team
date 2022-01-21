@@ -1,4 +1,8 @@
-# Execute discovery commands on an EC2 instance
+---
+title: Execute discovery commands on an EC2 instance
+---
+
+# Execute discovery commands on an EC2 instance  <span class="w3-badge w3-orange w3-round w3-text-sand" title="This attack technique might be slow to warm up or detonate">slow</span> 
 
 Platform: AWS
 

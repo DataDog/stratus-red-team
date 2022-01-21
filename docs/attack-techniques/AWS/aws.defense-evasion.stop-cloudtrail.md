@@ -1,4 +1,8 @@
-# Stop a CloudTrail Trail
+---
+title: Stop a CloudTrail Trail
+---
+
+# Stop a CloudTrail Trail 
 
 Platform: AWS
 

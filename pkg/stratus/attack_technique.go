@@ -8,6 +8,7 @@ type AttackTechnique struct {
 	ID                         string
 	FriendlyName               string
 	Description                string
+	IsSlow                     bool
 	MitreAttackTactics         []mitreattack.Tactic
 	Platform                   Platform
 	Detonate                   func(params map[string]string) error
