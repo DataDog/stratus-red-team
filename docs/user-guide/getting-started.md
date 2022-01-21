@@ -21,7 +21,7 @@ An attack technique can be *detonated* to execute it against a live environment,
 
 ### Reverting and Cleaning up an Attack Technique
 
-*Reverting* an attack technique means "cancelling" its detonation, it had a side effect. *Cleaning up* an Attack Technique means nuking all its pre-requisites and making sure no resource is left in your environment.
+*Reverting* an attack technique means "cancelling" its detonation, when it had a side effect. *Cleaning up* an Attack Technique means nuking all its pre-requisites and making sure no resource is left in your environment.
 
 ### State Machine
 

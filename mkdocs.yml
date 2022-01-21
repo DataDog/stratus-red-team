@@ -22,12 +22,14 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.superfences
+  - pymdownx.magiclink
   - tables
   - meta
   - abbr
   - def_list
   - attr_list
   - md_in_html
+
 
 extra_javascript:
   - https://cdnjs.cloudflare.com/ajax/libs/tablesort/5.2.1/tablesort.min.js
@@ -48,16 +50,22 @@ nav:
       - index.md
       - Frequently Asked Questions: faq.md
       - Stratus Red Team vs. Other Tools: comparison.md
-  - <b>Attack Techniques</b>:
-    - Philosophy: attack-techniques/philosophy.md
-    - Supported Platforms: attack-techniques/supported-platforms.md
-    - All Attack Techniques: attack-techniques/list.md
-    - Contributing: attack-techniques/contributing.md
-    - ... | attack-techniques/*/*.md
   - <b>User Guide</b>:
       - Getting Started: user-guide/getting-started.md
       - Sample Usage: user-guide/examples.md
       - Commands Reference:
-        - ... | flat | user-guide/commands/*.md
+          - list: user-guide/commands/list.md
+          - status: user-guide/commands/status.md
+          - show: user-guide/commands/show.md
+          - warmup: user-guide/commands/warmup.md
+          - detonate: user-guide/commands/detonate.md
+          - revert: user-guide/commands/revert.md
+          - cleanup: user-guide/commands/cleanup.md
       - Troubleshooting: user-guide/troubleshooting.md
       - Programmatic Usage: user-guide/programmatic-usage.md
+  - <b>Attack Techniques Reference</b>:
+      - All Attack Techniques: attack-techniques/list.md
+      - Philosophy: attack-techniques/philosophy.md
+      - Supported Platforms: attack-techniques/supported-platforms.md
+      - Contributing: attack-techniques/contributing.md
+      - ... | attack-techniques/*/*.md
