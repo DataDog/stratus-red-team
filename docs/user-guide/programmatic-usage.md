@@ -1,6 +1,6 @@
 # Programmatic Usage
 
-Stratus Red Team is mainly used from the CLI, but you can use it programmatically as well!
+Stratus Red Team is mainly used from the CLI, but you can use it programmatically as well! Use-cases include automation, and creating your own attack techniques.
 
 ## Installing Stratus Red Team as a dependency
 
@@ -11,39 +11,9 @@ go get github.com/datadog/stratus-red-team
 go get -d
 ```
 
-## Example usage
+## Example usages
 
-```go
-package main
-
-import (
-	"fmt"
-	"github.com/datadog/stratus-red-team/pkg/stratus"
-	_ "github.com/datadog/stratus-red-team/pkg/stratus/loader"
-	stratusrunner "github.com/datadog/stratus-red-team/pkg/stratus/runner"
-)
-
-func main() {
-	ttp := stratus.GetRegistry().GetAttackTechniqueByName("aws.defense-evasion.stop-cloudtrail")
-	fmt.Println(ttp)
-
-	stratusRunner := stratusrunner.NewRunner(ttp, stratusrunner.StratusRunnerNoForce)
-	_, err := stratusRunner.WarmUp()
-	defer stratusRunner.CleanUp()
-	if err != nil {
-		fmt.Println("Could not warm up TTP: " + err.Error())
-		return
-	}
-	fmt.Println("TTP is warm! Press enter to detonate it")
-	fmt.Scanln()
-	err = stratusRunner.Detonate()
-	if err != nil {
-		fmt.Println("Could not detonate TTP: " + err.Error())
-	}
-}
-```
-
-You can then run the code using `go run main.go`
+See https://github.com/DataDog/stratus-red-team/tree/main/examples
 
 ## Notes
 

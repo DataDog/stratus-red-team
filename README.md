@@ -35,6 +35,10 @@ docker pull ghcr.io/datadog/stratus-red-team
 docker run --rm ghcr.io/datadog/stratus-red-team
 ```
 
+## Using Stratus Red Team as a Go Library
+
+See [Examples](./examples) and [Programmatic Usage](https://stratus-red-team.cloud/user-guide/programmatic-usage/).
+
 ## Development
 
 ### Building locally
