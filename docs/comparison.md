@@ -46,3 +46,13 @@ Stratus Red Team is self-contained and does not necessitate prior infrastructure
 
 Amazon GuardDuty Tester is helpful to trigger GuardDuty findings. However, it is tightly coupled with GuardDuty and is a product-specific tool, even within the AWS ecosystem.
 If GuardDuty doesn't detect an attack technique, you won't find it in here.
+
+## [CloudGoat](https://github.com/RhinoSecurityLabs/cloudgoat) by Rhino Security Labs
+
+> CloudGoat is Rhino Security Labs' "Vulnerable by Design" AWS deployment tool. It allows you to hone your cloud cybersecurity skills by creating and completing several "capture-the-flag" style scenarios.
+
+CloudGoat is focused on spinning up vulnerable AWS infrastructure, so that you can exploit it to find a flag through a complete exploitation chain.
+
+Use CloudGoat to: practice your AWS offensive security and enumeration skills.
+
+Use Stratus Red Team to: emulate adversary behavior in AWS to validate your threat detection.
