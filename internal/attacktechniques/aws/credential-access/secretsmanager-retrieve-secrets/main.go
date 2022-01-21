@@ -33,8 +33,6 @@ Detonation: Enumerate the secrets through secretsmanager:ListSecrets, then retri
 	})
 }
 
-const numCalls = 30
-
 func detonate(params map[string]string) error {
 	cfg, _ := config.LoadDefaultConfig(context.Background())
 	secretsManagerClient := secretsmanager.NewFromConfig(cfg)
