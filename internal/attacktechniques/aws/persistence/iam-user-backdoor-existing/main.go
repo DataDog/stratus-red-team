@@ -17,7 +17,7 @@ var tf []byte
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
 		ID:           "aws.persistence.backdoor-iam-user",
-		FriendlyName: "Create an IAM Access Key on an IAM User",
+		FriendlyName: "Create an Access Key on an IAM User",
 		Description: `
 Establishes persistence by creating an access key on an existing IAM user.
 

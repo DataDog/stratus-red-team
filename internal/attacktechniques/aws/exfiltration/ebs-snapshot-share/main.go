@@ -18,7 +18,7 @@ var tf []byte
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
 		ID:                 "aws.exfiltration.ebs-snapshot-shared-with-external-account",
-		FriendlyName:       "Exfiltrate EBS Snapshot through snapshot sharing",
+		FriendlyName:       "Exfiltrate EBS Snapshot by Sharing It",
 		Platform:           stratus.AWS,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Exfiltration},
 		Description: `

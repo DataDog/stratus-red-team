@@ -19,7 +19,7 @@ var tf []byte
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
 		ID:           "aws.persistence.iam-user-create-login-profile",
-		FriendlyName: "Create a Login Profile on an IAM user",
+		FriendlyName: "Create a Login Profile on an IAM User",
 		Description: `
 Establishes persistence by creating a login profile on an existing IAM user. This allows an attacker to access an IAM
 user intended to be used programmatically through the AWS console usual login process. 

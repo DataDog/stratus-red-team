@@ -17,7 +17,7 @@ var tf []byte
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
 		ID:                 "aws.defense-evasion.remove-vpc-flow-logs",
-		FriendlyName:       "Remove VPC flow logs",
+		FriendlyName:       "Remove VPC Flow Logs",
 		Platform:           stratus.AWS,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.DefenseEvasion},
 		Description: `

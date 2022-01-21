@@ -1,8 +1,8 @@
 ---
-title: Remove VPC flow logs
+title: Remove VPC Flow Logs
 ---
 
-# Remove VPC flow logs 
+# Remove VPC Flow Logs 
 
 Platform: AWS
 

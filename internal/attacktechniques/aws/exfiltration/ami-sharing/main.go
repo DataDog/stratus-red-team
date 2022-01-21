@@ -19,7 +19,7 @@ var tf []byte
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
 		ID:           "aws.exfiltration.ami-sharing",
-		FriendlyName: "Exfiltrate an AMI by AMI Sharing",
+		FriendlyName: "Exfiltrate an AMI by Sharing It",
 		Description: `
 Exfiltrates an AMI by sharing it with an external AWS account.
 

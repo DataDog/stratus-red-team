@@ -1,8 +1,8 @@
 ---
-title: Exfiltrate EBS Snapshot through snapshot sharing
+title: Exfiltrate EBS Snapshot by Sharing It
 ---
 
-# Exfiltrate EBS Snapshot through snapshot sharing 
+# Exfiltrate EBS Snapshot by Sharing It 
 
 Platform: AWS
 

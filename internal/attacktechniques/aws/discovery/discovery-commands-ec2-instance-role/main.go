@@ -20,7 +20,7 @@ var tf []byte
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
 		ID:           "aws.discovery.basic-enumeration-from-ec2-instance",
-		FriendlyName: "Execute discovery commands on an EC2 instance",
+		FriendlyName: "Execute Discovery Commands on an EC2 Instance",
 		IsSlow:       true,
 		Description: `
 Runs several suspicious discovery commands on an EC2 instance:
@@ -28,7 +28,12 @@ Runs several suspicious discovery commands on an EC2 instance:
 - sts:GetCallerIdentity
 - s3:ListBuckets
 - iam:GetAccountSummary
-
+- iam:ListRoles
+- iam:ListUsers
+- iam:GetAccountAuthorizationDetails
+- ec2:DescribeSnapshots
+- cloudtrail:DescribeTrails
+- guardduty:ListDetectors
 
 Warm-up: Create the pre-requisite EC2 instance and VPC (takes a few minutes).
 
