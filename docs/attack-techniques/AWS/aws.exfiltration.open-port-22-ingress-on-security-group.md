@@ -2,7 +2,10 @@
 title: Open Ingress Port 22 on a Security Group
 ---
 
-# Open Ingress Port 22 on a Security Group 
+# Open Ingress Port 22 on a Security Group
+
+
+
 
 Platform: AWS
 

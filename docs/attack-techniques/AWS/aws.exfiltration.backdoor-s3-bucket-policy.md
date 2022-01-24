@@ -2,7 +2,10 @@
 title: Backdoor an S3 Bucket via its Bucket Policy
 ---
 
-# Backdoor an S3 Bucket via its Bucket Policy 
+# Backdoor an S3 Bucket via its Bucket Policy
+
+
+ <span class="smallcaps w3-badge w3-blue w3-round w3-text-white" title="This attack technique can be detonated multiple times">idempotent</span> 
 
 Platform: AWS
 

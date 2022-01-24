@@ -32,6 +32,7 @@ Detonation:
 - Retrieve each secret value, one by one through secretsmanager:GetSecretValue
 `,
 		Platform:                   stratus.AWS,
+		IsIdempotent:               true,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.CredentialAccess},
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,

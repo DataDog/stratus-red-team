@@ -40,6 +40,7 @@ Detonation:
 	- ec2:escribeInstances
 `,
 		Platform:                   stratus.AWS,
+		IsIdempotent:               true,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.CredentialAccess},
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,

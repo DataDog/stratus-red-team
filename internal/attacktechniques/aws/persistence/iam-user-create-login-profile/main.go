@@ -33,6 +33,7 @@ Detonation:
 - Create an IAM Login Profile on the user
 `,
 		Platform:                   stratus.AWS,
+		IsIdempotent:               false, // cannot create a login profile twice on the same user
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence, mitreattack.PrivilegeEscalation},
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,

@@ -42,6 +42,10 @@ func buildRevertCmd() *cobra.Command {
 
 func doRevertCmd(techniques []*stratus.AttackTechnique, force bool) {
 	for i := range techniques {
+		if techniques[i].Revert == nil {
+			log.Println("Warning: " + techniques[i].ID + " has no revert function and cannot be reverted.")
+			continue
+		}
 		stratusRunner := runner.NewRunner(techniques[i], force)
 		err := stratusRunner.Revert()
 		if err != nil {

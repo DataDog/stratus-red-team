@@ -2,7 +2,10 @@
 title: Backdoor Lambda Function Through Resource-Based Policy
 ---
 
-# Backdoor Lambda Function Through Resource-Based Policy 
+# Backdoor Lambda Function Through Resource-Based Policy
+
+
+
 
 Platform: AWS
 

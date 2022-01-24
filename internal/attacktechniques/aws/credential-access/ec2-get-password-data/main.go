@@ -39,6 +39,7 @@ Detonation:
 - Run a number of ec2:GetPasswordData calls (which will be denied) using fictious instance IDs
 `,
 		Platform:                   stratus.AWS,
+		IsIdempotent:               true,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.CredentialAccess},
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,

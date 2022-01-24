@@ -4,24 +4,28 @@
 
 ### Attack Techniques
 
-An *attack technique* is a granular TTP that has *pre-requisites* infrastructure or configuration.
+An <span class="smallcaps">attack technique</span> is a granular TTP that has *pre-requisites* infrastructure or configuration.
 You can see the list of attack techniques supported by Stratus Red Team [here](../attack-techniques/list.md).
 
 ### Warm-up Phase
 
-*Warming up* an attack technique means making sure its pre-requisites are met, without detonating it. 
+<span class="smallcaps">Warming up</span> an attack technique means making sure its pre-requisites are met, without detonating it. 
 Warm up is a preparation phase, before executing the actual attack.
 
 Behind the scenes, Stratus Red Team transparently uses Terraform to spin up and tear down the pre-requisites of each attack technique.
 
-
 ### Detonation Phase
 
-An attack technique can be *detonated* to execute it against a live environment, for instance against a test AWS account.
+An attack technique can be <span class="smallcaps">detonated</span> to execute it against a live environment, for instance against a test AWS account.
 
 ### Reverting and Cleaning up an Attack Technique
 
-*Reverting* an attack technique means "cancelling" its detonation, when it had a side effect. *Cleaning up* an Attack Technique means nuking all its pre-requisites and making sure no resource is left in your environment.
+<span class="smallcaps">Reverting</span> an attack technique means "cancelling" its detonation, when it had a side effect.
+<span class="smallcaps">Cleaning up</span> an attack technique means nuking all its pre-requisites and making sure no resource is left in your environment.
+
+### Idempotency
+
+An attack technique is <span class="smallcaps">idempotent</span> if it can be detonated multiple times without reverting it.
 
 ### State Machine
 

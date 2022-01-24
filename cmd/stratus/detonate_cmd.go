@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-var detonateNoWarmup bool
+var detonateForce bool
 var detonateCleanup bool
 
 func buildDetonateCmd() *cobra.Command {
@@ -38,21 +38,23 @@ func buildDetonateCmd() *cobra.Command {
 		},
 		Run: func(cmd *cobra.Command, args []string) {
 			techniques, _ := resolveTechniques(args)
-			doDetonateCmd(techniques, !detonateNoWarmup, detonateCleanup)
+			doDetonateCmd(techniques, detonateCleanup)
 		},
 	}
 	detonateCmd.Flags().BoolVarP(&detonateCleanup, "cleanup", "", false, "Clean up the infrastructure that was spun up as part of the technique pre-requisites")
-	detonateCmd.Flags().BoolVarP(&detonateNoWarmup, "no-warmup", "", false, "Do not spin up pre-requisite infrastructure or configuration. Requires that 'warmup' was used before.")
+	//detonateCmd.Flags().BoolVarP(&detonateNoWarmup, "no-warmup", "", false, "Do not spin up pre-requisite infrastructure or configuration. Requires that 'warmup' was used before.")
+	detonateCmd.Flags().BoolVarP(&detonateForce, "force", "f", false, "Force detonation in cases where the technique is not idempotent and has already been detonated")
+
 	return detonateCmd
 }
-func doDetonateCmd(techniques []*stratus.AttackTechnique, warmup bool, cleanup bool) {
+func doDetonateCmd(techniques []*stratus.AttackTechnique, cleanup bool) {
 	for i := range techniques {
-		detonateTechnique(techniques[i], warmup, cleanup)
+		detonateTechnique(techniques[i], cleanup)
 	}
 }
 
-func detonateTechnique(technique *stratus.AttackTechnique, warmup bool, cleanup bool) {
-	stratusRunner := runner.NewRunner(technique, runner.StratusRunnerNoForce)
+func detonateTechnique(technique *stratus.AttackTechnique, cleanup bool) {
+	stratusRunner := runner.NewRunner(technique, detonateForce)
 	err := stratusRunner.Detonate()
 	if cleanup {
 		defer func() {

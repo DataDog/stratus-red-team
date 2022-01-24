@@ -46,6 +46,7 @@ Detonation:
 - Run the discovery commands, over SSM. The commands will be run under the identity of the EC2 instance role.
 `,
 		Platform:                   stratus.AWS,
+		IsIdempotent:               true,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Discovery},
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,
