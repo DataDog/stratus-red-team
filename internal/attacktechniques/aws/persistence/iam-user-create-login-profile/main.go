@@ -37,6 +37,7 @@ Detonation:
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence, mitreattack.PrivilegeEscalation},
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,
+		Revert:                     revert,
 	})
 }
 
@@ -63,4 +64,17 @@ func detonate(params map[string]string) error {
 	return nil
 }
 
-// TODO cleanup
+func revert(params map[string]string) error {
+	iamClient := iam.NewFromConfig(providers.AWS().GetConnection())
+	userName := params["user_name"]
+
+	log.Println("Removing the login profile on IAM user " + userName)
+	_, err := iamClient.DeleteLoginProfile(context.Background(), &iam.DeleteLoginProfileInput{
+		UserName: aws.String(userName),
+	})
+	if err != nil {
+		return errors.New("unable to remove IAM login profile: " + err.Error())
+	}
+
+	return nil
+}
