@@ -23,9 +23,13 @@ func init() {
 		Description: `
 Exfiltrates an AMI by sharing it with an external AWS account.
 
-Warm-up: Create an AMI.
+Warm-up: 
 
-Detonation: Share the AMI.
+- Create an AMI.
+
+Detonation: 
+
+- Share the AMI with an external, fictitious AWS account.
 `,
 		Platform:                   stratus.AWS,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Exfiltration},

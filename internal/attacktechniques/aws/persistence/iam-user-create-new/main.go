@@ -25,7 +25,9 @@ Establishes persistence by creating a new IAM user with administrative permissio
 
 Warm-up: None.
 
-Detonation: Creates the IAM user and attached 'AdministratorAccess' to it.
+Detonation: 
+
+- Create the IAM user and attach the 'AdministratorAccess' managed IAM policy to it.
 `,
 		Platform:           stratus.AWS,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Persistence, mitreattack.PrivilegeEscalation},

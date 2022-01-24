@@ -16,9 +16,13 @@ Platform: AWS
 
 Exfiltrates an AMI by sharing it with an external AWS account.
 
-Warm-up: Create an AMI.
+<span style="font-variant: small-caps;">Warm-up</span>: 
 
-Detonation: Share the AMI.
+- Create an AMI.
+
+<span style="font-variant: small-caps;">Detonation</span>: 
+
+- Share the AMI with an external, fictitious AWS account.
 
 
 ## Instructions

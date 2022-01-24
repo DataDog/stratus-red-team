@@ -15,12 +15,16 @@ Platform: AWS
 ## Description
 
 
-Establishes persistence by creating a login profile on an existing IAM user. This allows an attacker to access an IAM
+Establishes persistence by creating a Login Profile on an existing IAM user. This allows an attacker to access an IAM
 user intended to be used programmatically through the AWS console usual login process. 
 
-Warm-up: Create the pre-requisite IAM user.
+<span style="font-variant: small-caps;">Warm-up</span>:
 
-Detonation: Create the login profile.
+- Create an IAM user
+
+<span style="font-variant: small-caps;">Detonation</span>: 
+
+- Create an IAM Login Profile on the user
 
 
 ## Instructions

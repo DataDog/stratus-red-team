@@ -22,9 +22,13 @@ func init() {
 		Description: `
 Establishes persistence by backdooring a lambda function to allow its invocation from an external AWS account.
 
-Warm-up: Create the pre-requisite Lambda function.
+Warm-up: 
 
-Detonation: Modify the Lambda function resource-base policy to allow access from an external AWS account.
+- Create a Lambda function.
+
+Detonation: 
+
+- Modify the Lambda function resource-base policy to allow lambda:InvokeFunction from an external, fictitious AWS account.
 `,
 		Platform:                   stratus.AWS,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence},

@@ -16,9 +16,13 @@ Platform: AWS
 
 Establishes persistence by backdooring a lambda function to allow its invocation from an external AWS account.
 
-Warm-up: Create the pre-requisite Lambda function.
+<span style="font-variant: small-caps;">Warm-up</span>: 
 
-Detonation: Modify the Lambda function resource-base policy to allow access from an external AWS account.
+- Create a Lambda function.
+
+<span style="font-variant: small-caps;">Detonation</span>: 
+
+- Modify the Lambda function resource-base policy to allow lambda:InvokeFunction from an external, fictitious AWS account.
 
 
 ## Instructions

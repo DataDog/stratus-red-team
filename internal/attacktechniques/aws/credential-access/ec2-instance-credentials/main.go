@@ -28,12 +28,16 @@ func init() {
 		Description: `
 Simulates the theft of EC2 instance credentials from the Instance Metadata Service.
 
-Warm-up:Create the pre-requisite EC2 instance and VPC (takes a few minutes).
+Warm-up:
+
+- Create the pre-requisite EC2 instance and VPC (takes a few minutes).
 
 Detonation:
 
 - Execute a SSM command on the instance to retrieve temporary credentials
-- Use these credentials locally (outside the instance) using a few standard discovery commands.
+- Use these credentials locally (outside the instance) to run the following commands:
+	- sts:GetCallerIdentity
+	- ec2:escribeInstances
 `,
 		Platform:                   stratus.AWS,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.CredentialAccess},

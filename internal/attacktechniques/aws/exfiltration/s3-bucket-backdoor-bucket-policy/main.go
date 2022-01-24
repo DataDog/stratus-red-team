@@ -25,11 +25,21 @@ func init() {
 		Platform:           stratus.AWS,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Exfiltration},
 		Description: `
-Exfiltrates data from an S3 bucket by backdooring its bucket policy to allow access from an external AWS account.
+Exfiltrates data from an S3 bucket by backdooring its Bucket Policy to allow access from an external, fictitious AWS account.
 
-Warm-up: Creates an S3 bucket.
+Warm-up: 
 
-Detonation: Backdoors the S3 bucket policy.
+- Create an S3 bucket.
+
+Detonation: 
+
+- Backdoor the S3 Bucket Policy by setting the following Bucket Policy:
+
+<pre>
+<code>
+` + backdooredPolicy + `
+</code>
+</pre>
 `,
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,

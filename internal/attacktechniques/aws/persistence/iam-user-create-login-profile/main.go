@@ -21,12 +21,16 @@ func init() {
 		ID:           "aws.persistence.iam-user-create-login-profile",
 		FriendlyName: "Create a Login Profile on an IAM User",
 		Description: `
-Establishes persistence by creating a login profile on an existing IAM user. This allows an attacker to access an IAM
+Establishes persistence by creating a Login Profile on an existing IAM user. This allows an attacker to access an IAM
 user intended to be used programmatically through the AWS console usual login process. 
 
-Warm-up: Create the pre-requisite IAM user.
+Warm-up:
 
-Detonation: Create the login profile.
+- Create an IAM user
+
+Detonation: 
+
+- Create an IAM Login Profile on the user
 `,
 		Platform:                   stratus.AWS,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence, mitreattack.PrivilegeEscalation},
@@ -38,7 +42,7 @@ Detonation: Create the login profile.
 func detonate(params map[string]string) error {
 	iamClient := iam.NewFromConfig(providers.AWS().GetConnection())
 	userName := params["user_name"]
-	password := utils.RandomString(16) + ".#1Aa" // extra characters to ensure we meet requirements, no matter the password policy
+	password := utils.RandomString(16) + ".#1Aa" // extra characters to ensure we meet password requirements, no matter the password policy
 
 	log.Println("Creating a login profile on IAM user " + userName)
 	_, err := iamClient.CreateLoginProfile(context.Background(), &iam.CreateLoginProfileInput{

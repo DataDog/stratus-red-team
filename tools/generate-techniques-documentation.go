@@ -49,6 +49,7 @@ func main() {
 		tpl, _ := template.New("technique").Funcs(funcMap).Parse(string(techniqueTemplate))
 		result := ""
 		buf := bytes.NewBufferString(result)
+		formatTechniqueDescription(technique)
 		err := tpl.Execute(buf, technique)
 		if err != nil {
 			panic(err)
@@ -99,4 +100,9 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func formatTechniqueDescription(technique *stratus.AttackTechnique) {
+	technique.Description = strings.ReplaceAll(technique.Description, "Warm-up:", "<span style=\"font-variant: small-caps;\">Warm-up</span>:")
+	technique.Description = strings.ReplaceAll(technique.Description, "Detonation:", "<span style=\"font-variant: small-caps;\">Detonation</span>:")
 }

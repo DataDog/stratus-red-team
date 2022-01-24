@@ -15,11 +15,11 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 ## Defense Evasion
 
-- [CloudTrail Logs Impairment Through Lifecycle Rule](./aws.defense-evasion.cloudtrail-lifecycle-rule.md)
+- [CloudTrail Logs Impairment Through S3 Lifecycle Rule](./aws.defense-evasion.cloudtrail-lifecycle-rule.md)
 
-- [Delete a CloudTrail Trail](./aws.defense-evasion.delete-cloudtrail.md)
+- [Delete CloudTrail Trail](./aws.defense-evasion.delete-cloudtrail.md)
 
-- [Stop a CloudTrail Trail](./aws.defense-evasion.stop-cloudtrail.md)
+- [Stop CloudTrail Trail](./aws.defense-evasion.stop-cloudtrail.md)
 
 - [Attempt to Leave the AWS Organization](./aws.defense-evasion.leave-organization.md)
 

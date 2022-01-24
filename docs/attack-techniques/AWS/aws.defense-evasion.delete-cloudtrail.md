@@ -1,8 +1,8 @@
 ---
-title: Delete a CloudTrail Trail
+title: Delete CloudTrail Trail
 ---
 
-# Delete a CloudTrail Trail 
+# Delete CloudTrail Trail 
 
 Platform: AWS
 
@@ -14,11 +14,15 @@ Platform: AWS
 ## Description
 
 
-Delete a CloudTrail trail.
+Delete a CloudTrail trail. Simulates an attacker disrupting CloudTrail logging.
 
-Warm-up: Creates a CloudTrail trail.
+<span style="font-variant: small-caps;">Warm-up</span>: 
 
-Detonation: Deletes the CloudTrail trail.
+- Create a CloudTrail trail.
+
+<span style="font-variant: small-caps;">Detonation</span>: 
+
+- Delete the CloudTrail trail.
 
 
 ## Instructions

@@ -16,9 +16,13 @@ Platform: AWS
 
 Exfiltrates an EBS snapshot by sharing it with an external AWS account.
 
-Warm-up: Creates an EBS volume and a snapshot.
+<span style="font-variant: small-caps;">Warm-up</span>: 
 
-Detonation: Calls ModifySnapshotAttribute to share the snapshot.
+- Create an EBS volume and a snapshot.
+
+<span style="font-variant: small-caps;">Detonation</span>: 
+
+- Call ec2:ModifySnapshotAttribute to share the snapshot with an external, fictitious AWS account.
 
 
 ## Instructions

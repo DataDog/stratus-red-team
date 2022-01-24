@@ -25,9 +25,19 @@ func init() {
 		Description: `
 Establishes persistence by backdooring an existing IAM role, allowing it to be assumed from an external AWS account.
 
-Warm-up: Creates the pre-requisite IAM role.
+Warm-up: 
 
-Detonation: Updates the assume role policy of the IAM role to backdoor it.
+- Create an IAM role.
+
+Detonation: 
+
+- Update the assume role policy of the IAM role to backdoor it, making it accessible from an external, fictitious AWS account:
+
+<pre>
+<code>
+` + maliciousIamPolicy + `
+</code>
+</pre>
 `,
 		Platform:                   stratus.AWS,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence},

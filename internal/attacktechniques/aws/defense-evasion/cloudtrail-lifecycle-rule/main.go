@@ -19,17 +19,21 @@ var tf []byte
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
 		ID:                 "aws.defense-evasion.cloudtrail-lifecycle-rule",
-		FriendlyName:       "CloudTrail Logs Impairment Through Lifecycle Rule",
+		FriendlyName:       "CloudTrail Logs Impairment Through S3 Lifecycle Rule",
 		Platform:           stratus.AWS,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.DefenseEvasion},
 		Description: `
-Automatically delete CloudTrail logs after 1 day by setting a Lifecycle Rule on the CloudTrail S3 bucket.
+Set a 1-day retention policy on the S3 bucket used by a CloudTrail Trail, using a S3 Lifecycle Rule.
 
 References: https://www.justice.gov/usao-sdny/press-release/file/1452706/download
 
-Warm-up: Creates a CloudTrail trail.
+Warm-up: 
 
-Detonation: Applies a 1-day retention S3 Lifecycle Rule.
+- Create a CloudTrail trail logging to a S3 bucket.
+
+Detonation: 
+
+- Apply a S3 Lifecycle Rule automatically removing objects after 1 day.
 `,
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,

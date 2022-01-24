@@ -18,15 +18,19 @@ var tf []byte
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
 		ID:                 "aws.defense-evasion.delete-cloudtrail",
-		FriendlyName:       "Delete a CloudTrail Trail",
+		FriendlyName:       "Delete CloudTrail Trail",
 		Platform:           stratus.AWS,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.DefenseEvasion},
 		Description: `
-Delete a CloudTrail trail.
+Delete a CloudTrail trail. Simulates an attacker disrupting CloudTrail logging.
 
-Warm-up: Creates a CloudTrail trail.
+Warm-up: 
 
-Detonation: Deletes the CloudTrail trail.
+- Create a CloudTrail trail.
+
+Detonation: 
+
+- Delete the CloudTrail trail.
 `,
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,

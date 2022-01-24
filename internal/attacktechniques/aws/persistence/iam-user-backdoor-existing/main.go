@@ -21,9 +21,13 @@ func init() {
 		Description: `
 Establishes persistence by creating an access key on an existing IAM user.
 
-Warm-up: Create the pre-requisite IAM user.
+Warm-up: 
 
-Detonation: Create the access key.
+- Create an IAM user.
+
+Detonation: 
+
+- Create an IAM access key on the user.
 `,
 		Platform:                   stratus.AWS,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence, mitreattack.PrivilegeEscalation},

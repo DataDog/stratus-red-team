@@ -16,9 +16,37 @@ Platform: AWS
 
 Establishes persistence by backdooring an existing IAM role, allowing it to be assumed from an external AWS account.
 
-Warm-up: Creates the pre-requisite IAM role.
+<span style="font-variant: small-caps;">Warm-up</span>: 
 
-Detonation: Updates the assume role policy of the IAM role to backdoor it.
+- Create an IAM role.
+
+<span style="font-variant: small-caps;">Detonation</span>: 
+
+- Update the assume role policy of the IAM role to backdoor it, making it accessible from an external, fictitious AWS account:
+
+<pre>
+<code>
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::193672423079:root"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+</code>
+</pre>
 
 
 ## Instructions

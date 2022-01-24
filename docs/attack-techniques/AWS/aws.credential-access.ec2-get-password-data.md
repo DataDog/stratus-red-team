@@ -15,13 +15,18 @@ Platform: AWS
 
 
 Runs ec2:GetPasswordData from a role that does not have permission to do so. This simulates an attacker attempting to
-retrieve RDP passwords of Windows EC2 instances.
+retrieve RDP passwords on a high number of Windows EC2 instances.
 
 See https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_GetPasswordData.html
 
-Warm-up: Create an IAM role without permissions to run ec2:GetPasswordData
+<span style="font-variant: small-caps;">Warm-up</span>: 
 
-Detonation: Assume the role and run a number of ec2:GetPasswordData calls (which will be denied)
+- Create an IAM role without permissions to run ec2:GetPasswordData
+
+<span style="font-variant: small-caps;">Detonation</span>: 
+
+- Assume the role 
+- Run a number of ec2:GetPasswordData calls (which will be denied) using fictious instance IDs
 
 
 ## Instructions

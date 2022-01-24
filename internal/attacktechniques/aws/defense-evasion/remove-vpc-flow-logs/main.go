@@ -23,9 +23,13 @@ func init() {
 		Description: `
 Removes a VPC Flog Logs configuration from a VPC.
 
-Warm-up: Creates a VPC with a VPC Flow Logs configuration.
+Warm-up: 
 
-Detonation: Removes the VPC Flow Logs configuration.
+- Create a VPC with a VPC Flow Logs configuration.
+
+Detonation: 
+
+- Remove the VPC Flow Logs configuration.
 `,
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,

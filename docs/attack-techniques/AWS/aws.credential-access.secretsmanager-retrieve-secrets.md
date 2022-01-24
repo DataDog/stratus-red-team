@@ -16,9 +16,14 @@ Platform: AWS
 
 Retrieves a high number of Secrets Manager secrets, through secretsmanager:GetSecretValue.
 
-Warm-up: Create multiple secrets in Secrets Manager.
+<span style="font-variant: small-caps;">Warm-up</span>: 
 
-Detonation: Enumerate the secrets through secretsmanager:ListSecrets, then retrieve their value through secretsmanager:GetSecretValue.
+- Create multiple secrets in Secrets Manager.
+
+<span style="font-variant: small-caps;">Detonation</span>: 
+
+- Enumerate the secrets through secretsmanager:ListSecrets
+- Retrieve each secret value, one by one through secretsmanager:GetSecretValue
 
 
 ## Instructions

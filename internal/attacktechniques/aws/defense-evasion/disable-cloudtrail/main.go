@@ -18,15 +18,19 @@ var tf []byte
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
 		ID:                 "aws.defense-evasion.stop-cloudtrail",
-		FriendlyName:       "Stop a CloudTrail Trail",
+		FriendlyName:       "Stop CloudTrail Trail",
 		Platform:           stratus.AWS,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.DefenseEvasion},
 		Description: `
-Stops a CloudTrail trail from logging.
+Stops a CloudTrail Trail from logging. Simulates an attacker disrupting CloudTrail logging.
 
-Warm-up: Creates a CloudTrail trail.
+Warm-up: 
 
-Detonation: Calls cloudtrail:StopLogging
+- Create a CloudTrail Trail.
+
+Detonation: 
+
+- Call cloudtrail:StopLogging to stop CloudTrail logging.
 `,
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,

@@ -22,11 +22,15 @@ func init() {
 		Platform:           stratus.AWS,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Exfiltration},
 		Description: `
-Opens ingress traffic on port 22 from the Internet.
+Opens ingress traffic on port 22 from the Internet (0.0.0.0/0).
 
-Warm-up: Creates a security group.
+Warm-up: 
 
-Detonation: Calls AuthorizeSecurityGroupIngress
+- Create a VPC and a security group inside it.
+
+Detonation: 
+
+- Call ec2:AuthorizeSecurityGroupIngress to allow ingress traffic on port 22 from 0.0.0.0/0.
 `,
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,

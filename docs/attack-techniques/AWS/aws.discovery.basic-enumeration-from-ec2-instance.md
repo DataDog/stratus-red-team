@@ -14,7 +14,7 @@ Platform: AWS
 ## Description
 
 
-Runs several suspicious discovery commands on an EC2 instance:
+Runs several discovery commands on an EC2 instance:
 
 - sts:GetCallerIdentity
 - s3:ListBuckets
@@ -26,9 +26,15 @@ Runs several suspicious discovery commands on an EC2 instance:
 - cloudtrail:DescribeTrails
 - guardduty:ListDetectors
 
-Warm-up: Create the pre-requisite EC2 instance and VPC (takes a few minutes).
+The commands will be run under the identity of the EC2 instance role, simulating an attacker having compromised an EC2 instance and running discovery commands on it.
 
-Detonation: Run the commands, over SSM.
+<span style="font-variant: small-caps;">Warm-up</span>:
+
+- Create the pre-requisite EC2 instance and VPC (takes a few minutes).
+
+<span style="font-variant: small-caps;">Detonation</span>: 
+
+- Run the discovery commands, over SSM. The commands will be run under the identity of the EC2 instance role.
 
 
 ## Instructions

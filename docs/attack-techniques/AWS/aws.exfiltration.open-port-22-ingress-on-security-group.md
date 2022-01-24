@@ -14,11 +14,15 @@ Platform: AWS
 ## Description
 
 
-Opens ingress traffic on port 22 from the Internet.
+Opens ingress traffic on port 22 from the Internet (0.0.0.0/0).
 
-Warm-up: Creates a security group.
+<span style="font-variant: small-caps;">Warm-up</span>: 
 
-Detonation: Calls AuthorizeSecurityGroupIngress
+- Create a VPC and a security group inside it.
+
+<span style="font-variant: small-caps;">Detonation</span>: 
+
+- Call ec2:AuthorizeSecurityGroupIngress to allow ingress traffic on port 22 from 0.0.0.0/0.
 
 
 ## Instructions

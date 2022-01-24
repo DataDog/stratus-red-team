@@ -22,9 +22,14 @@ func init() {
 		Description: `
 Retrieves a high number of Secrets Manager secrets, through secretsmanager:GetSecretValue.
 
-Warm-up: Create multiple secrets in Secrets Manager.
+Warm-up: 
 
-Detonation: Enumerate the secrets through secretsmanager:ListSecrets, then retrieve their value through secretsmanager:GetSecretValue.
+- Create multiple secrets in Secrets Manager.
+
+Detonation: 
+
+- Enumerate the secrets through secretsmanager:ListSecrets
+- Retrieve each secret value, one by one through secretsmanager:GetSecretValue
 `,
 		Platform:                   stratus.AWS,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.CredentialAccess},

@@ -16,12 +16,16 @@ Platform: AWS
 
 Simulates the theft of EC2 instance credentials from the Instance Metadata Service.
 
-Warm-up:Create the pre-requisite EC2 instance and VPC (takes a few minutes).
+<span style="font-variant: small-caps;">Warm-up</span>:
 
-Detonation:
+- Create the pre-requisite EC2 instance and VPC (takes a few minutes).
+
+<span style="font-variant: small-caps;">Detonation</span>:
 
 - Execute a SSM command on the instance to retrieve temporary credentials
-- Use these credentials locally (outside the instance) using a few standard discovery commands.
+- Use these credentials locally (outside the instance) to run the following commands:
+	- sts:GetCallerIdentity
+	- ec2:escribeInstances
 
 
 ## Instructions

@@ -1,8 +1,8 @@
 ---
-title: Stop a CloudTrail Trail
+title: Stop CloudTrail Trail
 ---
 
-# Stop a CloudTrail Trail 
+# Stop CloudTrail Trail 
 
 Platform: AWS
 
@@ -14,11 +14,15 @@ Platform: AWS
 ## Description
 
 
-Stops a CloudTrail trail from logging.
+Stops a CloudTrail Trail from logging. Simulates an attacker disrupting CloudTrail logging.
 
-Warm-up: Creates a CloudTrail trail.
+<span style="font-variant: small-caps;">Warm-up</span>: 
 
-Detonation: Calls cloudtrail:StopLogging
+- Create a CloudTrail Trail.
+
+<span style="font-variant: small-caps;">Detonation</span>: 
+
+- Call cloudtrail:StopLogging to stop CloudTrail logging.
 
 
 ## Instructions
