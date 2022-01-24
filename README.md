@@ -64,8 +64,19 @@ make test
 
 For local usage:
 ```
-make docs
-
 pip install mkdocs-material mkdocs-awesome-pages-plugin
+
+make docs
 mkdocs serve
 ```
+
+### Acknowledgments
+
+Maintainer: [@christophetd](https://twitter.com/christophetd)
+
+Similar projects and inspiration (see [how Stratus Red Team compares](https://stratus-red-team.cloud/comparison/)):
+- [Atomic Red Team](https://github.com/redcanaryco/atomic-red-team) by Red Canary
+- [Leonidas](https://github.com/FSecureLABS/leonidas) by F-Secure
+- [pacu](https://github.com/RhinoSecurityLabs/pacu) by Rhino Security Labs
+- [Amazon GuardDuty Tester](https://github.com/awslabs/amazon-guardduty-tester)
+- [CloudGoat](https://github.com/RhinoSecurityLabs/cloudgoat) by Rhino Security Labs
