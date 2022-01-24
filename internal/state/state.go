@@ -9,10 +9,10 @@ import (
 	"path/filepath"
 )
 
-//TODO other constants
 const StratusStateDirectoryName = ".stratus-red-team"
 const StratusStateTerraformOutputsFileName = ".terraform-outputs"
 const StratusStateTechniqueStateFileName = ".state"
+const StratusStateTerraformFileName = "main.tf"
 
 type FileSystemStateManager struct {
 	RootDirectory string
@@ -91,7 +91,7 @@ func (m *FileSystemStateManager) Initialize() {
 
 func (m *FileSystemStateManager) ExtractTechnique() error {
 	terraformDirectory := m.getTechniqueStateDirectory()
-	terraformFile := filepath.Join(terraformDirectory, "main.tf")
+	terraformFile := filepath.Join(terraformDirectory, StratusStateTerraformFileName)
 
 	return m.FileSystem.WriteFile(terraformFile, m.Technique.PrerequisitesTerraformCode, 0644)
 }
