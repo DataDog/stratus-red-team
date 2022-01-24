@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/datadog/stratus-red-team/internal/state"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
+	"github.com/fatih/color"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/spf13/cobra"
 )
@@ -39,7 +40,21 @@ func doStatusCmd(techniques []*stratus.AttackTechnique) {
 		if techniqueState == "" {
 			techniqueState = stratus.AttackTechniqueStatusCold
 		}
-		t.AppendRow(table.Row{techniques[i].ID, techniques[i].FriendlyName, techniqueState})
+		t.AppendRow(table.Row{techniques[i].ID, techniques[i].FriendlyName, colorState(techniqueState)})
 	}
 	t.Render()
+}
+
+func colorState(state stratus.AttackTechniqueState) string {
+	stateString := string(state)
+	switch state {
+	case stratus.AttackTechniqueStatusCold:
+		return color.CyanString(stateString)
+	case stratus.AttackTechniqueStatusWarm:
+		return color.YellowString(stateString)
+	case stratus.AttackTechniqueStatusDetonated:
+		return color.MagentaString(stateString)
+	default:
+		return stateString
+	}
 }
