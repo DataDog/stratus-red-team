@@ -55,6 +55,7 @@ func (m *TerraformManagerImpl) Initialize() {
 
 func (m *TerraformManagerImpl) TerraformInitAndApply(directory string) (map[string]string, error) {
 	terraform, err := tfexec.NewTerraform(directory, m.terraformBinaryPath)
+	terraform.SetAppendUserAgent("stratus-red-team")
 	terraformInitializedFile := path.Join(directory, ".terraform-initialized")
 	if !utils.FileExists(terraformInitializedFile) {
 		log.Println("Initializing Terraform to spin up technique pre-requisites")
