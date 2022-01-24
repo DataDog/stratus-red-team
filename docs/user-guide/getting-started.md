@@ -83,7 +83,7 @@ You can then clean up any leftovers from the technique, which in this case will 
 stratus cleanup aws.exfiltration.ebs-snapshot-shared-with-external-account
 ```
 
-For more information, see [Usage](./usage.md).
+For more information, see [Usage](./usage.md), [Examples](./examples.md) and the [Command Reference](./commands).
 
 ## Connecting to your cloud account
 

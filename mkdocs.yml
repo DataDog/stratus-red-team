@@ -81,7 +81,8 @@ nav:
       - Contributing: contributing.md
   - User Guide:
       - Getting Started: user-guide/getting-started.md
-      - Sample Usage: user-guide/examples.md
+      - Examples: user-guide/examples.md
+      - Usage: user-guide/usage.md
       - Command Reference:
           - list: user-guide/commands/list.md
           - status: user-guide/commands/status.md
