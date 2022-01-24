@@ -155,20 +155,18 @@ Now, say we want to replay (i.e., detonate again) an attack technique a few time
 
 ```
 stratus detonate aws.persistence.backdoor-iam-user
-stratus detonate aws.persistence.backdoor-iam-user
 ```
 
 You will notice that the second call raises an error:
 
 ```
-Error while detonating attack technique aws.persistence.backdoor-iam-user: 
-    operation error IAM: CreateAccessKey, 
-    https response error 
-    StatusCode: 
-    LimitExceeded: Cannot exceed quota for AccessKeysPerUser: 2
+aws.persistence.backdoor-iam-user has already been detonated and is not idempotent. 
+Revert it with 'stratus revert' before detonating it again, or use --force
 ```
 
-That's because detonating this attack technique has side-effects (here: creating an IAM user access key). Before replaying a technique, we should revert it:
+That's because the detonation of this attack technique is not idempotent, meaning it cannot be detonated multiple times without being reverted. 
+
+Before re-detonating this technique, we need to revert it:
 
 ```
 stratus revert aws.persistence.backdoor-iam-user
@@ -178,7 +176,6 @@ stratus revert aws.persistence.backdoor-iam-user
 2022/01/19 15:43:35 Reverting detonation of technique aws.persistence.backdoor-iam-user
 2022/01/19 15:43:35 Removing access key from IAM user sample-legit-user
 2022/01/19 15:43:36 Removing access key AKIA254BBSGPJNHEDHNR
-2022/01/19 15:43:36 Removing access key AKIA254BBSGPBYLEHMVO
 +-----------------------------------+-----------------------------------------+--------+
 | ID                                | NAME                                    | STATUS |
 +-----------------------------------+-----------------------------------------+--------+

@@ -36,7 +36,7 @@ Warm-up:
 Detonation: 
 
 - Assume the role 
-- Run a number of ec2:GetPasswordData calls (which will be denied) using fictious instance IDs
+- Run a number of ec2:GetPasswordData calls (which will be denied) using fictitious instance IDs
 `,
 		Platform:                   stratus.AWS,
 		IsIdempotent:               true,

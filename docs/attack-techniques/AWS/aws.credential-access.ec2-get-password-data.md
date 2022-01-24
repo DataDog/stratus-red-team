@@ -29,7 +29,7 @@ See https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_GetPasswordData.h
 <span style="font-variant: small-caps;">Detonation</span>: 
 
 - Assume the role 
-- Run a number of ec2:GetPasswordData calls (which will be denied) using fictious instance IDs
+- Run a number of ec2:GetPasswordData calls (which will be denied) using fictitious instance IDs
 
 
 ## Instructions
