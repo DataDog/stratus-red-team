@@ -10,6 +10,8 @@ First, we'll authenticate to AWS using [aws-vault](https://github.com/99designs/
 
 ```bash
 $ aws-vault exec sandbox-account
+# If using an IAM user, use instead: aws-vault exec sandbox-account --no-session
+
 $ aws sts get-caller-identity
 {
     "UserId": "AIDA254BBSGPGUZJKQWRD",
