@@ -37,7 +37,7 @@ Detonation:
 - Execute a SSM command on the instance to retrieve temporary credentials
 - Use these credentials locally (outside the instance) to run the following commands:
 	- sts:GetCallerIdentity
-	- ec2:escribeInstances
+	- ec2:DescribeInstances
 `,
 		Platform:                   stratus.AWS,
 		IsIdempotent:               true,
