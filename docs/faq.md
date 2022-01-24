@@ -1,5 +1,11 @@
 # F.A.Q.
 
+## What permissions do I need to run Stratus Red Team?
+
+Stratus Red Team is supposed to be run against a sandbox cloud account. Consequently, we recommend using it with an administrator role.
+
+If you don't have access to an administrator role but would still like to use Stratus Red Team, feel free to [open an issue](https://github.com/DataDog/stratus-red-team/issues/new/choose).
+
 ## How can I add my own attack techniques to Stratus Red Team?
 
 Stratus Red Team is a self-contained Go binary. 

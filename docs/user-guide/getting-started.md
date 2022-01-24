@@ -93,6 +93,10 @@ Stratus Red Team currently supports only AWS. In order to use Stratus attack tec
 
 - Using static credentials in `~/.aws/config`, and setting your desired AWS profile using `export AWS_PROFILE=my-profile`
 
+!!! warning
+
+    Stratus Red Team is supposed to be used against a sandbox cloud account that does not handle production workloads or infrastructure.
+
 Encountering issues? See our [troubleshooting](./troubleshooting.md) page, or [open an issue](https://github.com/DataDog/stratus-red-team/issues/new/choose).
 
 *[TTP]: Tactics, techniques and procedures
