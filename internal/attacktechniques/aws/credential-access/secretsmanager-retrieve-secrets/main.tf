@@ -31,6 +31,8 @@ resource "random_string" "secrets" {
 resource "aws_secretsmanager_secret" "secrets" {
   count = local.num_secrets
   name  = "stratus-red-team-secret-${count.index}"
+
+  recovery_window_in_days = 0
 }
 
 resource "aws_secretsmanager_secret_version" "secret-values" {
