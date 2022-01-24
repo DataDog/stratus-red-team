@@ -40,6 +40,7 @@ Detonation:
 </pre>
 `,
 		Platform:                   stratus.AWS,
+		IsIdempotent:               true,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence},
 		PrerequisitesTerraformCode: tf,
 		Detonate: func(params map[string]string) error {

@@ -20,6 +20,7 @@ func init() {
 		ID:                 "aws.exfiltration.open-port-22-ingress-on-security-group",
 		FriendlyName:       "Open Ingress Port 22 on a Security Group",
 		Platform:           stratus.AWS,
+		IsIdempotent:       false, // cannot call ec2:AuthorizeSecurityGroupIngress multiple times with the same parameters
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Exfiltration},
 		Description: `
 Opens ingress traffic on port 22 from the Internet (0.0.0.0/0).
@@ -34,6 +35,7 @@ Detonation:
 `,
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,
+		Revert:                     revert,
 	})
 }
 
@@ -56,6 +58,30 @@ func detonate(params map[string]string) error {
 
 	if err != nil {
 		return errors.New("unable to open port 22 on security group " + err.Error())
+	}
+
+	return nil
+}
+
+func revert(params map[string]string) error {
+	ec2Client := ec2.NewFromConfig(providers.AWS().GetConnection())
+
+	// Find the snapshot to exfiltrate
+	securityGroupId := params["security_group_id"]
+
+	// Open port 22 to the world
+	log.Println("Closing port 22 from the Internet on " + securityGroupId)
+
+	_, err := ec2Client.RevokeSecurityGroupIngress(context.Background(), &ec2.RevokeSecurityGroupIngressInput{
+		GroupId:    aws.String(securityGroupId),
+		CidrIp:     aws.String("0.0.0.0/0"),
+		FromPort:   aws.Int32(22),
+		ToPort:     aws.Int32(22),
+		IpProtocol: aws.String("tcp"),
+	})
+
+	if err != nil {
+		return errors.New("unable to close port 22 on security group " + err.Error())
 	}
 
 	return nil

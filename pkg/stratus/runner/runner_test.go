@@ -117,34 +117,126 @@ func TestRunnerWarmUp(t *testing.T) {
 }
 
 func TestRunnerDetonate(t *testing.T) {
-	state := new(statemocks.StateManager)
-	terraform := new(mocks.TerraformManager)
 
-	state.On("GetRootDirectory").Return("/root")
-	state.On("ExtractTechnique").Return(nil)
-	state.On("GetTechniqueState", mock.Anything).Return(stratus.AttackTechniqueState(stratus.AttackTechniqueStatusWarm), nil)
-	terraform.On("TerraformInitAndApply", mock.Anything).Return(map[string]string{}, nil)
-	state.On("WriteTerraformOutputs", mock.Anything).Return(nil)
-	state.On("SetTechniqueState", mock.Anything).Return(nil)
-
-	var wasDetonated bool = false
-	runner := Runner{
-		Technique: &stratus.AttackTechnique{
-			ID: "foo",
-			Detonate: func(map[string]string) error {
-				wasDetonated = true
-				return nil
-			},
-		},
-		TerraformManager: terraform,
-		StateManager:     state,
+	type TestDetonationScenario struct {
+		Name                            string
+		TechniqueState                  stratus.AttackTechniqueState
+		IsIdempotent                    bool
+		Force                           bool
+		ExpectDetonated                 bool
+		ExpectWarmedUp                  bool
+		ExpectError                     bool
+		ExpectedStateChangedToDetonated bool
 	}
-	runner.initialize()
-	err := runner.Detonate()
 
-	assert.Nil(t, err)
-	assert.True(t, wasDetonated)
-	state.AssertCalled(t, "SetTechniqueState", stratus.AttackTechniqueState(stratus.AttackTechniqueStatusDetonated))
+	scenario := []TestDetonationScenario{
+		{
+			Name:                            "DetonateWarmIdempotentAttackTechnique",
+			TechniqueState:                  stratus.AttackTechniqueStatusWarm,
+			IsIdempotent:                    true,
+			Force:                           false,
+			ExpectWarmedUp:                  false,
+			ExpectDetonated:                 true,
+			ExpectError:                     false,
+			ExpectedStateChangedToDetonated: true,
+		},
+		{
+			Name:                            "DetonateWarmNonIdempotentAttackTechnique",
+			TechniqueState:                  stratus.AttackTechniqueStatusWarm,
+			IsIdempotent:                    false,
+			Force:                           false,
+			ExpectWarmedUp:                  false,
+			ExpectDetonated:                 true,
+			ExpectError:                     false,
+			ExpectedStateChangedToDetonated: true,
+		},
+		{
+			Name:                            "DetonateDetonatedIdempotentAttackTechnique",
+			TechniqueState:                  stratus.AttackTechniqueStatusDetonated,
+			IsIdempotent:                    true,
+			Force:                           false,
+			ExpectWarmedUp:                  false,
+			ExpectDetonated:                 true,
+			ExpectError:                     false,
+			ExpectedStateChangedToDetonated: true,
+		},
+		{
+			Name:                            "DetonateDetonatedNonIdempotentAttackTechnique",
+			TechniqueState:                  stratus.AttackTechniqueStatusDetonated,
+			IsIdempotent:                    false,
+			Force:                           false,
+			ExpectWarmedUp:                  false,
+			ExpectDetonated:                 false,
+			ExpectError:                     true,
+			ExpectedStateChangedToDetonated: false,
+		},
+		{
+			Name:                            "DetonateDetonatedNonIdempotentAttackTechniqueWithForceFlag",
+			TechniqueState:                  stratus.AttackTechniqueStatusDetonated,
+			IsIdempotent:                    false,
+			Force:                           true,
+			ExpectWarmedUp:                  false,
+			ExpectDetonated:                 true,
+			ExpectError:                     false,
+			ExpectedStateChangedToDetonated: true,
+		},
+	}
+
+	for i := range scenario {
+		t.Run(scenario[i].Name, func(t *testing.T) {
+			state := new(statemocks.StateManager)
+			terraform := new(mocks.TerraformManager)
+
+			state.On("GetRootDirectory").Return("/root")
+			state.On("ExtractTechnique").Return(nil)
+			state.On("GetTechniqueState", mock.Anything).Return(scenario[i].TechniqueState, nil)
+			terraform.On("TerraformInitAndApply", mock.Anything).Return(map[string]string{}, nil)
+			state.On("WriteTerraformOutputs", mock.Anything).Return(nil)
+			state.On("GetTerraformOutputs").Return(map[string]string{}, nil)
+			state.On("SetTechniqueState", mock.Anything).Return(nil)
+
+			var wasDetonated = false
+			runner := Runner{
+				Technique: &stratus.AttackTechnique{
+					ID: "sample-technique",
+					Detonate: func(map[string]string) error {
+						wasDetonated = true
+						return nil
+					},
+					IsIdempotent: scenario[i].IsIdempotent,
+				},
+				ShouldForce:      scenario[i].Force,
+				TerraformManager: terraform,
+				StateManager:     state,
+			}
+			runner.initialize()
+			err := runner.Detonate()
+
+			if scenario[i].ExpectError {
+				assert.NotNil(t, err)
+			} else {
+				assert.Nil(t, err)
+			}
+
+			if scenario[i].ExpectWarmedUp {
+				terraform.AssertCalled(t, "TerraformInitAndApply", mock.Anything)
+			} else {
+				terraform.AssertNotCalled(t, "TerraformInitAndApply", mock.Anything)
+			}
+
+			if scenario[i].ExpectDetonated {
+				assert.True(t, wasDetonated)
+			} else {
+				assert.False(t, wasDetonated)
+			}
+
+			if scenario[i].ExpectedStateChangedToDetonated {
+				state.AssertCalled(t, "SetTechniqueState", stratus.AttackTechniqueState(stratus.AttackTechniqueStatusDetonated))
+			} else {
+				state.AssertNotCalled(t, "SetTechniqueState", mock.Anything)
+			}
+		})
+	}
 }
 
 func TestRunnerRevert(t *testing.T) {

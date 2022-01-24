@@ -19,6 +19,7 @@ func init() {
 		ID:                 "aws.defense-evasion.remove-vpc-flow-logs",
 		FriendlyName:       "Remove VPC Flow Logs",
 		Platform:           stratus.AWS,
+		IsIdempotent:       false, // can't remove VPC flow logs once they have already been removed
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.DefenseEvasion},
 		Description: `
 Removes a VPC Flog Logs configuration from a VPC.

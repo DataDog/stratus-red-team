@@ -31,6 +31,7 @@ Detonation:
 - Modify the Lambda function resource-base policy to allow lambda:InvokeFunction from an external, fictitious AWS account.
 `,
 		Platform:                   stratus.AWS,
+		IsIdempotent:               false, // lambda:AddPermissions cannot be called multiple times with the same statement ID
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence},
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,

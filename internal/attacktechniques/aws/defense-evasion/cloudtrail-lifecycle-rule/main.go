@@ -35,6 +35,7 @@ Detonation:
 
 - Apply a S3 Lifecycle Rule automatically removing objects after 1 day.
 `,
+		IsIdempotent:               false, // can't create twice a lifecycle rule with the same name
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,
 		Revert:                     revert,

@@ -92,10 +92,29 @@ func (m *Runner) WarmUp() (map[string]string, error) {
 }
 
 func (m *Runner) Detonate() error {
-	outputs, err := m.WarmUp()
+	willWarmUp := true
+	var err error
+	var outputs map[string]string
+
+	// If the attack technique has already been detonated, make sure it's idempotent
+	if m.GetState() == stratus.AttackTechniqueStatusDetonated {
+		if !m.Technique.IsIdempotent && !m.ShouldForce {
+			return errors.New(m.Technique.ID + " has already been detonated and is not idempotent. " +
+				"Revert it with 'stratus revert' before detonating it again, or use --force")
+		}
+		willWarmUp = false
+	}
+
+	if willWarmUp {
+		outputs, err = m.WarmUp()
+	} else {
+		outputs, err = m.StateManager.GetTerraformOutputs()
+	}
+
 	if err != nil {
 		return err
 	}
+
 	// Detonate
 	err = m.Technique.Detonate(outputs)
 	if err != nil {

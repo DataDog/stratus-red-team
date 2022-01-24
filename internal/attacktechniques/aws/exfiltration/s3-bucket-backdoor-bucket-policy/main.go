@@ -23,6 +23,7 @@ func init() {
 		ID:                 "aws.exfiltration.backdoor-s3-bucket-policy",
 		FriendlyName:       "Backdoor an S3 Bucket via its Bucket Policy",
 		Platform:           stratus.AWS,
+		IsIdempotent:       true,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Exfiltration},
 		Description: `
 Exfiltrates data from an S3 bucket by backdooring its Bucket Policy to allow access from an external, fictitious AWS account.

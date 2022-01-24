@@ -2,7 +2,10 @@
 title: Delete CloudTrail Trail
 ---
 
-# Delete CloudTrail Trail 
+# Delete CloudTrail Trail
+
+
+
 
 Platform: AWS
 

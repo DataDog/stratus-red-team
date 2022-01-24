@@ -30,6 +30,7 @@ Detonation:
 - Create an IAM access key on the user.
 `,
 		Platform:                   stratus.AWS,
+		IsIdempotent:               false, // iam:CreateAccessKey can only be called twice (limit of 2 access keys per user)
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence, mitreattack.PrivilegeEscalation},
 		PrerequisitesTerraformCode: tf,
 		Detonate: func(params map[string]string) error {

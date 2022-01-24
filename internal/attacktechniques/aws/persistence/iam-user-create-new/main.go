@@ -30,11 +30,12 @@ Detonation:
 - Create the IAM user and attach the 'AdministratorAccess' managed IAM policy to it.
 `,
 		Platform:           stratus.AWS,
+		IsIdempotent:       false, // cannot create twice an IAM user with the same name
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Persistence, mitreattack.PrivilegeEscalation},
 		Detonate: func(params map[string]string) error {
 			iamClient := iam.NewFromConfig(providers.AWS().GetConnection())
 			log.Println("Creating a malicious IAM user")
-			_, err := iamClient.CreateUser(context.TODO(), &iam.CreateUserInput{
+			_, err := iamClient.CreateUser(context.Background(), &iam.CreateUserInput{
 				UserName: userName,
 				Tags: []types.Tag{
 					{Key: aws.String("StratusRedTeam"), Value: aws.String("true")},

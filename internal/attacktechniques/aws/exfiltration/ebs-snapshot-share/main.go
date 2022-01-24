@@ -20,6 +20,7 @@ func init() {
 		ID:                 "aws.exfiltration.ebs-snapshot-shared-with-external-account",
 		FriendlyName:       "Exfiltrate EBS Snapshot by Sharing It",
 		Platform:           stratus.AWS,
+		IsIdempotent:       true,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Exfiltration},
 		Description: `
 Exfiltrates an EBS snapshot by sharing it with an external AWS account.

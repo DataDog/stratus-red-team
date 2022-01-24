@@ -23,6 +23,7 @@ func init() {
 		ID:                 "aws.defense-evasion.leave-organization",
 		FriendlyName:       "Attempt to Leave the AWS Organization",
 		Platform:           stratus.AWS,
+		IsIdempotent:       true,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.DefenseEvasion},
 		Description: `
 Attempts to leave the AWS Organization (unsuccessfully - will hit an AccessDenied error). 

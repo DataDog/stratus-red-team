@@ -2,7 +2,10 @@
 title: CloudTrail Logs Impairment Through S3 Lifecycle Rule
 ---
 
-# CloudTrail Logs Impairment Through S3 Lifecycle Rule 
+# CloudTrail Logs Impairment Through S3 Lifecycle Rule
+
+
+
 
 Platform: AWS
 

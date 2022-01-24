@@ -32,6 +32,7 @@ Detonation:
 - Share the AMI with an external, fictitious AWS account.
 `,
 		Platform:                   stratus.AWS,
+		IsIdempotent:               true,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Exfiltration},
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,
@@ -39,7 +40,7 @@ Detonation:
 	})
 }
 
-var amiPublicPermissions = []types.LaunchPermission{
+var amiPermissions = []types.LaunchPermission{
 	{UserId: aws.String("012345678901")},
 }
 
@@ -51,7 +52,7 @@ func detonate(params map[string]string) error {
 	_, err := ec2Client.ModifyImageAttribute(context.Background(), &ec2.ModifyImageAttributeInput{
 		ImageId: aws.String(amiId),
 		LaunchPermission: &types.LaunchPermissionModifications{
-			Add: amiPublicPermissions,
+			Add: amiPermissions,
 		},
 	})
 
@@ -70,7 +71,7 @@ func revert(params map[string]string) error {
 	_, err := ec2Client.ModifyImageAttribute(context.Background(), &ec2.ModifyImageAttributeInput{
 		ImageId: aws.String(amiId),
 		LaunchPermission: &types.LaunchPermissionModifications{
-			Remove: amiPublicPermissions,
+			Remove: amiPermissions,
 		},
 	})
 

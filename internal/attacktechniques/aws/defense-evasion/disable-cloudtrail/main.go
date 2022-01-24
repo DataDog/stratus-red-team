@@ -33,6 +33,7 @@ Detonation:
 - Call cloudtrail:StopLogging to stop CloudTrail logging.
 `,
 		PrerequisitesTerraformCode: tf,
+		IsIdempotent:               true, // cloudtrail:StopLogging is idempotent
 		Detonate:                   detonate,
 		Revert:                     revert,
 	})
