@@ -101,7 +101,4 @@ Stratus Red Team currently supports only AWS. In order to use Stratus attack tec
 
 - Using static credentials in `~/.aws/config`, and setting your desired AWS profile using `export AWS_PROFILE=my-profile`
 
-Before running an AWS attack technique, Stratus will attempt to call `sts:GetCallerIdentity` and raise an error if this fails.
-
-
 *[TTP]: Tactics, techniques and procedures

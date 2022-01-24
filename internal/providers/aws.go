@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
-	"github.com/aws/aws-sdk-go-v2/service/sts"
+	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"log"
 )
 
@@ -32,7 +32,11 @@ func (m *AWSProvider) GetConnection() aws.Config {
 
 func (m *AWSProvider) IsAuthenticatedAgainstAWS() bool {
 	m.GetConnection()
-	stsClient := sts.NewFromConfig(m.GetConnection())
-	_, err := stsClient.GetCallerIdentity(context.Background(), &sts.GetCallerIdentityInput{})
+
+	// We make a sample API call to AWS to ensure the user is authenticated
+	// Note: We use ec2:DescribeAccountAttributes as an arbitrary API call
+	// instead of sts:GetCallerIdentity, to ensure an AWS region was properly set
+	ec2Client := ec2.NewFromConfig(m.GetConnection())
+	_, err := ec2Client.DescribeAccountAttributes(context.Background(), &ec2.DescribeAccountAttributesInput{})
 	return err == nil
 }
