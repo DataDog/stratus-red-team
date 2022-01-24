@@ -12,6 +12,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 - [Retrieve a High Number of Secrets Manager secrets](./aws.credential-access.secretsmanager-retrieve-secrets.md)
 
+- [Retrieve And Decrypt SSM Parameters](./aws.credential-access.retrieve-all-ssm-parameters.md)
+
 
 ## Defense Evasion
 
