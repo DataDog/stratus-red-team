@@ -1,8 +1,8 @@
 ---
-title: Steal EC2 Instance Credentials
+title: Exfiltrate RDS Snapshot by Sharing
 ---
 
-# Steal EC2 Instance Credentials
+# Exfiltrate RDS Snapshot by Sharing
 
  <span class="smallcaps w3-badge w3-orange w3-round w3-text-sand" title="This attack technique might be slow to warm up or detonate">slow</span> 
  <span class="smallcaps w3-badge w3-blue w3-round w3-text-white" title="This attack technique can be detonated multiple times">idempotent</span> 
@@ -12,27 +12,25 @@ Platform: AWS
 ## MITRE ATT&CK Tactics
 
 
-- Credential Access
+- Exfiltration
 
 ## Description
 
 
-Simulates the theft of EC2 instance credentials from the Instance Metadata Service.
+Shares a RDS Snapshot with an external AWS account to simulate an attacker exfiltrating a database.
 
 <span style="font-variant: small-caps;">Warm-up</span>:
 
-- Create the pre-requisite EC2 instance and VPC (takes a few minutes).
+- Create a RDS Instance (slow, around 10 minutes)
+- Create a RDS Snapshot
 
 <span style="font-variant: small-caps;">Detonation</span>:
 
-- Execute a SSM command on the instance to retrieve temporary credentials
-- Use these credentials locally (outside the instance) to run the following commands:
-	- sts:GetCallerIdentity
-	- ec2:DescribeInstances
+- Call rds:ModifyDBSnapshotAttribute to share the snapshot with an external AWS account
 
 
 ## Instructions
 
 ```bash title="Detonate with Stratus Red Team"
-stratus detonate aws.credential-access.ec2-instance-credentials
+stratus detonate aws.exfiltration.rds-snapshot-sharing
 ```

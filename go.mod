@@ -11,10 +11,13 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/iam v1.14.0
 	github.com/aws/aws-sdk-go-v2/service/lambda v1.17.0
 	github.com/aws/aws-sdk-go-v2/service/organizations v1.12.0
+	github.com/aws/aws-sdk-go-v2/service/rds v1.16.0
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.23.0
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.13.0
 	github.com/aws/aws-sdk-go-v2/service/ssm v1.20.0
 	github.com/aws/aws-sdk-go-v2/service/sts v1.14.0
+	github.com/aws/smithy-go v1.10.0
+	github.com/fatih/color v1.13.0
 	github.com/hashicorp/terraform-exec v0.15.0
 	github.com/jedib0t/go-pretty/v6 v6.2.4
 	github.com/spf13/cobra v1.3.0
@@ -32,9 +35,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.7.0 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.10.0 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sso v1.9.0 // indirect
-	github.com/aws/smithy-go v1.10.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/fatih/color v1.13.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect

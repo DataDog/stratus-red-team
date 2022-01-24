@@ -39,6 +39,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 - [Exfiltrate EBS Snapshot by Sharing It](./aws.exfiltration.ebs-snapshot-shared-with-external-account.md)
 
+- [Exfiltrate RDS Snapshot by Sharing](./aws.exfiltration.rds-snapshot-sharing.md)
+
 - [Backdoor an S3 Bucket via its Bucket Policy](./aws.exfiltration.backdoor-s3-bucket-policy.md)
 
 - [Open Ingress Port 22 on a Security Group](./aws.exfiltration.open-port-22-ingress-on-security-group.md)

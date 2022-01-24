@@ -21,6 +21,7 @@ This page contains the list of all Stratus Attack Techniques.
 | [Execute Discovery Commands on an EC2 Instance](./AWS/aws.discovery.basic-enumeration-from-ec2-instance.md) | [AWS](./AWS/index.md) | Discovery |
 | [Exfiltrate an AMI by Sharing It](./AWS/aws.exfiltration.ami-sharing.md) | [AWS](./AWS/index.md) | Exfiltration |
 | [Exfiltrate EBS Snapshot by Sharing It](./AWS/aws.exfiltration.ebs-snapshot-shared-with-external-account.md) | [AWS](./AWS/index.md) | Exfiltration |
+| [Exfiltrate RDS Snapshot by Sharing](./AWS/aws.exfiltration.rds-snapshot-sharing.md) | [AWS](./AWS/index.md) | Exfiltration |
 | [Backdoor an S3 Bucket via its Bucket Policy](./AWS/aws.exfiltration.backdoor-s3-bucket-policy.md) | [AWS](./AWS/index.md) | Exfiltration |
 | [Open Ingress Port 22 on a Security Group](./AWS/aws.exfiltration.open-port-22-ingress-on-security-group.md) | [AWS](./AWS/index.md) | Exfiltration |
 | [Backdoor Lambda Function Through Resource-Based Policy](./AWS/aws.persistence.backdoor-lambda-function.md) | [AWS](./AWS/index.md) | Persistence |
