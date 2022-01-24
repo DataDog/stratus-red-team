@@ -1,33 +1,48 @@
 # Getting Started
 
+## Installation
+
+- Mac OS:
+
+```
+brew tap datadog/stratus-red-team
+brew install datadog/stratus-red-team/stratus-red-team
+```
+
+- Linux / Windows / Mac OS: Download a [pre-built binary](https://github.com/datadog/stratus-red-team/releases).
+
+- Docker:
+
+```
+docker run --rm ghcr.io/datadog/stratus-red-team
+```
+
 ## Concepts
 
-### Attack Techniques
-
-An <span class="smallcaps">attack technique</span> is a granular TTP that has *pre-requisites* infrastructure or configuration.
+An <span class="concept">attack technique</span> is a granular TTP that has *pre-requisites* infrastructure or configuration.
 You can see the list of attack techniques supported by Stratus Red Team [here](../attack-techniques/list.md).
 
-### Warm-up Phase
+<span class="concept">Warming up</span> an attack technique means making sure its pre-requisites are met, without detonating it. 
+Warm-up is a preparation phase, before executing the actual attack. Behind the scenes, Stratus Red Team transparently uses Terraform[^1] to spin up and tear down the pre-requisites of each attack technique.
 
-<span class="smallcaps">Warming up</span> an attack technique means making sure its pre-requisites are met, without detonating it. 
-Warm up is a preparation phase, before executing the actual attack.
+<span class="concept">Detonating</span> an attack technique means executing it against a live environment, for instance against a test AWS account.
 
-Behind the scenes, Stratus Red Team transparently uses Terraform to spin up and tear down the pre-requisites of each attack technique.
+<span class="concept">Reverting</span> an attack technique means "cancelling" its detonation, when it had a side effect.
 
-### Detonation Phase
+<span class="concept">Cleaning up</span> an attack technique means nuking all its pre-requisites and making sure no resource is left in your environment.
 
-An attack technique can be <span class="smallcaps">detonated</span> to execute it against a live environment, for instance against a test AWS account.
+An attack technique is <span class="concept">idempotent</span> if it can be detonated multiple times without reverting it.
 
-### Reverting and Cleaning up an Attack Technique
+## Example
 
-<span class="smallcaps">Reverting</span> an attack technique means "cancelling" its detonation, when it had a side effect.
-<span class="smallcaps">Cleaning up</span> an attack technique means nuking all its pre-requisites and making sure no resource is left in your environment.
+Let's take an example with the attack technique [Exfiltrate EBS Snapshot through Snapshot Sharing](../../attack-techniques/AWS/aws.exfiltration.ebs-snapshot-shared-with-external-account/).
 
-### Idempotency
+- <span class="smallcaps">Warm-up</span>: Create an EBS volume and a snapshot of it
+- <span class="smallcaps">Detonation</span>: Share the EBS snapshot with an external AWS account
+- <span class="smallcaps">Revert</span>: Unshare the EBS snapshot with the external AWS account
+- <span class="smallcaps">Clean-up</span>: Remove the EBS volume and its snapshot
 
-An attack technique is <span class="smallcaps">idempotent</span> if it can be detonated multiple times without reverting it.
-
-### State Machine
+## State Machine
 
 The diagram below illustrates the different states in which an attack technique can be.
 
@@ -35,15 +50,6 @@ The diagram below illustrates the different states in which an attack technique 
 ![](./state-machine.png)
 <figcaption>State Machine of a Stratus Attack Technique</figcaption>
 </figure>
-
-### Example
-
-Let's take an example. The attack technique [Exfiltrate EBS Snapshot through Snapshot Sharing](../../attack-techniques/AWS/aws.exfiltration.ebs-snapshot-shared-with-external-account/) is comprised of two phases:
-
-- Warm-up: Create an EBS volume and a snapshot of it
-- Detonation: Share the EBS snapshot with an external AWS account
-- Revert: Unshare the EBS snapshot with the external AWS account
-- Clean-up: Remove the EBS volume and its snapshot
 
 ## Sample Usage
 
@@ -79,24 +85,6 @@ stratus cleanup aws.exfiltration.ebs-snapshot-shared-with-external-account
 
 For more information, see [Usage](./usage.md).
 
-## Installation
-
-- Mac OS: 
-
-```
-brew tap datadog/stratus-red-team
-brew install datadog/stratus-red-team/stratus-red-team
-```
-
-- Linux / Windows: Download one of the [pre-built binaries](https://github.com/datadog/stratus-red-team/releases).
-
-- Docker:
-
-```
-docker pull ghcr.io/datadog/stratus-red-team
-docker run --rm ghcr.io/datadog/stratus-red-team
-```
-
 ## Connecting to your cloud account
 
 Stratus Red Team currently supports only AWS. In order to use Stratus attack techniques against AWS, you need to be authenticated prior to running it, for instance:
@@ -105,4 +93,8 @@ Stratus Red Team currently supports only AWS. In order to use Stratus attack tec
 
 - Using static credentials in `~/.aws/config`, and setting your desired AWS profile using `export AWS_PROFILE=my-profile`
 
+Encountering issues? See our [troubleshooting](./troubleshooting.md) page, or [open an issue](https://github.com/DataDog/stratus-red-team/issues/new/choose).
+
 *[TTP]: Tactics, techniques and procedures
+
+[^1]: While Stratus Red Team uses Terraform under the hood, it doesn't mess with your current Terraform install nor does it require you to install Terraform as a pre-requisite. Stratus Red Team will download its own Terraform binary in `$HOME/.stratus-red-team`.

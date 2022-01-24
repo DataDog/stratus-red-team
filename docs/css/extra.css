@@ -2,6 +2,11 @@
     font-variant: small-caps;
 }
 
+.concept {
+    font-variant: small-caps;
+    font-weight: bold;
+}
+
 .md-tabs__link {
     opacity: 1 !important;
     font-variant: small-caps;

@@ -7,14 +7,39 @@ plugins:
   - awesome-pages
 theme:
   name: material
+  logo: ./logo.svg
+  favicon: ./logo.svg
   palette:
-    primary: purple
+    - scheme: default
+      primary: deep-purple
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - scheme: slate
+      primary: deep-purple
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
   features:
   - navigation.expand
   - navigation.indexes
   - navigation.top
   - navigation.tabs
   - navigation.tabs.sticky
+  icon:
+    admonition:
+      note: octicons/tag-16
+      abstract: octicons/checklist-16
+      info: octicons/info-16
+      tip: octicons/squirrel-16
+      success: octicons/check-16
+      question: octicons/question-16
+      warning: octicons/alert-16
+      failure: octicons/x-circle-16
+      danger: octicons/zap-16
+      bug: octicons/bug-16
+      example: octicons/beaker-16
+      quote: octicons/quote-16
 use_directory_urls: true
 markdown_extensions:
   - pymdownx.highlight:
@@ -29,6 +54,9 @@ markdown_extensions:
   - def_list
   - attr_list
   - md_in_html
+  - admonition
+  - pymdownx.details
+  - footnotes
 
 
 extra_javascript:
@@ -54,7 +82,7 @@ nav:
   - User Guide:
       - Getting Started: user-guide/getting-started.md
       - Sample Usage: user-guide/examples.md
-      - Commands Reference:
+      - Command Reference:
           - list: user-guide/commands/list.md
           - status: user-guide/commands/status.md
           - show: user-guide/commands/show.md
