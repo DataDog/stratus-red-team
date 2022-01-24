@@ -18,7 +18,6 @@ brews:
   tap:
     owner: datadog
     name: stratus-red-team
-    branch: update-homebrew-formula-version
   folder: Formula
   url_template: "https://github.com/DataDog/stratus-red-team/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
   license: Apache-2.0
