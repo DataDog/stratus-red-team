@@ -4,6 +4,9 @@
 
 Stratus Red Team is a self-contained Go binary. 
 The implication is that you can't add attack techniques without contributing to its core, as Go cannot easily load code dynamically.
+While Stratus Red Team may implement a plugin system in the future, we currently feel this would add substantial complexity for a limited value.
+
+Note that you can define custom attack techniques when [using Stratus Red Team as a Go library](https://stratus-red-team.cloud/user-guide/programmatic-usage/).
 
 ## Why didn't you use Python?
 
