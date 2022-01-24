@@ -8,6 +8,7 @@ import (
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"log"
 	"path/filepath"
+	"strings"
 )
 
 const StratusRunnerForce = true
@@ -77,7 +78,7 @@ func (m *Runner) WarmUp() (map[string]string, error) {
 	log.Println("Warming up " + m.Technique.ID)
 	outputs, err := m.TerraformManager.TerraformInitAndApply(m.TerraformDir)
 	if err != nil {
-		return nil, errors.New("Unable to run terraform apply on pre-requisite: " + err.Error())
+		return nil, buildErrorFromTerraformError(err)
 	}
 
 	// Persist outputs to disk
@@ -172,7 +173,9 @@ func (m *Runner) ValidatePlatformRequirements() {
 	case stratus.AWS:
 		log.Println("Checking your authentication against the AWS API")
 		if !providers.AWS().IsAuthenticatedAgainstAWS() {
-			log.Fatal("You are not authenticated against AWS, or you have not set your region.")
+			log.Fatal("You are not authenticated against AWS, or you have not set your region. " +
+				"Make sure you are authenticated against AWS, and you have a default region set in your AWS config or environment" +
+				" (export AWS_DEFAULT_REGION=us-east-1)")
 		}
 	}
 }
@@ -187,4 +190,16 @@ func (m *Runner) setState(state stratus.AttackTechniqueState) {
 		log.Println("Warning: unable to set technique state: " + err.Error())
 	}
 	m.TechniqueState = state
+}
+
+// Utility function to display better error messages than the Terraform ones
+func buildErrorFromTerraformError(err error) error {
+	const MissingRegionErrorMessage = "The argument \"region\" is required, but no definition was found"
+
+	if strings.Contains(err.Error(), MissingRegionErrorMessage) {
+		return errors.New("unable to create attack technique pre-requisites. Ensure you are authenticated against AWS and have the right permissions to run Stratus Red Team.\n" +
+			"Stratus Red Team will display below the error that Terraform returned:\n" + err.Error())
+	}
+
+	return errors.New("Unable to run terraform apply on pre-requisite: " + err.Error())
 }
