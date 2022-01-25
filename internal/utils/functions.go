@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"crypto/sha256"
 	"math/rand"
 )
 
@@ -13,11 +12,6 @@ func CoalesceErr(args ...error) error {
 	}
 
 	return nil
-}
-
-func SHA256(buf []byte) []byte {
-	hash := sha256.Sum256(buf)
-	return hash[:]
 }
 
 func RandomString(length int) string {
