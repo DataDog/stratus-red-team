@@ -25,16 +25,16 @@ resource "random_password" "password" {
 }
 
 resource "aws_db_instance" "default" {
-  allocated_storage    = 10 // minimum size
-  engine               = "mysql"
-  engine_version       = "8.0"
-  instance_class       = "db.t3.micro"
-  name                 = "samplerdsdatabase"
+  allocated_storage       = 10 // minimum size
+  engine                  = "mysql"
+  engine_version          = "8.0"
+  instance_class          = "db.t3.micro"
+  name                    = "samplerdsdatabase"
   backup_retention_period = 0
-  username = "admin"
-  password = random_password.password.result
-  skip_final_snapshot  = true
-  apply_immediately = true
+  username                = "admin"
+  password                = random_password.password.result
+  skip_final_snapshot     = true
+  apply_immediately       = true
 }
 
 resource "aws_db_snapshot" "snapshot" {
