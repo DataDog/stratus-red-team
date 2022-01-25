@@ -28,7 +28,7 @@ func buildCleanupCmd() *cobra.Command {
 
 			// Ensure the technique IDs are valid
 			_, err := resolveTechniques(args)
-			
+
 			return err
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -52,8 +52,8 @@ func buildCleanupCmd() *cobra.Command {
 
 func doCleanupCmd(techniques []*stratus.AttackTechnique) {
 	for i := range techniques {
-		runner := runner.NewRunner(techniques[i], flagForceCleanup)
-		err := runner.CleanUp()
+		stratusRunner := runner.NewRunner(techniques[i], flagForceCleanup)
+		err := stratusRunner.CleanUp()
 		if err != nil {
 			log.Println("Failed to clean up: " + err.Error())
 			// continue cleaning up other techniques
@@ -66,9 +66,9 @@ func doCleanupAllCmd() {
 	log.Println("Cleaning up all techniques that have been warmed-up or detonated")
 	availableTechniques := stratus.GetRegistry().ListAttackTechniques()
 	for i := range availableTechniques {
-		runner := runner.NewRunner(availableTechniques[i], flagForceCleanup)
-		if runner.GetState() != stratus.AttackTechniqueStatusCold {
-			err := runner.CleanUp()
+		stratusRunner := runner.NewRunner(availableTechniques[i], flagForceCleanup)
+		if stratusRunner.GetState() != stratus.AttackTechniqueStatusCold {
+			err := stratusRunner.CleanUp()
 			if err != nil {
 				log.Println("Failed to clean up: " + err.Error())
 				// continue cleaning up other techniques

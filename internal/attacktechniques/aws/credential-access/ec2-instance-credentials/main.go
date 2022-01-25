@@ -60,7 +60,7 @@ func detonate(params map[string]string) error {
 		DocumentName: aws.String("AWS-RunShellScript"),
 		InstanceIds:  []string{instanceId},
 		Parameters: map[string][]string{
-			"commands": []string{command},
+			"commands": {command},
 		},
 	})
 	if err != nil {

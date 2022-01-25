@@ -37,7 +37,7 @@ func (m *Registry) GetAttackTechniqueByName(name string) *AttackTechnique {
 }
 
 func (m *Registry) GetAttackTechniques(filter *AttackTechniqueFilter) []*AttackTechnique {
-	var ret = []*AttackTechnique{}
+	var ret []*AttackTechnique
 
 	for i := range m.techniques {
 		technique := m.techniques[i]

@@ -19,7 +19,7 @@ See the documentation at **[stratus-red-team.cloud](https://stratus-red-team.clo
 
 - [Installing Stratus Red Team](https://stratus-red-team.cloud/user-guide/getting-started/#installation) - Homebrew formula, Docker image and pre-built binaries available
 
-- [Available Attack Techniques](https://stratus-red-team.cloud/attack-techniques/list/), mapped to MITREA ATT&CK
+- [Available Attack Techniques](https://stratus-red-team.cloud/attack-techniques/list/), mapped to MITRE ATT&CK
 
 ## Installation
 
@@ -30,7 +30,7 @@ brew tap datadog/stratus-red-team
 brew install datadog/stratus-red-team/stratus-red-team
 ```
 
-- Linux / Windows / Mac OS: Download one of the [pre-built binaries](https://github.com/datadog/stratus-red-team/releases).
+- Linux / Windows / macOS: Download one of the [pre-built binaries](https://github.com/datadog/stratus-red-team/releases).
 
 - Docker:
 

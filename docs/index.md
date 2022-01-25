@@ -9,7 +9,7 @@ Check out:
 
 <figure markdown>
 [![screen recording](./demo.gif)](./demo.gif)
-<figcaption>Demo of Stratus Red Team. Click to enlage</figcaption>
+<figcaption>Demo of Stratus Red Team. Click to enlarge</figcaption>
 </figure>
 
 ## Motivation Behind Stratus Red Team

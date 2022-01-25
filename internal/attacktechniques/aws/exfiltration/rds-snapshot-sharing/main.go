@@ -77,5 +77,4 @@ func revert(params map[string]string) error {
 	}
 
 	return nil
-	return nil
 }

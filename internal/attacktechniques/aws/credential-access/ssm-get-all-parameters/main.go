@@ -55,7 +55,7 @@ func detonate(map[string]string) error {
 		}
 
 		// Retrieve the value of SSM parameters by batch of 10 (maximum value supported by ssm:GetParameters)
-		var names = []string{}
+		var names []string
 		for i := range result.Parameters {
 			// only take into account parameters created by Stratus Red Team
 			if name := *result.Parameters[i].Name; strings.Index(name, "/credentials/stratus-red-team") == 0 {

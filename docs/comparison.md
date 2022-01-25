@@ -15,7 +15,7 @@ At the [time of writing](https://github.com/redcanaryco/atomic-red-team/blob/757
 
 While Atomic Red Team is an *awesome* tool for endpoint security, it wasn't built purposely for cloud environments.
 In particular, it doesn't handle the prerequisite infrastructure and configuration necessary to detonate TTPs, and leaves that to the user. 
-For instance, [AWS - Create Access Key and Secret Key](https://github.com/redcanaryco/atomic-red-team/blob/7576aff377781ba3546c0835e48bffc980b4cbc8/atomics/T1098.001/T1098.001.md#atomic-test-3---aws---create-access-key-and-secret-key) requires you to create an IAM user prior to detonating the attack. Stratus Red Team packages this prerequisite logic so you can detonate attack techniques without having to create any infrastructure or cloud configuration manually.
+For instance, [AWS - Create Access Key and Secret Key](https://github.com/redcanaryco/atomic-red-team/blob/7576aff377781ba3546c0835e48bffc980b4cbc8/atomics/T1098.001/T1098.001.md#atomic-test-3---aws---create-access-key-and-secret-key) requires you to create an IAM user prior to detonating the attack. Stratus Red Team packages this prerequisite logic, so you can detonate attack techniques without having to create any infrastructure or cloud configuration manually.
 
 However, the attack technique format of Atomic Red Team is [based on YAML](https://github.com/redcanaryco/atomic-red-team/blob/7576aff377781ba3546c0835e48bffc980b4cbc8/atomics/T1098.001/T1098.001.yaml#L169-L196), and it's therefore easier to add new TTPs, even if they are not in the core of Atomic Red Team.
 

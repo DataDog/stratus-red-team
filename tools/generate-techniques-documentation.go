@@ -20,7 +20,7 @@ func main() {
 	funcMap := template.FuncMap{
 		"ToUpper": strings.ToUpper,
 		"JoinTactics": func(tactics []mitreattack.Tactic, prefix string, sep string) string {
-			result := []string{}
+			var result []string
 			for i := range tactics {
 				name := mitreattack.AttackTacticToString(tactics[i])
 				result = append(result, name)

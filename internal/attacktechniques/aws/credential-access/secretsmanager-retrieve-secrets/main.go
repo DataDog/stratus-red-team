@@ -39,7 +39,7 @@ Detonation:
 	})
 }
 
-func detonate(params map[string]string) error {
+func detonate(map[string]string) error {
 	cfg, _ := config.LoadDefaultConfig(context.Background())
 	secretsManagerClient := secretsmanager.NewFromConfig(cfg)
 
