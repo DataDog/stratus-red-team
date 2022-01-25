@@ -38,7 +38,7 @@ func main() {
 		for j := range technique.MitreAttackTactics {
 			tactic := mitreattack.AttackTacticToString(technique.MitreAttackTactics[j])
 			if index[technique.Platform] == nil {
-				index[technique.Platform] = make(map[string][]*stratus.AttackTechnique, 0)
+				index[technique.Platform] = make(map[string][]*stratus.AttackTechnique)
 			}
 			if index[technique.Platform][tactic] == nil {
 				index[technique.Platform][tactic] = make([]*stratus.AttackTechnique, 0)
