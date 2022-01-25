@@ -1,6 +1,5 @@
-ARG VERSION=dev-snapshot
-
 FROM golang:1.17.6-alpine3.15 AS builder
+ARG VERSION=dev-snapshot
 RUN mkdir /build
 RUN apk add --update make
 WORKDIR /build
