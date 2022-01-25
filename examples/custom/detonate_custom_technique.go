@@ -25,7 +25,7 @@ var myPrerequisitesTerraformCode []byte
 func buildCustomAttackTechnique() *stratus.AttackTechnique {
 	return &stratus.AttackTechnique{
 		ID:                         "my-sample-attack-technique",
-		Description:                "A sample AWS attack technique that creates an IAM user as a pre-requisite, and prints its ARN as a detonation",
+		Description:                "A sample AWS attack technique that creates an IAM user as a prerequisite, and prints its ARN as a detonation",
 		Platform:                   stratus.AWS,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Execution},
 		PrerequisitesTerraformCode: myPrerequisitesTerraformCode,

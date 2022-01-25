@@ -21,7 +21,7 @@ Simulates the theft of EC2 instance credentials from the Instance Metadata Servi
 
 <span style="font-variant: small-caps;">Warm-up</span>:
 
-- Create the pre-requisite EC2 instance and VPC (takes a few minutes).
+- Create the prerequisite EC2 instance and VPC (takes a few minutes).
 
 <span style="font-variant: small-caps;">Detonation</span>:
 

@@ -17,4 +17,4 @@ stratus cleanup --all
 
 ## Difference with `status revert`
 
-`stratus revert` is about reverting the side effects of a detonation. In addition to reverting an attack technique, `stratus cleanup` also takes care of removing all pre-requisite infrastructure from your live environment.
+`stratus revert` is about reverting the side effects of a detonation. In addition to reverting an attack technique, `stratus cleanup` also takes care of removing all prerequisite infrastructure from your live environment.

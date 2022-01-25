@@ -14,8 +14,8 @@ At the [time of writing](https://github.com/redcanaryco/atomic-red-team/blob/757
 - AWS - Create a new IAM user
 
 While Atomic Red Team is an *awesome* tool for endpoint security, it wasn't built purposely for cloud environments.
-In particular, it doesn't handle the pre-requisite infrastructure and configuration necessary to detonate TTPs, and leaves that to the user. 
-For instance, [AWS - Create Access Key and Secret Key](https://github.com/redcanaryco/atomic-red-team/blob/7576aff377781ba3546c0835e48bffc980b4cbc8/atomics/T1098.001/T1098.001.md#atomic-test-3---aws---create-access-key-and-secret-key) requires you to create an IAM user prior to detonating the attack. Stratus Red Team packages this pre-requisite logic so you can detonate attack techniques without having to create any infrastructure or cloud configuration manually.
+In particular, it doesn't handle the prerequisite infrastructure and configuration necessary to detonate TTPs, and leaves that to the user. 
+For instance, [AWS - Create Access Key and Secret Key](https://github.com/redcanaryco/atomic-red-team/blob/7576aff377781ba3546c0835e48bffc980b4cbc8/atomics/T1098.001/T1098.001.md#atomic-test-3---aws---create-access-key-and-secret-key) requires you to create an IAM user prior to detonating the attack. Stratus Red Team packages this prerequisite logic so you can detonate attack techniques without having to create any infrastructure or cloud configuration manually.
 
 However, the attack technique format of Atomic Red Team is [based on YAML](https://github.com/redcanaryco/atomic-red-team/blob/7576aff377781ba3546c0835e48bffc980b4cbc8/atomics/T1098.001/T1098.001.yaml#L169-L196), and it's therefore easier to add new TTPs, even if they are not in the core of Atomic Red Team.
 
@@ -28,7 +28,7 @@ While Stratus Red Team and Leonidas have similar goals, their implementation is 
 - Leonidas is a [fully-fledged web application](https://github.com/FSecureLABS/leonidas/blob/master/docs/deploying-leonidas.md) you deploy in your AWS account using Terraform, and then a CodePipeline pipeline.
 - Then, you use "Leo", the test case orchestrator, to hit the web API and detonate attack techniques. 
 - Leonidas allows describing TTPs as [YAML](https://github.com/FSecureLABS/leonidas/blob/master/definitions/execution/modify-lambda-function-code.yml), making it easier to extend than Stratus Red Team. 
-- Leonidas does not handle pre-requisites for detonating attack techniques.
+- Leonidas does not handle prerequisites for detonating attack techniques.
 - The attack techniques implemented by Leonidas are very granular, meaning it can be challenging to implement detection for them. See for instance: [STS Get Caller Identity](http://detectioninthe.cloud/discovery/sts_get_caller_identity/)
 - Leonidas comes with a set of suggested threat detection rules. However, as its attack techniques are very granular, it is practically impossible to use them as-is in a real production environment, as they would trigger many false positives.
 

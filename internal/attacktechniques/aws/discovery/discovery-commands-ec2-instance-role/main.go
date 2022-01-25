@@ -39,7 +39,7 @@ The commands will be run under the identity of the EC2 instance role, simulating
 
 Warm-up:
 
-- Create the pre-requisite EC2 instance and VPC (takes a few minutes).
+- Create the prerequisite EC2 instance and VPC (takes a few minutes).
 
 Detonation: 
 

@@ -54,7 +54,7 @@ Let's retrieve more information about the technique, either through its [automat
 $ stratus show aws.persistence.backdoor-iam-role
 Establishes persistence by backdooring an existing IAM role, allowing it to be assumed from an external AWS account.
 
-Warm-up: Creates the pre-requisite IAM role.
+Warm-up: Creates the prerequisite IAM role.
 
 Detonation: Updates the assume role policy of the IAM role to backdoor it.
 ```
@@ -123,7 +123,7 @@ stratus cleanup aws.persistence.backdoor-iam-role
 
 ## Example 2: Advanced usage
 
-In this example, we want to prepare our live environment with the pre-requisites ahead of time - say, a few hours before detonating our attack techniques.
+In this example, we want to prepare our live environment with the prerequisites ahead of time - say, a few hours before detonating our attack techniques.
 
 We start by warming up the techniques we're interested in:
 
@@ -131,7 +131,7 @@ We start by warming up the techniques we're interested in:
 stratus warmup aws.defense-evasion.stop-cloudtrail aws.defense-evasion.remove-vpc-flow-logs aws.persistence.backdoor-iam-user
 ```
 
-We now have the pre-requisites ready:
+We now have the prerequisites ready:
 
 ```
 CloudTrail trail arn:aws:cloudtrail:us-east-1:0123456789012:trail/my-cloudtrail-trail ready
@@ -199,7 +199,7 @@ while true; do
 done
 ```
 
-Once we are done with our testing, we can clean up our techniques. Cleaning up a technique will revert its detonation logic (if applicable), then nuke all its pre-requisite resources and infrastructure:
+Once we are done with our testing, we can clean up our techniques. Cleaning up a technique will revert its detonation logic (if applicable), then nuke all its prerequisite resources and infrastructure:
 
 ```bash
 stratus cleanup aws.defense-evasion.stop-cloudtrail aws.defense-evasion.remove-vpc-flow-logs aws.persistence.backdoor-iam-user

@@ -24,7 +24,7 @@ type AttackTechnique struct {
 	// The platform of the technique, e.g. AWS
 	Platform Platform
 
-	// Terraform code to apply to create the necessary pre-requisites for the technique to be detonated
+	// Terraform code to apply to create the necessary prerequisites for the technique to be detonated
 	PrerequisitesTerraformCode []byte
 
 	// Detonation function

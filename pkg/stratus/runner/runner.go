@@ -46,7 +46,7 @@ func (m *Runner) initialize() {
 }
 
 func (m *Runner) WarmUp() (map[string]string, error) {
-	// No pre-requisites to spin-up
+	// No prerequisites to spin-up
 	if m.Technique.PrerequisitesTerraformCode == nil {
 		return map[string]string{}, nil
 	}
@@ -167,12 +167,12 @@ func (m *Runner) CleanUp() error {
 		}
 	}
 
-	// Nuke pre-requisites
+	// Nuke prerequisites
 	if m.Technique.PrerequisitesTerraformCode != nil {
-		log.Println("Cleaning up technique pre-requisites with terraform destroy")
+		log.Println("Cleaning up technique prerequisites with terraform destroy")
 		prerequisitesCleanupErr = m.TerraformManager.TerraformDestroy(m.TerraformDir)
 		if prerequisitesCleanupErr != nil {
-			log.Println("Warning: unable to cleanup TTP pre-requisites: " + prerequisitesCleanupErr.Error())
+			log.Println("Warning: unable to cleanup TTP prerequisites: " + prerequisitesCleanupErr.Error())
 		}
 	}
 
@@ -216,9 +216,9 @@ func buildErrorFromTerraformError(err error) error {
 	const MissingRegionErrorMessage = "The argument \"region\" is required, but no definition was found"
 
 	if strings.Contains(err.Error(), MissingRegionErrorMessage) {
-		return errors.New("unable to create attack technique pre-requisites. Ensure you are authenticated against AWS and have the right permissions to run Stratus Red Team.\n" +
+		return errors.New("unable to create attack technique prerequisites. Ensure you are authenticated against AWS and have the right permissions to run Stratus Red Team.\n" +
 			"Stratus Red Team will display below the error that Terraform returned:\n" + err.Error())
 	}
 
-	return errors.New("Unable to run terraform apply on pre-requisite: " + err.Error())
+	return errors.New("Unable to run terraform apply on prerequisite: " + err.Error())
 }

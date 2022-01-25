@@ -18,4 +18,4 @@ stratus revert aws.persistence.backdoor-lambda-function
 
 ## Difference with `stratus cleanup`
 
-`stratus cleanup` both reverts an attack technique, *and* removes any deployed pre-requisite infrastructure from your live environment. 
+`stratus cleanup` both reverts an attack technique, *and* removes any deployed prerequisite infrastructure from your live environment. 

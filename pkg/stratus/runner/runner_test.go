@@ -24,7 +24,7 @@ func TestRunnerWarmUp(t *testing.T) {
 
 	var scenario = []RunnerWarmupTestScenario{
 		{
-			Name:                  "Warming up a technique without pre-requisite Terraform code",
+			Name:                  "Warming up a technique without prerequisite Terraform code",
 			Technique:             &stratus.AttackTechnique{ID: "foo"},
 			InitialTechniqueState: stratus.AttackTechniqueStatusCold,
 			PersistedOutputs:      map[string]string{"myoutput": "foo"},
@@ -33,7 +33,7 @@ func TestRunnerWarmUp(t *testing.T) {
 				state.AssertNotCalled(t, "ExtractTechnique")
 				assert.Nil(t, err)
 
-				// No pre-requisite Terraform code implies there cannot be any output
+				// No prerequisite Terraform code implies there cannot be any output
 				assert.Len(t, outputs, 0)
 			},
 		},

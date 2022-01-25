@@ -19,17 +19,17 @@ docker run --rm ghcr.io/datadog/stratus-red-team
 
 ## Concepts
 
-An <span class="concept">attack technique</span> is a granular TTP that has *pre-requisites* infrastructure or configuration.
+An <span class="concept">attack technique</span> is a granular TTP that has *prerequisites* infrastructure or configuration.
 You can see the list of attack techniques supported by Stratus Red Team [here](../attack-techniques/list.md).
 
-<span class="concept">Warming up</span> an attack technique means making sure its pre-requisites are met, without detonating it. 
-Warm-up is a preparation phase, before executing the actual attack. Behind the scenes, Stratus Red Team transparently uses Terraform[^1] to spin up and tear down the pre-requisites of each attack technique.
+<span class="concept">Warming up</span> an attack technique means making sure its prerequisites are met, without detonating it. 
+Warm-up is a preparation phase, before executing the actual attack. Behind the scenes, Stratus Red Team transparently uses Terraform[^1] to spin up and tear down the prerequisites of each attack technique.
 
 <span class="concept">Detonating</span> an attack technique means executing it against a live environment, for instance against a test AWS account.
 
 <span class="concept">Reverting</span> an attack technique means "cancelling" its detonation, when it had a side effect.
 
-<span class="concept">Cleaning up</span> an attack technique means nuking all its pre-requisites and making sure no resource is left in your environment.
+<span class="concept">Cleaning up</span> an attack technique means nuking all its prerequisites and making sure no resource is left in your environment.
 
 An attack technique is <span class="concept">idempotent</span> if it can be detonated multiple times without reverting it.
 
@@ -101,4 +101,4 @@ Encountering issues? See our [troubleshooting](./troubleshooting.md) page, or [o
 
 *[TTP]: Tactics, techniques and procedures
 
-[^1]: While Stratus Red Team uses Terraform under the hood, it doesn't mess with your current Terraform install nor does it require you to install Terraform as a pre-requisite. Stratus Red Team will download its own Terraform binary in `$HOME/.stratus-red-team`.
+[^1]: While Stratus Red Team uses Terraform under the hood, it doesn't mess with your current Terraform install nor does it require you to install Terraform as a prerequisite. Stratus Red Team will download its own Terraform binary in `$HOME/.stratus-red-team`.

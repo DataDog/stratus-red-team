@@ -41,8 +41,8 @@ func buildDetonateCmd() *cobra.Command {
 			doDetonateCmd(techniques, detonateCleanup)
 		},
 	}
-	detonateCmd.Flags().BoolVarP(&detonateCleanup, "cleanup", "", false, "Clean up the infrastructure that was spun up as part of the technique pre-requisites")
-	//detonateCmd.Flags().BoolVarP(&detonateNoWarmup, "no-warmup", "", false, "Do not spin up pre-requisite infrastructure or configuration. Requires that 'warmup' was used before.")
+	detonateCmd.Flags().BoolVarP(&detonateCleanup, "cleanup", "", false, "Clean up the infrastructure that was spun up as part of the technique prerequisites")
+	//detonateCmd.Flags().BoolVarP(&detonateNoWarmup, "no-warmup", "", false, "Do not spin up prerequisite infrastructure or configuration. Requires that 'warmup' was used before.")
 	detonateCmd.Flags().BoolVarP(&detonateForce, "force", "f", false, "Force detonation in cases where the technique is not idempotent and has already been detonated")
 
 	return detonateCmd
@@ -60,7 +60,7 @@ func detonateTechnique(technique *stratus.AttackTechnique, cleanup bool) {
 		defer func() {
 			err := stratusRunner.CleanUp()
 			if err != nil {
-				log.Println("unable to clean up pre-requisites: " + err.Error())
+				log.Println("unable to clean up prerequisites: " + err.Error())
 			}
 		}()
 	}

@@ -14,7 +14,7 @@ var forceWarmup bool
 func buildWarmupCmd() *cobra.Command {
 	warmupCmd := &cobra.Command{
 		Use:                   "warmup attack-technique-id [attack-technique-id]...",
-		Short:                 "\"Warm up\" an attack technique by spinning up the pre-requisite infrastructure or configuration, without detonating it",
+		Short:                 "\"Warm up\" an attack technique by spinning up the prerequisite infrastructure or configuration, without detonating it",
 		Example:               "stratus warmup aws.defense-evasion.stop-cloudtrail",
 		DisableFlagsInUseLine: true,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
@@ -36,7 +36,7 @@ func buildWarmupCmd() *cobra.Command {
 			doWarmupCmd(techniques)
 		},
 	}
-	warmupCmd.Flags().BoolVarP(&forceWarmup, "force", "f", false, "Force re-ensuring the pre-requisite infrastructure or configuration is up to date")
+	warmupCmd.Flags().BoolVarP(&forceWarmup, "force", "f", false, "Force re-ensuring the prerequisite infrastructure or configuration is up to date")
 	return warmupCmd
 }
 
