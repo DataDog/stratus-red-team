@@ -78,9 +78,14 @@ mkdocs serve
 
 Maintainer: [@christophetd](https://twitter.com/christophetd)
 
-Similar projects and inspiration (see [how Stratus Red Team compares](https://stratus-red-team.cloud/comparison/)):
+Similar projects (see [how Stratus Red Team compares](https://stratus-red-team.cloud/comparison/)):
 - [Atomic Red Team](https://github.com/redcanaryco/atomic-red-team) by Red Canary
 - [Leonidas](https://github.com/FSecureLABS/leonidas) by F-Secure
 - [pacu](https://github.com/RhinoSecurityLabs/pacu) by Rhino Security Labs
 - [Amazon GuardDuty Tester](https://github.com/awslabs/amazon-guardduty-tester)
 - [CloudGoat](https://github.com/RhinoSecurityLabs/cloudgoat) by Rhino Security Labs
+
+Inspiration and relevant resources:
+- https://expel.io/blog/mind-map-for-aws-investigations/
+- https://rhinosecuritylabs.com/aws/aws-privilege-escalation-methods-mitigation/
+- https://github.com/elastic/detection-rules/tree/main/rules/integrations/aws
