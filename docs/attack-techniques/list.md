@@ -13,6 +13,7 @@ This page contains the list of all Stratus Attack Techniques.
 | [Steal EC2 Instance Credentials](./AWS/aws.credential-access.ec2-instance-credentials.md) | [AWS](./AWS/index.md) | Credential Access |
 | [Retrieve a High Number of Secrets Manager secrets](./AWS/aws.credential-access.secretsmanager-retrieve-secrets.md) | [AWS](./AWS/index.md) | Credential Access |
 | [Retrieve And Decrypt SSM Parameters](./AWS/aws.credential-access.retrieve-all-ssm-parameters.md) | [AWS](./AWS/index.md) | Credential Access |
+| [Disable CloudTrail Logging Through Event Selectors](./AWS/aws.defense-evasion.cloudtrail-event-selectors.md) | [AWS](./AWS/index.md) | Defense Evasion |
 | [CloudTrail Logs Impairment Through S3 Lifecycle Rule](./AWS/aws.defense-evasion.cloudtrail-lifecycle-rule.md) | [AWS](./AWS/index.md) | Defense Evasion |
 | [Delete CloudTrail Trail](./AWS/aws.defense-evasion.delete-cloudtrail.md) | [AWS](./AWS/index.md) | Defense Evasion |
 | [Stop CloudTrail Trail](./AWS/aws.defense-evasion.stop-cloudtrail.md) | [AWS](./AWS/index.md) | Defense Evasion |
