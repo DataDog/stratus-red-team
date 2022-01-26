@@ -5,7 +5,6 @@ import (
 	_ "embed"
 	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
 	"github.com/datadog/stratus-red-team/internal/providers"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
@@ -38,7 +37,7 @@ func detonate(params map[string]string) error {
 	iamClient := iam.NewFromConfig(providers.AWS().GetConnection())
 
 	userResponse, err := iamClient.GetUser(context.Background(), &iam.GetUserInput{
-		UserName: aws.String(iamUserName),
+		UserName: &iamUserName,
 	})
 
 	if err != nil {

@@ -49,7 +49,7 @@ func detonate(params map[string]string) error {
 	log.Println("Applying event selector on CloudTrail trail " + trailName + " to disable logging management and data events")
 
 	_, err := cloudtrailClient.PutEventSelectors(context.Background(), &cloudtrail.PutEventSelectorsInput{
-		TrailName: aws.String(trailName),
+		TrailName: &trailName,
 		EventSelectors: []types.EventSelector{
 			{
 				ReadWriteType:           types.ReadWriteTypeReadOnly,
@@ -75,7 +75,7 @@ func revert(params map[string]string) error {
 
 	log.Println("Reverting event selector on CloudTrail trail " + trailName)
 	_, err := cloudtrailClient.PutEventSelectors(context.Background(), &cloudtrail.PutEventSelectorsInput{
-		TrailName:      aws.String(trailName),
+		TrailName:      &trailName,
 		EventSelectors: []types.EventSelector{{IncludeManagementEvents: aws.Bool(true)}},
 	})
 

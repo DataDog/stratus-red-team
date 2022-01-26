@@ -48,7 +48,7 @@ func detonate(params map[string]string) error {
 
 	log.Println("Setting a short retention policy on CloudTrail S3 bucket " + bucketName)
 	_, err := s3Client.PutBucketLifecycleConfiguration(context.Background(), &s3.PutBucketLifecycleConfigurationInput{
-		Bucket: aws.String(bucketName),
+		Bucket: &bucketName,
 		LifecycleConfiguration: &types.BucketLifecycleConfiguration{
 			Rules: []types.LifecycleRule{
 				{
@@ -75,7 +75,7 @@ func revert(params map[string]string) error {
 
 	log.Println("Reverting S3 Lifecycle Rules on CloudTrail S3 bucket " + bucketName)
 	_, err := s3Client.DeleteBucketLifecycle(context.Background(), &s3.DeleteBucketLifecycleInput{
-		Bucket: aws.String(bucketName),
+		Bucket: &bucketName,
 	})
 
 	if err != nil {

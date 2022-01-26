@@ -64,7 +64,7 @@ func detonate(params map[string]string) error {
 		instanceId := "i-" + utils.RandomString(16)
 
 		_, err := ec2Client.GetPasswordData(context.Background(), &ec2.GetPasswordDataInput{
-			InstanceId: aws.String(instanceId),
+			InstanceId: &instanceId,
 		})
 
 		if err == nil {

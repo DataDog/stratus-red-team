@@ -49,7 +49,7 @@ func detonate(params map[string]string) error {
 
 	log.Println("Sharing RDS Snapshot " + snapshotId + " with an external AWS account")
 	_, err := rdsClient.ModifyDBSnapshotAttribute(context.Background(), &rds.ModifyDBSnapshotAttributeInput{
-		DBSnapshotIdentifier: aws.String(snapshotId),
+		DBSnapshotIdentifier: &snapshotId,
 		AttributeName:        aws.String("restore"),
 		ValuesToAdd:          AccountIdToShareWith,
 	})
@@ -67,7 +67,7 @@ func revert(params map[string]string) error {
 
 	log.Println("Un-sharing RDS Snapshot " + snapshotId + " with an external AWS account")
 	_, err := rdsClient.ModifyDBSnapshotAttribute(context.Background(), &rds.ModifyDBSnapshotAttributeInput{
-		DBSnapshotIdentifier: aws.String(snapshotId),
+		DBSnapshotIdentifier: &snapshotId,
 		AttributeName:        aws.String("restore"),
 		ValuesToRemove:       AccountIdToShareWith,
 	})

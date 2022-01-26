@@ -49,7 +49,7 @@ func detonate(params map[string]string) error {
 	log.Println("Opening port 22 from the Internet on " + securityGroupId)
 
 	_, err := ec2Client.AuthorizeSecurityGroupIngress(context.Background(), &ec2.AuthorizeSecurityGroupIngressInput{
-		GroupId:    aws.String(securityGroupId),
+		GroupId:    &securityGroupId,
 		CidrIp:     aws.String("0.0.0.0/0"),
 		FromPort:   aws.Int32(22),
 		ToPort:     aws.Int32(22),
@@ -73,7 +73,7 @@ func revert(params map[string]string) error {
 	log.Println("Closing port 22 from the Internet on " + securityGroupId)
 
 	_, err := ec2Client.RevokeSecurityGroupIngress(context.Background(), &ec2.RevokeSecurityGroupIngressInput{
-		GroupId:    aws.String(securityGroupId),
+		GroupId:    &securityGroupId,
 		CidrIp:     aws.String("0.0.0.0/0"),
 		FromPort:   aws.Int32(22),
 		ToPort:     aws.Int32(22),
