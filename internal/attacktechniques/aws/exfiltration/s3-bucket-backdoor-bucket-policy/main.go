@@ -4,7 +4,6 @@ import (
 	"context"
 	_ "embed"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/datadog/stratus-red-team/internal/providers"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
@@ -55,8 +54,8 @@ func detonate(params map[string]string) error {
 
 	log.Println("Backdooring bucket policy of " + bucketName)
 	_, err := s3Client.PutBucketPolicy(context.Background(), &s3.PutBucketPolicyInput{
-		Bucket: aws.String(bucketName),
-		Policy: aws.String(policy),
+		Bucket: &bucketName,
+		Policy: &policy,
 	})
 
 	return err
@@ -68,7 +67,7 @@ func revert(params map[string]string) error {
 
 	log.Println("Removing malicious bucket policy on " + bucketName)
 	_, err := s3Client.DeleteBucketPolicy(context.Background(), &s3.DeleteBucketPolicyInput{
-		Bucket: aws.String(bucketName),
+		Bucket: &bucketName,
 	})
 
 	return err

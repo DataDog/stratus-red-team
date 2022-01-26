@@ -4,7 +4,6 @@ import (
 	"context"
 	_ "embed"
 	"errors"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
 	"github.com/datadog/stratus-red-team/internal/providers"
 	"github.com/datadog/stratus-red-team/internal/utils"
@@ -48,8 +47,8 @@ func detonate(params map[string]string) error {
 
 	log.Println("Creating a login profile on IAM user " + userName)
 	_, err := iamClient.CreateLoginProfile(context.Background(), &iam.CreateLoginProfileInput{
-		UserName:              aws.String(userName),
-		Password:              aws.String(password),
+		UserName:              &userName,
+		Password:              &password,
 		PasswordResetRequired: false,
 	})
 	if err != nil {
@@ -70,7 +69,7 @@ func revert(params map[string]string) error {
 
 	log.Println("Removing the login profile on IAM user " + userName)
 	_, err := iamClient.DeleteLoginProfile(context.Background(), &iam.DeleteLoginProfileInput{
-		UserName: aws.String(userName),
+		UserName: &userName,
 	})
 	if err != nil {
 		return errors.New("unable to remove IAM login profile: " + err.Error())

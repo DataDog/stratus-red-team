@@ -4,7 +4,6 @@ import (
 	"context"
 	_ "embed"
 	"errors"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/cloudtrail"
 	"github.com/datadog/stratus-red-team/internal/providers"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
@@ -46,7 +45,7 @@ func detonate(params map[string]string) error {
 	log.Println("Stopping CloudTrail trail " + trailName)
 
 	_, err := cloudtrailClient.StopLogging(context.Background(), &cloudtrail.StopLoggingInput{
-		Name: aws.String(trailName),
+		Name: &trailName,
 	})
 
 	if err != nil {
@@ -62,7 +61,7 @@ func revert(params map[string]string) error {
 
 	log.Println("Restarting CloudTrail trail " + trailName)
 	_, err := cloudtrailClient.StartLogging(context.Background(), &cloudtrail.StartLoggingInput{
-		Name: aws.String(trailName),
+		Name: &trailName,
 	})
 
 	return err

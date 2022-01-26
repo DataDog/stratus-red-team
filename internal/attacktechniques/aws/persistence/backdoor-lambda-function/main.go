@@ -39,7 +39,7 @@ Detonation:
 	})
 }
 
-const policyStatementId = "backdoor"
+var policyStatementId = "backdoor"
 
 func detonate(params map[string]string) error {
 	lambdaClient := lambda.NewFromConfig(providers.AWS().GetConnection())
@@ -47,10 +47,10 @@ func detonate(params map[string]string) error {
 
 	log.Println("Backdooring the resource-based policy of the Lambda function " + lambdaFunctionName)
 	result, err := lambdaClient.AddPermission(context.Background(), &lambda.AddPermissionInput{
-		FunctionName: aws.String(lambdaFunctionName),
+		FunctionName: &lambdaFunctionName,
 		Action:       aws.String("lambda:InvokeFunction"),
 		Principal:    aws.String("*"), // I intended to share it only with a specific account ID, but couldn't get it working.
-		StatementId:  aws.String(policyStatementId),
+		StatementId:  &policyStatementId,
 	})
 
 	if err != nil {
@@ -68,8 +68,8 @@ func revert(params map[string]string) error {
 
 	log.Println("Removing the backdoor statement in the resource-based policy of the Lambda function " + lambdaFunctionName)
 	_, err := lambdaClient.RemovePermission(context.Background(), &lambda.RemovePermissionInput{
-		FunctionName: aws.String(lambdaFunctionName),
-		StatementId:  aws.String(policyStatementId),
+		FunctionName: &lambdaFunctionName,
+		StatementId:  &policyStatementId,
 	})
 
 	if err != nil {
