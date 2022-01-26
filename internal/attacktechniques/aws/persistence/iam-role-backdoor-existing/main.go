@@ -9,6 +9,7 @@ import (
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"github.com/datadog/stratus-red-team/pkg/stratus/mitreattack"
 	"log"
+	"strings"
 )
 
 //go:embed main.tf
@@ -43,21 +44,39 @@ Detonation:
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence},
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,
+		Revert:                     revert,
 	})
 }
 
 func detonate(params map[string]string) error {
-	iamClient := iam.NewFromConfig(providers.AWS().GetConnection())
 	roleName := params["role_name"]
 
 	log.Println("Backdooring IAM role " + roleName + " by allowing sts:AssumeRole from an external AWS account")
-	_, err := iamClient.UpdateAssumeRolePolicy(context.Background(), &iam.UpdateAssumeRolePolicyInput{
-		RoleName:       &roleName,
-		PolicyDocument: &maliciousIamPolicy,
-	})
+	err := updateAssumeRolePolicy(roleName, maliciousIamPolicy)
+	if err != nil {
+		return errors.New("unable to backdoor IAM role: " + err.Error())
+	}
+	return nil
+}
+
+func revert(params map[string]string) error {
+	roleName := params["role_name"]
+	roleTrustPolicy := strings.ReplaceAll(params["role_trust_policy"], "\\", "") // Terraform output adds backslashes for some reason
+
+	log.Println("Reverting trust policy of IAM role " + roleName + " to its original state")
+	err := updateAssumeRolePolicy(roleName, roleTrustPolicy)
 
 	if err != nil {
 		return errors.New("unable to backdoor IAM role: " + err.Error())
 	}
 	return nil
+}
+
+func updateAssumeRolePolicy(roleName string, roleTrustPolicy string) error {
+	iamClient := iam.NewFromConfig(providers.AWS().GetConnection())
+	_, err := iamClient.UpdateAssumeRolePolicy(context.Background(), &iam.UpdateAssumeRolePolicyInput{
+		RoleName:       &roleName,
+		PolicyDocument: &roleTrustPolicy,
+	})
+	return err
 }

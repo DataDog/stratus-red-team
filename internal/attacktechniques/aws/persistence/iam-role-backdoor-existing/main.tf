@@ -39,6 +39,10 @@ output "role_name" {
   value = aws_iam_role.legit-role.name
 }
 
+output "role_trust_policy" {
+  value = aws_iam_role.legit-role.assume_role_policy
+}
+
 output "display" {
   value = format("IAM role %s ready", aws_iam_role.legit-role.name)
 }
