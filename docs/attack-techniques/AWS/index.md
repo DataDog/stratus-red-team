@@ -8,64 +8,64 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 - [Retrieve EC2 Password Data](./aws.credential-access.ec2-get-password-data.md)
 
-- [Steal EC2 Instance Credentials](./aws.credential-access.ec2-instance-credentials.md)
+- [Steal EC2 Instance Credentials](./aws.credential-access.ec2-steal-instance-credentials.md)
 
 - [Retrieve a High Number of Secrets Manager secrets](./aws.credential-access.secretsmanager-retrieve-secrets.md)
 
-- [Retrieve And Decrypt SSM Parameters](./aws.credential-access.retrieve-all-ssm-parameters.md)
+- [Retrieve And Decrypt SSM Parameters](./aws.credential-access.ssm-retrieve-securestring-parameters.md)
 
 
 ## Defense Evasion
+
+- [Delete CloudTrail Trail](./aws.defense-evasion.cloudtrail-delete.md)
 
 - [Disable CloudTrail Logging Through Event Selectors](./aws.defense-evasion.cloudtrail-event-selectors.md)
 
 - [CloudTrail Logs Impairment Through S3 Lifecycle Rule](./aws.defense-evasion.cloudtrail-lifecycle-rule.md)
 
-- [Delete CloudTrail Trail](./aws.defense-evasion.delete-cloudtrail.md)
+- [Stop CloudTrail Trail](./aws.defense-evasion.cloudtrail-stop.md)
 
-- [Stop CloudTrail Trail](./aws.defense-evasion.stop-cloudtrail.md)
+- [Attempt to Leave the AWS Organization](./aws.defense-evasion.organizations-leave.md)
 
-- [Attempt to Leave the AWS Organization](./aws.defense-evasion.leave-organization.md)
-
-- [Remove VPC Flow Logs](./aws.defense-evasion.remove-vpc-flow-logs.md)
+- [Remove VPC Flow Logs](./aws.defense-evasion.vpc-remove-flow-logs.md)
 
 
 ## Discovery
 
-- [Execute Discovery Commands on an EC2 Instance](./aws.discovery.basic-enumeration-from-ec2-instance.md)
+- [Execute Discovery Commands on an EC2 Instance](./aws.discovery.ec2-enumerate-from-instance.md)
 
 
 ## Exfiltration
 
-- [Exfiltrate an AMI by Sharing It](./aws.exfiltration.ami-sharing.md)
+- [Open Ingress Port 22 on a Security Group](./aws.exfiltration.ec2-security-group-open-port-22-ingress.md)
 
-- [Exfiltrate EBS Snapshot by Sharing It](./aws.exfiltration.ebs-snapshot-shared-with-external-account.md)
+- [Exfiltrate an AMI by Sharing It](./aws.exfiltration.ec2-share-ami.md)
 
-- [Exfiltrate RDS Snapshot by Sharing](./aws.exfiltration.rds-snapshot-sharing.md)
+- [Exfiltrate EBS Snapshot by Sharing It](./aws.exfiltration.ec2-share-ebs-snapshot.md)
 
-- [Backdoor an S3 Bucket via its Bucket Policy](./aws.exfiltration.backdoor-s3-bucket-policy.md)
+- [Exfiltrate RDS Snapshot by Sharing](./aws.exfiltration.rds-share-snapshot.md)
 
-- [Open Ingress Port 22 on a Security Group](./aws.exfiltration.open-port-22-ingress-on-security-group.md)
+- [Backdoor an S3 Bucket via its Bucket Policy](./aws.exfiltration.s3-backdoor-bucket-policy.md)
 
 
 ## Persistence
 
-- [Backdoor Lambda Function Through Resource-Based Policy](./aws.persistence.backdoor-lambda-function.md)
+- [Backdoor an IAM Role](./aws.persistence.iam-backdoor-role.md)
 
-- [Backdoor an IAM Role](./aws.persistence.backdoor-iam-role.md)
+- [Create an Access Key on an IAM User](./aws.persistence.iam-backdoor-user.md)
 
-- [Create an Access Key on an IAM User](./aws.persistence.backdoor-iam-user.md)
+- [Create an administrative IAM User](./aws.persistence.iam-create-admin-user.md)
 
-- [Create a Login Profile on an IAM User](./aws.persistence.iam-user-create-login-profile.md)
+- [Create a Login Profile on an IAM User](./aws.persistence.iam-create-user-login-profile.md)
 
-- [Create an administrative IAM User](./aws.persistence.malicious-iam-user.md)
+- [Backdoor Lambda Function Through Resource-Based Policy](./aws.persistence.lambda-backdoor-function.md)
 
 
 ## Privilege Escalation
 
-- [Create an Access Key on an IAM User](./aws.persistence.backdoor-iam-user.md)
+- [Create an Access Key on an IAM User](./aws.persistence.iam-backdoor-user.md)
 
-- [Create a Login Profile on an IAM User](./aws.persistence.iam-user-create-login-profile.md)
+- [Create an administrative IAM User](./aws.persistence.iam-create-admin-user.md)
 
-- [Create an administrative IAM User](./aws.persistence.malicious-iam-user.md)
+- [Create a Login Profile on an IAM User](./aws.persistence.iam-create-user-login-profile.md)
 

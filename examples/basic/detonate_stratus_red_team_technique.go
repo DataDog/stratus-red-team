@@ -11,7 +11,7 @@ import (
 	This example warms up, then detonates a specific Stratus Red Team attack technique once you press enter.
 */
 func main() {
-	ttp := stratus.GetRegistry().GetAttackTechniqueByName("aws.defense-evasion.stop-cloudtrail")
+	ttp := stratus.GetRegistry().GetAttackTechniqueByName("aws.defense-evasion.cloudtrail-stop")
 	fmt.Println(ttp)
 
 	stratusRunner := stratusrunner.NewRunner(ttp, stratusrunner.StratusRunnerNoForce)

@@ -8,7 +8,7 @@ Cleans up any leftover infrastructure from an attack technique.
 ## Sample Usage
 
 ```bash title="Clean up an attack technique"
-stratus cleanup aws.defense-evasion.stop-cloudtrail
+stratus cleanup aws.defense-evasion.cloudtrail-stop
 ```
 
 ```bash title="Clean up all attack techniques that can be cleaned up"

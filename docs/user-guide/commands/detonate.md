@@ -11,13 +11,13 @@ Detonates an attack technique.
 ## Sample Usage
 
 ```bash title="Detonate an attack technique"
-stratus detonate aws.exfiltration.backdoor-s3-bucket-policy
+stratus detonate aws.exfiltration.s3-backdoor-bucket-policy
 ```
 
 ```bash title="Detonate multiple attack techniques"
-stratus detonate aws.exfiltration.backdoor-s3-bucket-policy aws.defense-evasion.stop-cloudtrail
+stratus detonate aws.exfiltration.s3-backdoor-bucket-policy aws.defense-evasion.cloudtrail-stop
 ```
 
 ```bash title="Detonate an attack technique, then automatically clean up any resources deployed on AWS"
-stratus detonate aws.exfiltration.backdoor-s3-bucket-policy --cleanup
+stratus detonate aws.exfiltration.s3-backdoor-bucket-policy --cleanup
 ```

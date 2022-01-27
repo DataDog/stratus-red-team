@@ -18,8 +18,8 @@ func buildDetonateCmd() *cobra.Command {
 		Use:   "detonate attack-technique-id [attack-technique-id]...",
 		Short: "Detonate one or multiple attack techniques",
 		Example: strings.Join([]string{
-			"stratus detonate aws.defense-evasion.stop-cloudtrail",
-			"stratus detonate aws.defense-evasion.stop-cloudtrail --cleanup",
+			"stratus detonate aws.defense-evasion.cloudtrail-stop",
+			"stratus detonate aws.defense-evasion.cloudtrail-stop --cleanup",
 		}, "\n"),
 		DisableFlagsInUseLine: true,
 		PreRunE: func(cmd *cobra.Command, args []string) error {

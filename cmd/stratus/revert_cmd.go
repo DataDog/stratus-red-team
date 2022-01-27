@@ -15,7 +15,7 @@ func buildRevertCmd() *cobra.Command {
 	detonateCmd := &cobra.Command{
 		Use:                   "revert attack-technique-id [attack-technique-id]...",
 		Short:                 "Revert the detonation of an attack technique",
-		Example:               "stratus revert aws.defense-evasion.stop-cloudtrail",
+		Example:               "stratus revert aws.defense-evasion.cloudtrail-stop",
 		DisableFlagsInUseLine: true,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {
