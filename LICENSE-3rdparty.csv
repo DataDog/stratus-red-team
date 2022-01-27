@@ -13,8 +13,8 @@ stratus-red-team,github.com/mattn/go-runewidth,MIT,Yasuhiro Matsumoto
 stratus-red-team,github.com/pmezard/go-difflib,,Patrick Mezard
 stratus-red-team,github.com/spf13/cobra,Apache-2.0,Steve Francia <spf@spf13.com>
 stratus-red-team,https://github.com/spf13/pflag,BSD-3-Clause,Alex Ogier|The Go Authors
-stratus-red-team,github.com/stretchr/objx,MIT,Stretchr, Inc.|objx contributors
-stratus-red-team,github.com/stretchr/testify,MIT,Mat Ryer, Tyler Bunnell and contributors
+stratus-red-team,github.com/stretchr/objx,MIT,"Stretchr, Inc.|objx contributors"
+stratus-red-team,github.com/stretchr/testify,MIT,"Mat Ryer, Tyler Bunnell and contributors"
 stratus-red-team,github.com/zclconf/go-cty,MIT,Martin Atkins
 stratus-red-team,github.com/fatih/color,MIT,Fatih Arslan
 x,golang.org/x/*,BSD-3-Clause,The Go Authors
