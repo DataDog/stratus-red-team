@@ -16,7 +16,7 @@ func buildCleanupCmd() *cobra.Command {
 		Use:                   "cleanup [attack-technique-id]... | --all",
 		Aliases:               []string{"clean"},
 		Short:                 "Cleans up any leftover infrastructure or configuration from a TTP.",
-		Example:               "stratus cleanup aws.defense-evasion.stop-cloudtrail\nstratus cleanup --all",
+		Example:               "stratus cleanup aws.defense-evasion.cloudtrail-stop\nstratus cleanup --all",
 		DisableFlagsInUseLine: true,
 		Args: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 && flagCleanupAll {

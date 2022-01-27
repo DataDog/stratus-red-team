@@ -19,9 +19,9 @@ stratus status
 +------------------------------------------------------------+--------------------------------------------------------+-------------+
 | ID                                                         | NAME                                                   | STATUS      |
 +------------------------------------------------------------+--------------------------------------------------------+-------------+
-| aws.defense-evasion.stop-cloudtrail                        | Stop a CloudTrail Trail                                | WARM        |
+| aws.defense-evasion.cloudtrail-stop                        | Stop a CloudTrail Trail                                | WARM        |
 | aws.defense-evasion.leave-organization                     | Attempt to Leave the AWS Organization                  | COLD        |
-| aws.defense-evasion.remove-vpc-flow-logs                   | Remove VPC Flow Logs                                   | WARM        |
-| aws.persistence.backdoor-iam-user                          | Create an Access Key on an IAM User                    | DETONATED   |
+| aws.defense-evasion.vpc-remove-flow-logs                   | Remove VPC Flow Logs                                   | WARM        |
+| aws.persistence.iam-backdoor-user                          | Create an Access Key on an IAM User                    | DETONATED   |
 +------------------------------------------------------------+--------------------------------------------------------+-------------+
 ```

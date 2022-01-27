@@ -35,7 +35,7 @@ An attack technique is <span class="concept">idempotent</span> if it can be deto
 
 ## Example
 
-Let's take an example with the attack technique [Exfiltrate EBS Snapshot through Snapshot Sharing](../../attack-techniques/AWS/aws.exfiltration.ebs-snapshot-shared-with-external-account/).
+Let's take an example with the attack technique [Exfiltrate EBS Snapshot through Snapshot Sharing](../../attack-techniques/AWS/aws.exfiltration.ec2-share-ebs-snapshot/).
 
 - <span class="smallcaps">Warm-up</span>: Create an EBS volume and a snapshot of it
 - <span class="smallcaps">Detonation</span>: Share the EBS snapshot with an external AWS account
@@ -64,14 +64,14 @@ stratus list
 Detonating a specific attack technique is as simple as running:
 
 ```bash
-stratus detonate aws.exfiltration.ebs-snapshot-shared-with-external-account
+stratus detonate aws.exfiltration.ec2-share-ebs-snapshot
 ```
 
 You will get an output similar to:
 
 ```
 2022/01/18 22:32:11 Checking your authentication against the AWS API
-2022/01/18 22:32:12 Warming up aws.exfiltration.ebs-snapshot-shared-with-external-account
+2022/01/18 22:32:12 Warming up aws.exfiltration.ec2-share-ebs-snapshot
 2022/01/18 22:32:12 Initializing Terraform
 2022/01/18 22:32:19 Applying Terraform
 2022/01/18 22:32:43 Sharing the volume snapshot with an external AWS account ID...
@@ -80,7 +80,7 @@ You will get an output similar to:
 You can then clean up any leftovers from the technique, which in this case will remove the EBS volume and EBS snapshot:
 
 ```bash
-stratus cleanup aws.exfiltration.ebs-snapshot-shared-with-external-account
+stratus cleanup aws.exfiltration.ec2-share-ebs-snapshot
 ```
 
 For more information, see [Usage](./usage.md), [Examples](./examples.md) and the [Command Reference](./commands).

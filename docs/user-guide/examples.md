@@ -34,24 +34,24 @@ $ stratus list --platform aws --mitre-attack-tactic persistence
 +-----------------------------------------------+-----------------------------------------+----------+----------------------+
 | TECHNIQUE ID                                  | TECHNIQUE NAME                          | PLATFORM | MITRE ATT&CK TACTIC  |
 +-----------------------------------------------+-----------------------------------------+----------+----------------------+
-| aws.persistence.backdoor-iam-role             | Backdoor an existing IAM Role           | AWS      | Persistence          |
-| aws.persistence.backdoor-iam-user             | Create an IAM Access Key on an IAM User | AWS      | Persistence          |
+| aws.persistence.iam-backdoor-role             | Backdoor an existing IAM Role           | AWS      | Persistence          |
+| aws.persistence.iam-backdoor-user             | Create an IAM Access Key on an IAM User | AWS      | Persistence          |
 |                                               |                                         |          | Privilege Escalation |
-| aws.persistence.iam-user-create-login-profile | Create a Login Profile on an IAM user   | AWS      | Persistence          |
+| aws.persistence.iam-create-user-login-profile | Create a Login Profile on an IAM user   | AWS      | Persistence          |
 |                                               |                                         |          | Privilege Escalation |
-| aws.persistence.malicious-iam-user            | Create an administrative IAM User       | AWS      | Persistence          |
+| aws.persistence.iam-create-admin-user            | Create an administrative IAM User       | AWS      | Persistence          |
 |                                               |                                         |          | Privilege Escalation |
 +-----------------------------------------------+-----------------------------------------+----------+----------------------+
 ```
 
 ## Detonating an attack technique
 
-We're interested in `aws.persistence.backdoor-iam-role`, an attack technique that backdoors an existing IAM role to add a trust relationship with a malicious AWS account.
+We're interested in `aws.persistence.iam-backdoor-role`, an attack technique that backdoors an existing IAM role to add a trust relationship with a malicious AWS account.
 
-Let's retrieve more information about the technique, either through its [automatically-generated documentation](https://stratus-red-team.cloud/attack-techniques/AWS/aws.persistence.backdoor-iam-role/), or by running:
+Let's retrieve more information about the technique, either through its [automatically-generated documentation](https://stratus-red-team.cloud/attack-techniques/AWS/aws.persistence.iam-backdoor-role/), or by running:
 
 ```
-$ stratus show aws.persistence.backdoor-iam-role
+$ stratus show aws.persistence.iam-backdoor-role
 Establishes persistence by backdooring an existing IAM role, allowing it to be assumed from an external AWS account.
 
 Warm-up: Creates the prerequisite IAM role.
@@ -64,9 +64,9 @@ We now know that Stratus Red Team will first create an IAM role in the warm-up p
 We could choose to perform the warm-up and detonation phase separately - but for simplicity, let's do it all together:
 
 ```
-$ stratus detonate aws.persistence.backdoor-iam-role
+$ stratus detonate aws.persistence.iam-backdoor-role
 2022/01/19 10:28:08 Checking your authentication against the AWS API
-2022/01/19 10:28:09 Warming up aws.persistence.backdoor-iam-role
+2022/01/19 10:28:09 Warming up aws.persistence.iam-backdoor-role
 2022/01/19 10:28:09 Initializing Terraform
 2022/01/19 10:28:18 Applying Terraform
 2022/01/19 10:28:32 Backdooring IAM role by allowing sts:AssumeRole from an extenral AWS account
@@ -81,7 +81,7 @@ $ stratus status
 +------------------------------------+-------------------------------+-----------+
 | ID                                 | NAME                          | STATUS    |
 +------------------------------------+-------------------------------------------+
-| aws.persistence.backdoor-iam-role  | Backdoor an existing IAM Role | DETONATED |
+| aws.persistence.iam-backdoor-role  | Backdoor an existing IAM Role | DETONATED |
 ...
 ```
 
@@ -118,7 +118,7 @@ When using `stratus detonate`, the resources spun up are not cleaned up by defau
 We can clean up any resources creates by Stratus Red Team using:
 
 ```
-stratus cleanup aws.persistence.backdoor-iam-role
+stratus cleanup aws.persistence.iam-backdoor-role
 ```
 
 ## Example 2: Advanced usage
@@ -128,7 +128,7 @@ In this example, we want to prepare our live environment with the prerequisites 
 We start by warming up the techniques we're interested in:
 
 ```bash
-stratus warmup aws.defense-evasion.stop-cloudtrail aws.defense-evasion.remove-vpc-flow-logs aws.persistence.backdoor-iam-user
+stratus warmup aws.defense-evasion.cloudtrail-stop aws.defense-evasion.vpc-remove-flow-logs aws.persistence.iam-backdoor-user
 ```
 
 We now have the prerequisites ready:
@@ -142,7 +142,7 @@ IAM user sample-legit-user ready
 At this point, we can choose to detonate these attack techniques at any point we want. We can do it right away, or in a few hours / days:
 
 ```bash
-stratus detonate aws.defense-evasion.stop-cloudtrail aws.defense-evasion.remove-vpc-flow-logs aws.persistence.backdoor-iam-user
+stratus detonate aws.defense-evasion.cloudtrail-stop aws.defense-evasion.vpc-remove-flow-logs aws.persistence.iam-backdoor-user
 ```
 
 ```text
@@ -154,13 +154,13 @@ Creating access key on legit IAM user to simulate backdoor
 Now, say we want to replay (i.e., detonate again) an attack technique a few times, for testing and to iterate building our threat detection rules on the side:
 
 ```
-stratus detonate aws.persistence.backdoor-iam-user
+stratus detonate aws.persistence.iam-backdoor-user
 ```
 
 You will notice that the second call raises an error:
 
 ```
-aws.persistence.backdoor-iam-user has already been detonated and is not idempotent. 
+aws.persistence.iam-backdoor-user has already been detonated and is not idempotent. 
 Revert it with 'stratus revert' before detonating it again, or use --force
 ```
 
@@ -169,32 +169,32 @@ That's because the detonation of this attack technique is not idempotent, meanin
 Before re-detonating this technique, we need to revert it:
 
 ```
-stratus revert aws.persistence.backdoor-iam-user
+stratus revert aws.persistence.iam-backdoor-user
 ```
 
 ``` 
-2022/01/19 15:43:35 Reverting detonation of technique aws.persistence.backdoor-iam-user
+2022/01/19 15:43:35 Reverting detonation of technique aws.persistence.iam-backdoor-user
 2022/01/19 15:43:35 Removing access key from IAM user sample-legit-user
 2022/01/19 15:43:36 Removing access key AKIA254BBSGPJNHEDHNR
 +-----------------------------------+-----------------------------------------+--------+
 | ID                                | NAME                                    | STATUS |
 +-----------------------------------+-----------------------------------------+--------+
-| aws.persistence.backdoor-iam-user | Create an IAM Access Key on an IAM User | WARM   |
+| aws.persistence.iam-backdoor-user | Create an IAM Access Key on an IAM User | WARM   |
 +-----------------------------------+-----------------------------------------+--------+
 ```
 
 Our attack technique is now `WARM`, we can detonate it again:
 
 ```bash
-stratus detonate aws.persistence.backdoor-iam-user
+stratus detonate aws.persistence.iam-backdoor-user
 ```
 
 Generally, we can detonate then revert an attack technique indefinitely:
 
 ```bash
 while true; do
-  stratus detonate aws.persistence.backdoor-iam-user
-  stratus revert aws.persistence.backdoor-iam-user
+  stratus detonate aws.persistence.iam-backdoor-user
+  stratus revert aws.persistence.iam-backdoor-user
   sleep 1
 done
 ```
@@ -202,5 +202,5 @@ done
 Once we are done with our testing, we can clean up our techniques. Cleaning up a technique will revert its detonation logic (if applicable), then nuke all its prerequisite resources and infrastructure:
 
 ```bash
-stratus cleanup aws.defense-evasion.stop-cloudtrail aws.defense-evasion.remove-vpc-flow-logs aws.persistence.backdoor-iam-user
+stratus cleanup aws.defense-evasion.cloudtrail-stop aws.defense-evasion.vpc-remove-flow-logs aws.persistence.iam-backdoor-user
 ```

@@ -17,7 +17,7 @@ stratus list --platform aws
 View the detail of a specific technique:
 
 ```bash
-$ stratus show aws.exfiltration.ebs-snapshot-shared-with-external-account
+$ stratus show aws.exfiltration.ec2-share-ebs-snapshot
 Exfiltrates an EBS snapshot by sharing it with an external AWS account.
 
 Warm-up: Creates an EBS volume and a snapshot.
@@ -27,7 +27,7 @@ Detonation: Calls ModifySnapshotAttribute to share the snapshot.
 Detonate an attack technique using:
 
 ```bash
-stratus detonate aws.exfiltration.ebs-snapshot-shared-with-external-account
+stratus detonate aws.exfiltration.ec2-share-ebs-snapshot
 ```
 
 This will handle warm-up and detonation (but not clean-up - explicitly use `--clean-up` for this).
@@ -35,14 +35,14 @@ This will handle warm-up and detonation (but not clean-up - explicitly use `--cl
 Alternatively, you can handle warm-up and detonation independently:
 
 ```bash
-stratus warmup aws.exfiltration.ebs-snapshot-shared-with-external-account
-stratus detonate aws.exfiltration.ebs-snapshot-shared-with-external-account
+stratus warmup aws.exfiltration.ec2-share-ebs-snapshot
+stratus detonate aws.exfiltration.ec2-share-ebs-snapshot
 ```
 
 Cleanup can be done through:
 
 ```bash
-stratus cleanup aws.exfiltration.ebs-snapshot-shared-with-external-account
+stratus cleanup aws.exfiltration.ec2-share-ebs-snapshot
 ```
 
 At any time, you can view the state of the TTPs:
@@ -53,9 +53,9 @@ stratus status
 +------------------------------------------------------------+-----------+
 | TECHNIQUE                                                  | STATUS    |
 +------------------------------------------------------------+-----------+
-| aws.exfiltration.ebs-snapshot-shared-with-external-account | WARM      |
-| aws.persistence.backdoor-iam-user                          | DETONATED |
-| aws.persistence.backdoor-iam-role                          | WARM      |
-| aws.persistence.malicious-iam-user                         | COLD      |
+| aws.exfiltration.ec2-share-ebs-snapshot | WARM      |
+| aws.persistence.iam-backdoor-user                          | DETONATED |
+| aws.persistence.iam-backdoor-role                          | WARM      |
+| aws.persistence.iam-create-admin-user                         | COLD      |
 +------------------------------------------------------------+-----------+
 ```

@@ -15,7 +15,7 @@ func buildWarmupCmd() *cobra.Command {
 	warmupCmd := &cobra.Command{
 		Use:                   "warmup attack-technique-id [attack-technique-id]...",
 		Short:                 "\"Warm up\" an attack technique by spinning up the prerequisite infrastructure or configuration, without detonating it",
-		Example:               "stratus warmup aws.defense-evasion.stop-cloudtrail",
+		Example:               "stratus warmup aws.defense-evasion.cloudtrail-stop",
 		DisableFlagsInUseLine: true,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {

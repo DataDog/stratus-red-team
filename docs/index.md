@@ -21,7 +21,7 @@ Think of Stratus Red Team as "[Atomic Red Team](https://github.com/redcanaryco/a
 Stratus Red Team is a self-contained binary. You can use it to easily detonate offensive attack techniques against a live cloud environment.
 
 ```bash title="Sample usage - Stopping a CloudTrail Trail (Defense Evasion)"
-stratus detonate aws.defense-evasion.stop-cloudtrail
+stratus detonate aws.defense-evasion.cloudtrail-stop
 ```
 
 The attack techniques are mapped to [MITRE ATT&CK](https://attack.mitre.org/).
