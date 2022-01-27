@@ -26,7 +26,7 @@ See the documentation at **[stratus-red-team.cloud](https://stratus-red-team.clo
 - Mac OS:
 
 ```
-brew tap datadog/stratus-red-team
+brew tap datadog/stratus-red-team https://github.com/DataDog/stratus-red-team
 brew install datadog/stratus-red-team/stratus-red-team
 ```
 
