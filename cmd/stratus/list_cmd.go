@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"github.com/datadog/stratus-red-team/pkg/stratus/mitreattack"
+	"github.com/fatih/color"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/spf13/cobra"
 	"log"
@@ -62,6 +64,8 @@ func doListCmd(mitreAttackTactic string, platform string) {
 		})
 	}
 
+	fmt.Println()
+	fmt.Println(color.CyanString("View the list of all available attack techniques at: https://stratus-red-team.cloud/attack-techniques/list/\n"))
 	t.Render()
 }
 

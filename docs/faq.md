@@ -6,6 +6,10 @@ Stratus Red Team is supposed to be run against a sandbox cloud account. Conseque
 
 If you don't have access to an administrator role but would still like to use Stratus Red Team, feel free to [open an issue](https://github.com/DataDog/stratus-red-team/issues/new/choose).
 
+## How does Stratus Red Team persist state?
+
+Stratus Red Team persists its state in `$HOME/.stratus-red-team`.
+
 ## How can I add my own attack techniques to Stratus Red Team?
 
 Stratus Red Team is a self-contained Go binary. 

@@ -204,3 +204,9 @@ Once we are done with our testing, we can clean up our techniques. Cleaning up a
 ```bash
 stratus cleanup aws.defense-evasion.cloudtrail-stop aws.defense-evasion.vpc-remove-flow-logs aws.persistence.iam-backdoor-user
 ```
+
+Or, more succinctly:
+
+```bash
+stratus cleanup --all
+```

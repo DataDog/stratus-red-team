@@ -4,8 +4,8 @@ Welcome to the documentation of Stratus Red Team!
 
 Check out:
 
-- The [User Guide](./user-guide), to get started
-- The list of [available attack techniques](./attack-techniques)
+- The [User Guide](./user-guide/getting-started.md), to get started
+- The list of [available attack techniques](./attack-techniques/list.md)
 
 <figure markdown>
 [![screen recording](./demo.gif)](./demo.gif)
