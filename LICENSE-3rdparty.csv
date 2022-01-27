@@ -1,6 +1,6 @@
 Component,Origin,License,Copyright
-stratus-red-team,github.com/aws/aws-sdk-go-v2,Apache-2.0,Amazon.com, Inc. or its affiliates. All Rights Reserved. | Stripe, Inc.
-stratus-red-team,github.com/aws/smithy-go,Apache-2.0,Amazon.com, Inc. or its affiliates. All Rights Reserved. | Stripe, Inc.
+stratus-red-team,github.com/aws/aws-sdk-go-v2,Apache-2.0,"Amazon.com, Inc. or its affiliates. All Rights Reserved. | Stripe, Inc."
+stratus-red-team,github.com/aws/smithy-go,Apache-2.0,"Amazon.com, Inc. or its affiliates. All Rights Reserved. | Stripe, Inc."
 stratus-red-team,github.com/davecgh/go-spew/spew,ISC,Dave Collins <dave@davec.name>
 stratus-red-team,github.com/hashicorp/go-cleanhttp,MPL-2.0,HashiCorp Inc.
 stratus-red-team,github.com/hashicorp/hc-install,MPL-2.0,HashiCorp Inc.
