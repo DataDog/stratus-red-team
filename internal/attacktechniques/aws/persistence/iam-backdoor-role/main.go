@@ -56,6 +56,8 @@ func detonate(params map[string]string) error {
 	if err != nil {
 		return errors.New("unable to backdoor IAM role: " + err.Error())
 	}
+
+	log.Println("Update role trust policy with malicious policy:\n" + maliciousIamPolicy)
 	return nil
 }
 
