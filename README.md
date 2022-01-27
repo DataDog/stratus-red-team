@@ -34,9 +34,9 @@ brew install datadog/stratus-red-team/stratus-red-team
 
 - Docker:
 
-```
-docker pull ghcr.io/datadog/stratus-red-team
-docker run --rm ghcr.io/datadog/stratus-red-team
+```bash
+IMAGE="ghcr.io/datadog/stratus-red-team"
+alias stratus="docker run --rm -v $HOME/.stratus-red-team/:/root/.stratus-red-team/ -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN -e AWS_DEFAULT_REGION $IMAGE"
 ```
 
 ## Using Stratus Red Team as a Go Library

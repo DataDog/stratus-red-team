@@ -4,17 +4,18 @@
 
 - Mac OS:
 
-```
-brew tap datadog/stratus-red-team
-brew install datadog/stratus-red-team/stratus-red-team
+```bash
+brew tap "datadog/stratus-red-team"
+brew install "datadog/stratus-red-team/stratus-red-team"
 ```
 
 - Linux / Windows / macOS: Download a [pre-built binary](https://github.com/datadog/stratus-red-team/releases).
 
 - Docker:
 
-```
-docker run --rm ghcr.io/datadog/stratus-red-team
+```bash
+IMAGE="ghcr.io/datadog/stratus-red-team"
+alias stratus="docker run --rm -v $HOME/.stratus-red-team/:/root/.stratus-red-team/ -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN -e AWS_DEFAULT_REGION $IMAGE"
 ```
 
 ## Concepts
