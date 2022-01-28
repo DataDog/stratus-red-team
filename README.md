@@ -10,6 +10,10 @@ Stratus Red Team is "[Atomic Red Team](https://github.com/redcanaryco/atomic-red
   </a>
 </p>
 
+Read the announcement blog posts:
+- https://www.datadoghq.com/blog/cyber-attack-simulation-with-stratus-red-team/
+- https://blog.christophetd.fr/introducing-stratus-red-team-an-adversary-emulation-tool-for-the-cloud/
+
 ## Getting Started
 
 Stratus Red Team is a self-contained Go binary.
