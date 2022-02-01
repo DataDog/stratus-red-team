@@ -117,6 +117,9 @@ func startInstance(instanceId string) error {
 	_, err := ec2Client.StartInstances(context.Background(), &ec2.StartInstancesInput{
 		InstanceIds: []string{instanceId},
 	})
+	if err != nil {
+		return errors.New("unable to start instance: " + err.Error())
+	}
 
 	var startOptions = func(options *ec2.InstanceRunningWaiterOptions) {
 		options.MaxDelay = 2 * time.Second // retry every 2 seconds
