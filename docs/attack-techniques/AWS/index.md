@@ -35,6 +35,11 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 - [Execute Discovery Commands on an EC2 Instance](./aws.discovery.ec2-enumerate-from-instance.md)
 
 
+## Execution
+
+- [Execute Commands on EC2 Instance via User Data](./aws.execution.ec2-user-data.md)
+
+
 ## Exfiltration
 
 - [Open Ingress Port 22 on a Security Group](./aws.exfiltration.ec2-security-group-open-port-22-ingress.md)
@@ -62,6 +67,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 
 ## Privilege Escalation
+
+- [Execute Commands on EC2 Instance via User Data](./aws.execution.ec2-user-data.md)
 
 - [Create an Access Key on an IAM User](./aws.persistence.iam-backdoor-user.md)
 
