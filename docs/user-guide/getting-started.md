@@ -6,7 +6,7 @@
 
 ```bash
 brew tap "datadog/stratus-red-team" "https://github.com/DataDog/stratus-red-team"
-brew install datadog/stratus-red-team/stratus-red-team
+brew install datadog/stratus-red-team/stratus-red-team‡
 ```
 
 - Linux / Windows / macOS: Download a [pre-built binary](https://github.com/datadog/stratus-red-team/releases).
