@@ -39,7 +39,8 @@ Warm-up:
 
 Detonation: 
 
-- Run ec2:DescribeInstanceAttribute on multiple fake instances
+- Run ec2:DescribeInstanceAttribute on multiple fictitious instance IDs
+- These calls will result in access denied errors
 `,
 		/* Detection: `
 
