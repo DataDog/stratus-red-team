@@ -77,12 +77,6 @@ func detonate(params map[string]string) error {
 			InstanceId: &instanceId,
 		})
 
-		ec2Client.DescribeInstanceAttribute(context.Background(), &ec2.DescribeInstanceAttributeInput{
-			Attribute:  "",
-			InstanceId: new(string),
-			DryRun:     new(bool),
-		})
-
 		log.Println("Running ec2:DescribeInstanceAttribute to retrieve userData on " + instanceId)
 	}
 
