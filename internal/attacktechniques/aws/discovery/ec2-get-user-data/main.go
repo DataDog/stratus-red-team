@@ -43,12 +43,12 @@ Detonation:
 - Run ec2:DescribeInstanceAttribute on multiple fictitious instance IDs
 - These calls will result in access denied errors
 `,
-		/* Detection: `
+		Detection: `
 
 		Through CloudTrail's <code>DescribeInstanceAttribute</code> event.
 
 		See:
-		* [Associated Sigma rule](https://github.com/SigmaHQ/sigma/blob/master/rules/cloud/aws/aws_ec2_download_userdata.yml)`, */
+		* [Associated Sigma rule](https://github.com/SigmaHQ/sigma/blob/master/rules/cloud/aws/aws_ec2_download_userdata.yml)`,
 		Platform:                   stratus.AWS,
 		IsIdempotent:               true,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Discovery},
