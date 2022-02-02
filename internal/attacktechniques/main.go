@@ -12,6 +12,7 @@ import (
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/aws/defense-evasion/organizations-leave"
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/aws/defense-evasion/vpc-remove-flow-logs"
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/aws/discovery/ec2-enumerate-from-instance"
+	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/aws/discovery/ec2-get-user-data"
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/aws/execution/ec2-user-data"
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/aws/exfiltration/ec2-security-group-open-port-22-ingress"
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/aws/exfiltration/ec2-share-ami"
