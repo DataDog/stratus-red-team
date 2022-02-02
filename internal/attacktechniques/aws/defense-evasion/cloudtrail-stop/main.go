@@ -31,6 +31,11 @@ Detonation:
 
 - Call cloudtrail:StopLogging to stop CloudTrail logging.
 `,
+		Detection: `
+Identify when a CloudTrail trail is disabled, through CloudTrail's <code>StopLogging</code> event.
+
+GuardDuty also provides a dedicated finding type, [Stealth:IAMUser/CloudTrailLoggingDisabled](https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-types-iam.html#stealth-iam-cloudtrailloggingdisabled).
+`,
 		PrerequisitesTerraformCode: tf,
 		IsIdempotent:               true, // cloudtrail:StopLogging is idempotent
 		Detonate:                   detonate,

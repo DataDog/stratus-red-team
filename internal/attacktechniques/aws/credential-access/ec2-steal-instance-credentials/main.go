@@ -39,6 +39,15 @@ Detonation:
 	- sts:GetCallerIdentity
 	- ec2:DescribeInstances
 `,
+		Detection: `
+GuardDuty provides two findings to identify stolen EC2 instance credentials.
+
+- [InstanceCredentialExfiltration.OutsideAWS](https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-types-iam.html#unauthorizedaccess-iam-instancecredentialexfiltrationoutsideaws) identifies EC2 instance credentials used from outside an AWS account.
+- [InstanceCredentialExfiltration.InsideAWS
+](https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-types-iam.html#unauthorizedaccess-iam-instancecredentialexfiltrationinsideaws) identifies EC2 instance credentials used from a different AWS account than the one of the EC2 instance.
+
+See also: [Known detection bypasses](https://hackingthe.cloud/aws/avoiding-detection/steal-keys-undetected/).
+`,
 		Platform:                   stratus.AWS,
 		IsIdempotent:               true,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.CredentialAccess},

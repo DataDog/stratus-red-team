@@ -34,3 +34,10 @@ Establishes persistence by creating an access key on an existing IAM user.
 ```bash title="Detonate with Stratus Red Team"
 stratus detonate aws.persistence.iam-backdoor-user
 ```
+## Detection
+
+
+Through CloudTrail's <code>CreateAccessKey</code> event. This event can hardly be considered suspicious by itself, unless
+correlated with other indicators.
+'
+

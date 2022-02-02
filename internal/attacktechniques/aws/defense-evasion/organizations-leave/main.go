@@ -39,6 +39,10 @@ Detonation:
 
 - Call organization:LeaveOrganization to simulate an attempt to leave the AWS Organization.
 `,
+		Detection: `
+Any attempts from a child account to leave its AWS Organization should be considered suspicious. 
+
+Use the CloudTrail event <code>LeaveOrganization</code>.`,
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,
 	})

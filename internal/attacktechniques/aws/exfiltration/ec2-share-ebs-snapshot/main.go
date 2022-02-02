@@ -32,6 +32,23 @@ Detonation:
 
 - Call ec2:ModifySnapshotAttribute to share the snapshot with an external, fictitious AWS account.
 `,
+		Detection: `
+Through CloudTrail's <code>ModifySnapshotAttribute</code> event, when <code>requestParameters.createVolumePermission</code> shows
+that the EBS snapshot was shared with a new or unknown AWS account, such as:
+
+<pre><code>"requestParameters": {
+  "snapshotId": "snap-01b3f7d87a02559a1",
+  "attributeType": "CREATE_VOLUME_PERMISSION",
+  "createVolumePermission": {
+    "add": {
+	  "items": [{ "userId": "111111111111" }]
+    }
+  }
+}</code></pre>
+
+An attacker can also make an EBS snapshot completely public. In this case, the <code>item</code> entry 
+will look like <code>{"groups":"all"}</code>. 
+`,
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,
 		Revert:                     revert,

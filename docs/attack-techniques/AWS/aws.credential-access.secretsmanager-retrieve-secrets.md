@@ -34,3 +34,13 @@ Retrieves a high number of Secrets Manager secrets, through secretsmanager:GetSe
 ```bash title="Detonate with Stratus Red Team"
 stratus detonate aws.credential-access.secretsmanager-retrieve-secrets
 ```
+## Detection
+
+
+Identify principals retrieving a high number of secrets, through CloudTrail's GetSecretValue event.
+
+The following may be use to tune the detection, or validate findings:
+
+- Principals who do not usually call secretsmanager:GetSecretValue
+- Attempts to call GetSecretValue resulting in access denied errors
+

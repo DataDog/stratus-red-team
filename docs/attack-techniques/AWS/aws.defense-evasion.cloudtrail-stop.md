@@ -33,3 +33,11 @@ Stops a CloudTrail Trail from logging. Simulates an attacker disrupting CloudTra
 ```bash title="Detonate with Stratus Red Team"
 stratus detonate aws.defense-evasion.cloudtrail-stop
 ```
+## Detection
+
+
+Identify when a CloudTrail trail is disabled, through CloudTrail's <code>StopLogging</code> event.
+
+GuardDuty also provides a dedicated finding type, [Stealth:IAMUser/CloudTrailLoggingDisabled](https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-types-iam.html#stealth-iam-cloudtrailloggingdisabled).
+
+

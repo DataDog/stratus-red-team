@@ -45,3 +45,16 @@ The commands will be run under the identity of the EC2 instance role, simulating
 ```bash title="Detonate with Stratus Red Team"
 stratus detonate aws.discovery.ec2-enumerate-from-instance
 ```
+## Detection
+
+
+Identify when an EC2 instance performs unusual enumeration calls.
+
+An action can be determined to have been performed by an EC2 instance under its instance role when the attribute
+<code>userIdentity.arn</code> of a CloudTrail event ends with <code>i-*</code>, for instance:
+
+<code>
+arn:aws:sts::012345678901:assumed-role/my-instance-role/i-0adc17a5acb70d9ae
+</code>
+
+

@@ -35,6 +35,9 @@ Detonation:
 
 - Create a CloudTrail event selector to disable management events, through cloudtrail:PutEventSelectors
 `,
+		Detection: `
+Identify when event selectors of a CloudTrail trail are updated, through CloudTrail's <code>PutEventSelectors</code> event.
+`,
 		IsIdempotent:               true, // cloudtrail:PutEventSelectors is idempotent
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,

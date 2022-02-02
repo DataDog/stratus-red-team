@@ -14,6 +14,9 @@ type AttackTechnique struct {
 	// Full description (multi-line)
 	Description string
 
+	// Pointer and leads for detection opportunities (multi-line)
+	Detection string
+
 	// Indicates if the technique is expected to be slow to warm-up or detonate
 	IsSlow bool
 

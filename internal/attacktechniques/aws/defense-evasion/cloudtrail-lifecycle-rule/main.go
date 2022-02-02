@@ -35,6 +35,12 @@ Detonation:
 
 - Apply a S3 Lifecycle Rule automatically removing objects after 1 day.
 `,
+		Detection: `
+Identify when lifecycle rule with a short expiration is applied to an S3 bucket used for CloudTrail logging.
+
+The CloudTrail event <code>PutBucketLifecycle</code> and its attribute 
+<code>requestParameters.LifecycleConfiguration.Rule.Expiration.Days</code> can be used.
+`,
 		IsIdempotent:               false, // can't create twice a lifecycle rule with the same name
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,

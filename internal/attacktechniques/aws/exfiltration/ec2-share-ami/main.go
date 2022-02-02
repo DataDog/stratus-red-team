@@ -31,6 +31,23 @@ Detonation:
 
 - Share the AMI with an external, fictitious AWS account.
 `,
+		Detection: `
+Through CloudTrail's <code>ModifyImageAttribute</code> event, when <code>requestParameters.launchPermission</code> shows
+that the AMI was shared with a new or unknown AWS account, such as:
+
+<pre><code>"requestParameters": {
+  "launchPermission": {
+    "add": {
+	  "items": [{ "userId": "012345678901" }]
+    }
+  },
+  "attributeType": "launchPermission",
+  "imageId": "ami-0b87ea1d007078d18"
+}</code></pre>
+
+An attacker can also make an AMI completely public. In this case, the <code>item</code> entry 
+will look like <code>{"groups":"all"}</code>. 
+`,
 		Platform:                   stratus.AWS,
 		IsIdempotent:               true,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Exfiltration},

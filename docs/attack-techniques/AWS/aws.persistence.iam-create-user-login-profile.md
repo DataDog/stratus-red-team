@@ -35,3 +35,11 @@ user intended to be used programmatically through the AWS console usual login pr
 ```bash title="Detonate with Stratus Red Team"
 stratus detonate aws.persistence.iam-create-user-login-profile
 ```
+## Detection
+
+
+Through CloudTrail's <code>CreateLoginProfile</code> or <code>UpdateLoginProfile</code> events.
+
+In particular, it's suspicious when these events occur on IAM users intended to be used programmatically.
+
+

@@ -58,3 +58,15 @@ Exfiltrates data from an S3 bucket by backdooring its Bucket Policy to allow acc
 ```bash title="Detonate with Stratus Red Team"
 stratus detonate aws.exfiltration.s3-backdoor-bucket-policy
 ```
+## Detection
+
+
+- Using CloudTrail's <code>PutBucketPolicy</code> event.
+
+- Through GuardDuty's [Policy:S3/BucketAnonymousAccessGranted](https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-types-s3.html#policy-s3-bucketanonymousaccessgranted) finding, 
+if the S3 bucket was made public (and not only shared with an attacker-controlled AWS account).
+
+- Through [IAM Access Analyzer](https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-analyzer.html),
+which generates a finding when an S3 bucket is made public or accessible from another account.
+
+

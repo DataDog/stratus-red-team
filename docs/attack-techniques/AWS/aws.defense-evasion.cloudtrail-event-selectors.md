@@ -35,3 +35,9 @@ Reference: https://github.com/RhinoSecurityLabs/Cloud-Security-Research/tree/mas
 ```bash title="Detonate with Stratus Red Team"
 stratus detonate aws.defense-evasion.cloudtrail-event-selectors
 ```
+## Detection
+
+
+Identify when event selectors of a CloudTrail trail are updated, through CloudTrail's <code>PutEventSelectors</code> event.
+
+

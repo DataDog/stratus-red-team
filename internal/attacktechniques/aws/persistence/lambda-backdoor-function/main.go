@@ -30,6 +30,12 @@ Detonation:
 
 - Modify the Lambda function resource-base policy to allow lambda:InvokeFunction from an external, fictitious AWS account.
 `,
+		Detection: `
+- Using CloudTrail's <code>AddPermission20150331</code> and <code>AddPermission20150331v2</code> events.
+
+- Through [IAM Access Analyzer](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-resources.html#access-analyzer-lambda), which triggers a finding when permissions are added to a Lambda function making it 
+public or accessible from another account.
+`,
 		Platform:                   stratus.AWS,
 		IsIdempotent:               false, // lambda:AddPermissions cannot be called multiple times with the same statement ID
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence},

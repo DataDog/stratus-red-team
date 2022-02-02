@@ -35,6 +35,20 @@ Detonation:
 
 - Call rds:ModifyDBSnapshotAttribute to share the snapshot with an external AWS account
 `,
+		Detection: `
+Through CloudTrail's <code>ModifyDBSnapshotAttribute</code> event, when both:
+
+- <code>requestParameters.attributeName</code> is <code>restore</code>
+- and, <code>requestParameters.launchPermission</code> shows that the RDS snapshot was shared with a new or unknown AWS account, such as:
+
+<pre><code>"requestParameters": {
+  "dBSnapshotIdentifier": "my-db-snapshot",
+  "attributeName": "restore"
+  "valuesToAdd": ["193672423079"],
+}</code></pre>
+
+An attacker can also make an RDS snapshot completely public. In this case, the value of <code>valuesToAdd</code> is <code>["all"]</code>. 
+`,
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,
 		Revert:                     revert,
