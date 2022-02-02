@@ -2,13 +2,14 @@ package runner
 
 import (
 	"errors"
+	"log"
+	"path/filepath"
+	"strings"
+
 	"github.com/datadog/stratus-red-team/internal/providers"
 	"github.com/datadog/stratus-red-team/internal/state"
 	"github.com/datadog/stratus-red-team/internal/utils"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
-	"log"
-	"path/filepath"
-	"strings"
 )
 
 const StratusRunnerForce = true
@@ -195,6 +196,12 @@ func (m *Runner) ValidatePlatformRequirements() {
 			log.Fatal("You are not authenticated against AWS, or you have not set your region. " +
 				"Make sure you are authenticated against AWS, and you have a default region set in your AWS config or environment" +
 				" (export AWS_DEFAULT_REGION=us-east-1)")
+		}
+	case stratus.Kubernetes:
+		log.Println("Checking your authentication against Kubernetes")
+		if !providers.K8s().IsAuthenticated() {
+			log.Fatalf("You do not have a kubeconfig set up, or you do not have proper permissions for this cluster. "+
+				"Make sure you have proper credentials set in %s", providers.KubeconfigDefaultPath)
 		}
 	}
 }
