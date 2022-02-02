@@ -57,3 +57,12 @@ Establishes persistence by backdooring an existing IAM role, allowing it to be a
 ```bash title="Detonate with Stratus Red Team"
 stratus detonate aws.persistence.iam-backdoor-role
 ```
+## Detection
+
+
+- Using CloudTrail's <code>UpdateAssumeRolePolicy</code> event.
+
+- Through [IAM Access Analyzer](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-resources.html#access-analyzer-iam-role), 
+which generates a finding when a role can be assumed from a new AWS account or publicly.
+
+

@@ -33,3 +33,11 @@ Delete a CloudTrail trail. Simulates an attacker disrupting CloudTrail logging.
 ```bash title="Detonate with Stratus Red Team"
 stratus detonate aws.defense-evasion.cloudtrail-delete
 ```
+## Detection
+
+
+Identify when a CloudTrail trail is deleted, through CloudTrail's <code>DeleteTrail</code> event.
+
+GuardDuty also provides a dedicated finding type, [Stealth:IAMUser/CloudTrailLoggingDisabled](https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-types-iam.html#stealth-iam-cloudtrailloggingdisabled).
+
+

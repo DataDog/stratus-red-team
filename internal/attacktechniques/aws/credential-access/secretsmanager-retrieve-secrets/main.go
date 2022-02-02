@@ -31,6 +31,13 @@ Detonation:
 - Enumerate the secrets through secretsmanager:ListSecrets
 - Retrieve each secret value, one by one through secretsmanager:GetSecretValue
 `,
+		Detection: `
+Identify principals retrieving a high number of secrets, through CloudTrail's GetSecretValue event.
+
+The following may be use to tune the detection, or validate findings:
+
+- Principals who do not usually call secretsmanager:GetSecretValue
+- Attempts to call GetSecretValue resulting in access denied errors`,
 		Platform:                   stratus.AWS,
 		IsIdempotent:               true,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.CredentialAccess},

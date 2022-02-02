@@ -37,3 +37,7 @@ See https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_GetPasswordData.h
 ```bash title="Detonate with Stratus Red Team"
 stratus detonate aws.credential-access.ec2-get-password-data
 ```
+## Detection
+
+Identify principals making a large number of ec2:GetPasswordData calls, using CloudTrail's GetPasswordData event
+

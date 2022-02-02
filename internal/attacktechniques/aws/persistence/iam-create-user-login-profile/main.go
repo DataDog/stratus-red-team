@@ -31,6 +31,11 @@ Detonation:
 
 - Create an IAM Login Profile on the user
 `,
+		Detection: `
+Through CloudTrail's <code>CreateLoginProfile</code> or <code>UpdateLoginProfile</code> events.
+
+In particular, it's suspicious when these events occur on IAM users intended to be used programmatically.
+`,
 		Platform:                   stratus.AWS,
 		IsIdempotent:               false, // cannot create a login profile twice on the same user
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence, mitreattack.PrivilegeEscalation},

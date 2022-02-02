@@ -31,6 +31,11 @@ Detonation:
 
 - Delete the CloudTrail trail.
 `,
+		Detection: `
+Identify when a CloudTrail trail is deleted, through CloudTrail's <code>DeleteTrail</code> event.
+
+GuardDuty also provides a dedicated finding type, [Stealth:IAMUser/CloudTrailLoggingDisabled](https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-types-iam.html#stealth-iam-cloudtrailloggingdisabled).
+`,
 		IsIdempotent:               false, // can't delete a CloudTrail twice
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,

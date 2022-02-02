@@ -34,3 +34,17 @@ Retrieves and decrypts a high number (30) of SSM Parameters available in an AWS 
 ```bash title="Detonate with Stratus Red Team"
 stratus detonate aws.credential-access.ssm-retrieve-securestring-parameters
 ```
+## Detection
+
+
+Identify principals retrieving a high number of SSM Parameters, through CloudTrail's <code>GetParameter</code> 
+and <code>GetParameters</code> events. 
+It is especially suspicious when parameters of type <code>SecretString</code> are retrieved, indicated when 
+<code>requestParameters.withDecryption</code> is set to <code>true</code> in the CloudTrail events.
+
+The following may be use to tune the detection, or validate findings:
+
+- Principals who do not usually call ssm:GetParameter(s)
+- Attempts to call ssm:GetParameter(s) resulting in access denied errors
+
+

@@ -21,4 +21,9 @@ Platform: {{.Platform}}
 
 ```bash title="Detonate with Stratus Red Team"
 stratus detonate {{.ID}}
-```
+```{{ if .Detection }}
+## Detection
+
+{{ .Detection }}
+
+{{ end }}

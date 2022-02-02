@@ -39,6 +39,12 @@ Detonation:
 </code>
 </pre>
 `,
+		Detection: `
+- Using CloudTrail's <code>UpdateAssumeRolePolicy</code> event.
+
+- Through [IAM Access Analyzer](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-resources.html#access-analyzer-iam-role), 
+which generates a finding when a role can be assumed from a new AWS account or publicly.
+`,
 		Platform:                   stratus.AWS,
 		IsIdempotent:               true,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence},

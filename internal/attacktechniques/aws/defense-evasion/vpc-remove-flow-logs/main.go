@@ -32,6 +32,12 @@ Detonation:
 
 - Remove the VPC Flow Logs configuration.
 `,
+		Detection: `
+Using CloudTrail's <code>DeleteFlowLogs</code> event.
+
+To reduce the risk of false positives related to VPC deletion in development environments, alerts can be raised
+only when <code>DeleteFlowLogs</code> is not closely followed by <code>DeleteVpc</code>.
+`,
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,
 	})

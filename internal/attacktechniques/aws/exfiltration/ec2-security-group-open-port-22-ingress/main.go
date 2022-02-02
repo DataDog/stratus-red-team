@@ -33,6 +33,12 @@ Detonation:
 
 - Call ec2:AuthorizeSecurityGroupIngress to allow ingress traffic on port 22 from 0.0.0.0/0.
 `,
+		Detection: `
+You can use the CloudTrail event <code>AuthorizeSecurityGroupIngress</code> when:
+
+- <code>requestParameters.cidrIp</code> is <code>0.0.0.0/0</code> (or an unknown external IP)
+- and <code>requestParameters.fromPort</code>/<code>requestParameters.toPort</code> is not a commonly exposed port or corresponds to a known administrative protocol such as SSH or RDP
+`,
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,
 		Revert:                     revert,

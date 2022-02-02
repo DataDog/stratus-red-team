@@ -33,3 +33,12 @@ Removes a VPC Flog Logs configuration from a VPC.
 ```bash title="Detonate with Stratus Red Team"
 stratus detonate aws.defense-evasion.vpc-remove-flow-logs
 ```
+## Detection
+
+
+Using CloudTrail's <code>DeleteFlowLogs</code> event.
+
+To reduce the risk of false positives related to VPC deletion in development environments, alerts can be raised
+only when <code>DeleteFlowLogs</code> is not closely followed by <code>DeleteVpc</code>.
+
+

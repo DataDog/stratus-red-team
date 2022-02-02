@@ -38,6 +38,7 @@ Detonation:
 - Assume the role 
 - Run a number of ec2:GetPasswordData calls (which will be denied) using fictitious instance IDs
 `,
+		Detection:                  "Identify principals making a large number of ec2:GetPasswordData calls, using CloudTrail's GetPasswordData event",
 		Platform:                   stratus.AWS,
 		IsIdempotent:               true,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.CredentialAccess},

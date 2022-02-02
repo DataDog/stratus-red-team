@@ -36,3 +36,10 @@ Leaving the organization can disrupt or totally shut down these controls.
 ```bash title="Detonate with Stratus Red Team"
 stratus detonate aws.defense-evasion.organizations-leave
 ```
+## Detection
+
+
+Any attempts from a child account to leave its AWS Organization should be considered suspicious. 
+
+Use the CloudTrail event <code>LeaveOrganization</code>.
+
