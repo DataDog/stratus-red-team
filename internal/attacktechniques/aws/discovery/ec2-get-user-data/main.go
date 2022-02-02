@@ -21,7 +21,7 @@ var tf []byte
 
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
-		ID:           "aws.exfiltration.ec2-download-user-data",
+		ID:           "aws.discovery.ec2-download-user-data",
 		FriendlyName: "Download EC2 Instance User Data",
 		Description: `
 Runs ec2:DescribeInstanceAttribute on several instances. This simulates an attacker attempting to
