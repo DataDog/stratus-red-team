@@ -20,6 +20,7 @@ This page contains the list of all Stratus Attack Techniques.
 | [Attempt to Leave the AWS Organization](./AWS/aws.defense-evasion.organizations-leave.md) | [AWS](./AWS/index.md) | Defense Evasion |
 | [Remove VPC Flow Logs](./AWS/aws.defense-evasion.vpc-remove-flow-logs.md) | [AWS](./AWS/index.md) | Defense Evasion |
 | [Execute Discovery Commands on an EC2 Instance](./AWS/aws.discovery.ec2-enumerate-from-instance.md) | [AWS](./AWS/index.md) | Discovery |
+| [Download EC2 Instance User Data](./AWS/aws.discovery.ec2-download-user-data.md) | [AWS](./AWS/index.md) | Discovery |
 | [Execute Commands on EC2 Instance via User Data](./AWS/aws.execution.ec2-user-data.md) | [AWS](./AWS/index.md) | Execution, Privilege Escalation |
 | [Open Ingress Port 22 on a Security Group](./AWS/aws.exfiltration.ec2-security-group-open-port-22-ingress.md) | [AWS](./AWS/index.md) | Exfiltration |
 | [Exfiltrate an AMI by Sharing It](./AWS/aws.exfiltration.ec2-share-ami.md) | [AWS](./AWS/index.md) | Exfiltration |
