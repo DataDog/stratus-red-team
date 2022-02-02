@@ -9,6 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials/stscreds"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
+	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
 
 	"github.com/datadog/stratus-red-team/internal/utils"
@@ -73,7 +74,7 @@ func detonate(params map[string]string) error {
 		// Call DescribeInstanceAttribute to retrieve the userData attribute
 		// Expected Client.UnauthorizedOperation
 		ec2Client.DescribeInstanceAttribute(context.Background(), &ec2.DescribeInstanceAttributeInput{
-			Attribute:  "userData",
+			Attribute:  types.InstanceAttributeNameUserData,
 			InstanceId: &instanceId,
 		})
 
