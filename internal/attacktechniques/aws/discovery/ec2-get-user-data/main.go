@@ -35,7 +35,7 @@ See:
 
 Warm-up: 
 
-- Create an IAM role with permissions to run ec2:DescribeInstanceAttribute
+- Create an IAM role without permissions to run ec2:DescribeInstanceAttribute
 
 Detonation: 
 
