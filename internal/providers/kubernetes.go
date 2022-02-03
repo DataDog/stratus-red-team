@@ -15,8 +15,7 @@ import (
 )
 
 const (
-	KubeconfigDefaultDir  = ".kube"
-	KubeconfigDefaultFile = "config"
+	KubeconfigDefaultPath = ".kube/config"
 	StratusK8sNamespace   = "stratus-red-team"
 )
 
@@ -25,31 +24,44 @@ type K8sProvider struct {
 }
 
 var (
-	k8sProvider    K8sProvider
-	kubeConfigPath string
+	k8sProvider               K8sProvider
+	kubeConfigPath            string
+	kubeConfigPathWasResolved bool
 )
 
 func K8s() *K8sProvider {
 	return &k8sProvider
 }
 
-// GetKubeConfigPath returns the path of the kubeconfig, looking at environment variables, and then
-// the home directory
+// GetKubeConfigPath returns the path of the kubeconfig, with the following priority:
+// 1. KUBECONFIG environment variable
+// 2. $HOME/.kube/config
 func GetKubeConfigPath() string {
-	if kubeConfigPath != "" {
-		return kubeConfigPath
-	}
-
-	// Set to default directory if environment variable is not set, ignore if file doesn't exist
-	// to default to in-cluster client config
-	if kubeConfigPath = os.Getenv("KUBECONFIG"); kubeConfigPath == "" {
-		path := filepath.Join(homedir.HomeDir(), KubeconfigDefaultDir, KubeconfigDefaultFile)
-		if utils.FileExists(path) {
-			kubeConfigPath = path
-		}
+	if !kubeConfigPathWasResolved {
+		kubeConfigPath = getKubeConfigPath()
+		kubeConfigPathWasResolved = true // Note: we can't use an empty string since it's a possible return value of getKubeConfigPath
 	}
 
 	return kubeConfigPath
+}
+
+// unexported function with the main logic
+func getKubeConfigPath() string {
+	// if KUBECONFIG is set, use it
+	if kubeConfigEnvPath := os.Getenv("KUBECONFIG"); kubeConfigEnvPath != "" {
+		return kubeConfigEnvPath
+	}
+
+	// Otherwise, use $HOME/.kube/config if it exists
+	if kubeConfigFilePath := filepath.Join(homedir.HomeDir(), KubeconfigDefaultPath); utils.FileExists(kubeConfigFilePath) {
+		return kubeConfigFilePath
+	}
+
+	// Otherwise, return an empty string
+	// This will cause `clientcmd.BuildConfigFromFlags` called in `GetClient` will try to use
+	// in-cluster auth
+	// c.f. https://pkg.go.dev/k8s.io/client-go/tools/clientcmd#BuildConfigFromFlags
+	return ""
 }
 
 // GetClient is used to authenticate with Kubernetes and build the client from a kubeconfig
