@@ -2,6 +2,7 @@ package providers
 
 import (
 	"context"
+	"github.com/datadog/stratus-red-team/internal/utils"
 	"log"
 	"os"
 	"path/filepath"
@@ -43,8 +44,7 @@ func GetKubeConfigPath() string {
 	// to default to in-cluster client config
 	if kubeConfigPath = os.Getenv("KUBECONFIG"); kubeConfigPath == "" {
 		path := filepath.Join(homedir.HomeDir(), KubeconfigDefaultDir, KubeconfigDefaultFile)
-		_, err := os.Stat(path)
-		if err != nil && !os.IsNotExist(err) {
+		if utils.FileExists(path) {
 			kubeConfigPath = path
 		}
 	}
