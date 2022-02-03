@@ -7,18 +7,15 @@ terraform {
   }
 }
 
-variable "kubeconfig" {
-  type        = string
-  description = "Path to KubeConfig"
-  default     = "~/.kube/config"
+locals {
+  kubeconfig_path = pathexpand("~/.kube/config")
 }
 
-# Sourcing kubernetes credentials
-# 1. kubeconfig terraform variable
-# 2. ~/.kube/config
-# 3. Kubernetes in-cluster config
+# Use ~/.kube/config as a configuration file if it exists (with current context).
+# Fallback to using in-cluster configuration
+# see https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs#authentication
 provider "kubernetes" {
-  config_path = fileexists(pathexpand(var.kubeconfig)) ? pathexpand(var.kubeconfig) : null
+  config_path = fileexists(local.kubeconfig_path) ? local.kubeconfig_path : null
 }
 
 resource "kubernetes_namespace" "namespace" {
