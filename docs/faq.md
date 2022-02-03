@@ -2,7 +2,7 @@
 
 ## What permissions do I need to run Stratus Red Team?
 
-Stratus Red Team is supposed to be run against a sandbox cloud account. Consequently, we recommend using it with an administrator role.
+Stratus Red Team is supposed to be run against a sandbox cloud account or Kubernetes cluster. Consequently, we recommend using it with an administrator role.
 
 If you don't have access to an administrator role but would still like to use Stratus Red Team, feel free to [open an issue](https://github.com/DataDog/stratus-red-team/issues/new/choose).
 
@@ -28,6 +28,6 @@ Finally, distributing Go binaries is much easier and leads to a better end-user 
 
 ## Can I use Stratus Red Team to detonate attack techniques against my own infrastructure?
 
-This is currently not supported. Stratus Red Team takes care of spinning up all the required infrastructure before detonating attack techniques.
-
-Allowing to "bring your own detonation infrastructure" is on the roadmap.
+- AWS: This is currently not supported. Stratus Red Team takes care of spinning up all the required infrastructure before detonating attack techniques. Allowing to "bring your own detonation infrastructure" is on the roadmap.
+- 
+- Kubernetes: Stratus Red Team does not create or destroy Kubernetes clusters for you. You point it at an existing Kubernetes cluster, and it will take care of creating any prerequisite Kubernetes resource required to detonate Kubernetes-specific attack techniques.
