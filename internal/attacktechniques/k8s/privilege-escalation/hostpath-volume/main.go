@@ -21,7 +21,7 @@ func init() {
 		ID:                 "k8s.privilege-escalation.hostpath-volume",
 		FriendlyName:       "Container breakout via hostPath volume mount",
 		Platform:           stratus.Kubernetes,
-		IsIdempotent:       true,
+		IsIdempotent:       false,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.PrivilegeEscalation},
 		Description: `
 Creates a Pod with the entire node root filesystem as a hostPath volume mount
