@@ -7,12 +7,18 @@ terraform {
   }
 }
 
-locals {
-  kubeconfig = pathexpand("~/.kube/config")
+variable "kubeconfig" {
+  type        = string
+  description = "Path to KubeConfig"
+  default     = "~/.kube/config"
 }
 
+# Sourcing kubernetes credentials
+# 1. kubeconfig terraform variable
+# 2. ~/.kube/config
+# 3. Kubernetes in-cluster config
 provider "kubernetes" {
-  config_path = local.kubeconfig
+  config_path = fileexists(pathexpand(var.kubeconfig)) ? pathexpand(var.kubeconfig) : null
 }
 
 resource "kubernetes_namespace" "namespace" {
@@ -20,10 +26,6 @@ resource "kubernetes_namespace" "namespace" {
     name   = "stratus-red-team"
     labels = { "datadoghq.com/stratus-red-team" : true }
   }
-}
-
-output "kube_config" {
-  value = local.kubeconfig
 }
 
 output "namespace" {
