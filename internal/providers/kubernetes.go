@@ -82,14 +82,13 @@ func (m *K8sProvider) GetClient() *kubernetes.Clientset {
 func (m *K8sProvider) IsAuthenticated() bool {
 	m.GetClient()
 
-	// Check to see if the user can create pods as a check
-	// for proper permissions on the cluster
+	// We assume if the current user can do 'kubectl list pods' in the default namespace, they are authenticated
+	// Note: we do not perform authorization checks
 	var self = authv1.SelfSubjectAccessReview{
 		Spec: authv1.SelfSubjectAccessReviewSpec{
 			ResourceAttributes: &authv1.ResourceAttributes{
-				Namespace: "kube-system",
-				Verb:      "list",
-				Resource:  "pods",
+				Verb:     "list",
+				Resource: "pods",
 			},
 		},
 	}
