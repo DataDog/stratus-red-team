@@ -28,6 +28,11 @@ func init() {
 		Description: `
 Creates a Pod with the entire node root filesystem as a hostPath volume mount
 
+References:
+
+- https://attack.mitre.org/techniques/T1611/
+- https://www.youtube.com/watch?v=gtaaONq-XGY
+
 Warm-up: 
 
 - Creates the Stratus Red Team namespace
