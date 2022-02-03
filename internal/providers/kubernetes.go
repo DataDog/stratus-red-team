@@ -13,9 +13,8 @@ import (
 )
 
 const (
-	KubeconfigDefaultPath  = ".kube/config"
-	StratusNamespace       = "stratus-red-team"
-	StratusKindClusterName = "stratus-k8s"
+	KubeconfigDefaultPath = ".kube/config"
+	StratusK8sNamespace   = "stratus-red-team"
 )
 
 type K8sProvider struct {
@@ -50,7 +49,7 @@ func (m *K8sProvider) IsAuthenticated() bool {
 	var self = authv1.SelfSubjectAccessReview{
 		Spec: authv1.SelfSubjectAccessReviewSpec{
 			ResourceAttributes: &authv1.ResourceAttributes{
-				Namespace: StratusNamespace,
+				Namespace: StratusK8sNamespace,
 				Verb:      "create",
 				Resource:  "pods",
 			},
