@@ -2,6 +2,7 @@ package kubernetes
 
 import (
 	"context"
+	"errors"
 	v1 "k8s.io/api/core/v1"
 	"log"
 
@@ -46,15 +47,14 @@ func detonate(params map[string]string) error {
 	namespace := params["namespace"]
 	podSpec := nodeRootPodSpec(namespace)
 
-	log.Println("Creating malicious pod: " + podSpec.ObjectMeta.Name)
-	_, err := client.CoreV1().Pods(namespace).Create(
-		context.Background(),
-		nodeRootPodSpec(namespace),
-		metav1.CreateOptions{},
-	)
-	log.Println("Pod created")
+	log.Println("Creating malicious pod " + podSpec.ObjectMeta.Name)
+	_, err := client.CoreV1().Pods(namespace).Create(context.Background(), podSpec, metav1.CreateOptions{})
+	if err != nil {
+		return errors.New("unable to create pod: " + err.Error())
+	}
 
-	return err
+	log.Println("Pod " + podSpec.ObjectMeta.Name + " created in namespace " + namespace)
+	return nil
 }
 
 func revert(params map[string]string) error {
@@ -62,14 +62,13 @@ func revert(params map[string]string) error {
 	namespace := params["namespace"]
 	podSpec := nodeRootPodSpec(namespace)
 
-	log.Println("Removing malicious Pod: " + podSpec.ObjectMeta.Name)
-	err := client.CoreV1().Pods(namespace).Delete(
-		context.Background(),
-		podSpec.ObjectMeta.Name,
-		metav1.DeleteOptions{},
-	)
+	log.Println("Removing malicious pod " + podSpec.ObjectMeta.Name)
+	err := client.CoreV1().Pods(namespace).Delete(context.Background(), podSpec.ObjectMeta.Name, metav1.DeleteOptions{})
+	if err != nil {
+		return errors.New("unable to remove pod: " + err.Error())
+	}
 
-	return err
+	return nil
 }
 
 func nodeRootPodSpec(namespace string) *v1.Pod {
