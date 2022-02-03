@@ -3,6 +3,7 @@ package kubernetes
 import (
 	"context"
 	"errors"
+	"github.com/aws/smithy-go/ptr"
 	v1 "k8s.io/api/core/v1"
 	"log"
 
@@ -63,7 +64,8 @@ func revert(params map[string]string) error {
 	podSpec := nodeRootPodSpec(namespace)
 
 	log.Println("Removing malicious pod " + podSpec.ObjectMeta.Name)
-	err := client.CoreV1().Pods(namespace).Delete(context.Background(), podSpec.ObjectMeta.Name, metav1.DeleteOptions{})
+	deleteOptions := metav1.DeleteOptions{GracePeriodSeconds: ptr.Int64(0)}
+	err := client.CoreV1().Pods(namespace).Delete(context.Background(), podSpec.ObjectMeta.Name, deleteOptions)
 	if err != nil {
 		return errors.New("unable to remove pod: " + err.Error())
 	}
@@ -83,10 +85,10 @@ func nodeRootPodSpec(namespace string) *v1.Pod {
 					Name:  "busybox",
 					Image: "busybox:stable",
 					Command: []string{
-						"cat",
+						"sh", "-c",
 					},
 					Args: []string{
-						"/host/etc/passwd",
+						"cat /host/etc/passwd && while true; do sleep 3600; done", // print /host/etc/password and hang
 					},
 
 					VolumeMounts: []v1.VolumeMount{
