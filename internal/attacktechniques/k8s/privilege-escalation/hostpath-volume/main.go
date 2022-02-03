@@ -11,7 +11,6 @@ import (
 	"github.com/datadog/stratus-red-team/pkg/stratus/mitreattack"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/utils/pointer"
 )
 
 //go:embed main.tf
@@ -23,9 +22,6 @@ var nodeRootPodSpec = v1.Pod{
 		Namespace: providers.StratusK8sNamespace,
 	},
 	Spec: v1.PodSpec{
-		HostNetwork: true,
-		HostPID:     true,
-		HostIPC:     true,
 		Containers: []v1.Container{
 			{
 				Name:  "busybox",
@@ -42,9 +38,6 @@ var nodeRootPodSpec = v1.Pod{
 						Name:      "hostfs",
 						MountPath: "/host",
 					},
-				},
-				SecurityContext: &v1.SecurityContext{
-					Privileged: pointer.Bool(true),
 				},
 			},
 		},
