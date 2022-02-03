@@ -3,6 +3,7 @@ package providers
 import (
 	"context"
 	"log"
+	"os"
 	"path/filepath"
 
 	authv1 "k8s.io/api/authorization/v1"
@@ -13,7 +14,8 @@ import (
 )
 
 const (
-	KubeconfigDefaultPath = ".kube/config"
+	KubeconfigDefaultDir  = ".kube"
+	KubeconfigDefaultFile = "config"
 	StratusK8sNamespace   = "stratus-red-team"
 )
 
@@ -21,15 +23,41 @@ type K8sProvider struct {
 	k8sClient *kubernetes.Clientset
 }
 
-var k8sProvider = K8sProvider{}
+var (
+	k8sProvider    K8sProvider
+	kubeConfigPath string
+)
 
 func K8s() *K8sProvider {
 	return &k8sProvider
 }
 
+// GetKubeConfigPath returns the path of the kubeconfig, looking at environment variables, and then
+// the home directory
+func GetKubeConfigPath() string {
+	if kubeConfigPath != "" {
+		return kubeConfigPath
+	}
+
+	// Set to default directory if environment variable is not set, ignore if file doesn't exist
+	// to default to in-cluster client config
+	if kubeConfigPath = os.Getenv("KUBECONFIG"); kubeConfigPath == "" {
+		path := filepath.Join(homedir.HomeDir(), KubeconfigDefaultDir, KubeconfigDefaultFile)
+		_, err := os.Stat(path)
+		if err != nil && !os.IsNotExist(err) {
+			kubeConfigPath = path
+		}
+	}
+
+	return kubeConfigPath
+}
+
 // GetClient is used to authenticate with Kubernetes and build the client from a kubeconfig
-func (m *K8sProvider) GetClient(kubeConfigPath string) *kubernetes.Clientset {
-	config, err := clientcmd.BuildConfigFromFlags("", kubeConfigPath)
+func (m *K8sProvider) GetClient() *kubernetes.Clientset {
+	kubeconfig := GetKubeConfigPath()
+
+	// Will default to an in-cluster client config if kubeconfig path is not set
+	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
 	if err != nil {
 		log.Fatalf("unable to build kube config: %v", err)
 	}
@@ -41,8 +69,7 @@ func (m *K8sProvider) GetClient(kubeConfigPath string) *kubernetes.Clientset {
 }
 
 func (m *K8sProvider) IsAuthenticated() bool {
-	// Use ~/.kube/config as default kubeconfig path
-	m.GetClient(filepath.Join(homedir.HomeDir(), KubeconfigDefaultPath))
+	m.GetClient()
 
 	// Check to see if the user can create pods as a check
 	// for proper permissions on the cluster

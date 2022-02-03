@@ -80,8 +80,7 @@ Detonation:
 }
 
 func detonate(params map[string]string) error {
-	log.Println("Using kubeconfig at: " + params["kube_config"])
-	client := providers.K8s().GetClient(params["kube_config"])
+	client := providers.K8s().GetClient()
 
 	log.Println("Creating malicious pod: " + nodeRootPodSpec.ObjectMeta.Name)
 	_, err := client.CoreV1().Pods(params["namespace"]).Create(
@@ -95,9 +94,9 @@ func detonate(params map[string]string) error {
 }
 
 func revert(params map[string]string) error {
-	client := providers.K8s().GetClient(params["kube_config"])
+	client := providers.K8s().GetClient()
 
-	log.Println("Removing malicious Pod:" + nodeRootPodSpec.ObjectMeta.Name)
+	log.Println("Removing malicious Pod: " + nodeRootPodSpec.ObjectMeta.Name)
 	err := client.CoreV1().Pods(params["namespace"]).Delete(
 		context.Background(),
 		nodeRootPodSpec.ObjectMeta.Name,

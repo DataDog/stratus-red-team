@@ -201,7 +201,7 @@ func (m *Runner) ValidatePlatformRequirements() {
 		log.Println("Checking your authentication against Kubernetes")
 		if !providers.K8s().IsAuthenticated() {
 			log.Fatalf("You do not have a kubeconfig set up, or you do not have proper permissions for this cluster. "+
-				"Make sure you have proper credentials set in %s", providers.KubeconfigDefaultPath)
+				"Make sure you have proper credentials set in %s", providers.GetKubeConfigPath())
 		}
 	}
 }
