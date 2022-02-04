@@ -4,8 +4,8 @@ import (
 	"context"
 	_ "embed"
 	"errors"
-	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/ssm"
+	"github.com/datadog/stratus-red-team/internal/providers"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"github.com/datadog/stratus-red-team/pkg/stratus/mitreattack"
 	"log"
@@ -52,8 +52,7 @@ The following may be use to tune the detection, or validate findings:
 }
 
 func detonate(map[string]string) error {
-	cfg, _ := config.LoadDefaultConfig(context.Background())
-	ssmClient := ssm.NewFromConfig(cfg)
+	ssmClient := ssm.NewFromConfig(providers.AWS().GetConnection())
 
 	log.Println("Running ssm:DescribeParameters and ssm:GetParameters by batch of 10 to find all SSM Parameters in the current region")
 	paginator := ssm.NewDescribeParametersPaginator(ssmClient, &ssm.DescribeParametersInput{}, func(options *ssm.DescribeParametersPaginatorOptions) {

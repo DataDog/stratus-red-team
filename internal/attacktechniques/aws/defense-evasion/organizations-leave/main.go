@@ -5,10 +5,10 @@ import (
 	_ "embed"
 	"errors"
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials/stscreds"
 	"github.com/aws/aws-sdk-go-v2/service/organizations"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
+	"github.com/datadog/stratus-red-team/internal/providers"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"github.com/datadog/stratus-red-team/pkg/stratus/mitreattack"
 	"log"
@@ -51,10 +51,10 @@ Use the CloudTrail event <code>LeaveOrganization</code>.`,
 func detonate(params map[string]string) error {
 	roleArn := params["role_arn"]
 
-	cfg, _ := config.LoadDefaultConfig(context.Background())
-	stsClient := sts.NewFromConfig(cfg)
-	cfg.Credentials = aws.NewCredentialsCache(stscreds.NewAssumeRoleProvider(stsClient, roleArn))
-	organizationsClient := organizations.NewFromConfig(cfg)
+	awsConnection := providers.AWS().GetConnection()
+	stsClient := sts.NewFromConfig(awsConnection)
+	awsConnection.Credentials = aws.NewCredentialsCache(stscreds.NewAssumeRoleProvider(stsClient, roleArn))
+	organizationsClient := organizations.NewFromConfig(awsConnection)
 
 	log.Println("Attempting to leave the AWS organization (will trigger an Access Denied error)")
 
