@@ -2,12 +2,13 @@ package main
 
 import (
 	"errors"
-	"github.com/datadog/stratus-red-team/pkg/stratus"
-	"github.com/datadog/stratus-red-team/pkg/stratus/runner"
-	"github.com/spf13/cobra"
 	"log"
 	"os"
 	"strings"
+
+	"github.com/datadog/stratus-red-team/pkg/stratus"
+	"github.com/datadog/stratus-red-team/pkg/stratus/runner"
+	"github.com/spf13/cobra"
 )
 
 var detonateForce bool
@@ -48,9 +49,26 @@ func buildDetonateCmd() *cobra.Command {
 	return detonateCmd
 }
 func doDetonateCmd(techniques []*stratus.AttackTechnique, cleanup bool) {
-	for i := range techniques {
-		detonateTechnique(techniques[i], cleanup)
+	techniqueChan := make(chan *stratus.AttackTechnique)
+	done := make(chan bool)
+	for i := 0; i < workerCount; i++ {
+		go func() {
+			for {
+				technique, more := <-techniqueChan
+				if more {
+					detonateTechnique(technique, cleanup)
+				} else {
+					done <- true
+					return
+				}
+			}
+		}()
 	}
+	for i := range techniques {
+		techniqueChan <- techniques[i]
+	}
+	close(techniqueChan)
+	<-done
 }
 
 func detonateTechnique(technique *stratus.AttackTechnique, cleanup bool) {

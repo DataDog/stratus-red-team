@@ -2,11 +2,12 @@ package main
 
 import (
 	"errors"
+	"log"
+	"os"
+
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"github.com/datadog/stratus-red-team/pkg/stratus/runner"
 	"github.com/spf13/cobra"
-	"log"
-	"os"
 )
 
 var revertForce bool
@@ -41,17 +42,34 @@ func buildRevertCmd() *cobra.Command {
 }
 
 func doRevertCmd(techniques []*stratus.AttackTechnique, force bool) {
-	for i := range techniques {
-		if techniques[i].Revert == nil {
-			log.Println("Warning: " + techniques[i].ID + " has no revert function and cannot be reverted.")
-			continue
-		}
-		stratusRunner := runner.NewRunner(techniques[i], force)
-		err := stratusRunner.Revert()
-		if err != nil {
-			log.Fatal(err)
-		}
+	techniqueChan := make(chan *stratus.AttackTechnique)
+	done := make(chan bool)
+	for i := 0; i < workerCount; i++ {
+		go func() {
+			for {
+				technique, more := <-techniqueChan
+				if more {
+					if technique.Revert == nil {
+						log.Println("Warning: " + technique.ID + " has no revert function and cannot be reverted.")
+						continue
+					}
+					stratusRunner := runner.NewRunner(technique, force)
+					err := stratusRunner.Revert()
+					if err != nil {
+						log.Fatal(err)
+					}
+				} else {
+					done <- true
+					return
+				}
+			}
+		}()
 	}
+	for i := range techniques {
+		techniqueChan <- techniques[i]
+	}
+	close(techniqueChan)
+	<-done
 
 	doStatusCmd(techniques)
 }

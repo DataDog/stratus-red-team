@@ -1,6 +1,8 @@
 package main
 
 import (
+	"runtime"
+
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques"
 	"github.com/spf13/cobra"
 )
@@ -8,6 +10,10 @@ import (
 var rootCmd = &cobra.Command{
 	Use: "stratus",
 }
+
+var (
+	workerCount = runtime.GOMAXPROCS(0)
+)
 
 func init() {
 	listCmd := buildListCmd()

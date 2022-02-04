@@ -2,11 +2,12 @@ package main
 
 import (
 	"errors"
+	"log"
+	"os"
+
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"github.com/datadog/stratus-red-team/pkg/stratus/runner"
 	"github.com/spf13/cobra"
-	"log"
-	"os"
 )
 
 var forceWarmup bool
@@ -41,11 +42,28 @@ func buildWarmupCmd() *cobra.Command {
 }
 
 func doWarmupCmd(techniques []*stratus.AttackTechnique) {
-	for i := range techniques {
-		stratusRunner := runner.NewRunner(techniques[i], forceWarmup)
-		_, err := stratusRunner.WarmUp()
-		if err != nil {
-			log.Fatal(err)
-		}
+	techniqueChan := make(chan *stratus.AttackTechnique)
+	done := make(chan bool)
+	for i := 0; i < workerCount; i++ {
+		go func() {
+			for {
+				technique, more := <-techniqueChan
+				if more {
+					stratusRunner := runner.NewRunner(technique, forceWarmup)
+					_, err := stratusRunner.WarmUp()
+					if err != nil {
+						log.Fatal(err)
+					}
+				} else {
+					done <- true
+					return
+				}
+			}
+		}()
 	}
+	for i := range techniques {
+		techniqueChan <- techniques[i]
+	}
+	close(techniqueChan)
+	<-done
 }
