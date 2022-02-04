@@ -2,10 +2,11 @@ package main
 
 import (
 	"errors"
+	"log"
+
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"github.com/datadog/stratus-red-team/pkg/stratus/runner"
 	"github.com/spf13/cobra"
-	"log"
 )
 
 var flagForceCleanup bool
@@ -51,28 +52,35 @@ func buildCleanupCmd() *cobra.Command {
 }
 
 func doCleanupCmd(techniques []*stratus.AttackTechnique) {
-	for i := range techniques {
-		stratusRunner := runner.NewRunner(techniques[i], flagForceCleanup)
-		err := stratusRunner.CleanUp()
-		if err != nil {
-			log.Println("Failed to clean up: " + err.Error())
-			// continue cleaning up other techniques
-		}
+	techniqueChan := make(chan *stratus.AttackTechnique)
+	done := make(chan bool)
+	for i := 0; i < workerCount; i++ {
+		go func() {
+			for {
+				technique, more := <-techniqueChan
+				if more {
+					stratusRunner := runner.NewRunner(technique, forceWarmup)
+					err := stratusRunner.CleanUp()
+					if err != nil {
+						log.Println("Failed to clean up: " + err.Error())
+					}
+				} else {
+					done <- true
+					return
+				}
+			}
+		}()
 	}
+	for i := range techniques {
+		techniqueChan <- techniques[i]
+	}
+	close(techniqueChan)
+	<-done
 	doStatusCmd(techniques)
 }
 
 func doCleanupAllCmd() {
 	log.Println("Cleaning up all techniques that have been warmed-up or detonated")
 	availableTechniques := stratus.GetRegistry().ListAttackTechniques()
-	for i := range availableTechniques {
-		stratusRunner := runner.NewRunner(availableTechniques[i], flagForceCleanup)
-		if stratusRunner.GetState() != stratus.AttackTechniqueStatusCold {
-			err := stratusRunner.CleanUp()
-			if err != nil {
-				log.Println("Failed to clean up: " + err.Error())
-				// continue cleaning up other techniques
-			}
-		}
-	}
+	doCleanupCmd(availableTechniques)
 }
