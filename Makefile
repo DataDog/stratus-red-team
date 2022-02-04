@@ -16,8 +16,9 @@ test:
 	go test ./... -v
 
 thirdparty-licenses:
+	go get github.com/google/go-licenses
 	go install github.com/google/go-licenses
-	~/go/bin/go-licenses csv github.com/datadog/stratus-red-team/cmd/stratus | sort > $(ROOT_DIR)/LICENSE-3rdparty.csv	
+	$(GOPATH)/bin/go-licenses csv github.com/datadog/stratus-red-team/cmd/stratus | sort > $(ROOT_DIR)/LICENSE-3rdparty.csv	
 
 mocks:
 	mockery --name=StateManager --dir internal/state --output internal/state/mocks
