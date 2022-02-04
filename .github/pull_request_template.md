@@ -20,4 +20,4 @@ For new attack techniques
 -->
 - [ ] The attack technique emulates a single attack step, not a full attack chain
 - [ ] We have factual evidence & references that the attack technique was used by real malware, pentesters, or attackers
-- [ ] The attack technique makes not assumption about the state of the environment prior to warming it up
+- [ ] The attack technique makes no assumption about the state of the environment prior to warming it up
