@@ -1,24 +1,72 @@
-Component,Origin,License,Copyright
-stratus-red-team,github.com/aws/aws-sdk-go-v2,Apache-2.0,"Amazon.com, Inc. or its affiliates. All Rights Reserved. | Stripe, Inc."
-stratus-red-team,github.com/aws/smithy-go,Apache-2.0,"Amazon.com, Inc. or its affiliates. All Rights Reserved. | Stripe, Inc."
-stratus-red-team,github.com/davecgh/go-spew/spew,ISC,Dave Collins <dave@davec.name>
-stratus-red-team,github.com/hashicorp/go-cleanhttp,MPL-2.0,HashiCorp Inc.
-stratus-red-team,github.com/hashicorp/hc-install,MPL-2.0,HashiCorp Inc.
-stratus-red-team,github.com/hashicorp/terraform-exec,MPL-2.0,HashiCorp Inc.
-stratus-red-team,github.com/hashicorp/terraform-json,MPL-2.0,HashiCorp Inc.
-stratus-red-team,github.com/inconshreveable/mousetra,Apache-2.0,Alan Shreve
-stratus-red-team,github.com/jedib0t/go-pretty,MIT,jedib0t
-stratus-red-team,github.com/jmespath/go-jmespath,Apache-2.0,James Saryerwinnie
-stratus-red-team,github.com/mattn/go-runewidth,MIT,Yasuhiro Matsumoto
-stratus-red-team,github.com/pmezard/go-difflib,,Patrick Mezard
-stratus-red-team,github.com/spf13/cobra,Apache-2.0,Steve Francia <spf@spf13.com>
-stratus-red-team,https://github.com/spf13/pflag,BSD-3-Clause,Alex Ogier|The Go Authors
-stratus-red-team,github.com/stretchr/objx,MIT,"Stretchr, Inc.|objx contributors"
-stratus-red-team,github.com/stretchr/testify,MIT,"Mat Ryer, Tyler Bunnell and contributors"
-stratus-red-team,github.com/zclconf/go-cty,MIT,Martin Atkins
-stratus-red-team,github.com/fatih/color,MIT,Fatih Arslan
-stratus-red-team,k8s.io/client-go,Apache-2.0,Unspecified
-stratus-red-team,k8s.io/api,Apache-2.0,Unspecified
-stratus-red-team,k8s.io/apimachinery,Apache-2.0,Unspecified
-x,golang.org/x/*,BSD-3-Clause,The Go Authors
-x,gopkg.in/yaml.v3,MIT,"Canonical, Ltd. | Kirill Simonov"
+github.com/aws/aws-sdk-go-v2,https://github.com/aws/aws-sdk-go-v2/blob/master/LICENSE.txt,Apache-2.0
+github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream,https://github.com/aws/aws-sdk-go-v2/blob/master/aws/protocol/eventstream/LICENSE.txt,Apache-2.0
+github.com/aws/aws-sdk-go-v2/config,https://github.com/aws/aws-sdk-go-v2/blob/master/config/LICENSE.txt,Apache-2.0
+github.com/aws/aws-sdk-go-v2/credentials,https://github.com/aws/aws-sdk-go-v2/blob/master/credentials/LICENSE.txt,Apache-2.0
+github.com/aws/aws-sdk-go-v2/feature/ec2/imds,https://github.com/aws/aws-sdk-go-v2/blob/master/feature/ec2/imds/LICENSE.txt,Apache-2.0
+github.com/aws/aws-sdk-go-v2/internal/configsources,https://github.com/aws/aws-sdk-go-v2/blob/master/internal/configsources/LICENSE.txt,Apache-2.0
+github.com/aws/aws-sdk-go-v2/internal/endpoints/v2,https://github.com/aws/aws-sdk-go-v2/blob/master/internal/endpoints/v2/LICENSE.txt,Apache-2.0
+github.com/aws/aws-sdk-go-v2/internal/ini,https://github.com/aws/aws-sdk-go-v2/blob/master/internal/ini/LICENSE.txt,Apache-2.0
+github.com/aws/aws-sdk-go-v2/internal/sync/singleflight,https://github.com/aws/aws-sdk-go-v2/blob/master/internal/sync/singleflight/LICENSE,BSD-3-Clause
+github.com/aws/aws-sdk-go-v2/service/cloudtrail,https://github.com/aws/aws-sdk-go-v2/blob/master/service/cloudtrail/LICENSE.txt,Apache-2.0
+github.com/aws/aws-sdk-go-v2/service/ec2,https://github.com/aws/aws-sdk-go-v2/blob/master/service/ec2/LICENSE.txt,Apache-2.0
+github.com/aws/aws-sdk-go-v2/service/iam,https://github.com/aws/aws-sdk-go-v2/blob/master/service/iam/LICENSE.txt,Apache-2.0
+github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding,https://github.com/aws/aws-sdk-go-v2/blob/master/service/internal/accept-encoding/LICENSE.txt,Apache-2.0
+github.com/aws/aws-sdk-go-v2/service/internal/presigned-url,https://github.com/aws/aws-sdk-go-v2/blob/master/service/internal/presigned-url/LICENSE.txt,Apache-2.0
+github.com/aws/aws-sdk-go-v2/service/internal/s3shared,https://github.com/aws/aws-sdk-go-v2/blob/master/service/internal/s3shared/LICENSE.txt,Apache-2.0
+github.com/aws/aws-sdk-go-v2/service/lambda,https://github.com/aws/aws-sdk-go-v2/blob/master/service/lambda/LICENSE.txt,Apache-2.0
+github.com/aws/aws-sdk-go-v2/service/organizations,https://github.com/aws/aws-sdk-go-v2/blob/master/service/organizations/LICENSE.txt,Apache-2.0
+github.com/aws/aws-sdk-go-v2/service/rds,https://github.com/aws/aws-sdk-go-v2/blob/master/service/rds/LICENSE.txt,Apache-2.0
+github.com/aws/aws-sdk-go-v2/service/s3,https://github.com/aws/aws-sdk-go-v2/blob/master/service/s3/LICENSE.txt,Apache-2.0
+github.com/aws/aws-sdk-go-v2/service/secretsmanager,https://github.com/aws/aws-sdk-go-v2/blob/master/service/secretsmanager/LICENSE.txt,Apache-2.0
+github.com/aws/aws-sdk-go-v2/service/ssm,https://github.com/aws/aws-sdk-go-v2/blob/master/service/ssm/LICENSE.txt,Apache-2.0
+github.com/aws/aws-sdk-go-v2/service/sso,https://github.com/aws/aws-sdk-go-v2/blob/master/service/sso/LICENSE.txt,Apache-2.0
+github.com/aws/aws-sdk-go-v2/service/sts,https://github.com/aws/aws-sdk-go-v2/blob/master/service/sts/LICENSE.txt,Apache-2.0
+github.com/aws/smithy-go,https://github.com/aws/smithy-go/blob/master/LICENSE,Apache-2.0
+github.com/datadog/stratus-red-team,https://github.com/DataDog/stratus-red-team/blob/master/LICENSE,Apache-2.0
+github.com/davecgh/go-spew/spew,https://github.com/davecgh/go-spew/blob/master/spew/LICENSE,ISC
+github.com/fatih/color,https://github.com/fatih/color/blob/master/LICENSE.md,MIT
+github.com/go-logr/logr,https://github.com/go-logr/logr/blob/master/LICENSE,Apache-2.0
+github.com/gogo/protobuf,https://github.com/gogo/protobuf/blob/master/LICENSE,BSD-3-Clause
+github.com/golang/protobuf,https://github.com/golang/protobuf/blob/master/LICENSE,BSD-3-Clause
+github.com/google/go-cmp/cmp,https://github.com/google/go-cmp/blob/master/cmp/LICENSE,BSD-3-Clause
+github.com/google/gofuzz,https://github.com/google/gofuzz/blob/master/LICENSE,Apache-2.0
+github.com/googleapis/gnostic,https://github.com/googleapis/gnostic/blob/master/LICENSE,Apache-2.0
+github.com/hashicorp/go-cleanhttp,https://github.com/hashicorp/go-cleanhttp/blob/master/LICENSE,MPL-2.0
+github.com/hashicorp/go-version,https://github.com/hashicorp/go-version/blob/master/LICENSE,MPL-2.0
+github.com/hashicorp/hc-install,https://github.com/hashicorp/hc-install/blob/master/LICENSE,MPL-2.0
+github.com/hashicorp/terraform-exec,https://github.com/hashicorp/terraform-exec/blob/master/LICENSE,MPL-2.0
+github.com/hashicorp/terraform-json,https://github.com/hashicorp/terraform-json/blob/master/LICENSE,MPL-2.0
+github.com/imdario/mergo,https://github.com/imdario/mergo/blob/master/LICENSE,BSD-3-Clause
+github.com/jedib0t/go-pretty/v6,https://github.com/jedib0t/go-pretty/blob/master/v6/LICENSE,MIT
+github.com/jmespath/go-jmespath,https://github.com/jmespath/go-jmespath/blob/master/LICENSE,Apache-2.0
+github.com/json-iterator/go,https://github.com/json-iterator/go/blob/master/LICENSE,MIT
+github.com/mattn/go-colorable,https://github.com/mattn/go-colorable/blob/master/LICENSE,MIT
+github.com/mattn/go-isatty,https://github.com/mattn/go-isatty/blob/master/LICENSE,MIT
+github.com/mattn/go-runewidth,https://github.com/mattn/go-runewidth/blob/master/LICENSE,MIT
+github.com/modern-go/concurrent,https://github.com/modern-go/concurrent/blob/master/LICENSE,Apache-2.0
+github.com/modern-go/reflect2,https://github.com/modern-go/reflect2/blob/master/LICENSE,Apache-2.0
+github.com/spf13/cobra,https://github.com/spf13/cobra/blob/master/LICENSE.txt,Apache-2.0
+github.com/spf13/pflag,https://github.com/spf13/pflag/blob/master/LICENSE,BSD-3-Clause
+github.com/zclconf/go-cty/cty,https://github.com/zclconf/go-cty/blob/master/cty/LICENSE,MIT
+golang.org/x/crypto,Unknown,BSD-3-Clause
+golang.org/x/net,Unknown,BSD-3-Clause
+golang.org/x/oauth2,Unknown,BSD-3-Clause
+golang.org/x/sys,Unknown,BSD-3-Clause
+golang.org/x/term,Unknown,BSD-3-Clause
+golang.org/x/text,Unknown,BSD-3-Clause
+golang.org/x/time/rate,Unknown,BSD-3-Clause
+google.golang.org/protobuf,Unknown,BSD-3-Clause
+gopkg.in/inf.v0,Unknown,BSD-3-Clause
+gopkg.in/yaml.v2,Unknown,Apache-2.0
+gopkg.in/yaml.v3,Unknown,MIT
+k8s.io/api,Unknown,Apache-2.0
+k8s.io/apimachinery/pkg,Unknown,Apache-2.0
+k8s.io/apimachinery/third_party/forked/golang/reflect,Unknown,BSD-3-Clause
+k8s.io/client-go,Unknown,Apache-2.0
+k8s.io/klog/v2,Unknown,Apache-2.0
+k8s.io/kube-openapi/pkg,Unknown,Apache-2.0
+k8s.io/utils,Unknown,Apache-2.0
+k8s.io/utils/internal/third_party/forked/golang/net,Unknown,BSD-3-Clause
+sigs.k8s.io/json,Unknown,Apache-2.0
+sigs.k8s.io/structured-merge-diff/v4,Unknown,Apache-2.0
+sigs.k8s.io/yaml,Unknown,MIT
