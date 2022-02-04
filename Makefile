@@ -1,7 +1,10 @@
 BUILD_VERSION=dev-snapshot
 
+MAKEFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
+ROOT_DIR := $(dir $(MAKEFILE_PATH))
+
 .PHONY: docs
-all: build
+all: build thirdparty-licenses
 
 build:
 	go build -ldflags="-X main.BuildVersion=$(BUILD_VERSION)" -o bin/stratus cmd/stratus/*.go
@@ -11,6 +14,10 @@ docs:
 
 test:
 	go test ./... -v
+
+thirdparty-licenses:
+	go install github.com/google/go-licenses
+	~/go/bin/go-licenses csv github.com/datadog/stratus-red-team/cmd/stratus | sort > $(ROOT_DIR)/LICENSE-3rdparty.csv	
 
 mocks:
 	mockery --name=StateManager --dir internal/state --output internal/state/mocks
