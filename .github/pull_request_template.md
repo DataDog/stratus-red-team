@@ -1,9 +1,9 @@
 ### What does this PR do?
 
 <!--
-* A brief description of the change being made with this pull request.
-* If the description here cannot be expressed in a succint form, consider
-  opening multiple pull requests instead of a single one.
+* New attack technique
+* Bug fix
+* Enhancement
 -->
 
 ### Motivation
@@ -13,21 +13,11 @@
 * Link any related GitHub issues or PRs here.
 -->
 
-### Additional Notes
+### Checklist
 
 <!--
-* Anything else we should know when reviewing?
+For new attack techniques
 -->
-
-### Possible Drawbacks / Trade-offs
-
-<!--
-* What are the possible side-effects or negative impacts of the code change?
--->
-
-### Describe how to test/QA your changes
-
-<!--
-* Write here in detail or link to detailed instructions on how this change can
-  be tested/QAd/validated, including any environment setup.
--->
+- [ ] The attack technique emulates a single attack step, not a full attack chain
+- [ ] We have factual evidence & references that the attack technique was used by real malware, pentesters, or attackers
+- [ ] The attack technique makes not assumption about the state of the environment prior to warming it up
