@@ -5,10 +5,10 @@ import (
 	_ "embed"
 	"errors"
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials/stscreds"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
+	"github.com/datadog/stratus-red-team/internal/providers"
 	"github.com/datadog/stratus-red-team/internal/utils"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"github.com/datadog/stratus-red-team/pkg/stratus/mitreattack"
@@ -52,10 +52,10 @@ const numCalls = 30
 func detonate(params map[string]string) error {
 	roleArn := params["role_arn"]
 
-	cfg, _ := config.LoadDefaultConfig(context.Background())
-	stsClient := sts.NewFromConfig(cfg)
-	cfg.Credentials = aws.NewCredentialsCache(stscreds.NewAssumeRoleProvider(stsClient, roleArn))
-	ec2Client := ec2.NewFromConfig(cfg)
+	awsConnection := providers.AWS().GetConnection()
+	stsClient := sts.NewFromConfig(awsConnection)
+	awsConnection.Credentials = aws.NewCredentialsCache(stscreds.NewAssumeRoleProvider(stsClient, roleArn))
+	ec2Client := ec2.NewFromConfig(awsConnection)
 
 	log.Println("Running ec2:GetPasswordData on " + strconv.Itoa(numCalls) + " random instance IDs")
 
