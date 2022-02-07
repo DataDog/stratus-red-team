@@ -47,8 +47,6 @@ func (m *AWSProvider) IsAuthenticatedAgainstAWS() bool {
 // Functions below are related to customization of the user-agent header
 // Code taken from https://github.com/aws/aws-sdk-go-v2/issues/1432
 
-const StratusUserAgent = "stratus-red-team"
-
 var customUserAgentApiOptions = config.WithAPIOptions(func() (v []func(stack *middleware.Stack) error) {
 	v = append(v, attachCustomMiddleware)
 	return v
