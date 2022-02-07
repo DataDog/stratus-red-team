@@ -51,7 +51,7 @@ func buildDetonateCmd() *cobra.Command {
 func doDetonateCmd(techniques []*stratus.AttackTechnique, cleanup bool) {
 	techniqueChan := make(chan *stratus.AttackTechnique)
 	done := make(chan bool)
-	for i := 0; i < workerCount; i++ {
+	for i := 0; i < maxWorkerCount; i++ {
 		go func() {
 			for {
 				technique, more := <-techniqueChan
