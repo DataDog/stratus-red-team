@@ -2,13 +2,11 @@ package main
 
 import (
 	"errors"
-	"github.com/datadog/stratus-red-team/internal/utils"
-	"log"
-	"os"
-
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"github.com/datadog/stratus-red-team/pkg/stratus/runner"
 	"github.com/spf13/cobra"
+	"log"
+	"os"
 )
 
 var flagForceCleanup bool
@@ -54,7 +52,7 @@ func buildCleanupCmd() *cobra.Command {
 }
 
 func doCleanupCmd(techniques []*stratus.AttackTechnique) {
-	workerCount := utils.Min(len(techniques), maxWorkerCount)
+	workerCount := len(techniques)
 	techniquesChan := make(chan *stratus.AttackTechnique, workerCount)
 	errorsChan := make(chan error, workerCount)
 	for i := 0; i < workerCount; i++ {
@@ -65,7 +63,7 @@ func doCleanupCmd(techniques []*stratus.AttackTechnique) {
 	}
 	close(techniquesChan)
 
-	hadError := handleErrorsChannel(errorsChan, len(techniques))
+	hadError := handleErrorsChannel(errorsChan, workerCount)
 	doStatusCmd(techniques)
 	if hadError {
 		os.Exit(1)
