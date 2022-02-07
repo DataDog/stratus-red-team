@@ -4,7 +4,7 @@ MAKEFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
 ROOT_DIR := $(dir $(MAKEFILE_PATH))
 
 .PHONY: docs
-all: build thirdparty-licenses
+all: build
 
 build:
 	go build -ldflags="-X main.BuildVersion=$(BUILD_VERSION)" -o bin/stratus cmd/stratus/*.go
