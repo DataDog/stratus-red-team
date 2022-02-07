@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"github.com/jedib0t/go-pretty/v6/table"
+	"log"
 	"os"
 )
 
@@ -24,4 +25,17 @@ func resolveTechniques(names []string) ([]*stratus.AttackTechnique, error) {
 		result = append(result, technique)
 	}
 	return result, nil
+}
+
+func handleErrorsChannel(errors <-chan error, workerCount int) bool {
+	hasError := false
+	for i := 0; i < workerCount; i++ {
+		err := <-errors
+		if err != nil {
+			log.Println(err)
+			hasError = true
+		}
+	}
+
+	return hasError
 }
