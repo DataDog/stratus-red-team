@@ -2,7 +2,9 @@ package main
 
 import (
 	"errors"
+	"github.com/datadog/stratus-red-team/internal/utils"
 	"log"
+	"os"
 
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"github.com/datadog/stratus-red-team/pkg/stratus/runner"
@@ -52,31 +54,30 @@ func buildCleanupCmd() *cobra.Command {
 }
 
 func doCleanupCmd(techniques []*stratus.AttackTechnique) {
-	techniqueChan := make(chan *stratus.AttackTechnique)
-	done := make(chan bool)
-	for i := 0; i < maxWorkerCount; i++ {
-		go func() {
-			for {
-				technique, more := <-techniqueChan
-				if more {
-					stratusRunner := runner.NewRunner(technique, forceWarmup)
-					err := stratusRunner.CleanUp()
-					if err != nil {
-						log.Println("Failed to clean up: " + err.Error())
-					}
-				} else {
-					done <- true
-					return
-				}
-			}
-		}()
+	workerCount := utils.Min(len(techniques), maxWorkerCount)
+	techniquesChan := make(chan *stratus.AttackTechnique, workerCount)
+	errorsChan := make(chan error, workerCount)
+	for i := 0; i < workerCount; i++ {
+		go cleanupCmdWorker(techniquesChan, errorsChan)
 	}
 	for i := range techniques {
-		techniqueChan <- techniques[i]
+		techniquesChan <- techniques[i]
 	}
-	close(techniqueChan)
-	<-done
+	close(techniquesChan)
+
+	hadError := handleErrorsChannel(errorsChan, len(techniques))
 	doStatusCmd(techniques)
+	if hadError {
+		os.Exit(1)
+	}
+}
+
+func cleanupCmdWorker(techniques <-chan *stratus.AttackTechnique, errors chan<- error) {
+	for technique := range techniques {
+		stratusRunner := runner.NewRunner(technique, flagForceCleanup)
+		err := stratusRunner.CleanUp()
+		errors <- err
+	}
 }
 
 func doCleanupAllCmd() {
