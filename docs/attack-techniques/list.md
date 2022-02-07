@@ -33,3 +33,4 @@ This page contains the list of all Stratus Attack Techniques.
 | [Create a Login Profile on an IAM User](./AWS/aws.persistence.iam-create-user-login-profile.md) | [AWS](./AWS/index.md) | Persistence, Privilege Escalation |
 | [Backdoor Lambda Function Through Resource-Based Policy](./AWS/aws.persistence.lambda-backdoor-function.md) | [AWS](./AWS/index.md) | Persistence |
 | [Container breakout via hostPath volume mount](./kubernetes/k8s.privilege-escalation.hostpath-volume.md) | [kubernetes](./kubernetes/index.md) | Privilege Escalation |
+| [Run a Privileged Pod](./kubernetes/k8s.privilege-escalation.privileged-pod.md) | [kubernetes](./kubernetes/index.md) | Privilege Escalation |
