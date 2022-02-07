@@ -27,9 +27,9 @@ func resolveTechniques(names []string) ([]*stratus.AttackTechnique, error) {
 	return result, nil
 }
 
-func handleErrorsChannel(errors <-chan error, workerCount int) bool {
+func handleErrorsChannel(errors <-chan error, jobsCount int) bool {
 	hasError := false
-	for i := 0; i < workerCount; i++ {
+	for i := 0; i < jobsCount; i++ {
 		err := <-errors
 		if err != nil {
 			log.Println(err)
