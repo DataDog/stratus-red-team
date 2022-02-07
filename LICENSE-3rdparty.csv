@@ -22,7 +22,7 @@ github.com/aws/aws-sdk-go-v2/service/ssm,https://github.com/aws/aws-sdk-go-v2/bl
 github.com/aws/aws-sdk-go-v2/service/sso,https://github.com/aws/aws-sdk-go-v2/blob/master/service/sso/LICENSE.txt,Apache-2.0
 github.com/aws/aws-sdk-go-v2/service/sts,https://github.com/aws/aws-sdk-go-v2/blob/master/service/sts/LICENSE.txt,Apache-2.0
 github.com/aws/smithy-go,https://github.com/aws/smithy-go/blob/master/LICENSE,Apache-2.0
-github.com/datadog/stratus-red-team,https://github.com/DataDog/stratus-red-team/blob/master/LICENSE,Apache-2.0
+github.com/datadog/stratus-red-team,Unknown,Apache-2.0
 github.com/davecgh/go-spew/spew,https://github.com/davecgh/go-spew/blob/master/spew/LICENSE,ISC
 github.com/fatih/color,https://github.com/fatih/color/blob/master/LICENSE.md,MIT
 github.com/go-logr/logr,https://github.com/go-logr/logr/blob/master/LICENSE,Apache-2.0
