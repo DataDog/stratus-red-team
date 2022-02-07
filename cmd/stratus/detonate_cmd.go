@@ -2,7 +2,7 @@ package main
 
 import (
 	"errors"
-	"log"
+	"github.com/datadog/stratus-red-team/internal/utils"
 	"os"
 	"strings"
 
@@ -49,40 +49,35 @@ func buildDetonateCmd() *cobra.Command {
 	return detonateCmd
 }
 func doDetonateCmd(techniques []*stratus.AttackTechnique, cleanup bool) {
-	techniqueChan := make(chan *stratus.AttackTechnique)
-	done := make(chan bool)
-	for i := 0; i < maxWorkerCount; i++ {
-		go func() {
-			for {
-				technique, more := <-techniqueChan
-				if more {
-					detonateTechnique(technique, cleanup)
-				} else {
-					done <- true
-					return
-				}
-			}
-		}()
+	workerCount := utils.Min(len(techniques), maxWorkerCount)
+	techniquesChan := make(chan *stratus.AttackTechnique, workerCount)
+	errorsChan := make(chan error, workerCount)
+
+	// Create workers
+	for i := 0; i < workerCount; i++ {
+		go detonateCmdWorker(techniquesChan, errorsChan)
 	}
+
+	// Send attack techniques to detonate
 	for i := range techniques {
-		techniqueChan <- techniques[i]
+		techniquesChan <- techniques[i]
 	}
-	close(techniqueChan)
-	<-done
+	close(techniquesChan)
+
+	if hadError := handleErrorsChannel(errorsChan, len(techniquesChan)); hadError {
+		os.Exit(1)
+	}
 }
 
-func detonateTechnique(technique *stratus.AttackTechnique, cleanup bool) {
-	stratusRunner := runner.NewRunner(technique, detonateForce)
-	err := stratusRunner.Detonate()
-	if cleanup {
-		defer func() {
-			err := stratusRunner.CleanUp()
-			if err != nil {
-				log.Println("unable to clean up prerequisites: " + err.Error())
-			}
-		}()
-	}
-	if err != nil {
-		log.Fatal(err)
+func detonateCmdWorker(techniques <-chan *stratus.AttackTechnique, errors chan<- error) {
+	for technique := range techniques {
+		stratusRunner := runner.NewRunner(technique, detonateForce)
+		detonateErr := stratusRunner.Detonate()
+		if detonateCleanup {
+			cleanupErr := stratusRunner.CleanUp()
+			errors <- utils.CoalesceErr(detonateErr, cleanupErr)
+		} else {
+			errors <- detonateErr
+		}
 	}
 }
