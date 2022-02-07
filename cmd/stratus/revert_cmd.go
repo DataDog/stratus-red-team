@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"github.com/datadog/stratus-red-team/internal/utils"
 	"log"
 	"os"
 
@@ -34,42 +35,45 @@ func buildRevertCmd() *cobra.Command {
 		},
 		Run: func(cmd *cobra.Command, args []string) {
 			techniques, _ := resolveTechniques(args)
-			doRevertCmd(techniques, revertForce)
+			doRevertCmd(techniques)
 		},
 	}
 	detonateCmd.Flags().BoolVarP(&revertForce, "force", "f", false, "Force attempt to reverting even if the technique is not in the DETONATED state")
 	return detonateCmd
 }
 
-func doRevertCmd(techniques []*stratus.AttackTechnique, force bool) {
-	techniqueChan := make(chan *stratus.AttackTechnique)
-	done := make(chan bool)
-	for i := 0; i < maxWorkerCount; i++ {
-		go func() {
-			for {
-				technique, more := <-techniqueChan
-				if more {
-					if technique.Revert == nil {
-						log.Println("Warning: " + technique.ID + " has no revert function and cannot be reverted.")
-						continue
-					}
-					stratusRunner := runner.NewRunner(technique, force)
-					err := stratusRunner.Revert()
-					if err != nil {
-						log.Fatal(err)
-					}
-				} else {
-					done <- true
-					return
-				}
-			}
-		}()
-	}
-	for i := range techniques {
-		techniqueChan <- techniques[i]
-	}
-	close(techniqueChan)
-	<-done
+func doRevertCmd(techniques []*stratus.AttackTechnique) {
+	workerCount := utils.Min(len(techniques), maxWorkerCount)
+	techniquesChan := make(chan *stratus.AttackTechnique, workerCount)
+	errorsChan := make(chan error, workerCount)
 
+	// Create workers
+	for i := 0; i < workerCount; i++ {
+		go revertCmdWorker(techniquesChan, errorsChan)
+	}
+
+	// Send attack techniques to revert
+	for i := range techniques {
+		techniquesChan <- techniques[i]
+	}
+	close(techniquesChan)
+
+	hadError := handleErrorsChannel(errorsChan, len(techniques))
 	doStatusCmd(techniques)
+	if hadError {
+		os.Exit(1)
+	}
+}
+
+func revertCmdWorker(techniques <-chan *stratus.AttackTechnique, errors chan<- error) {
+	for technique := range techniques {
+		if technique.Revert == nil {
+			log.Println("Warning: " + technique.ID + " has no revert function and cannot be reverted.")
+			errors <- nil
+			continue
+		}
+		stratusRunner := runner.NewRunner(technique, revertForce)
+		err := stratusRunner.Revert()
+		errors <- err
+	}
 }
