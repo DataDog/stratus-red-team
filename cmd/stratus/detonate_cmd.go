@@ -64,7 +64,7 @@ func doDetonateCmd(techniques []*stratus.AttackTechnique, cleanup bool) {
 	}
 	close(techniquesChan)
 
-	if hadError := handleErrorsChannel(errorsChan, len(techniquesChan)); hadError {
+	if hadError := handleErrorsChannel(errorsChan, len(techniques)); hadError {
 		os.Exit(1)
 	}
 }
