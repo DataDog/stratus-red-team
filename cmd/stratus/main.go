@@ -12,7 +12,7 @@ var rootCmd = &cobra.Command{
 }
 
 var (
-	workerCount = runtime.GOMAXPROCS(0)
+	maxWorkerCount = runtime.GOMAXPROCS(0)
 )
 
 func init() {

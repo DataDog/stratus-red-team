@@ -31,3 +31,12 @@ func RandomHexString(length int) string {
 	}
 	return string(b)
 }
+
+// The Min function returns the smallest of two integers
+// Note: math.Min only works for float64
+func Min(a int, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}

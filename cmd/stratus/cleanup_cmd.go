@@ -54,7 +54,7 @@ func buildCleanupCmd() *cobra.Command {
 func doCleanupCmd(techniques []*stratus.AttackTechnique) {
 	techniqueChan := make(chan *stratus.AttackTechnique)
 	done := make(chan bool)
-	for i := 0; i < workerCount; i++ {
+	for i := 0; i < maxWorkerCount; i++ {
 		go func() {
 			for {
 				technique, more := <-techniqueChan
