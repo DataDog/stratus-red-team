@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"github.com/datadog/stratus-red-team/internal/utils"
 	"log"
 	"os"
 
@@ -43,7 +42,7 @@ func buildRevertCmd() *cobra.Command {
 }
 
 func doRevertCmd(techniques []*stratus.AttackTechnique) {
-	workerCount := utils.Min(len(techniques), maxWorkerCount)
+	workerCount := len(techniques)
 	techniquesChan := make(chan *stratus.AttackTechnique, workerCount)
 	errorsChan := make(chan error, workerCount)
 
@@ -58,7 +57,7 @@ func doRevertCmd(techniques []*stratus.AttackTechnique) {
 	}
 	close(techniquesChan)
 
-	hadError := handleErrorsChannel(errorsChan, len(techniques))
+	hadError := handleErrorsChannel(errorsChan, workerCount)
 	doStatusCmd(techniques)
 	if hadError {
 		os.Exit(1)

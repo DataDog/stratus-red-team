@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"github.com/datadog/stratus-red-team/internal/utils"
 	"os"
 
 	"github.com/datadog/stratus-red-team/pkg/stratus"
@@ -42,7 +41,7 @@ func buildWarmupCmd() *cobra.Command {
 }
 
 func doWarmupCmd(techniques []*stratus.AttackTechnique) {
-	workerCount := utils.Min(len(techniques), maxWorkerCount)
+	workerCount := len(techniques)
 	techniquesChan := make(chan *stratus.AttackTechnique, workerCount)
 	errorsChan := make(chan error, workerCount)
 	for i := 0; i < workerCount; i++ {

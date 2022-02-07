@@ -49,7 +49,7 @@ func buildDetonateCmd() *cobra.Command {
 	return detonateCmd
 }
 func doDetonateCmd(techniques []*stratus.AttackTechnique, cleanup bool) {
-	workerCount := utils.Min(len(techniques), maxWorkerCount)
+	workerCount := len(techniques)
 	techniquesChan := make(chan *stratus.AttackTechnique, workerCount)
 	errorsChan := make(chan error, workerCount)
 
@@ -64,7 +64,7 @@ func doDetonateCmd(techniques []*stratus.AttackTechnique, cleanup bool) {
 	}
 	close(techniquesChan)
 
-	if hadError := handleErrorsChannel(errorsChan, len(techniques)); hadError {
+	if hadError := handleErrorsChannel(errorsChan, workerCount); hadError {
 		os.Exit(1)
 	}
 }
