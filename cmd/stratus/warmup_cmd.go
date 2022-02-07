@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"github.com/datadog/stratus-red-team/internal/utils"
-	"log"
 	"os"
 
 	"github.com/datadog/stratus-red-team/pkg/stratus"
@@ -44,31 +43,25 @@ func buildWarmupCmd() *cobra.Command {
 
 func doWarmupCmd(techniques []*stratus.AttackTechnique) {
 	workerCount := utils.Min(len(techniques), maxWorkerCount)
-	techniquesChan := make(chan *stratus.AttackTechnique)
-	errorsChan := make(chan error)
+	techniquesChan := make(chan *stratus.AttackTechnique, workerCount)
+	errorsChan := make(chan error, workerCount)
 	for i := 0; i < workerCount; i++ {
-		go func() {
-			for technique := range techniquesChan {
-				stratusRunner := runner.NewRunner(technique, forceWarmup)
-				_, err := stratusRunner.WarmUp()
-				errorsChan <- err
-			}
-		}()
+		go warmupCmdWorker(techniquesChan, errorsChan)
 	}
 	for i := range techniques {
 		techniquesChan <- techniques[i]
 	}
 	close(techniquesChan)
 
-	hasError := false
-	for i := 0; i < workerCount; i++ {
-		err := <-errorsChan
-		if err != nil {
-			log.Println(err)
-			hasError = true
-		}
-	}
-	if hasError {
+	if hadError := handleErrorsChannel(errorsChan, len(techniquesChan)); hadError {
 		os.Exit(1)
+	}
+}
+
+func warmupCmdWorker(techniques <-chan *stratus.AttackTechnique, errors chan<- error) {
+	for technique := range techniques {
+		stratusRunner := runner.NewRunner(technique, forceWarmup)
+		_, err := stratusRunner.WarmUp()
+		errors <- err
 	}
 }
