@@ -58,7 +58,7 @@ Sample event (shortened):
 			"path": "/api/v1/namespaces/stratus-red-team-umusjhhg/pods"
 		},
 		"method": "create",
-		"status_code": 201,
+		"status_code": 201
 	},
 	"stage": "ResponseComplete",
 	"kind": "Event",
@@ -75,11 +75,6 @@ Sample event (shortened):
 					"privileged": true
 				}
 			}]
-		},
-		"apiVersion": "v1",
-		"metadata": {
-			"namespace": "stratus-red-team-umusjhhg",
-			"name": "k8s.privilege-escalation.privileged-pod"
 		}
 	}
 }
