@@ -18,7 +18,7 @@ import (
 
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
-		ID:                 "k8s.persistence.create-admin-clusterrole",
+		ID:                 "k8s.privilege-escalation.create-admin-clusterrole",
 		FriendlyName:       "Create Admin ClusterRole",
 		Platform:           stratus.Kubernetes,
 		IsIdempotent:       false,
