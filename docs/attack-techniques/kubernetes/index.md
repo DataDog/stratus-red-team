@@ -11,7 +11,7 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 ## Privilege Escalation
 
-- [Create Admin ClusterRole](./k8s.persistence.create-admin-clusterrole.md)
+- [Create Admin ClusterRole](./k8s.privilege-escalation.create-admin-clusterrole.md)
 
 - [Container breakout via hostPath volume mount](./k8s.privilege-escalation.hostpath-volume.md)
 
