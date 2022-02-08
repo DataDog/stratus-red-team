@@ -29,6 +29,7 @@ var execOptions = v1.PodExecOptions{
 }
 
 func init() {
+	const codeBlock = "```"
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
 		ID:                 "k8s.credential-access.steal-serviceaccount-token",
 		FriendlyName:       "Steal Pod Service Account Token",
@@ -47,6 +48,35 @@ Warm-up:
 Detonation: 
 
 - Execute <code>` + command + `</code> into the pod to steal its service account token
+`,
+		Detection: `
+Using Kubernetes API server audit logs, looking for execution events.
+
+Sample event (shortened):
+
+` + codeBlock + `json hl_lines="3 4 11 12 15"
+{
+	"objectRef": {
+		"resource": "pods",
+		"subresource": "exec",
+		"name": "stratus-red-team-sample-pod",
+	},
+	"http": {
+		"url_details": {
+			"path": "/api/v1/namespaces/stratus-red-team-ubdaslyp/pods/stratus-red-team-sample-pod/exec",
+			"queryString": {
+				"command": "%2Fvar%2Frun%2Fsecrets%2Fkubernetes.io%2Fserviceaccount%2Ftoken",
+				"stdout": "true"
+			}
+		},
+		"method": "create"
+	},
+	"stage": "ResponseStarted",
+	"kind": "Event",
+	"level": "RequestResponse",
+	"requestURI": "/api/v1/namespaces/stratus-red-team-ubdaslyp/pods/stratus-red-team-sample-pod/exec?command=cat&command=%2Fvar%2Frun%2Fsecrets%2Fkubernetes.io%2Fserviceaccount%2Ftoken&stdout=true",
+}
+` + codeBlock + `
 `,
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,

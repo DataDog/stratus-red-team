@@ -35,3 +35,35 @@ Steals a service account token from a running pod, by executing a command in the
 ```bash title="Detonate with Stratus Red Team"
 stratus detonate k8s.credential-access.steal-serviceaccount-token
 ```
+## Detection
+
+
+Using Kubernetes API server audit logs, looking for execution events.
+
+Sample event (shortened):
+
+```json hl_lines="3 4 11 12 15"
+{
+	"objectRef": {
+		"resource": "pods",
+		"subresource": "exec",
+		"name": "stratus-red-team-sample-pod",
+	},
+	"http": {
+		"url_details": {
+			"path": "/api/v1/namespaces/stratus-red-team-ubdaslyp/pods/stratus-red-team-sample-pod/exec",
+			"queryString": {
+				"command": "%2Fvar%2Frun%2Fsecrets%2Fkubernetes.io%2Fserviceaccount%2Ftoken",
+				"stdout": "true"
+			}
+		},
+		"method": "create"
+	},
+	"stage": "ResponseStarted",
+	"kind": "Event",
+	"level": "RequestResponse",
+	"requestURI": "/api/v1/namespaces/stratus-red-team-ubdaslyp/pods/stratus-red-team-sample-pod/exec?command=cat&command=%2Fvar%2Frun%2Fsecrets%2Fkubernetes.io%2Fserviceaccount%2Ftoken&stdout=true",
+}
+```
+
+
