@@ -3,6 +3,7 @@ package providers
 import (
 	"context"
 	"github.com/datadog/stratus-red-team/internal/utils"
+	"k8s.io/client-go/rest"
 	"log"
 	"os"
 	"path/filepath"
@@ -19,7 +20,8 @@ const (
 )
 
 type K8sProvider struct {
-	k8sClient *kubernetes.Clientset
+	k8sClient  *kubernetes.Clientset
+	RestConfig *rest.Config
 }
 
 var (
@@ -72,12 +74,17 @@ func (m *K8sProvider) GetClient() *kubernetes.Clientset {
 	if err != nil {
 		log.Fatalf("unable to build kube config: %v", err)
 	}
-	config.UserAgent = StratusUserAgent
-	m.k8sClient, err = kubernetes.NewForConfig(config)
+	m.RestConfig = config
+	m.RestConfig.UserAgent = StratusUserAgent
+	m.k8sClient, err = kubernetes.NewForConfig(m.RestConfig)
 	if err != nil {
 		log.Fatalf("unable to create kube client: %v", err)
 	}
 	return m.k8sClient
+}
+
+func (m *K8sProvider) GetRestConfig() *rest.Config {
+	return m.RestConfig
 }
 
 func (m *K8sProvider) IsAuthenticated() bool {
