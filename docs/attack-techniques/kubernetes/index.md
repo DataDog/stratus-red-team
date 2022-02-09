@@ -9,9 +9,14 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 - [Steal Pod Service Account Token](./k8s.credential-access.steal-serviceaccount-token.md)
 
 
+## Persistence
+
+- [Create Admin ClusterRole](./k8s.persistence.create-admin-clusterrole.md)
+
+
 ## Privilege Escalation
 
-- [Create Admin ClusterRole](./k8s.privilege-escalation.create-admin-clusterrole.md)
+- [Create Admin ClusterRole](./k8s.persistence.create-admin-clusterrole.md)
 
 - [Container breakout via hostPath volume mount](./k8s.privilege-escalation.hostpath-volume.md)
 
