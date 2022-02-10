@@ -6,6 +6,7 @@ terraform {
     }
   }
 }
+
 provider "aws" {
   skip_region_validation      = true
   skip_credentials_validation = true
@@ -17,7 +18,6 @@ provider "aws" {
     }
   }
 }
-
 
 data "aws_availability_zones" "available" {
   state = "available"
@@ -55,6 +55,7 @@ resource "aws_network_interface" "iface" {
   subnet_id   = module.vpc.private_subnets[0]
   private_ips = ["10.0.1.10"]
 }
+
 resource "aws_iam_role" "instance-role" {
   name = "stratus-ec2-credentials-instance-role"
   path = "/"
@@ -90,10 +91,12 @@ EOF
 EOF
   }
 }
+
 resource "aws_iam_role_policy_attachment" "rolepolicy" {
   role       = aws_iam_role.instance-role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
+
 resource "aws_iam_instance_profile" "instance" {
   name = "stratus-ec2-credentials-instance"
   role = aws_iam_role.instance-role.name
@@ -103,6 +106,10 @@ resource "aws_instance" "instance" {
   ami                  = data.aws_ami.amazon-2.id
   instance_type        = "t3.micro"
   iam_instance_profile = aws_iam_instance_profile.instance.name
+  network_interface {
+    device_index = 0
+    network_interface_id = aws_network_interface.iface.id
+  }
 }
 
 output "instance_id" {
