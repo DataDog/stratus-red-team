@@ -88,15 +88,29 @@ For more information, see [Usage](./usage.md), [Examples](./examples.md) and the
 
 ## Connecting to your cloud account
 
-Stratus Red Team currently supports only AWS. In order to use Stratus attack techniques against AWS, you need to be authenticated prior to running it, for instance:
+Stratus Red Team currently supports AWS and Kubernetes.
+
+!!! warning
+
+    Stratus Red Team is supposed to be used against a sandbox cloud account that does not handle production workloads or infrastructure.
+
+### AWS
+
+In order to use Stratus attack techniques against AWS, you need to be authenticated prior to running it, for instance:
 
 - Using [`aws-vault`](https://github.com/99designs/aws-vault)
 
 - Using static credentials in `~/.aws/config`, and setting your desired AWS profile using `export AWS_PROFILE=my-profile`
 
-!!! warning
+### Kubernetes
 
-    Stratus Red Team is supposed to be used against a sandbox cloud account that does not handle production workloads or infrastructure.
+Stratus Red Team does not create a Kubernetes cluster for you. 
+Instead, it assumes you're already authenticated against a test Kubernetes cluster with kubectl and uses your default context.
+
+As a rule of thumb, Stratus Red Team detonates attack techniques against the cluster you see when running `kubectl cluster-info`.
+
+Tested with Minikube and AWS EKS.
+
 
 Encountering issues? See our [troubleshooting](./troubleshooting.md) page, or [open an issue](https://github.com/DataDog/stratus-red-team/issues/new/choose).
 

@@ -1,18 +1,7 @@
 # Supported Platforms
 
-## AWS
-
-To use Stratus Red Team attack techniques against AWS, you need to be authenticated prior to running it. See: [Connecting to your cloud account](https://stratus-red-team.cloud/user-guide/getting-started/#connecting-to-your-cloud-account).
-
-## Kubernetes
-
-Stratus Red Team also supports [Kubernetes attack techniques](https://stratus-red-team.cloud/attack-techniques/kubernetes/). 
-It does **not** create a Kubernetes cluster for you.
-Instead, it assumes you're already authenticated against a test Kubernetes cluster with `kubectl` and uses your default context.
-
-As a rule of thumb, Stratus Red Team detonates attack techniques against the cluster you see when running `kubectl cluster-info`.
-
-Tested with: Minikube and AWS EKS.
+Stratus Red Team currently supports AWS and Kubernetes. 
+See [Connecting to your cloud account](https://stratus-red-team.cloud/user-guide/getting-started/#connecting-to-your-cloud-account) for setup instructions.
 
 ## Future Support for Additional Platforms
 
