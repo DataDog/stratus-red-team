@@ -21,3 +21,7 @@ go get -d
 ## Example usage
 
 See https://github.com/DataDog/stratus-red-team/tree/main/examples
+
+## Reference
+
+https://pkg.go.dev/github.com/datadog/stratus-red-team/pkg/stratus
