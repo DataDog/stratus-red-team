@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/datadog/stratus-red-team/internal/providers"
 	"github.com/datadog/stratus-red-team/internal/state"
 	"github.com/datadog/stratus-red-team/internal/utils"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
@@ -38,7 +37,6 @@ func NewRunner(technique *stratus.AttackTechnique, force bool) Runner {
 }
 
 func (m *Runner) initialize() {
-	m.ValidatePlatformRequirements()
 	m.TerraformDir = filepath.Join(m.StateManager.GetRootDirectory(), m.Technique.ID)
 	m.TechniqueState = m.StateManager.GetTechniqueState()
 	if m.TechniqueState == "" {
@@ -186,24 +184,6 @@ func (m *Runner) CleanUp() error {
 	}
 
 	return utils.CoalesceErr(techniqueRevertErr, prerequisitesCleanupErr, err)
-}
-
-func (m *Runner) ValidatePlatformRequirements() {
-	switch m.Technique.Platform {
-	case stratus.AWS:
-		log.Println("Checking your authentication against the AWS API")
-		if !providers.AWS().IsAuthenticatedAgainstAWS() {
-			log.Fatal("You are not authenticated against AWS, or you have not set your region. " +
-				"Make sure you are authenticated against AWS, and you have a default region set in your AWS config or environment" +
-				" (export AWS_DEFAULT_REGION=us-east-1)")
-		}
-	case stratus.Kubernetes:
-		log.Println("Checking your authentication against Kubernetes")
-		if !providers.K8s().IsAuthenticated() {
-			log.Fatalf("You do not have a kubeconfig set up, or you do not have proper permissions for this cluster. "+
-				"Make sure you have proper credentials set in %s", providers.GetKubeConfigPath())
-		}
-	}
 }
 
 func (m *Runner) GetState() stratus.AttackTechniqueState {

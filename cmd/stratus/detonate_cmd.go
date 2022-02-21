@@ -49,6 +49,7 @@ func buildDetonateCmd() *cobra.Command {
 	return detonateCmd
 }
 func doDetonateCmd(techniques []*stratus.AttackTechnique, cleanup bool) {
+	VerifyPlatformRequirements(techniques)
 	workerCount := len(techniques)
 	techniquesChan := make(chan *stratus.AttackTechnique, workerCount)
 	errorsChan := make(chan error, workerCount)

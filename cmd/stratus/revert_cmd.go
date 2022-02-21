@@ -42,6 +42,7 @@ func buildRevertCmd() *cobra.Command {
 }
 
 func doRevertCmd(techniques []*stratus.AttackTechnique) {
+	VerifyPlatformRequirements(techniques)
 	workerCount := len(techniques)
 	techniquesChan := make(chan *stratus.AttackTechnique, workerCount)
 	errorsChan := make(chan error, workerCount)
