@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/datadog/stratus-red-team/internal/state"
-	"github.com/datadog/stratus-red-team/internal/utils"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 )
 
@@ -77,7 +76,7 @@ func (m *Runner) WarmUp() (map[string]string, error) {
 	log.Println("Warming up " + m.Technique.ID)
 	outputs, err := m.TerraformManager.TerraformInitAndApply(m.TerraformDir)
 	if err != nil {
-		return nil, buildErrorFromTerraformError(err)
+		return nil, errors.New("unable to run terraform apply on prerequisite: " + errorMessageFromTerraformError(err))
 	}
 
 	// Persist outputs to disk
@@ -148,9 +147,6 @@ func (m *Runner) Revert() error {
 }
 
 func (m *Runner) CleanUp() error {
-	var techniqueRevertErr error
-	var prerequisitesCleanupErr error
-
 	// Has the technique already been cleaned up?
 	if m.TechniqueState == stratus.AttackTechniqueStatusCold && !m.ShouldForce {
 		return errors.New(m.Technique.ID + " is already COLD and should already be clean, use --force to force cleanup")
@@ -160,18 +156,18 @@ func (m *Runner) CleanUp() error {
 
 	// Revert detonation
 	if m.Technique.Revert != nil && m.GetState() == stratus.AttackTechniqueStatusDetonated {
-		techniqueRevertErr = m.Revert()
-		if techniqueRevertErr != nil {
-			log.Println("Warning: unable to revert detonation of " + m.Technique.ID + ": " + techniqueRevertErr.Error())
+		err := m.Revert()
+		if err != nil {
+			return errors.New("unable to revert detonation of " + m.Technique.ID + ": " + err.Error())
 		}
 	}
 
 	// Nuke prerequisites
 	if m.Technique.PrerequisitesTerraformCode != nil {
 		log.Println("Cleaning up technique prerequisites with terraform destroy")
-		prerequisitesCleanupErr = m.TerraformManager.TerraformDestroy(m.TerraformDir)
-		if prerequisitesCleanupErr != nil {
-			log.Println("Warning: unable to cleanup TTP prerequisites: " + prerequisitesCleanupErr.Error())
+		err := m.TerraformManager.TerraformDestroy(m.TerraformDir)
+		if err != nil {
+			return errors.New("unable to cleanup TTP prerequisites: " + errorMessageFromTerraformError(err))
 		}
 	}
 
@@ -180,10 +176,10 @@ func (m *Runner) CleanUp() error {
 	// Remove terraform directory
 	err := m.StateManager.CleanupTechnique()
 	if err != nil {
-		log.Println("Warning: unable to remove technique directory " + m.TerraformDir + ": " + err.Error())
+		return errors.New("unable to remove technique directory " + m.TerraformDir + ": " + err.Error())
 	}
 
-	return utils.CoalesceErr(techniqueRevertErr, prerequisitesCleanupErr, err)
+	return nil
 }
 
 func (m *Runner) GetState() stratus.AttackTechniqueState {
@@ -199,13 +195,13 @@ func (m *Runner) setState(state stratus.AttackTechniqueState) {
 }
 
 // Utility function to display better error messages than the Terraform ones
-func buildErrorFromTerraformError(err error) error {
+func errorMessageFromTerraformError(err error) string {
 	const MissingRegionErrorMessage = "The argument \"region\" is required, but no definition was found"
 
 	if strings.Contains(err.Error(), MissingRegionErrorMessage) {
-		return errors.New("unable to create attack technique prerequisites. Ensure you are authenticated against AWS and have the right permissions to run Stratus Red Team.\n" +
-			"Stratus Red Team will display below the error that Terraform returned:\n" + err.Error())
+		return "unable to create attack technique prerequisites. Ensure you are authenticated against AWS and have the right permissions to run Stratus Red Team.\n" +
+			"Stratus Red Team will display below the error that Terraform returned:\n" + err.Error()
 	}
 
-	return errors.New("Unable to run terraform apply on prerequisite: " + err.Error())
+	return err.Error()
 }
