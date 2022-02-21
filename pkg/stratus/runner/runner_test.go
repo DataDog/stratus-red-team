@@ -1,6 +1,7 @@
 package runner
 
 import (
+	"errors"
 	statemocks "github.com/datadog/stratus-red-team/internal/state/mocks"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"github.com/datadog/stratus-red-team/pkg/stratus/runner/mocks"
@@ -329,6 +330,8 @@ func TestRunnerCleanup(t *testing.T) {
 		Technique             *stratus.AttackTechnique
 		ShouldForce           bool
 		InitialTechniqueState stratus.AttackTechniqueState
+		TerraformDestroyFails bool
+		RevertFails           bool
 		// results
 		CheckExpectations func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, err error)
 	}
@@ -367,6 +370,30 @@ func TestRunnerCleanup(t *testing.T) {
 				state.AssertCalled(t, "SetTechniqueState", stratus.AttackTechniqueState(stratus.AttackTechniqueStatusCold))
 			},
 		},
+		{
+			Name:                  "Cleaning up a DETONATED technique and terraform destroy fails",
+			Technique:             &stratus.AttackTechnique{ID: "foo", PrerequisitesTerraformCode: []byte("foo)")},
+			InitialTechniqueState: stratus.AttackTechniqueStatusDetonated,
+			TerraformDestroyFails: true,
+			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, err error) {
+				assert.NotNil(t, err, "terraform destroy error should be propagated")
+
+				// The technique should not have been marked as properly cleaned up
+				state.AssertNotCalled(t, "SetTechniqueState", stratus.AttackTechniqueState(stratus.AttackTechniqueStatusCold))
+			},
+		},
+		{
+			Name:                  "Cleaning up a DETONATED technique and revert fails",
+			Technique:             &stratus.AttackTechnique{ID: "foo"},
+			InitialTechniqueState: stratus.AttackTechniqueStatusDetonated,
+			RevertFails:           true,
+			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, err error) {
+				assert.NotNil(t, err, "revert error should be propagated")
+
+				// The technique should not have been marked as properly cleaned up
+				state.AssertNotCalled(t, "SetTechniqueState", stratus.AttackTechniqueState(stratus.AttackTechniqueStatusCold))
+			},
+		},
 	}
 
 	for i := range scenario {
@@ -378,7 +405,17 @@ func TestRunnerCleanup(t *testing.T) {
 		state.On("GetTechniqueState", mock.Anything).Return(scenario[i].InitialTechniqueState, nil)
 		state.On("SetTechniqueState", mock.Anything).Return(nil)
 		state.On("CleanupTechnique").Return(nil)
-		terraform.On("TerraformDestroy", mock.Anything).Return(nil)
+		state.On("GetTerraformOutputs").Return(map[string]string{}, nil)
+		if scenario[i].TerraformDestroyFails {
+			terraform.On("TerraformDestroy", mock.Anything).Return(errors.New("nope"))
+		} else {
+			terraform.On("TerraformDestroy", mock.Anything).Return(nil)
+		}
+		if scenario[i].RevertFails {
+			scenario[i].Technique.Revert = func(map[string]string) error {
+				return errors.New("nope")
+			}
+		}
 		runner := Runner{
 			Technique:        scenario[i].Technique,
 			ShouldForce:      scenario[i].ShouldForce,
