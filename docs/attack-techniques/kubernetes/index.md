@@ -6,6 +6,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 ## Credential Access
 
+- [Dump All Secrets](./k8s.credential-access.dump-secrets.md)
+
 - [Steal Pod Service Account Token](./k8s.credential-access.steal-serviceaccount-token.md)
 
 
