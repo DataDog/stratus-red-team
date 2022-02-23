@@ -24,6 +24,7 @@ import (
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/aws/persistence/iam-create-admin-user"
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/aws/persistence/iam-create-user-login-profile"
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/aws/persistence/lambda-backdoor-function"
+	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/k8s/credential-access/dump-secrets"
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/k8s/credential-access/steal-serviceaccount-token"
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/k8s/persistence/create-admin-clusterrole"
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/k8s/privilege-escalation/hostpath-volume"
