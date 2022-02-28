@@ -3,11 +3,11 @@ package kubernetes
 import (
 	"context"
 	_ "embed"
-	"encoding/json"
 	"errors"
 	"github.com/datadog/stratus-red-team/internal/providers"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"github.com/datadog/stratus-red-team/pkg/stratus/mitreattack"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"log"
 	"strconv"
 )
@@ -80,25 +80,11 @@ func detonate(map[string]string) error {
 	client := providers.K8s().GetClient()
 
 	log.Println("Attempting to dump secrets in all namespaces")
-	result := client.CoreV1().RESTClient().Get().Resource("secrets").Do(context.Background())
-	if result.Error() != nil {
-		return errors.New("unable to dump cluster secrets: " + result.Error().Error())
-	}
-
-	rawSecrets, err := result.Raw()
+	result, err := client.CoreV1().Secrets("").List(context.Background(), metav1.ListOptions{Limit: int64(1000)})
 	if err != nil {
 		return errors.New("unable to dump cluster secrets: " + err.Error())
 	}
-
-	var secretsList struct {
-		Kind  string        `json:"kind"`
-		Items []interface{} `json:"items"`
-	}
-	err = json.Unmarshal(rawSecrets, &secretsList)
-	if err != nil {
-		return errors.New("unable to dump cluster secrets, retrieved invalid secrets response " + err.Error())
-	}
-	numSecrets := len(secretsList.Items)
+	numSecrets := len(result.Items)
 	log.Println("Successfully dumped " + strconv.Itoa(numSecrets) + " secrets from the cluster")
 	return nil
 }
