@@ -36,8 +36,8 @@ References:
 - https://darkbit.io/blog/the-power-of-kubernetes-rbac-list
 `,
 		Detection: `
-Using Kubernetes API server audit logs. In particular, look for **list secrets** requests that are performed
-for a specific namespace.
+Using Kubernetes API server audit logs. In particular, look for **list secrets** requests that are not performed
+for a specific namespace (i.e., that apply to all namespaces).
 
 Sample event (shortened):
 
