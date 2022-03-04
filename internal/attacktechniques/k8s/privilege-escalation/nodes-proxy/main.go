@@ -81,10 +81,10 @@ Sample event (shortened):
 }
 ` + codeBlock + `
 
-In normal operating conditions, it's not expected that this API is used frequently. 
-Consequently, alerting on ` + code + `objectRef.resource == "nodes" && objectRef.subresource == "proxy"` + code + ` should yield minimal false positives.'
+Under normal operating conditions, it's not expected that this API is used frequently. 
+Consequently, alerting on ` + code + `objectRef.resource == "nodes" && objectRef.subresource == "proxy"` + code + ` should yield minimal false positives.
 
-Additionally, looking at the Kubelet API path that was proxied can help identify malicious activity (/runningpods) in this example.
+Additionally, looking at the Kubelet API path that was proxied can help identify malicious activity (/runningpods in this example).
 See [kubeletctl](https://github.com/cyberark/kubeletctl/blob/master/pkg/api/constants.go) for an unofficial list of Kubelet API endpoints.
 `,
 		PrerequisitesTerraformCode: tf,
