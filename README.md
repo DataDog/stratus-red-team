@@ -1,4 +1,4 @@
-# Stratus Red team
+# Stratus Red Team
 
 [![GitHub release](https://img.shields.io/github/release/datadog/stratus-red-team.svg)](https://github.com/DataDog/stratus-red-team/releases) [![Tests](https://github.com/DataDog/stratus-red-team/actions/workflows/test.yml/badge.svg)](https://github.com/DataDog/stratus-red-team/actions/workflows/test.yml) [![static analysis](https://github.com/DataDog/stratus-red-team/actions/workflows/static-analysis.yml/badge.svg)](https://github.com/DataDog/stratus-red-team/actions/workflows/static-analysis.yml) ![GitHub all releases](https://img.shields.io/github/downloads/datadog/stratus-red-team/total?style=flat-square) ![Maintainer](https://img.shields.io/badge/maintainer-@christophetd-blue) [![made-with-Go](https://img.shields.io/badge/Made%20with-Go-1f425f.svg)](http://golang.org)
 
@@ -53,26 +53,26 @@ See [Examples](./examples) and [Programmatic Usage](https://stratus-red-team.clo
 
 ## Development
 
-### Building locally
+### Building Locally
 
 ``` bash
 make
 ./bin/stratus --help
 ```
 
-### Running locally
+### Running Locally
 
 ```bash
 go run cmd/stratus/*.go list
 ```
 
-### Running the tests
+### Running the Tests
 
 ```bash
 make test
 ```
 
-### Building the documentation
+### Building the Documentation
 
 For local usage:
 ```
