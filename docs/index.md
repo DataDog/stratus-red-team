@@ -2,6 +2,10 @@
 
 Welcome to the documentation of Stratus Red Team!
 
+<p align="center">
+  <img src="./logo.png" alt="Stratus Red Team logo" style="max-width: 30%; " />
+</p>
+
 Check out:
 
 - The [User Guide](./user-guide/getting-started.md), to get started

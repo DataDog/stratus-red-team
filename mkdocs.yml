@@ -7,8 +7,8 @@ plugins:
   - awesome-pages
 theme:
   name: material
-  logo: ./logo.svg
-  favicon: ./logo.svg
+  logo: ./logo.png
+  favicon: ./logo.png
   palette:
     - scheme: default
       primary: deep-purple

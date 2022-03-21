@@ -2,6 +2,10 @@
 
 [![GitHub release](https://img.shields.io/github/release/datadog/stratus-red-team.svg)](https://github.com/DataDog/stratus-red-team/releases) [![Tests](https://github.com/DataDog/stratus-red-team/actions/workflows/test.yml/badge.svg)](https://github.com/DataDog/stratus-red-team/actions/workflows/test.yml) [![static analysis](https://github.com/DataDog/stratus-red-team/actions/workflows/static-analysis.yml/badge.svg)](https://github.com/DataDog/stratus-red-team/actions/workflows/static-analysis.yml) ![GitHub all releases](https://img.shields.io/github/downloads/datadog/stratus-red-team/total?style=flat-square) ![Maintainer](https://img.shields.io/badge/maintainer-@christophetd-blue) [![made-with-Go](https://img.shields.io/badge/Made%20with-Go-1f425f.svg)](http://golang.org)
 
+<p align="center">
+  <img src="./docs/logo.png" alt="Stratus Red Team" />
+</p>
+
 Stratus Red Team is "[Atomic Red Team](https://github.com/redcanaryco/atomic-red-team)™" for the cloud, allowing to emulate offensive attack techniques in a granular and self-contained manner.
 
 <p align="center">
