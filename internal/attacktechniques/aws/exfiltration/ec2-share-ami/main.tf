@@ -22,9 +22,16 @@ data "aws_availability_zones" "available" {
   state = "available"
 }
 
+resource "aws_kms_key" "cmk" {
+  description = "Stratus Red Team CMK for AMI encryption"
+  deletion_window_in_days = 7
+}
+
 resource "aws_ebs_volume" "volume" {
   availability_zone = data.aws_availability_zones.available.names[0]
   size              = 1
+  encrypted         = true
+  aws_kms_key       = aws_kms_key.cmk.arn
 
   tags = {
     Name = "StratusRedTeamVolumeForAmi"
