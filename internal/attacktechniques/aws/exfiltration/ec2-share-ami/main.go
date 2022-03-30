@@ -8,6 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
 	"github.com/datadog/stratus-red-team/internal/providers"
+	"github.com/datadog/stratus-red-team/internal/utils"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"github.com/datadog/stratus-red-team/pkg/stratus/mitreattack"
 	"log"
@@ -72,6 +73,13 @@ func detonate(params map[string]string) error {
 			Add: amiPermissions,
 		},
 	})
+
+	if err != nil && utils.IsErrorDueToEBSEncryptionByDefault(err) {
+		log.Println("Note: Stratus detonated the attack, but the sharing was unsuccessful. " +
+			"This is likely because EBS default encryption is enabled in the region. " +
+			"Nonetheless, it did simulate a plausible attacker action.")
+		return nil
+	}
 
 	if err != nil {
 		return errors.New("Unable to share AMI with external AWS account: " + err.Error())
