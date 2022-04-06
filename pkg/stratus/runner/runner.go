@@ -2,6 +2,7 @@ package runner
 
 import (
 	"errors"
+	"github.com/datadog/stratus-red-team/internal/providers"
 	"log"
 	"path/filepath"
 	"strings"
@@ -192,6 +193,11 @@ func (m *Runner) setState(state stratus.AttackTechniqueState) {
 		log.Println("Warning: unable to set technique state: " + err.Error())
 	}
 	m.TechniqueState = state
+}
+
+// GetUniqueExecutionId returns an unique execution ID, unique per run of Stratus Red Team (not for each TTP detonated)
+func (m *Runner) GetUniqueExecutionId() string {
+	return providers.UniqueExecutionId.String()
 }
 
 // Utility function to display better error messages than the Terraform ones

@@ -3,9 +3,12 @@ package providers
 import (
 	"errors"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
+	"github.com/google/uuid"
 )
 
 const StratusUserAgent = "stratus-red-team"
+
+var UniqueExecutionId = uuid.New()
 
 // EnsureAuthenticated ensures that the current user is properly authenticated against a specific platform
 func EnsureAuthenticated(platform stratus.Platform) error {
