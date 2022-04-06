@@ -13,7 +13,7 @@ import (
 )
 
 var awsProvider = AWSProvider{
-	UniqueCorrelationId: uuid.New(),
+	UniqueCorrelationId: UniqueExecutionId,
 }
 
 func AWS() *AWSProvider {

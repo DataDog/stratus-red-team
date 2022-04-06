@@ -26,7 +26,7 @@ type K8sProvider struct {
 }
 
 var (
-	k8sProvider               = K8sProvider{UniqueCorrelationId: uuid.New()}
+	k8sProvider               = K8sProvider{UniqueCorrelationId: UniqueExecutionId}
 	kubeConfigPath            string
 	kubeConfigPathWasResolved bool
 )
