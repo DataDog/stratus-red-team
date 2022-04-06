@@ -3,16 +3,16 @@ package providers
 import (
 	"context"
 	"github.com/datadog/stratus-red-team/internal/utils"
-	"k8s.io/client-go/rest"
-	"log"
-	"os"
-	"path/filepath"
-
+	"github.com/google/uuid"
 	authv1 "k8s.io/api/authorization/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/util/homedir"
+	"log"
+	"os"
+	"path/filepath"
 )
 
 const (
@@ -20,12 +20,13 @@ const (
 )
 
 type K8sProvider struct {
-	k8sClient  *kubernetes.Clientset
-	RestConfig *rest.Config
+	k8sClient           *kubernetes.Clientset
+	RestConfig          *rest.Config
+	UniqueCorrelationId uuid.UUID // unique value injected in the user-agent, to differentiate Stratus Red Team executions
 }
 
 var (
-	k8sProvider               K8sProvider
+	k8sProvider               = K8sProvider{UniqueCorrelationId: uuid.New()}
 	kubeConfigPath            string
 	kubeConfigPathWasResolved bool
 )
@@ -75,7 +76,7 @@ func (m *K8sProvider) GetClient() *kubernetes.Clientset {
 		log.Fatalf("unable to build kube config: %v", err)
 	}
 	m.RestConfig = config
-	m.RestConfig.UserAgent = StratusUserAgent
+	m.RestConfig.UserAgent = StratusUserAgent + "_" + m.UniqueCorrelationId.String()
 	m.k8sClient, err = kubernetes.NewForConfig(m.RestConfig)
 	if err != nil {
 		log.Fatalf("unable to create kube client: %v", err)

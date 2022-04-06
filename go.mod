@@ -19,6 +19,7 @@ require (
 	github.com/aws/smithy-go v1.10.0
 	github.com/fatih/color v1.13.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
+	github.com/google/uuid v1.3.0
 	github.com/hashicorp/terraform-exec v0.15.0
 	github.com/jedib0t/go-pretty/v6 v6.2.4
 	github.com/spf13/cobra v1.3.0
