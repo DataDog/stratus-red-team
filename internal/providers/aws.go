@@ -8,22 +8,26 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
+	"github.com/google/uuid"
 	"log"
 )
 
-var awsProvider = AWSProvider{}
+var awsProvider = AWSProvider{
+	UniqueCorrelationId: uuid.New(),
+}
 
 func AWS() *AWSProvider {
 	return &awsProvider
 }
 
 type AWSProvider struct {
-	awsConfig *aws.Config
+	awsConfig           *aws.Config
+	UniqueCorrelationId uuid.UUID // unique value injected in the user-agent, to differentiate Stratus Red Team executions
 }
 
 func (m *AWSProvider) GetConnection() aws.Config {
 	if m.awsConfig == nil {
-		cfg, err := config.LoadDefaultConfig(context.Background(), customUserAgentApiOptions)
+		cfg, err := config.LoadDefaultConfig(context.Background(), customUserAgentApiOptions(m.UniqueCorrelationId))
 		if err != nil {
 			log.Fatalf("unable to load AWS configuration, %v", err)
 		}
@@ -45,25 +49,27 @@ func (m *AWSProvider) IsAuthenticatedAgainstAWS() bool {
 }
 
 // Functions below are related to customization of the user-agent header
-// Code taken from https://github.com/aws/aws-sdk-go-v2/issues/1432
+// Code mostly taken from https://github.com/aws/aws-sdk-go-v2/issues/1432
 
-var customUserAgentApiOptions = config.WithAPIOptions(func() (v []func(stack *middleware.Stack) error) {
-	v = append(v, attachCustomMiddleware)
-	return v
-}())
+func customUserAgentApiOptions(uniqueCorrelationId uuid.UUID) config.LoadOptionsFunc {
+	return config.WithAPIOptions(func() (v []func(stack *middleware.Stack) error) {
+		v = append(v, func(stack *middleware.Stack) error {
+			return stack.Build.Add(customUserAgentMiddleware(uniqueCorrelationId), middleware.After)
+		})
+		return v
+	}())
+}
 
-var customerUAMiddleware = middleware.BuildMiddlewareFunc("CustomerUserAgent", func(
-	ctx context.Context, input middleware.BuildInput, next middleware.BuildHandler,
-) (out middleware.BuildOutput, metadata middleware.Metadata, err error) {
-	request, ok := input.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", input.Request)
-	}
-	request.Header.Set("User-Agent", StratusUserAgent)
+func customUserAgentMiddleware(uniqueId uuid.UUID) middleware.BuildMiddleware {
+	return middleware.BuildMiddlewareFunc("CustomerUserAgent", func(
+		ctx context.Context, input middleware.BuildInput, next middleware.BuildHandler,
+	) (out middleware.BuildOutput, metadata middleware.Metadata, err error) {
+		request, ok := input.Request.(*smithyhttp.Request)
+		if !ok {
+			return out, metadata, fmt.Errorf("unknown transport type %T", input.Request)
+		}
+		request.Header.Set("User-Agent", StratusUserAgent+"_"+uniqueId.String())
 
-	return next.HandleBuild(ctx, input)
-})
-
-func attachCustomMiddleware(stack *middleware.Stack) error {
-	return stack.Build.Add(customerUAMiddleware, middleware.After)
+		return next.HandleBuild(ctx, input)
+	})
 }
