@@ -4,3 +4,4 @@ In this section, you'll find the list of attack techniques implemented in Stratu
 
 - [AWS](./AWS)
 - [Kubernetes](./kubernetes)
+- [Azure](./azure)
