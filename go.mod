@@ -80,7 +80,7 @@ require (
 	cloud.google.com/go/storage v1.14.0 // indirect
 	github.com/aws/aws-sdk-go v1.40.56 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
-	github.com/hashicorp/go-getter v1.5.9 // indirect
+	github.com/hashicorp/go-getter v1.5.11 // indirect
 	github.com/hashicorp/go-version v1.4.0
 	github.com/hashicorp/hc-install v0.3.2
 	github.com/hashicorp/terraform-json v0.13.0 // indirect
