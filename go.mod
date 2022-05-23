@@ -44,7 +44,7 @@ require (
 	github.com/go-logr/logr v1.2.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
-	github.com/google/go-cmp v0.5.6 // indirect
+	github.com/google/go-cmp v0.5.8 // indirect
 	github.com/google/gofuzz v1.1.0 // indirect
 	github.com/googleapis/gnostic v0.5.5 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
@@ -81,8 +81,8 @@ require (
 	github.com/aws/aws-sdk-go v1.40.56 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-getter v1.5.9 // indirect
-	github.com/hashicorp/go-version v1.3.0
-	github.com/hashicorp/hc-install v0.3.1
+	github.com/hashicorp/go-version v1.4.0
+	github.com/hashicorp/hc-install v0.3.2
 	github.com/hashicorp/terraform-json v0.13.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/klauspost/compress v1.13.0 // indirect
