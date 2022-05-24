@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
-	"github.com/datadog/stratus-red-team/internal/providers"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 	_ "github.com/datadog/stratus-red-team/pkg/stratus/loader" // Note: This import is needed
 	"github.com/datadog/stratus-red-team/pkg/stratus/mitreattack"
@@ -34,7 +33,7 @@ func buildCustomAttackTechnique() *stratus.AttackTechnique {
 
 func detonate(params map[string]string) error {
 	iamUserName := params["iam_user_name"]
-	iamClient := iam.NewFromConfig(providers.AWS().GetConnection())
+	iamClient := iam.NewFromConfig(stratus.AWSProvider().GetConnection())
 
 	userResponse, err := iamClient.GetUser(context.Background(), &iam.GetUserInput{
 		UserName: &iamUserName,
