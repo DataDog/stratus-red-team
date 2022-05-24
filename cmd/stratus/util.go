@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"github.com/datadog/stratus-red-team/internal/providers"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"log"
@@ -49,7 +48,7 @@ func VerifyPlatformRequirements(attackTechniques []*stratus.AttackTechnique) {
 		currentPlatform := attackTechniques[i].Platform
 		if _, checked := platforms[currentPlatform]; !checked {
 			log.Println("Checking your authentication against " + string(currentPlatform))
-			err := providers.EnsureAuthenticated(currentPlatform)
+			err := stratus.EnsureAuthenticated(currentPlatform)
 			if err != nil {
 				log.Fatalf(err.Error())
 			}
