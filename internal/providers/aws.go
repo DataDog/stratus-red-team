@@ -68,7 +68,7 @@ func customUserAgentMiddleware(uniqueId uuid.UUID) middleware.BuildMiddleware {
 		if !ok {
 			return out, metadata, fmt.Errorf("unknown transport type %T", input.Request)
 		}
-		request.Header.Set("User-Agent", StratusUserAgent+"_"+uniqueId.String())
+		request.Header.Set("User-Agent", GetStratusUserAgent())
 
 		return next.HandleBuild(ctx, input)
 	})

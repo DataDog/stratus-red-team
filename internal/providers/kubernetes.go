@@ -76,7 +76,7 @@ func (m *K8sProvider) GetClient() *kubernetes.Clientset {
 		log.Fatalf("unable to build kube config: %v", err)
 	}
 	m.RestConfig = config
-	m.RestConfig.UserAgent = StratusUserAgent + "_" + m.UniqueCorrelationId.String()
+	m.RestConfig.UserAgent = GetStratusUserAgent()
 	m.k8sClient, err = kubernetes.NewForConfig(m.RestConfig)
 	if err != nil {
 		log.Fatalf("unable to create kube client: %v", err)
