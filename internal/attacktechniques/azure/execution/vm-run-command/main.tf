@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     azurerm = {
-      source = "hashicorp/azurerm"
+      source  = "hashicorp/azurerm"
       version = "3.8.0"
     }
   }
@@ -106,4 +106,12 @@ output "vm_instance_object_id" {
 
 output "vm_name" {
   value = azurerm_windows_virtual_machine.lab_windows_vm.name
+}
+
+output "display" {
+  value = format(
+    "Virtual machine %s ready in resource group %s",
+    azurerm_windows_virtual_machine.lab_windows_vm.name,
+    azurerm_resource_group.lab_environment.name
+  )
 }
