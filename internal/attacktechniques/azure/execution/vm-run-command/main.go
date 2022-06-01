@@ -3,6 +3,8 @@ package azure
 import (
 	"context"
 	_ "embed"
+	"errors"
+	"github.com/Azure/azure-sdk-for-go/sdk/azcore/runtime"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/to"
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/compute/armcompute"
 	"github.com/datadog/stratus-red-team/internal/providers"
@@ -54,48 +56,31 @@ func detonate(params map[string]string) error {
 	vmName := params["vm_name"]
 	resourceGroup := params["resource_group_name"]
 
-	ctx := context.Background()
 	cred := providers.Azure().GetCredentials()
 	subscriptionID := providers.Azure().SubscriptionID
 	clientOptions := providers.Azure().ClientOptions
 
-	client, err := armcompute.NewVirtualMachineRunCommandsClient(subscriptionID, cred, clientOptions)
-	if err != nil {
-		log.Fatalf("failed to create client: %v", err)
-	}
-
 	log.Println("Issuing Run Command for VM instance " + vmObjectId)
-	var timeout int32 = 3600
-	poller, err := client.BeginCreateOrUpdate(ctx,
-		resourceGroup,
-		vmName,
-		"RunPowerShellScript",
-		armcompute.VirtualMachineRunCommand{
-			Location: to.Ptr("West US"),
-			Properties: &armcompute.VirtualMachineRunCommandProperties{
-				AsyncExecution: to.Ptr(false),
-				Parameters:     nil,
-				RunAsPassword:  nil,
-				RunAsUser:      nil,
-				Source: &armcompute.VirtualMachineRunCommandScriptSource{
-					Script: to.Ptr("Get-Service"), // the powershell cmdlet to execute in the RunCommand
-				},
-				TimeoutInSeconds: &timeout,
-			},
-		},
-		&armcompute.VirtualMachineRunCommandsClientBeginCreateOrUpdateOptions{ResumeToken: ""})
-
-	if err != nil {
-		log.Fatalf("failed to finish the request: %v", err)
+	vmClient, err := armcompute.NewVirtualMachinesClient(subscriptionID, cred, clientOptions)
+	runCommandInput := armcompute.RunCommandInput{
+		CommandID: to.Ptr("RunPowerShellScript"),
+		Script:    []*string{to.Ptr("Get-Service")},
 	}
 
-	ctxWithTimeout, _ := context.WithTimeout(ctx, 30*time.Second)
-	res, err := poller.PollUntilDone(ctxWithTimeout, nil)
+	commandCreation, err := vmClient.BeginRunCommand(context.Background(), resourceGroup, vmName, runCommandInput, nil)
 	if err != nil {
-		log.Fatalf("failed to pull the result: %v", err)
+		return errors.New("unable to run a command on the virtual machine: " + err.Error())
 	}
 
-	_ = res
+	log.Println("Waiting for command to be run on the VM")
+	ctxWithTimeout, done := context.WithTimeout(context.Background(), 60*time.Second)
+	defer done()
+	commandResult, err := commandCreation.PollUntilDone(ctxWithTimeout, &runtime.PollUntilDoneOptions{Frequency: 2 * time.Minute})
+	if err != nil {
+		return errors.New("unable to retrieve the output of the command ran on the virtual machine: " + err.Error())
+	}
 
+	_ = *commandResult.RunCommandResult.Value[0].Message // contains the output of the command executed
+	log.Println("Command successfully executed on the virtual machine")
 	return nil
 }
