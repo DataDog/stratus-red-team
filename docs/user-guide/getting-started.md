@@ -102,6 +102,42 @@ In order to use Stratus attack techniques against AWS, you need to be authentica
 
 - Using static credentials in `~/.aws/config`, and setting your desired AWS profile using `export AWS_PROFILE=my-profile`
 
+### Azure
+
+- Use the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) to authenticate against your Azure tenant:
+
+```
+az login
+```
+
+- Confirm you have access to at least one Azure subscription:
+
+```json hl_lines="6"
+$ az account list
+[
+  {
+    "cloudName": "AzureCloud",
+    "homeTenantId": "9bd23af5-8f8b-4410-8418-2bc670d4829a",
+    "id": "45e0ad3f-ff94-499a-a2f0-bbb884e9c4a3",
+    "isDefault": true,
+    "managedByTenants": [],
+    "name": "Azure subscription 1",
+    "state": "Enabled",
+    "tenantId": "9bd23af5-8f8b-4410-8418-2bc670d4829a",
+    "user": {
+      "name": "you@domain.tld",
+      "type": "user"
+    }
+  }
+]
+```
+
+- Set the environment variable `AZURE_SUBSCRIPTION_ID`:
+
+```bash
+export AZURE_SUBSCRIPTION_ID=45e0ad3f-ff94-499a-a2f0-bbb884e9c4a3
+```
+
 ### Kubernetes
 
 Stratus Red Team does not create a Kubernetes cluster for you. 
