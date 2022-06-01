@@ -12,6 +12,8 @@ import (
 	"github.com/google/uuid"
 )
 
+const azureSubscriptionIdEnvVarKey = "AZURE_SUBSCRIPTION_ID"
+
 type AzureProvider struct {
 	Credentials         *azidentity.DefaultAzureCredential
 	ClientOptions       *arm.ClientOptions
@@ -27,7 +29,7 @@ var DefaultClientOptions = arm.ClientOptions{
 
 var azureProvider = AzureProvider{
 	UniqueCorrelationId: UniqueExecutionId,
-	SubscriptionID:      os.Getenv("AZURE_SUBSCRIPTION_ID"),
+	SubscriptionID:      os.Getenv(azureSubscriptionIdEnvVarKey),
 	ClientOptions:       &DefaultClientOptions,
 }
 
@@ -38,7 +40,7 @@ func Azure() *AzureProvider {
 func (m *AzureProvider) GetCredentials() *azidentity.DefaultAzureCredential {
 
 	if len(m.SubscriptionID) == 0 {
-		log.Fatal("AZURE_SUBSCRIPTION_ID is not set.")
+		log.Fatal(azureSubscriptionIdEnvVarKey + " is not set.")
 	}
 
 	cred, err := azidentity.NewDefaultAzureCredential(nil)
