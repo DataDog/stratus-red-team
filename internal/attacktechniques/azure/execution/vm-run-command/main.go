@@ -3,13 +3,13 @@ package azure
 import (
 	"context"
 	_ "embed"
-	"time"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/to"
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/compute/armcompute"
 	"github.com/datadog/stratus-red-team/internal/providers"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"github.com/datadog/stratus-red-team/pkg/stratus/mitreattack"
 	"log"
+	"time"
 )
 
 //go:embed main.tf
@@ -41,6 +41,7 @@ Detonation:
 `,
 		Detection:                  "Identify `Microsoft.Compute/virtualMachines/runCommand/action` events in Azure Activity logs",
 		Platform:                   stratus.Azure,
+		IsSlow:                     true,
 		IsIdempotent:               true,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Execution},
 		PrerequisitesTerraformCode: tf,
@@ -64,7 +65,7 @@ func detonate(params map[string]string) error {
 	}
 
 	log.Println("Issuing Run Command for VM instance " + vmObjectId)
-
+	var timeout int32 = 3600
 	poller, err := client.BeginCreateOrUpdate(ctx,
 		resourceGroup,
 		vmName,
@@ -73,13 +74,13 @@ func detonate(params map[string]string) error {
 			Location: to.Ptr("West US"),
 			Properties: &armcompute.VirtualMachineRunCommandProperties{
 				AsyncExecution: to.Ptr(false),
-				Parameters: nil,
-				RunAsPassword: nil,
-				RunAsUser: nil,
+				Parameters:     nil,
+				RunAsPassword:  nil,
+				RunAsUser:      nil,
 				Source: &armcompute.VirtualMachineRunCommandScriptSource{
 					Script: to.Ptr("Get-Service"), // the powershell cmdlet to execute in the RunCommand
 				},
-				TimeoutInSeconds: to.Ptr[int32](3600),
+				TimeoutInSeconds: &timeout,
 			},
 		},
 		&armcompute.VirtualMachineRunCommandsClientBeginCreateOrUpdateOptions{ResumeToken: ""})
@@ -88,7 +89,8 @@ func detonate(params map[string]string) error {
 		log.Fatalf("failed to finish the request: %v", err)
 	}
 
-	res, err := poller.PollUntilDone(ctx, 30*time.Second)
+	ctxWithTimeout, _ := context.WithTimeout(ctx, 30*time.Second)
+	res, err := poller.PollUntilDone(ctxWithTimeout, nil)
 	if err != nil {
 		log.Fatalf("failed to pull the result: %v", err)
 	}
