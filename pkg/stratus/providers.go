@@ -22,6 +22,12 @@ func EnsureAuthenticated(platform Platform) error {
 				"Make sure you are authenticated against AWS, and you have a default region set in your AWS config " +
 				"or environment (export AWS_DEFAULT_REGION=us-east-1)")
 		}
+	case Azure:
+		if !providers.Azure().IsAuthenticatedAgainstAzure() {
+			return errors.New("you are not authenticated against Azure, or you have not set your subscription. " +
+				"Make sure you are authenticated against Azure and you have your Azure subscription ID set in your environment" +
+				" (export AZURE_SUBSCRIPTION_ID=xxx)")
+		}
 	case Kubernetes:
 		if !providers.K8s().IsAuthenticated() {
 			return errors.New("You do not have a kubeconfig set up, or you do not have proper permissions for " +
