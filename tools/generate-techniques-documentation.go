@@ -6,6 +6,7 @@ import (
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 	_ "github.com/datadog/stratus-red-team/pkg/stratus/loader"
 	"github.com/datadog/stratus-red-team/pkg/stratus/mitreattack"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -27,6 +28,7 @@ func main() {
 			}
 			return prefix + strings.Join(result, sep)
 		},
+		"FormatPlatformName": FormatPlatformName,
 	}
 
 	// Platform => [MITRE ATT&CK tactic => list of stratus techniques]
@@ -67,7 +69,7 @@ func main() {
 	// Pass 2: write index per platform
 	for platform, tacticsMap := range index {
 		platformIndexFile := filepath.Join("docs", "attack-techniques", string(platform), "index.md")
-		tpl, _ := template.New("index-by-platform").Parse(string(indexTemplate))
+		tpl, _ := template.New("index-by-platform").Funcs(funcMap).Parse(string(indexTemplate))
 		result := ""
 		buf := bytes.NewBufferString(result)
 		vars := struct {
@@ -105,4 +107,17 @@ func main() {
 func formatTechniqueDescription(technique *stratus.AttackTechnique) {
 	technique.Description = strings.ReplaceAll(technique.Description, "Warm-up:", "<span style=\"font-variant: small-caps;\">Warm-up</span>:")
 	technique.Description = strings.ReplaceAll(technique.Description, "Detonation:", "<span style=\"font-variant: small-caps;\">Detonation</span>:")
+}
+
+func FormatPlatformName(platform stratus.Platform) string {
+	switch platform {
+	case stratus.AWS:
+		return "AWS"
+	case stratus.Azure:
+		return "Azure"
+	case stratus.Kubernetes:
+		return "Kubernetes"
+	}
+	log.Fatal("unknown platform " + platform)
+	return ""
 }
