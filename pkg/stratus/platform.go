@@ -10,7 +10,7 @@ type Platform string
 const (
 	AWS        = "AWS"
 	Kubernetes = "kubernetes"
-	Azure      = "Azure"
+	Azure      = "azure"
 )
 
 func PlatformFromString(name string) (Platform, error) {
