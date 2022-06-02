@@ -88,7 +88,7 @@ require (
 	cloud.google.com/go/storage v1.14.0 // indirect
 	github.com/aws/aws-sdk-go v1.40.56 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
-	github.com/hashicorp/go-getter v1.5.11 // indirect
+	github.com/hashicorp/go-getter v1.6.1 // indirect
 	github.com/hashicorp/go-version v1.4.0
 	github.com/hashicorp/hc-install v0.3.2
 	github.com/hashicorp/terraform-json v0.13.0 // indirect
@@ -96,7 +96,7 @@ require (
 	github.com/klauspost/compress v1.13.0 // indirect
 	github.com/zclconf/go-cty v1.9.1 // indirect
 	golang.org/x/crypto v0.0.0-20220511200225-c6db032c6c88 // indirect
-	golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e // indirect
+	golang.org/x/sys v0.0.0-20220517195934-5e4e11fc645e // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/api v0.63.0 // indirect
 	google.golang.org/grpc v1.43.0 // indirect
