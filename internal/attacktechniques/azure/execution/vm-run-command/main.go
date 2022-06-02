@@ -106,6 +106,9 @@ func detonate(params map[string]string) error {
 		CommandID: to.Ptr("RunPowerShellScript"),
 		Script:    []*string{to.Ptr("Get-Service")},
 	}
+	if err != nil {
+		return errors.New("unable to instantiate Azure virtual machine client: " + err.Error())
+	}
 
 	commandCreation, err := vmClient.BeginRunCommand(context.Background(), resourceGroup, vmName, runCommandInput, nil)
 	if err != nil {
