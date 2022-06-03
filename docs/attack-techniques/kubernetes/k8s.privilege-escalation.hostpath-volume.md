@@ -7,7 +7,7 @@ title: Container breakout via hostPath volume mount
 
 
 
-Platform: kubernetes
+Platform: Kubernetes
 
 ## MITRE ATT&CK Tactics
 

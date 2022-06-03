@@ -1,6 +1,6 @@
-# kubernetes
+# Kubernetes
 
-This page contains the Stratus attack techniques for kubernetes, grouped by MITRE ATT&CK Tactic.
+This page contains the Stratus attack techniques for Kubernetes, grouped by MITRE ATT&CK Tactic.
 Note that some Stratus attack techniques may correspond to more than a single ATT&CK Tactic.
 
 

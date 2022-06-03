@@ -7,7 +7,7 @@ title: Create Admin ClusterRole
 
 
 
-Platform: kubernetes
+Platform: Kubernetes
 
 ## MITRE ATT&CK Tactics
 

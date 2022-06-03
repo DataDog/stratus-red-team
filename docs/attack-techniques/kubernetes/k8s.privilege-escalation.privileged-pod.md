@@ -7,7 +7,7 @@ title: Run a Privileged Pod
 
 
 
-Platform: kubernetes
+Platform: Kubernetes
 
 ## MITRE ATT&CK Tactics
 

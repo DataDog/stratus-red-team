@@ -7,7 +7,7 @@ title: Privilege escalation through node/proxy permissions
 
  <span class="smallcaps w3-badge w3-blue w3-round w3-text-white" title="This attack technique can be detonated multiple times">idempotent</span> 
 
-Platform: kubernetes
+Platform: Kubernetes
 
 ## MITRE ATT&CK Tactics
 
@@ -74,10 +74,10 @@ Sample event (shortened):
 }
 ```
 
-In normal operating conditions, it's not expected that this API is used frequently. 
-Consequently, alerting on `objectRef.resource == "nodes" && objectRef.subresource == "proxy"` should yield minimal false positives.'
+Under normal operating conditions, it's not expected that this API is used frequently. 
+Consequently, alerting on `objectRef.resource == "nodes" && objectRef.subresource == "proxy"` should yield minimal false positives.
 
-Additionally, looking at the Kubelet API path that was proxied can help identify malicious activity (/runningpods) in this example.
+Additionally, looking at the Kubelet API path that was proxied can help identify malicious activity (/runningpods in this example).
 See [kubeletctl](https://github.com/cyberark/kubeletctl/blob/master/pkg/api/constants.go) for an unofficial list of Kubelet API endpoints.
 
 
