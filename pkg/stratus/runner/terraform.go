@@ -3,6 +3,7 @@ package runner
 import (
 	"context"
 	"errors"
+	"github.com/datadog/stratus-red-team/internal/providers"
 	"github.com/datadog/stratus-red-team/internal/utils"
 	"github.com/hashicorp/go-version"
 	"github.com/hashicorp/hc-install/product"
@@ -59,7 +60,7 @@ func (m *TerraformManagerImpl) TerraformInitAndApply(directory string) (map[stri
 		return map[string]string{}, errors.New("unable to instantiate Terraform: " + err.Error())
 	}
 
-	err = terraform.SetAppendUserAgent("stratus-red-team")
+	err = terraform.SetAppendUserAgent(providers.GetStratusUserAgent())
 	if err != nil {
 		return map[string]string{}, errors.New("unable to configure Terraform: " + err.Error())
 	}
