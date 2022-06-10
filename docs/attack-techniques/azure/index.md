@@ -8,3 +8,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 - [Execute Commands on Virtual Machine using Run Command](./azure.execution.vm-run-command.md)
 
+
+## Exfiltration
+
+- [Export Disk Through SAS URL](./azure.exfiltration.disk-export.md)
+
