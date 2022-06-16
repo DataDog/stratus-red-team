@@ -3,6 +3,8 @@ package main
 import (
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques"
 	"github.com/spf13/cobra"
+	"log"
+	"os"
 )
 
 var rootCmd = &cobra.Command{
@@ -10,6 +12,8 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
+	setupLogging()
+
 	listCmd := buildListCmd()
 	showCmd := buildShowCmd()
 	warmupCmd := buildWarmupCmd()
@@ -27,6 +31,10 @@ func init() {
 	rootCmd.AddCommand(statusCmd)
 	rootCmd.AddCommand(cleanupCmd)
 	rootCmd.AddCommand(versionCmd)
+}
+
+func setupLogging() {
+	log.SetOutput(os.Stdout)
 }
 
 func main() {
