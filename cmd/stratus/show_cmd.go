@@ -18,6 +18,9 @@ func buildShowCmd() *cobra.Command {
 			_, err := resolveTechniques(args)
 			return err
 		},
+		ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+			return getTechniquesCompletion(toComplete), cobra.ShellCompDirectiveNoFileComp
+		},
 		Run: func(cmd *cobra.Command, args []string) {
 			techniques, _ := resolveTechniques(args)
 			doShowCmd(techniques)

@@ -2,11 +2,10 @@ package main
 
 import (
 	"errors"
-	"os"
-
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"github.com/datadog/stratus-red-team/pkg/stratus/runner"
 	"github.com/spf13/cobra"
+	"os"
 )
 
 var forceWarmup bool
@@ -30,6 +29,9 @@ func buildWarmupCmd() *cobra.Command {
 			}
 			_, err := resolveTechniques(args)
 			return err
+		},
+		ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+			return getTechniquesCompletion(toComplete), cobra.ShellCompDirectiveNoFileComp
 		},
 		Run: func(cmd *cobra.Command, args []string) {
 			techniques, _ := resolveTechniques(args)
