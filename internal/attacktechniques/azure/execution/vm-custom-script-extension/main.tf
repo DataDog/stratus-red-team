@@ -100,10 +100,6 @@ output "resource_group_name" {
   value = azurerm_resource_group.lab_environment.name
 }
 
-output "vm_instance_object_id" {
-  value = azurerm_windows_virtual_machine.lab_windows_vm.id
-}
-
 output "vm_name" {
   value = azurerm_windows_virtual_machine.lab_windows_vm.name
 }
