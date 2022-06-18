@@ -19,6 +19,7 @@ import (
 var tf []byte
 
 func init() {
+	const codeBlock = "```"
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
 		ID:           "azure.execution.vm-custom-script-extension",
 		FriendlyName: "Execute Command on Virtual Machine using Custom Script Extension",
@@ -38,7 +39,29 @@ Detonation:
 
 - Configure a custom script extension for the virtual machine
 `,
-		Detection:                  "Identify `Microsoft.Compute/virtualMachines/extensions/write` events in Azure Activity logs",
+		Detection: `
+Identify Azure events of type <code>Microsoft.Compute/virtualMachines/extensions/write</code>. Sample below (redacted for clarity).
+
+` + codeBlock + `json hl_lines="7"
+{
+  "duration": 0,
+  "resourceId": "/SUBSCRIPTIONS/<your-subscription-id>/RESOURCEGROUPS/RG-HAT6H48Q/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINES/VM-HAT6H48Q/EXTENSIONS/CUSTOMSCRIPTEXTENSION-STRATUS-EXAMPLE",
+  "evt": {
+    "category": "Administrative",
+    "outcome": "Start",
+    "name": "MICROSOFT.COMPUTE/VIRTUALMACHINES/EXTENSIONS/WRITE"
+  },
+  "resource_name": "customscriptextension-stratus-example",
+  "time": "2022-06-18T19:57:27.8617215Z",
+  "properties": {
+    "hierarchy": "ecc2b97b-844b-414e-8123-b925dddf87ed/<your-subscription-id>",
+    "message": "Microsoft.Compute/virtualMachines/extensions/write",
+    "eventCategory": "Administrative",
+    "entity": "/subscriptions/<your-subscription-id>/resourceGroups/rg-hat6h48q/providers/Microsoft.Compute/virtualMachines/vm-hat6h48q/extensions/CustomScriptExtension-Stratus-Example"
+  },
+}
+` + codeBlock + `
+`,
 		Platform:                   stratus.Azure,
 		IsSlow:                     true,
 		IsIdempotent:               false,
@@ -49,10 +72,9 @@ Detonation:
 	})
 }
 
-const ExtensionName = "CustomScriptExtension-Stratus-Example"
+const ExtensionName = "CustomScriptExtension-StratusRedTeam-Example"
 
 func detonate(params map[string]string) error {
-	vmObjectId := params["vm_instance_object_id"]
 	vmName := params["vm_name"]
 	resourceGroup := params["resource_group_name"]
 
@@ -63,10 +85,11 @@ func detonate(params map[string]string) error {
 
 	client, err := armcompute.NewVirtualMachineExtensionsClient(subscriptionID, cred, clientOptions)
 	if err != nil {
-		return errors.New("failed to create client: " + err.Error())
+		return errors.New("failed to create VM extensions client: " + err.Error())
 	}
 
-	log.Println("Configuring Custom Script Extension for VM instance " + vmObjectId)
+	log.Println("Configuring Custom Script Extension for VM instance " + vmName)
+	log.Println("This will cause a command to be run as SYSTEM on the machine")
 
 	vmExtension := armcompute.VirtualMachineExtension{
 		Location: to.Ptr("West US"),
@@ -95,27 +118,20 @@ func detonate(params map[string]string) error {
 		return errors.New("unable to create virtual machine extension: " + err.Error())
 	}
 
-	log.Println("Waiting for Custom Script Extension to be installed on the VM")
 	ctxWithTimeout, done := context.WithTimeout(context.Background(), 60*3*time.Second)
 	defer done()
 	_, err = poller.PollUntilDone(ctxWithTimeout, &runtime.PollUntilDoneOptions{Frequency: 2 * time.Second})
 	if err != nil {
 		return errors.New("unable to retrieve the output of the command ran on the virtual machine: " + err.Error())
 	}
+	log.Println("Extension created, the command was executed as SYSTEM")
 
-	/*ctxWithTimeout, done = context.WithTimeout(context.Background(), 60*3*time.Second)
-	defer done()
-	client2, _ := armcompute.NewVirtualMachinesClient(subscriptionID, cred, clientOptions)
-	const tpe = armcompute.InstanceViewTypes()
-	result, _ := client2.Get(ctxWithTimeout, resourceGroup, vmName, &armcompute.VirtualMachinesClientGetOptions{Expand: &tpe})
-	fmt.Println(result.VirtualMachine.Resources[0].Properties.InstanceView.Substatuses[0].Message)
-	return nil*/
+	// TODO enhancement: figure out how to retrieve the output of the executed commabd to ensure it was executed
 
 	return nil
 }
 
 func revert(params map[string]string) error {
-	vmObjectId := params["vm_instance_object_id"]
 	vmName := params["vm_name"]
 	resourceGroup := params["resource_group_name"]
 
@@ -129,7 +145,7 @@ func revert(params map[string]string) error {
 		log.Fatalf("failed to create client: %v", err)
 	}
 
-	log.Println("Reverting Custom Script Extension for VM instance " + vmObjectId)
+	log.Println("Reverting Custom Script Extension for VM instance " + vmName)
 
 	poller, err := client.BeginDelete(ctx,
 		resourceGroup,
