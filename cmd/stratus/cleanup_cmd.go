@@ -32,6 +32,9 @@ func buildCleanupCmd() *cobra.Command {
 
 			return err
 		},
+		ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+			return getTechniquesCompletion(toComplete), cobra.ShellCompDirectiveNoFileComp
+		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) > 0 {
 				techniques, _ := resolveTechniques(args)
