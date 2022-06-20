@@ -84,6 +84,7 @@ nav:
       - Examples: user-guide/examples.md
       - Usage: user-guide/usage.md
       - Command Reference:
+          - CLI Autocompletion: user-guide/commands/autocompletion.md
           - list: user-guide/commands/list.md
           - status: user-guide/commands/status.md
           - show: user-guide/commands/show.md
