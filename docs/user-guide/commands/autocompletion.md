@@ -8,10 +8,9 @@ Stratus Red Team uses [cobra](https://github.com/spf13/cobra)'s built-in support
 
 ## Setup
 
-
-Ensure you have [bash-completion](https://github.com/scop/bash-completion) installed (`brew install bash-completion`  / `apt install bash-completion`), then run:
-
 === "bash"
+
+    Ensure you have [bash-completion](https://github.com/scop/bash-completion) installed (`brew install bash-completion`  / `apt install bash-completion`), then run:
 
     === "Mac OS"
 
