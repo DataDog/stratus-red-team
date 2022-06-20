@@ -72,6 +72,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 - [Backdoor Lambda Function Through Resource-Based Policy](./aws.persistence.lambda-backdoor-function.md)
 
+- [Update or modify Lambda Function Code](./aws.persistence.lambda-update-function.md)
+
 
 ## Privilege Escalation
 
