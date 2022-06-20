@@ -57,6 +57,8 @@ markdown_extensions:
   - admonition
   - pymdownx.details
   - footnotes
+  - pymdownx.tabbed:
+      alternate_style: true 
 
 
 extra_javascript:
