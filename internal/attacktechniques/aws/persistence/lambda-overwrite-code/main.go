@@ -20,11 +20,11 @@ var tf []byte
 
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
-		ID:           "aws.persistence.lambda-update-function",
-		FriendlyName: "Update or modify Lambda Function Code",
+		ID:           "aws.persistence.lambda-overwrite-code",
+		FriendlyName: "Overwrite Lambda Function Code",
 		Description: `
-Establishes persistence by updating a lambda function's code with malicious code.
-A further use case could be updating the code to exfiltrate data.
+Establishes persistence by overwriting a Lambda function's code. 
+A further, more advanced, use-case could be updating the code to exfiltrate the data processed by the Lambda function at runtime.
 
 Warm-up: 
 
@@ -33,8 +33,14 @@ Warm-up:
 Detonation: 
 
 - Update the Lambda function code.
+
+References:
+- https://research.splunk.com/cloud/aws_lambda_updatefunctioncode/
+- Expel's AWS security mindmap
 `,
-		Detection:                  `Through CloudTrail's <code>UpdateFunctionCode*</code> event.`,
+		Detection: `
+Through CloudTrail's <code>UpdateFunctionCode*</code> event, e.g. <code>UpdateFunctionCode20150331v2</code>.
+`,
 		Platform:                   stratus.AWS,
 		IsIdempotent:               true,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence},
@@ -49,18 +55,21 @@ func detonate(params map[string]string) error {
 	lambdaClient := lambda.NewFromConfig(providers.AWS().GetConnection())
 	zip := "UEsDBAoDAAAAABGy0lRE4o1NOwAAADsAAAAJAAAAbGFtYmRhLnB5ZGVmIGxhbWJkYV9oYW5kbGVyKGUsIGMpOgogICAgcHJpbnQoIlN0cmF0dXMgc2F5cyBoZWxsbyEiKQpQSwECPwMKAwAAAAARstJUROKNTTsAAAA7AAAACQAkAAAAAAAAACCApIEAAAAAbGFtYmRhLnB5CgAgAAAAAAABABgAAL0yTlCD2AEA6mNPUIPYAQC9Mk5Qg9gBUEsFBgAAAAABAAEAWwAAAGIAAAAAAA=="
 
-	log.Println("Updating the Lambda function code for " + functionName)
+	log.Println("Updating the code of Lambda function " + functionName)
 
-	zipFile, _ := ioutil.ReadAll(base64.NewDecoder(base64.StdEncoding, strings.NewReader(zip)))
+	zipFile, err := ioutil.ReadAll(base64.NewDecoder(base64.StdEncoding, strings.NewReader(zip)))
+	if err != nil {
+		return errors.New("unable to decode the payload to overwrite the code with: " + err.Error())
+	}
 
-	_, err := lambdaClient.UpdateFunctionCode(context.Background(), &lambda.UpdateFunctionCodeInput{
+	_, err = lambdaClient.UpdateFunctionCode(context.Background(), &lambda.UpdateFunctionCodeInput{
 		FunctionName: &functionName,
 		Publish:      true,
 		ZipFile:      zipFile,
 	})
 
 	if err != nil {
-		return errors.New(fmt.Sprintf("unable to update lambda code for: %s: ", functionName) + err.Error())
+		return fmt.Errorf("unable to update lambda code for %s: %w", functionName, err)
 	}
 
 	return nil
@@ -73,7 +82,7 @@ func revert(params map[string]string) error {
 	bucketKey := params["bucket_object_key"]
 	lambdaClient := lambda.NewFromConfig(providers.AWS().GetConnection())
 
-	log.Println("Reverting the Lambda function code for " + functionName)
+	log.Println("Reverting the code of the Lambda function " + functionName)
 
 	_, err := lambdaClient.UpdateFunctionCode(context.Background(), &lambda.UpdateFunctionCodeInput{
 		FunctionName: &functionName,
@@ -83,7 +92,7 @@ func revert(params map[string]string) error {
 	})
 
 	if err != nil {
-		return errors.New(fmt.Sprintf("unable to revert lambda code for: %s: ", params["lambda_function_name"]) + err.Error())
+		return fmt.Errorf("unable to revert lambda code for %s: %w", functionName, err)
 	}
 
 	return nil
