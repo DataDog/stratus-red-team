@@ -6,6 +6,7 @@ import (
 	"github.com/jedib0t/go-pretty/v6/table"
 	"log"
 	"os"
+	"strings"
 )
 
 func GetDisplayTable() table.Writer {
@@ -55,4 +56,15 @@ func VerifyPlatformRequirements(attackTechniques []*stratus.AttackTechnique) {
 			platforms[currentPlatform] = true
 		}
 	}
+}
+
+func getTechniquesCompletion(completionPrefix string) []string {
+	attackTechniques := stratus.GetRegistry().GetAttackTechniques(&stratus.AttackTechniqueFilter{})
+	var matchingTechniques []string
+	for _, technique := range attackTechniques {
+		if strings.HasPrefix(technique.ID, completionPrefix) {
+			matchingTechniques = append(matchingTechniques, technique.ID)
+		}
+	}
+	return matchingTechniques
 }

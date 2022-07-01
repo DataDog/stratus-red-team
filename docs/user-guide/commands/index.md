@@ -1,5 +1,6 @@
 # Commands reference
 
+- [Autocompletion](./autocompletion)
 - [list](./list)
 - [status](./status)
 - [show](./show)
