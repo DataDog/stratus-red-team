@@ -23,7 +23,7 @@ func init() {
 		IsIdempotent:       false,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Persistence, mitreattack.PrivilegeEscalation},
 		Description: `
-Establishes persistence by modifiying the AwsAuth Configmap to allow a role in an external AWS to access the cluster with Administrative permissions
+Establishes persistence by modifiying the AwsAuth Configmap to allow a role in an external AWS to access the cluster with Administrative permissions. This technique is only applicable to AWS EKS Managed Kuberenetes clusters, or clusters where the AWS IAM Authenticator for Kubernetes is installed.
 
 Warm-up: None
 
