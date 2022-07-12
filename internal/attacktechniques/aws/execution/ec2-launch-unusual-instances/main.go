@@ -5,8 +5,10 @@ import (
 	_ "embed"
 	"errors"
 	"fmt"
+	"github.com/aws/smithy-go/ptr"
 	"log"
 	"sort"
+	"strings"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -14,8 +16,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
-	"github.com/aws/smithy-go"
-
 	"github.com/datadog/stratus-red-team/internal/providers"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"github.com/datadog/stratus-red-team/pkg/stratus/mitreattack"
@@ -24,82 +24,75 @@ import (
 //go:embed main.tf
 var tf []byte
 
+const instanceType = types.InstanceTypeP2Xlarge
+const numInstances = 10
+
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
-		ID:           "aws.discovery.ec2-spin-up-unusual-instances",
-		FriendlyName: "Attempt to spin up several unusual EC2 instances",
-		Description: `Tries to spin up several unusual EC2 instances
+		ID:           "aws.execution.ec2-launch-unusual-instances",
+		FriendlyName: "Launch Unusual EC2 instances",
+		Description: `
+Attempts to launch several unusual EC2 instances (` + string(instanceType) + `).
 
-Warm-up:
+Warm-up: Creates an IAM role that doesn't have permissions to launch EC2 instances. 
+This ensures the attempts is not successful, and the attack technique is fast to detonate.
 
-- Creates an IAM role that, doesn't have permissions to create and run new EC2 instances
-- This ensures the attempts are not successful, and the attack technique is fast to detonate
-
-Detonation:
-
-- Try to spin up spin up several unusual EC2 instances
-- The calls will fail as the IAM role does not have sufficient permissions
+Detonation: Attempts to launch several unusual EC2 instances. The calls will fail as the IAM role does not have sufficient permissions.
 `,
-		Detection: `Trough CloudTrail events with the event name <code>RunInstances</code> and error
+		Detection: `
+Trough CloudTrail events with the event name <code>RunInstances</code> and error
 <code>Client.UnauthorizedOperation</code>. The <code>eventSource</code> will be
-<code>ec2.amazonaws.com</code> itself. Further, the <code>requestParameters.instanceType<code>
+<code>ec2.amazonaws.com</code> and the <code>requestParameters.instanceType<code>
 field will contain the instance type that was attempted to be launched.
+
 Depending on your account limits you might also see <code>VcpuLimitExceeded</code> error codes.
 `,
 		Platform:                   stratus.AWS,
 		IsIdempotent:               true,
-		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Discovery},
+		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Execution},
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,
-		Revert:                     revert,
-	},
-	)
+	})
 }
 
 func detonate(params map[string]string) error {
 	ctx := context.Background()
-
 	awsConnection := providers.AWS().GetConnection()
 
 	// get ami image id before assuming role with limited access
-	amiID, err := getALAmiID(&ctx, &awsConnection)
+	amiId, err := getAmazonLinuxAmiId(&ctx, &awsConnection)
 	if err != nil {
-		return fmt.Errorf("could not get a valid ec2 ami id: %v", err)
+		return fmt.Errorf("could not get a valid EC2 AMI id: %v", err)
 	}
 
 	stsClient := sts.NewFromConfig(awsConnection)
 	awsConnection.Credentials = aws.NewCredentialsCache(stscreds.NewAssumeRoleProvider(stsClient, params["role_arn"]))
 	ec2Client := ec2.NewFromConfig(awsConnection)
 
-	minCount := int32(1)
-	maxCount := int32(10)
 	_, err = ec2Client.RunInstances(ctx, &ec2.RunInstancesInput{
-		ImageId:      &amiID,
-		MinCount:     &minCount,
-		MaxCount:     &maxCount,
-		InstanceType: types.InstanceTypeP2Xlarge, // types.InstanceTypeP4d24xlarge,
+		ImageId:      &amiId,
+		MinCount:     ptr.Int32(numInstances),
+		MaxCount:     ptr.Int32(numInstances),
+		InstanceType: instanceType, // types.InstanceTypeP4d24xlarge,
 	})
-	if err != nil {
-		var ae smithy.APIError
-		if errors.As(err, &ae) {
-			if ae.ErrorCode() != "UnauthorizedOperation" && ae.ErrorCode() != "VcpuLimitExceeded" {
-				return fmt.Errorf("error trying to run ec2 instance: %v", err)
-			}
-			log.Printf("Received expected error '%s'", ae.ErrorCode())
-		}
+
+	if err == nil {
+		// We expected an error
+		return errors.New("expected ec2:RunInstances to return an error")
 	}
 
+	if !strings.Contains(err.Error(), "AccessDenied") {
+		// We expected an *AccessDenied* error
+		return errors.New("expected ec2:RunInstances to return an access denied error, got instead: " + err.Error())
+	}
+
+	log.Println("Got an access denied error as expected")
+
 	return nil
 }
 
-// revert does not require any specific actions for this technique
-func revert(_ map[string]string) error {
-	log.Println("Reverted successfully (nothing to do)")
-	return nil
-}
-
-// getALAmiID returns the most current Amazon Linux AMI image id (as AMIs are region specific)
-func getALAmiID(ctx *context.Context, config *aws.Config) (string, error) {
+// getAmazonLinuxAmiId returns the most current Amazon Linux AMI image id (as AMIs are region specific)
+func getAmazonLinuxAmiId(ctx *context.Context, config *aws.Config) (string, error) {
 	ec2Client := ec2.NewFromConfig(*config)
 
 	filterName, filterArch, filterRootDev := "name", "architecture", "root-device-type"
@@ -136,7 +129,7 @@ func getALAmiID(ctx *context.Context, config *aws.Config) (string, error) {
 	})
 
 	if len(images) == 0 {
-		return "", fmt.Errorf("error determining latest ec2 image to use, image list is zero")
+		return "", fmt.Errorf("error determining latest ec2 image to use, image list is empty")
 	}
 
 	return *images[0].ImageId, nil
