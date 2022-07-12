@@ -1,8 +1,10 @@
 ---
-title: Create a Trust anchor on Roles Anywhere
+title: Create a Trust anchor
 ---
 
-# Create a Trust anchor on Roles Anywhere
+# Create a Trust anchor
+
+
 
 
 Platform: AWS
@@ -16,11 +18,9 @@ Platform: AWS
 ## Description
 
 
-Establishes persistence by creating a trust anchor on Roles Anywhere.
+Establishes persistence by creating a new Trust anchor.
 
-<span style="font-variant: small-caps;">Warm-up</span>: 
-
-- None.
+<span style="font-variant: small-caps;">Warm-up</span>: None.
 
 <span style="font-variant: small-caps;">Detonation</span>: 
 
@@ -34,6 +34,7 @@ stratus detonate aws.persistence.rolesanywhere-create-trust-anchor
 ```
 ## Detection
 
-Identify when a Trust anchor is created, through CloudTrail's <code>CreateTrustAnchor</code> event.
+
+		Identify when a Trust anchor is created, through CloudTrail's <code>CreateTrustAnchor</code> event.
 
 
