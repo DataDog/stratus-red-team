@@ -39,6 +39,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 ## Execution
 
+- [Launch Unusual EC2 instances](./aws.execution.ec2-launch-unusual-instances.md)
+
 - [Execute Commands on EC2 Instance via User Data](./aws.execution.ec2-user-data.md)
 
 

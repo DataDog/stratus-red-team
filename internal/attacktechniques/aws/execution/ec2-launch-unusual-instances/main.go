@@ -69,6 +69,7 @@ func detonate(params map[string]string) error {
 	awsConnection.Credentials = aws.NewCredentialsCache(stscreds.NewAssumeRoleProvider(stsClient, params["role_arn"]))
 	ec2Client := ec2.NewFromConfig(awsConnection)
 
+	log.Printf("Running %d instances of type %s\n", numInstances, string(instanceType))
 	_, err = ec2Client.RunInstances(ctx, &ec2.RunInstancesInput{
 		ImageId:      &amiId,
 		MinCount:     ptr.Int32(numInstances),
