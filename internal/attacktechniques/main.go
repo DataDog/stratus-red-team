@@ -32,6 +32,7 @@ import (
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/k8s/credential-access/dump-secrets"
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/k8s/credential-access/steal-serviceaccount-token"
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/k8s/persistence/create-admin-clusterrole"
+	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/k8s/persistence/create-token"
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/k8s/privilege-escalation/hostpath-volume"
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/k8s/privilege-escalation/nodes-proxy"
 	_ "github.com/datadog/stratus-red-team/internal/attacktechniques/k8s/privilege-escalation/privileged-pod"
