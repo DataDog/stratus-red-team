@@ -76,7 +76,7 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 - [Overwrite Lambda Function Code](./aws.persistence.lambda-overwrite-code.md)
 
-- [Create a Trust anchor](./aws.persistence.rolesanywhere-create-trust-anchor.md)
+- [Create an IAM Roles Anywhere trust anchor](./aws.persistence.rolesanywhere-create-trust-anchor.md)
 
 
 ## Privilege Escalation
@@ -89,5 +89,5 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 - [Create a Login Profile on an IAM User](./aws.persistence.iam-create-user-login-profile.md)
 
-- [Create a Trust anchor](./aws.persistence.rolesanywhere-create-trust-anchor.md)
+- [Create an IAM Roles Anywhere trust anchor](./aws.persistence.rolesanywhere-create-trust-anchor.md)
 

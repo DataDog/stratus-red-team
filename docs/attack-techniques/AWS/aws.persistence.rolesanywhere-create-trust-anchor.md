@@ -1,8 +1,8 @@
 ---
-title: Create a Trust anchor
+title: Create an IAM Roles Anywhere trust anchor
 ---
 
-# Create a Trust anchor
+# Create an IAM Roles Anywhere trust anchor
 
 
 
@@ -18,13 +18,27 @@ Platform: AWS
 ## Description
 
 
-Establishes persistence by creating a new Trust anchor.
+Establishes persistence by creating an IAM Roles Anywhere trust anchor. 
+The IAM Roles Anywhere service allows workloads that do not run in AWS to assume roles by presenting a client-side 
+X.509 certificate signed by a trusted certificate authority, called a "trust anchor".
 
-<span style="font-variant: small-caps;">Warm-up</span>: None.
+Assuming IAM Roles Anywhere is in use (i.e., that some of the IAM roles in the account have a 
+[trust policy](https://docs.aws.amazon.com/rolesanywhere/latest/userguide/trust-model.html#trust-policy) trusting 
+the IAM Roles Anywhere service), an attacker creating a trust anchor can subsequently assume these roles.
+
+<span style="font-variant: small-caps;">Warm-up</span>:
+
+- Create an IAM role that can be used by IAM Roles Anywhere (see [docs](https://docs.aws.amazon.com/rolesanywhere/latest/userguide/getting-started.html#getting-started-step2))
 
 <span style="font-variant: small-caps;">Detonation</span>: 
 
-- Create the Trust anchor with a fake Certificate Authority (CA).
+- Create an IAM Roles Anywhere trust anchor
+- Create an IAM Roles Anywhere profile
+
+References:
+
+- https://docs.aws.amazon.com/rolesanywhere/latest/userguide/trust-model.html
+- https://docs.aws.amazon.com/rolesanywhere/latest/userguide/getting-started.html
 
 
 ## Instructions
@@ -35,6 +49,6 @@ stratus detonate aws.persistence.rolesanywhere-create-trust-anchor
 ## Detection
 
 
-		Identify when a Trust anchor is created, through CloudTrail's <code>CreateTrustAnchor</code> event.
+Identify when a trust anchor is created, through CloudTrail's <code>CreateTrustAnchor</code> event.
 
 
