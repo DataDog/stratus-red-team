@@ -62,13 +62,14 @@ func detonate(params map[string]string) error {
 	awsConnection.Credentials = aws.NewCredentialsCache(stscreds.NewAssumeRoleProvider(stsClient, roleArn))
 	ec2Client := ec2.NewFromConfig(awsConnection)
 
-	log.Printf("Running %d instances of type %s\n", numInstances, string(instanceType))
+	log.Printf("Attempting to run up to %d instances of type %s\n", numInstances, string(instanceType))
 	_, err := ec2Client.RunInstances(ctx, &ec2.RunInstancesInput{
-		ImageId:      aws.String(amiId),
-		SubnetId:     aws.String(subnetId),
-		MinCount:     aws.Int32(numInstances),
+		ImageId:  aws.String(amiId),
+		SubnetId: aws.String(subnetId),
+		// Note: These parameters will attempt to launch the maximum between 1 and `numInstances` instances
+		MinCount:     aws.Int32(1),
 		MaxCount:     aws.Int32(numInstances),
-		InstanceType: instanceType, // types.InstanceTypeP4d24xlarge,
+		InstanceType: instanceType,
 	})
 
 	if err == nil {
