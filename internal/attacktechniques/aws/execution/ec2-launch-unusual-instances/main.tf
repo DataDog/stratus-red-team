@@ -63,7 +63,48 @@ resource "aws_iam_policy_attachment" "attachment" {
   policy_arn = aws_iam_policy.policy.arn
 }
 
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
+module "vpc" {
+  source = "terraform-aws-modules/vpc/aws"
+
+  name = "stratus-red-team-vpc-unusual-instances"
+  cidr = "10.0.0.0/16"
+
+  azs             = [data.aws_availability_zones.available.names[0]]
+  private_subnets = ["10.0.1.0/24"]
+  public_subnets  = ["10.0.128.0/24"]
+
+  map_public_ip_on_launch = false
+  enable_nat_gateway      = false
+
+
+  tags = {
+    StratusRedTeam = true
+  }
+}
+
+data "aws_ami" "amazon-2" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm-*-x86_64-ebs"]
+  }
+  owners = ["amazon"]
+}
+
 output "role_arn" {
   value       = aws_iam_role.role.arn
-  description = "Arn of the created role"
 }
+
+output "subnet_id" {
+  value = module.vpc.private_subnets[0]
+}
+
+output "ami_id" {
+  value = data.aws_ami.amazon-2.id
+}
+
