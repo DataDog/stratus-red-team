@@ -11,6 +11,7 @@ const (
 	AWS        = "AWS"
 	Kubernetes = "kubernetes"
 	Azure      = "azure"
+	GCP        = "gcp"
 )
 
 func PlatformFromString(name string) (Platform, error) {
@@ -21,6 +22,8 @@ func PlatformFromString(name string) (Platform, error) {
 		return Kubernetes, nil
 	case strings.ToLower(Azure):
 		return Azure, nil
+	case strings.ToLower(GCP):
+		return GCP, nil
 	default:
 		return "", errors.New("unknown platform: " + name)
 	}
