@@ -11,7 +11,7 @@ const (
 	AWS        = "AWS"
 	Kubernetes = "kubernetes"
 	Azure      = "azure"
-	GCP        = "gcp"
+	GCP        = "GCP"
 )
 
 func PlatformFromString(name string) (Platform, error) {
