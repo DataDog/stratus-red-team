@@ -8,6 +8,7 @@ import (
 
 	"encoding/base64"
 
+	"github.com/datadog/stratus-red-team/internal/providers"
 	"github.com/datadog/stratus-red-team/pkg/stratus"
 	"github.com/datadog/stratus-red-team/pkg/stratus/mitreattack"
 	iam "google.golang.org/api/iam/v1"
@@ -33,9 +34,9 @@ func init() {
 func detonate(params map[string]string) error {
 	saEmail := params["sa_email"]
 	ctx := context.Background()
-	service, err := iam.NewService(ctx)
+	service, err := iam.NewService(ctx, providers.GCP().GetUserAgentOption())
 	if err != nil {
-		return errors.New("")
+		return errors.New("Error instantiating GCP SDK Client: " + err.Error())
 	}
 
 	log.Println("Creating Service Account Key on service account " + saEmail)
@@ -59,7 +60,7 @@ func revert(params map[string]string) error {
 	resource := "projects/-/serviceAccounts/" + saEmail
 
 	ctx := context.Background()
-	service, err := iam.NewService(ctx)
+	service, err := iam.NewService(ctx, providers.GCP().GetUserAgentOption())
 	if err != nil {
 		return errors.New("")
 	}
@@ -83,5 +84,3 @@ func revert(params map[string]string) error {
 
 	return nil
 }
-
-//func revert(params map[string]string) error {}

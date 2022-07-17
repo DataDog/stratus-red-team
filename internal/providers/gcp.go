@@ -7,6 +7,7 @@ import (
 
 	"github.com/google/uuid"
 	"google.golang.org/api/iam/v1"
+	"google.golang.org/api/option"
 )
 
 // TF and GCP defines multiple environment variables for this
@@ -41,9 +42,9 @@ func GCP() *GcpProvider {
 	return &gcpProvider
 }
 
-//func Gcp() {}
-
-//func GetClientParams(){}
+func (m *GcpProvider) GetUserAgentOption() option.ClientOption {
+	return option.WithUserAgent(GetStratusUserAgent())
+}
 
 func (m *GcpProvider) IsAuthenticated() bool {
 	ctx := context.Background()
