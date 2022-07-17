@@ -71,6 +71,10 @@ func revert(params map[string]string) error {
 
 	for _, key := range keys.Keys {
 		log.Println("Deleting Service Account Key " + key.Name)
+		if key.KeyType == "SYSTEM_MANAGED" {
+			log.Println("Key is a SYSTEM_MANAGED key and wont be deleted: " + key.Name)
+			continue
+		}
 		_, err := service.Projects.ServiceAccounts.Keys.Delete(key.Name).Do()
 		if err != nil {
 			return errors.New("Failed to delete Service Account Key: " + err.Error())
