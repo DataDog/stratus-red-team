@@ -22,10 +22,11 @@ func init() {
 		FriendlyName:               "Create a GCP Service Account Key",
 		Description:                ``,
 		Platform:                   stratus.GCP,
-		IsIdempotent:               true,
+		IsIdempotent:               false,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence},
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,
+		Revert:                     revert,
 	})
 }
 
@@ -38,7 +39,7 @@ func detonate(params map[string]string) error {
 	}
 
 	log.Println("Creating Service Account Key on service account " + saEmail)
-	resource := "projects/-/serviceAccounts" + saEmail
+	resource := "projects/-/serviceAccounts/" + saEmail
 	request := &iam.CreateServiceAccountKeyRequest{}
 	key, err := service.Projects.ServiceAccounts.Keys.Create(resource, request).Do()
 	if err != nil {
@@ -51,6 +52,32 @@ func detonate(params map[string]string) error {
 
 	return nil
 
+}
+
+func revert(params map[string]string) error {
+	saEmail := params["sa_email"]
+	resource := "projects/-/serviceAccounts/" + saEmail
+
+	ctx := context.Background()
+	service, err := iam.NewService(ctx)
+	if err != nil {
+		return errors.New("")
+	}
+
+	keys, err := service.Projects.ServiceAccounts.Keys.List(resource).Do()
+	if err != nil {
+		return errors.New("Failed to list Service Account Keys: " + err.Error())
+	}
+
+	for _, key := range keys.Keys {
+		log.Println("Deleting Service Account Key " + key.Name)
+		_, err := service.Projects.ServiceAccounts.Keys.Delete(key.Name).Do()
+		if err != nil {
+			return errors.New("Failed to delete Service Account Key: " + err.Error())
+		}
+	}
+
+	return nil
 }
 
 //func revert(params map[string]string) error {}
