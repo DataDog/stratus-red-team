@@ -31,13 +31,18 @@ Warm-up:
 Detonation:
 
 - Create a new key for the service account
+
+References:
+
+- https://expel.com/blog/incident-report-spotting-an-attacker-in-gcp/
+- https://rhinosecuritylabs.com/gcp/privilege-escalation-google-cloud-platform-part-1/
 `,
 		Detection: `
 Using GCP Admin Activity audit logs event <code>google.iam.admin.v1.CreateServiceAccountKey</code>.
 `,
 		Platform:                   stratus.GCP,
 		IsIdempotent:               false,
-		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence},
+		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence, mitreattack.PrivilegeEscalation},
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,
 		Revert:                     revert,
