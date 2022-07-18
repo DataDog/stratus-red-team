@@ -2,7 +2,6 @@ package providers
 
 import (
 	"context"
-	"log"
 	"os"
 
 	"github.com/google/uuid"
@@ -20,10 +19,8 @@ func IsProjectEnvVarSet() bool {
 		"GCLOUD_PROJECT",
 		"CLOUDSDK_CORE_PROJECT",
 	}
-
 	for _, key := range gcloudProjEnvVars {
-		if len(os.Getenv(key)) != 0 {
-			log.Println(key + " var set!")
+		if _, hasEnvVariable := os.LookupEnv(key); hasEnvVariable {
 			return true
 		}
 	}
@@ -50,7 +47,6 @@ func (m *GcpProvider) IsAuthenticated() bool {
 	ctx := context.Background()
 	_, err := iam.NewService(ctx)
 	if err != nil {
-		log.Println("Authentication Error:" + err.Error())
 		return false
 	}
 	if !IsProjectEnvVarSet() {
