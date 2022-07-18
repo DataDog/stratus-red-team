@@ -19,9 +19,22 @@ var tf []byte
 
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
-		ID:                         "gcp.persistence.create-service-account-key",
-		FriendlyName:               "Create a GCP Service Account Key",
-		Description:                ``,
+		ID:           "gcp.persistence.create-service-account-key",
+		FriendlyName: "Create a GCP Service Account Key",
+		Description: `
+Establishes persistence by creating a service account key on an existing service account.
+
+Warm-up:
+
+- Create a service account
+
+Detonation:
+
+- Create a new key for the service account
+`,
+		Detection: `
+Using GCP Admin Activity audit logs event <code>google.iam.admin.v1.CreateServiceAccountKey</code>.
+`,
 		Platform:                   stratus.GCP,
 		IsIdempotent:               false,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence},
