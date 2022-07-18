@@ -73,8 +73,7 @@ const serviceAccountName = "clusterrole-aggregation-controller" // should always
 const namespace = "kube-system"
 
 // Expiration duration to request
-const numYears = 5
-const expirationTime = time.Hour * 24 * 30 * 365 * numYears
+const expirationTime = time.Hour * 24 * 30 * 365
 
 var params = authenticationv1.TokenRequest{
 	Spec: authenticationv1.TokenRequestSpec{
@@ -93,6 +92,6 @@ func detonate(map[string]string) error {
 	}
 
 	token := result.Status.Token
-	log.Printf("Successfully created a long-lived token valid for the next %d years: \n%s\n", numYears, token)
+	log.Printf("Successfully created a long-lived token valid for 1 year: \n%s\n", token)
 	return nil
 }
