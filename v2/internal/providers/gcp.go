@@ -46,12 +46,5 @@ func (m *GcpProvider) GetUserAgentOption() option.ClientOption {
 func (m *GcpProvider) IsAuthenticated() bool {
 	ctx := context.Background()
 	_, err := iam.NewService(ctx)
-	if err != nil {
-		return false
-	}
-	if !IsProjectEnvVarSet() {
-		return false
-	}
-
-	return true
+	return err == nil && IsProjectEnvVarSet()
 }
