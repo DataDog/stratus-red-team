@@ -39,20 +39,19 @@ func detonate(params map[string]string) error {
 		return errors.New("Error instantiating GCP SDK Client: " + err.Error())
 	}
 
-	log.Println("Creating Service Account Key on service account " + saEmail)
+	log.Println("Creating service account key on service account " + saEmail)
 	resource := "projects/-/serviceAccounts/" + saEmail
 	request := &iam.CreateServiceAccountKeyRequest{}
 	key, err := service.Projects.ServiceAccounts.Keys.Create(resource, request).Do()
 	if err != nil {
 		return errors.New("Unable to create service account key: " + err.Error())
 	}
-	log.Println("Service Account Key successfully created!")
+	log.Println("Service account ley successfully created!")
 	jsonKeyFile, _ := base64.StdEncoding.DecodeString(key.PrivateKeyData)
 
-	log.Println("Service Account Key data: \n" + string(jsonKeyFile))
+	log.Println("Service account key data: \n" + string(jsonKeyFile))
 
 	return nil
-
 }
 
 func revert(params map[string]string) error {
@@ -71,14 +70,14 @@ func revert(params map[string]string) error {
 	}
 
 	for _, key := range keys.Keys {
-		log.Println("Deleting Service Account Key " + key.Name)
 		if key.KeyType == "SYSTEM_MANAGED" {
-			log.Println("Key is a SYSTEM_MANAGED key and wont be deleted: " + key.Name)
+			log.Println("Key is a SYSTEM_MANAGED key and won't be deleted: " + key.Name)
 			continue
 		}
+		log.Println("Deleting service account key " + key.Name)
 		_, err := service.Projects.ServiceAccounts.Keys.Delete(key.Name).Do()
 		if err != nil {
-			return errors.New("Failed to delete Service Account Key: " + err.Error())
+			return errors.New("Failed to delete service account key: " + err.Error())
 		}
 	}
 
