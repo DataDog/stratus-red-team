@@ -6,10 +6,10 @@ import (
 	"errors"
 	"fmt"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
-	"github.com/datadog/stratus-red-team/pkg/stratus"
-	_ "github.com/datadog/stratus-red-team/pkg/stratus/loader" // Note: This import is needed
-	"github.com/datadog/stratus-red-team/pkg/stratus/mitreattack"
-	stratusrunner "github.com/datadog/stratus-red-team/pkg/stratus/runner"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	_ "github.com/datadog/stratus-red-team/v2/pkg/stratus/loader" // Note: This import is needed
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
+	stratusrunner "github.com/datadog/stratus-red-team/v2/pkg/stratus/runner"
 	"log"
 )
 
