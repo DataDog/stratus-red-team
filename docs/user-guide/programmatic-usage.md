@@ -14,7 +14,7 @@ Stratus Red Team is mainly used from the CLI, but you can use it programmaticall
 Run:
 
 ```
-go get github.com/datadog/stratus-red-team
+go get github.com/datadog/stratus-red-team/v2
 go get -d
 ```
 
@@ -24,4 +24,4 @@ See https://github.com/DataDog/stratus-red-team/tree/main/examples
 
 ## Reference
 
-https://pkg.go.dev/github.com/datadog/stratus-red-team/pkg/stratus
+https://pkg.go.dev/github.com/datadog/stratus-red-team/v2/pkgstratus

@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/datadog/stratus-red-team/pkg/stratus"
-	_ "github.com/datadog/stratus-red-team/pkg/stratus/loader" // Note: This import is needed
-	stratusrunner "github.com/datadog/stratus-red-team/pkg/stratus/runner"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	_ "github.com/datadog/stratus-red-team/v2/pkg/stratus/loader" // Note: This import is needed
+	stratusrunner "github.com/datadog/stratus-red-team/v2/pkg/stratus/runner"
 )
 
 /*
