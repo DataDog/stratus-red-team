@@ -15,7 +15,7 @@ import (
 
 func main() {
 	if len(os.Args) != 2 {
-		fmt.Errorf("specify the docs output directory")
+		fmt.Fprintln(os.Stderr, "specify the docs output directory")
 		os.Exit(1)
 	}
 	docsDirectory := os.Args[1]

@@ -8,6 +8,10 @@ on:
 permissions:
   contents: write
 
+defaults:
+  run:
+    working-directory: ./v2
+
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
@@ -26,6 +30,7 @@ jobs:
         with:
           distribution: goreleaser
           version: latest
-          args: release --rm-dist
+          args: release --rm-dist --config ../.goreleaser.yaml
+          workdir: ./v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
