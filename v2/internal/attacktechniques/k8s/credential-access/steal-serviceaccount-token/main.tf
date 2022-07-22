@@ -10,10 +10,10 @@ terraform {
 locals {
   kubeconfig_path = pathexpand("~/.kube/config")
   namespace       = format("stratus-red-team-%s", random_string.suffix.result)
-  labels          = {
+  labels = {
     "datadoghq.com/stratus-red-team" : true
   }
-  pod_name        = "stratus-red-team-sample-pod"
+  pod_name = "stratus-red-team-sample-pod"
 }
 
 # Use ~/.kube/config as a configuration file if it exists (with current context).

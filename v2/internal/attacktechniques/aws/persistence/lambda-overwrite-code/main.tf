@@ -25,7 +25,7 @@ resource "random_string" "suffix" {
 }
 
 resource "aws_iam_role" "lambda-update" {
-  name               = "lambda-function-role-stratus-red-team-${random_string.suffix.result}"
+  name = "lambda-function-role-stratus-red-team-${random_string.suffix.result}"
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [

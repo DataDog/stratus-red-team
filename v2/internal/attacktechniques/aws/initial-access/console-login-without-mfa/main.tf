@@ -43,9 +43,9 @@ resource "time_sleep" "wait" {
 
 output "display" {
   value = format("IAM user %s ready (password: %s). Sign-in link: %s",
-  aws_iam_user.console-user.name,
-  aws_iam_user_login_profile.login-profile.password,
-  "https://${data.aws_caller_identity.current.account_id}.signin.aws.amazon.com/console"
+    aws_iam_user.console-user.name,
+    aws_iam_user_login_profile.login-profile.password,
+    "https://${data.aws_caller_identity.current.account_id}.signin.aws.amazon.com/console"
   )
 }
 
