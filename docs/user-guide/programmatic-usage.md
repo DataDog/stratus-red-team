@@ -24,4 +24,4 @@ See https://github.com/DataDog/stratus-red-team/tree/main/examples
 
 ## Reference
 
-https://pkg.go.dev/github.com/datadog/stratus-red-team/v2/pkgstratus
+https://pkg.go.dev/github.com/datadog/stratus-red-team/v2/pkg/stratus
