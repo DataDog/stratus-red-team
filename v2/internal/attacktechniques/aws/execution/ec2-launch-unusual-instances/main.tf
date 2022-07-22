@@ -27,14 +27,14 @@ resource "random_string" "suffix" {
 }
 
 resource "aws_iam_role" "role" {
-  name               = "sample-role-used-by-stratus-${random_string.suffix.result}"
+  name = "sample-role-used-by-stratus-${random_string.suffix.result}"
   assume_role_policy = jsonencode({
-    Version   = "2012-10-17"
+    Version = "2012-10-17"
     Statement = [
       {
-        Sid       = "AllowAssumeRole"
-        Action    = "sts:AssumeRole"
-        Effect    = "Allow"
+        Sid    = "AllowAssumeRole"
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
         Principal = {
           AWS = data.aws_caller_identity.current.account_id
         }
@@ -44,9 +44,9 @@ resource "aws_iam_role" "role" {
 }
 
 resource "aws_iam_policy" "policy" {
-  name   = "inline-policy-${random_string.suffix.result}"
+  name = "inline-policy-${random_string.suffix.result}"
   policy = jsonencode({
-    Version   = "2012-10-17"
+    Version = "2012-10-17"
     Statement = [
       {
         Action   = ["ec2:DescribeInstances"]

@@ -80,8 +80,8 @@ output "service_account_namespace" {
 }
 output "display" {
   value = format(
-  "K8s service account with node/proxy permission is ready: %s in namespace %s",
-  kubernetes_service_account.sa.metadata[0].name,
-  kubernetes_namespace.namespace.metadata[0].name
+    "K8s service account with node/proxy permission is ready: %s in namespace %s",
+    kubernetes_service_account.sa.metadata[0].name,
+    kubernetes_namespace.namespace.metadata[0].name
   )
 }

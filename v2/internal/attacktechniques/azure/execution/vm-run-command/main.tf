@@ -110,8 +110,8 @@ output "vm_name" {
 
 output "display" {
   value = format(
-  "Virtual machine %s ready in resource group %s",
-  azurerm_windows_virtual_machine.lab_windows_vm.name,
-  azurerm_resource_group.lab_environment.name
+    "Virtual machine %s ready in resource group %s",
+    azurerm_windows_virtual_machine.lab_windows_vm.name,
+    azurerm_resource_group.lab_environment.name
   )
 }

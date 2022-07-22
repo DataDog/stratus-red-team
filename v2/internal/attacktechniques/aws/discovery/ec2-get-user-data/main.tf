@@ -21,14 +21,14 @@ provider "aws" {
 data "aws_caller_identity" "current" {}
 
 resource "aws_iam_role" "role" {
-  name               = "sample-role-used-by-stratus"
+  name = "sample-role-used-by-stratus"
   assume_role_policy = jsonencode({
-    Version   = "2012-10-17"
+    Version = "2012-10-17"
     Statement = [
       {
-        Action    = "sts:AssumeRole"
-        Effect    = "Allow"
-        Sid       = ""
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = ""
         Principal = {
           AWS = data.aws_caller_identity.current.account_id
         }
@@ -37,9 +37,9 @@ resource "aws_iam_role" "role" {
   })
 
   inline_policy {
-    name   = "inline-policy"
+    name = "inline-policy"
     policy = jsonencode({
-      Version   = "2012-10-17"
+      Version = "2012-10-17"
       Statement = [
         {
           Action   = ["ec2:DescribeInstances"]
