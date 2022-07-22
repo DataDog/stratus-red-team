@@ -39,7 +39,7 @@ func GCP() *GcpProvider {
 	return &gcpProvider
 }
 
-func (m *GcpProvider) GetUserAgentOption() option.ClientOption {
+func (m *GcpProvider) Options() option.ClientOption {
 	return option.WithUserAgent(GetStratusUserAgent())
 }
 
