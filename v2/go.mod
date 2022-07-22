@@ -27,7 +27,7 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/hashicorp/terraform-exec v0.15.0
 	github.com/jedib0t/go-pretty/v6 v6.2.4
-	github.com/spf13/cobra v1.3.0
+	github.com/spf13/cobra v1.5.0
 	github.com/stretchr/testify v1.7.0
 	k8s.io/api v0.23.3
 	k8s.io/apimachinery v0.23.3
