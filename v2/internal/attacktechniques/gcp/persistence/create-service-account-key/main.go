@@ -52,7 +52,7 @@ Using GCP Admin Activity audit logs event <code>google.iam.admin.v1.CreateServic
 func detonate(params map[string]string) error {
 	saEmail := params["sa_email"]
 	ctx := context.Background()
-	service, err := iam.NewService(ctx, providers.GCP().GetUserAgentOption())
+	service, err := iam.NewService(ctx, providers.GCP().Options())
 	if err != nil {
 		return errors.New("Error instantiating GCP SDK Client: " + err.Error())
 	}
@@ -77,7 +77,7 @@ func revert(params map[string]string) error {
 	resource := "projects/-/serviceAccounts/" + saEmail
 
 	ctx := context.Background()
-	service, err := iam.NewService(ctx, providers.GCP().GetUserAgentOption())
+	service, err := iam.NewService(ctx, providers.GCP().Options())
 	if err != nil {
 		return errors.New("")
 	}
