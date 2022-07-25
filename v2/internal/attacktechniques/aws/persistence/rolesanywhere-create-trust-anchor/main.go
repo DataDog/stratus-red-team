@@ -7,9 +7,9 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/rolesanywhere"
 	"github.com/aws/aws-sdk-go-v2/service/rolesanywhere/types"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
 )
@@ -30,7 +30,7 @@ var clientCertificate string
 var tf []byte
 
 func init() {
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&domain.AttackTechnique{
 		ID:           "aws.persistence.rolesanywhere-create-trust-anchor",
 		FriendlyName: "Create an IAM Roles Anywhere trust anchor",
 		Description: `
@@ -59,7 +59,7 @@ References:
 		Detection: `
 Identify when a trust anchor is created, through CloudTrail's <code>CreateTrustAnchor</code> event.
 `,
-		Platform:                   stratus.AWS,
+		Platform:                   domain.AWS,
 		PrerequisitesTerraformCode: tf,
 		IsIdempotent:               false, // cannot create twice a Trust anchor with the same name
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence, mitreattack.PrivilegeEscalation},
@@ -68,8 +68,8 @@ Identify when a trust anchor is created, through CloudTrail's <code>CreateTrustA
 	})
 }
 
-func detonate(params map[string]string) error {
-	rolesAnywhereClient := rolesanywhere.NewFromConfig(providers.AWS().GetConnection())
+func detonate(providers domain.ProvidersFactory, params map[string]string) error {
+	rolesAnywhereClient := rolesanywhere.NewFromConfig(providers.GetAWSProvider().GetConnection())
 	roleArn := params["role_arn"]
 	tags := []types.Tag{
 		{Key: aws.String("StratusRedTeam"), Value: aws.String("true")},
@@ -114,8 +114,8 @@ func detonate(params map[string]string) error {
 	return nil
 }
 
-func revert(map[string]string) error {
-	rolesanywhereClient := rolesanywhere.NewFromConfig(providers.AWS().GetConnection())
+func revert(providers domain.ProvidersFactory, params map[string]string) error {
+	rolesanywhereClient := rolesanywhere.NewFromConfig(providers.GetAWSProvider().GetConnection())
 
 	errTrustAnchor := removeTrustAnchor(rolesanywhereClient)
 	errProfile := removeProfile(rolesanywhereClient)

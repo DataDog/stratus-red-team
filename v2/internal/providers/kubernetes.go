@@ -26,14 +26,9 @@ type K8sProvider struct {
 }
 
 var (
-	k8sProvider               = K8sProvider{UniqueCorrelationId: UniqueExecutionId}
 	kubeConfigPath            string
 	kubeConfigPathWasResolved bool
 )
-
-func K8s() *K8sProvider {
-	return &k8sProvider
-}
 
 // GetKubeConfigPath returns the path of the kubeconfig, with the following priority:
 // 1. KUBECONFIG environment variable
@@ -76,7 +71,7 @@ func (m *K8sProvider) GetClient() *kubernetes.Clientset {
 		log.Fatalf("unable to build kube config: %v", err)
 	}
 	m.RestConfig = config
-	m.RestConfig.UserAgent = GetStratusUserAgent()
+	m.RestConfig.UserAgent = GetStratusUserAgent(m.UniqueCorrelationId.String())
 	m.k8sClient, err = kubernetes.NewForConfig(m.RestConfig)
 	if err != nil {
 		log.Fatalf("unable to create kube client: %v", err)

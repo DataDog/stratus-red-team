@@ -3,7 +3,7 @@ package state
 import (
 	"encoding/json"
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
-	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"log"
 	"os"
 	"path/filepath"
@@ -16,7 +16,7 @@ const StratusStateTerraformFileName = "main.tf"
 
 type FileSystemStateManager struct {
 	RootDirectory string
-	Technique     *stratus.AttackTechnique
+	Technique     *domain.AttackTechnique
 	FileSystem    FileSystem
 }
 
@@ -57,11 +57,11 @@ type StateManager interface {
 	CleanupTechnique() error
 	GetTerraformOutputs() (map[string]string, error)
 	WriteTerraformOutputs(outputs map[string]string) error
-	GetTechniqueState() stratus.AttackTechniqueState
-	SetTechniqueState(state stratus.AttackTechniqueState) error
+	GetTechniqueState() domain.AttackTechniqueState
+	SetTechniqueState(state domain.AttackTechniqueState) error
 }
 
-func NewFileSystemStateManager(technique *stratus.AttackTechnique) *FileSystemStateManager {
+func NewFileSystemStateManager(technique *domain.AttackTechnique) *FileSystemStateManager {
 	homeDirectory, _ := os.UserHomeDir()
 	stateManager := FileSystemStateManager{
 		RootDirectory: filepath.Join(homeDirectory, StratusStateDirectoryName),
@@ -127,12 +127,12 @@ func (m *FileSystemStateManager) WriteTerraformOutputs(outputs map[string]string
 	return m.FileSystem.WriteFile(m.getOutputsStateFile(), outputString, 0744)
 }
 
-func (m *FileSystemStateManager) GetTechniqueState() stratus.AttackTechniqueState {
+func (m *FileSystemStateManager) GetTechniqueState() domain.AttackTechniqueState {
 	rawState, _ := m.FileSystem.ReadFile(m.getTechniqueStateFile())
-	return stratus.AttackTechniqueState(rawState)
+	return domain.AttackTechniqueState(rawState)
 }
 
-func (m *FileSystemStateManager) SetTechniqueState(state stratus.AttackTechniqueState) error {
+func (m *FileSystemStateManager) SetTechniqueState(state domain.AttackTechniqueState) error {
 	return m.FileSystem.WriteFile(m.getTechniqueStateFile(), []byte(state), 0744)
 }
 

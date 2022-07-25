@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/datadog/stratus-red-team/v2/internal/state"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/fatih/color"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/spf13/cobra"
@@ -31,28 +32,28 @@ func buildStatusCmd() *cobra.Command {
 	return statusCmd
 }
 
-func doStatusCmd(techniques []*stratus.AttackTechnique) {
+func doStatusCmd(techniques []*domain.AttackTechnique) {
 	t := GetDisplayTable()
 	t.AppendHeader(table.Row{"ID", "Name", "Status"})
 	for i := range techniques {
 		stateManager := state.NewFileSystemStateManager(techniques[i])
 		techniqueState := stateManager.GetTechniqueState()
 		if techniqueState == "" {
-			techniqueState = stratus.AttackTechniqueStatusCold
+			techniqueState = domain.AttackTechniqueStatusCold
 		}
 		t.AppendRow(table.Row{techniques[i].ID, techniques[i].FriendlyName, colorState(techniqueState)})
 	}
 	t.Render()
 }
 
-func colorState(state stratus.AttackTechniqueState) string {
+func colorState(state domain.AttackTechniqueState) string {
 	stateString := string(state)
 	switch state {
-	case stratus.AttackTechniqueStatusCold:
+	case domain.AttackTechniqueStatusCold:
 		return color.CyanString(stateString)
-	case stratus.AttackTechniqueStatusWarm:
+	case domain.AttackTechniqueStatusWarm:
 		return color.YellowString(stateString)
-	case stratus.AttackTechniqueStatusDetonated:
+	case domain.AttackTechniqueStatusDetonated:
 		return color.MagentaString(stateString)
 	default:
 		return stateString

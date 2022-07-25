@@ -6,6 +6,7 @@ import (
 	"errors"
 	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"io"
 	"log"
@@ -21,7 +22,7 @@ var tf []byte
 func init() {
 	const codeBlock = "```"
 
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&domain.AttackTechnique{
 		ID:           "aws.initial-access.console-login-without-mfa",
 		FriendlyName: "Console Login without MFA",
 		Description: `
@@ -76,7 +77,7 @@ Sample CloudTrail event (redacted for clarity):
 }
 ` + codeBlock + `
 `,
-		Platform:                   stratus.AWS,
+		Platform:                   domain.AWS,
 		IsIdempotent:               true,
 		PrerequisitesTerraformCode: tf,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.InitialAccess},
@@ -84,13 +85,13 @@ Sample CloudTrail event (redacted for clarity):
 	})
 }
 
-func detonate(params map[string]string) error {
+func detonate(providers domain.ProvidersFactory, params map[string]string) error {
 	// The code to generate a 'ConsoleLogin' event programmatically was inspired from
 	// https://naikordian.github.io/blog/posts/brute-force-aws-console/
 	// courtesy of Naikordian (naikordian@protonmail.com)
 
 	// Build the HTTP request
-	request := buildHttpRequest(params)
+	request := buildHttpRequest(params, providers.GetAWSProvider().UniqueCorrelationId.String())
 	log.Println("Performing a console login for user " + params["username"] + " in account " + params["account_id"])
 
 	// Perform the HTTP request
@@ -116,7 +117,7 @@ func detonate(params map[string]string) error {
 }
 
 // buildHttpRequest builds the HTTP request to send to the AWS console sign-in endpoint
-func buildHttpRequest(params map[string]string) *http.Request {
+func buildHttpRequest(params map[string]string, uniqueId string) *http.Request {
 	// https://naikordian.github.io/blog/posts/brute-force-aws-console/
 	postData := url.Values{
 		"action":       {"iam-user-authentication"},
@@ -134,7 +135,7 @@ func buildHttpRequest(params map[string]string) *http.Request {
 	// http.DefaultTransport = &http.Transport{Proxy: http.ProxyURL(proxyUrl), TLSClientConfig: &tls.Config{InsecureSkipVerify: true}}
 	req.Header.Add("Referer", "https://signin.aws.amazon.com")
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	req.Header.Set("User-Agent", providers.GetStratusUserAgent())
+	req.Header.Set("User-Agent", providers.GetStratusUserAgent(uniqueId))
 
 	return req
 }

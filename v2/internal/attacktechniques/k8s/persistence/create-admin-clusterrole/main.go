@@ -7,6 +7,7 @@ import (
 	"github.com/aws/smithy-go/ptr"
 	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	corev1 "k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
@@ -17,10 +18,10 @@ import (
 )
 
 func init() {
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&domain.AttackTechnique{
 		ID:                 "k8s.persistence.create-admin-clusterrole",
 		FriendlyName:       "Create Admin ClusterRole",
-		Platform:           stratus.Kubernetes,
+		Platform:           domain.Kubernetes,
 		IsIdempotent:       false,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Persistence, mitreattack.PrivilegeEscalation},
 		Description: `
@@ -61,8 +62,8 @@ var clusterRoleBinding = &rbacv1.ClusterRoleBinding{
 	RoleRef:    rbacv1.RoleRef{Kind: "ClusterRole", Name: clusterRole.Name},
 }
 
-func detonate(map[string]string) error {
-	client := providers.K8s().GetClient()
+func detonate(providers domain.ProvidersFactory, params map[string]string) error {
+	client := providers.GetK8sProvider().GetClient()
 	ctx := context.Background()
 
 	log.Println("Creating Cluster Role " + clusterRole.ObjectMeta.Name)
@@ -89,7 +90,7 @@ func detonate(map[string]string) error {
 	// see https://kubernetes.io/docs/reference/access-authn-authz/service-accounts-admin/#token-controller
 	var secretName string
 	err = wait.PollImmediate(1*time.Second, 1*time.Minute, func() (done bool, err error) {
-		name, err := getServiceAccountSecretName()
+		name, err := getServiceAccountSecretName(providers.GetK8sProvider())
 		secretName = name
 		return name != "", err
 	})
@@ -109,9 +110,8 @@ func detonate(map[string]string) error {
 }
 
 // Returns the name of the K8s secret containing the long-lived service account token
-func getServiceAccountSecretName() (string, error) {
-	client := providers.K8s().GetClient()
-	serviceAccount, err := client.CoreV1().ServiceAccounts(namespace).Get(context.Background(), serviceAccount.Name, metav1.GetOptions{})
+func getServiceAccountSecretName(k8s *providers.K8sProvider) (string, error) {
+	serviceAccount, err := k8s.GetClient().CoreV1().ServiceAccounts(namespace).Get(context.Background(), serviceAccount.Name, metav1.GetOptions{})
 	if err != nil {
 		return "", err
 	}
@@ -121,8 +121,8 @@ func getServiceAccountSecretName() (string, error) {
 	return "", nil
 }
 
-func revert(map[string]string) error {
-	client := providers.K8s().GetClient()
+func revert(providers domain.ProvidersFactory, params map[string]string) error {
+	client := providers.GetK8sProvider().GetClient()
 	roleName := clusterRole.Name
 	deleteOpts := metav1.DeleteOptions{GracePeriodSeconds: ptr.Int64(0)}
 

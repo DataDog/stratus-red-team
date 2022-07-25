@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	_ "github.com/datadog/stratus-red-team/v2/pkg/stratus/loader" // Note: This import is needed
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	stratusrunner "github.com/datadog/stratus-red-team/v2/pkg/stratus/runner"
@@ -20,18 +21,18 @@ import (
 //go:embed prerequisites.tf
 var myPrerequisitesTerraformCode []byte
 
-func buildCustomAttackTechnique() *stratus.AttackTechnique {
-	return &stratus.AttackTechnique{
+func buildCustomAttackTechnique() *domain.AttackTechnique {
+	return &domain.AttackTechnique{
 		ID:                         "my-sample-attack-technique",
 		Description:                "A sample AWS attack technique that creates an IAM user as a prerequisite, and prints its ARN as a detonation",
-		Platform:                   stratus.AWS,
+		Platform:                   domain.AWS,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Execution},
 		PrerequisitesTerraformCode: myPrerequisitesTerraformCode,
 		Detonate:                   detonate,
 	}
 }
 
-func detonate(params map[string]string) error {
+func detonate(providers domain.ProvidersFactory, params map[string]string) error {
 	iamUserName := params["iam_user_name"]
 	iamClient := iam.NewFromConfig(stratus.AWSProvider().GetConnection())
 

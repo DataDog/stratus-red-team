@@ -3,7 +3,6 @@ package runner
 import (
 	"context"
 	"errors"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
 	"github.com/hashicorp/go-version"
 	"github.com/hashicorp/hc-install/product"
@@ -26,9 +25,10 @@ type TerraformManager interface {
 type TerraformManagerImpl struct {
 	terraformBinaryPath string
 	terraformVersion    string
+	userAgent           string
 }
 
-func NewTerraformManager(terraformBinaryPath string) TerraformManager {
+func NewTerraformManager(terraformBinaryPath string, userAgent string) TerraformManager {
 	manager := TerraformManagerImpl{
 		terraformVersion:    TerraformVersion,
 		terraformBinaryPath: terraformBinaryPath,
@@ -60,7 +60,7 @@ func (m *TerraformManagerImpl) TerraformInitAndApply(directory string) (map[stri
 		return map[string]string{}, errors.New("unable to instantiate Terraform: " + err.Error())
 	}
 
-	err = terraform.SetAppendUserAgent(providers.GetStratusUserAgent())
+	err = terraform.SetAppendUserAgent(m.userAgent)
 	if err != nil {
 		return map[string]string{}, errors.New("unable to configure Terraform: " + err.Error())
 	}

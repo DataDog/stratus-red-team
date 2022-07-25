@@ -7,8 +7,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/aws/aws-sdk-go-v2/service/lambda"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"io/ioutil"
 	"log"
@@ -19,7 +19,7 @@ import (
 var tf []byte
 
 func init() {
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&domain.AttackTechnique{
 		ID:           "aws.persistence.lambda-overwrite-code",
 		FriendlyName: "Overwrite Lambda Function Code",
 		Description: `
@@ -41,7 +41,7 @@ References:
 		Detection: `
 Through CloudTrail's <code>UpdateFunctionCode*</code> event, e.g. <code>UpdateFunctionCode20150331v2</code>.
 `,
-		Platform:                   stratus.AWS,
+		Platform:                   domain.AWS,
 		IsIdempotent:               true,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence},
 		PrerequisitesTerraformCode: tf,
@@ -50,9 +50,9 @@ Through CloudTrail's <code>UpdateFunctionCode*</code> event, e.g. <code>UpdateFu
 	})
 }
 
-func detonate(params map[string]string) error {
+func detonate(providers domain.ProvidersFactory, params map[string]string) error {
 	functionName := params["lambda_function_name"]
-	lambdaClient := lambda.NewFromConfig(providers.AWS().GetConnection())
+	lambdaClient := lambda.NewFromConfig(providers.GetAWSProvider().GetConnection())
 	zip := "UEsDBAoDAAAAABGy0lRE4o1NOwAAADsAAAAJAAAAbGFtYmRhLnB5ZGVmIGxhbWJkYV9oYW5kbGVyKGUsIGMpOgogICAgcHJpbnQoIlN0cmF0dXMgc2F5cyBoZWxsbyEiKQpQSwECPwMKAwAAAAARstJUROKNTTsAAAA7AAAACQAkAAAAAAAAACCApIEAAAAAbGFtYmRhLnB5CgAgAAAAAAABABgAAL0yTlCD2AEA6mNPUIPYAQC9Mk5Qg9gBUEsFBgAAAAABAAEAWwAAAGIAAAAAAA=="
 
 	log.Println("Updating the code of Lambda function " + functionName)
@@ -76,11 +76,11 @@ func detonate(params map[string]string) error {
 }
 
 // revert to original unmodified lambda
-func revert(params map[string]string) error {
+func revert(providers domain.ProvidersFactory, params map[string]string) error {
 	functionName := params["lambda_function_name"]
 	bucketName := params["bucket_name"]
 	bucketKey := params["bucket_object_key"]
-	lambdaClient := lambda.NewFromConfig(providers.AWS().GetConnection())
+	lambdaClient := lambda.NewFromConfig(providers.GetAWSProvider().GetConnection())
 
 	log.Println("Reverting the code of the Lambda function " + functionName)
 

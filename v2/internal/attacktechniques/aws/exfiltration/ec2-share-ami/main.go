@@ -7,9 +7,9 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
 )
@@ -18,7 +18,7 @@ import (
 var tf []byte
 
 func init() {
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&domain.AttackTechnique{
 		ID:           "aws.exfiltration.ec2-share-ami",
 		FriendlyName: "Exfiltrate an AMI by Sharing It",
 		Description: `
@@ -49,7 +49,7 @@ that the AMI was shared with a new or unknown AWS account, such as:
 An attacker can also make an AMI completely public. In this case, the <code>item</code> entry 
 will look like <code>{"groups":"all"}</code>. 
 `,
-		Platform:                   stratus.AWS,
+		Platform:                   domain.AWS,
 		IsIdempotent:               true,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Exfiltration},
 		PrerequisitesTerraformCode: tf,
@@ -62,8 +62,8 @@ var amiPermissions = []types.LaunchPermission{
 	{UserId: aws.String("012345678901")},
 }
 
-func detonate(params map[string]string) error {
-	ec2Client := ec2.NewFromConfig(providers.AWS().GetConnection())
+func detonate(providers domain.ProvidersFactory, params map[string]string) error {
+	ec2Client := ec2.NewFromConfig(providers.GetAWSProvider().GetConnection())
 	amiId := params["ami_id"]
 
 	log.Println("Exfiltrating AMI " + amiId + " by sharing it with an external AWS account")
@@ -88,8 +88,8 @@ func detonate(params map[string]string) error {
 	return nil
 }
 
-func revert(params map[string]string) error {
-	ec2Client := ec2.NewFromConfig(providers.AWS().GetConnection())
+func revert(providers domain.ProvidersFactory, params map[string]string) error {
+	ec2Client := ec2.NewFromConfig(providers.GetAWSProvider().GetConnection())
 	amiId := params["ami_id"]
 
 	log.Println("Reverting exfiltration of AMI " + amiId + " by removing cross-account sharing")

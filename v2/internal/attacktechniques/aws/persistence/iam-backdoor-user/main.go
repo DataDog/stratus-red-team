@@ -4,8 +4,8 @@ import (
 	"context"
 	_ "embed"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
 )
@@ -14,7 +14,7 @@ import (
 var tf []byte
 
 func init() {
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&domain.AttackTechnique{
 		ID:           "aws.persistence.iam-backdoor-user",
 		FriendlyName: "Create an Access Key on an IAM User",
 		Description: `
@@ -32,7 +32,7 @@ Detonation:
 Through CloudTrail's <code>CreateAccessKey</code> event. This event can hardly be considered suspicious by itself, unless
 correlated with other indicators.
 '`,
-		Platform:                   stratus.AWS,
+		Platform:                   domain.AWS,
 		IsIdempotent:               false, // iam:CreateAccessKey can only be called twice (limit of 2 access keys per user)
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence, mitreattack.PrivilegeEscalation},
 		PrerequisitesTerraformCode: tf,
@@ -41,8 +41,8 @@ correlated with other indicators.
 	})
 }
 
-func detonate(params map[string]string) error {
-	iamClient := iam.NewFromConfig(providers.AWS().GetConnection())
+func detonate(providers domain.ProvidersFactory, params map[string]string) error {
+	iamClient := iam.NewFromConfig(providers.GetAWSProvider().GetConnection())
 	userName := params["user_name"]
 
 	log.Println("Creating access key on legit IAM user to simulate backdoor")
@@ -57,8 +57,8 @@ func detonate(params map[string]string) error {
 	return nil
 }
 
-func revert(params map[string]string) error {
-	iamClient := iam.NewFromConfig(providers.AWS().GetConnection())
+func revert(providers domain.ProvidersFactory, params map[string]string) error {
+	iamClient := iam.NewFromConfig(providers.GetAWSProvider().GetConnection())
 	userName := params["user_name"]
 
 	log.Println("Removing access key from IAM user " + userName)

@@ -2,8 +2,7 @@ package main
 
 import (
 	"errors"
-	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
-	"github.com/datadog/stratus-red-team/v2/pkg/stratus/runner"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"log"
 	"os"
 
@@ -44,10 +43,10 @@ func buildRevertCmd() *cobra.Command {
 	return detonateCmd
 }
 
-func doRevertCmd(techniques []*stratus.AttackTechnique) {
+func doRevertCmd(techniques []*domain.AttackTechnique) {
 	VerifyPlatformRequirements(techniques)
 	workerCount := len(techniques)
-	techniquesChan := make(chan *stratus.AttackTechnique, workerCount)
+	techniquesChan := make(chan *domain.AttackTechnique, workerCount)
 	errorsChan := make(chan error, workerCount)
 
 	// Create workers
@@ -68,14 +67,14 @@ func doRevertCmd(techniques []*stratus.AttackTechnique) {
 	}
 }
 
-func revertCmdWorker(techniques <-chan *stratus.AttackTechnique, errors chan<- error) {
+func revertCmdWorker(techniques <-chan *domain.AttackTechnique, errors chan<- error) {
 	for technique := range techniques {
 		if technique.Revert == nil {
 			log.Println("Warning: " + technique.ID + " has no revert function and cannot be reverted.")
 			errors <- nil
 			continue
 		}
-		stratusRunner := runner.NewRunner(technique, revertForce)
+		stratusRunner := stratusRedTeam.NewRunner(technique, revertForce)
 		err := stratusRunner.Revert()
 		errors <- err
 	}

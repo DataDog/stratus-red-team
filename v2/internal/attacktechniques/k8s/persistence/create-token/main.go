@@ -5,8 +5,8 @@ import (
 	_ "embed"
 	"errors"
 	"github.com/aws/smithy-go/ptr"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	authenticationv1 "k8s.io/api/authentication/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -17,10 +17,10 @@ import (
 func init() {
 	const codeBlock = "```"
 
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&domain.AttackTechnique{
 		ID:                 "k8s.persistence.create-token",
 		FriendlyName:       "Create Long-Lived Token",
-		Platform:           stratus.Kubernetes,
+		Platform:           domain.Kubernetes,
 		IsIdempotent:       true,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Persistence},
 		Description: `
@@ -81,8 +81,8 @@ var params = authenticationv1.TokenRequest{
 	},
 }
 
-func detonate(map[string]string) error {
-	client := providers.K8s().GetClient()
+func detonate(providers domain.ProvidersFactory, _ map[string]string) error {
+	client := providers.GetK8sProvider().GetClient()
 	ctx := context.Background()
 
 	log.Println("Creating a long-lived token for the service account " + serviceAccountName + " in " + namespace)

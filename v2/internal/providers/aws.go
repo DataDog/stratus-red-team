@@ -12,29 +12,21 @@ import (
 	"log"
 )
 
-var awsProvider = AWSProvider{
-	UniqueCorrelationId: UniqueExecutionId,
-}
-
-func AWS() *AWSProvider {
-	return &awsProvider
-}
-
 type AWSProvider struct {
-	awsConfig           *aws.Config
+	AwsConfig           *aws.Config
 	UniqueCorrelationId uuid.UUID // unique value injected in the user-agent, to differentiate Stratus Red Team executions
 }
 
 func (m *AWSProvider) GetConnection() aws.Config {
-	if m.awsConfig == nil {
+	if m.AwsConfig == nil {
 		cfg, err := config.LoadDefaultConfig(context.Background(), customUserAgentApiOptions(m.UniqueCorrelationId))
 		if err != nil {
 			log.Fatalf("unable to load AWS configuration, %v", err)
 		}
-		m.awsConfig = &cfg
+		m.AwsConfig = &cfg
 	}
 
-	return *m.awsConfig
+	return *m.AwsConfig
 }
 
 func (m *AWSProvider) IsAuthenticatedAgainstAWS() bool {
@@ -68,7 +60,7 @@ func customUserAgentMiddleware(uniqueId uuid.UUID) middleware.BuildMiddleware {
 		if !ok {
 			return out, metadata, fmt.Errorf("unknown transport type %T", input.Request)
 		}
-		request.Header.Set("User-Agent", GetStratusUserAgent())
+		request.Header.Set("User-Agent", GetStratusUserAgent(uniqueId.String()))
 
 		return next.HandleBuild(ctx, input)
 	})

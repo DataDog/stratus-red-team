@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	_ "github.com/datadog/stratus-red-team/v2/pkg/stratus/loader"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
@@ -37,7 +38,7 @@ func main() {
 	}
 
 	// Platform => [MITRE ATT&CK tactic => list of stratus techniques]
-	index := map[stratus.Platform]map[string][]*stratus.AttackTechnique{}
+	index := map[domain.Platform]map[string][]*domain.AttackTechnique{}
 
 	// Pass 1: write techniques docs
 	for i := range techniques {
@@ -45,10 +46,10 @@ func main() {
 		for j := range technique.MitreAttackTactics {
 			tactic := mitreattack.AttackTacticToString(technique.MitreAttackTactics[j])
 			if index[technique.Platform] == nil {
-				index[technique.Platform] = make(map[string][]*stratus.AttackTechnique)
+				index[technique.Platform] = make(map[string][]*domain.AttackTechnique)
 			}
 			if index[technique.Platform][tactic] == nil {
-				index[technique.Platform][tactic] = make([]*stratus.AttackTechnique, 0)
+				index[technique.Platform][tactic] = make([]*domain.AttackTechnique, 0)
 			}
 			index[technique.Platform][tactic] = append(index[technique.Platform][tactic], technique)
 		}
@@ -78,8 +79,8 @@ func main() {
 		result := ""
 		buf := bytes.NewBufferString(result)
 		vars := struct {
-			TacticsMap map[string][]*stratus.AttackTechnique
-			Platform   stratus.Platform
+			TacticsMap map[string][]*domain.AttackTechnique
+			Platform   domain.Platform
 		}{
 			tacticsMap, platform,
 		}
@@ -109,18 +110,18 @@ func main() {
 	}
 }
 
-func formatTechniqueDescription(technique *stratus.AttackTechnique) {
+func formatTechniqueDescription(technique *domain.AttackTechnique) {
 	technique.Description = strings.ReplaceAll(technique.Description, "Warm-up:", "<span style=\"font-variant: small-caps;\">Warm-up</span>:")
 	technique.Description = strings.ReplaceAll(technique.Description, "Detonation:", "<span style=\"font-variant: small-caps;\">Detonation</span>:")
 }
 
-func FormatPlatformName(platform stratus.Platform) string {
+func FormatPlatformName(platform domain.Platform) string {
 	switch platform {
-	case stratus.AWS:
+	case domain.AWS:
 		return "AWS"
-	case stratus.Azure:
+	case domain.Azure:
 		return "Azure"
-	case stratus.Kubernetes:
+	case domain.Kubernetes:
 		return "Kubernetes"
 	}
 	log.Fatal("unknown platform " + platform)

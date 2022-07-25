@@ -6,8 +6,8 @@ import (
 	"errors"
 	"github.com/aws/aws-sdk-go-v2/service/secretsmanager"
 	"github.com/aws/aws-sdk-go-v2/service/secretsmanager/types"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
 )
@@ -16,7 +16,7 @@ import (
 var tf []byte
 
 func init() {
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&domain.AttackTechnique{
 		ID:           "aws.credential-access.secretsmanager-retrieve-secrets",
 		FriendlyName: "Retrieve a High Number of Secrets Manager secrets",
 		Description: `
@@ -38,7 +38,7 @@ The following may be use to tune the detection, or validate findings:
 
 - Principals who do not usually call secretsmanager:GetSecretValue
 - Attempts to call GetSecretValue resulting in access denied errors`,
-		Platform:                   stratus.AWS,
+		Platform:                   domain.AWS,
 		IsIdempotent:               true,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.CredentialAccess},
 		PrerequisitesTerraformCode: tf,
@@ -46,8 +46,8 @@ The following may be use to tune the detection, or validate findings:
 	})
 }
 
-func detonate(map[string]string) error {
-	secretsManagerClient := secretsmanager.NewFromConfig(providers.AWS().GetConnection())
+func detonate(providers domain.ProvidersFactory, params map[string]string) error {
+	secretsManagerClient := secretsmanager.NewFromConfig(providers.GetAWSProvider().GetConnection())
 
 	secretsResponse, err := secretsManagerClient.ListSecrets(context.Background(), &secretsmanager.ListSecretsInput{
 		Filters: []types.Filter{

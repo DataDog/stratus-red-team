@@ -2,6 +2,7 @@ package main
 
 import (
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/stratusredteam"
 	"github.com/spf13/cobra"
 	"log"
 	"os"
@@ -10,6 +11,8 @@ import (
 var rootCmd = &cobra.Command{
 	Use: "stratus",
 }
+
+var stratusRedTeam = stratusredteam.NewStratusRedTeam()
 
 func init() {
 	setupLogging()

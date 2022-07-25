@@ -5,8 +5,8 @@ import (
 	_ "embed"
 	"errors"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
 )
@@ -15,10 +15,10 @@ import (
 var tf []byte
 
 func init() {
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&domain.AttackTechnique{
 		ID:                 "aws.defense-evasion.vpc-remove-flow-logs",
 		FriendlyName:       "Remove VPC Flow Logs",
-		Platform:           stratus.AWS,
+		Platform:           domain.AWS,
 		IsIdempotent:       false, // can't remove VPC flow logs once they have already been removed
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.DefenseEvasion},
 		Description: `
@@ -43,8 +43,8 @@ only when <code>DeleteFlowLogs</code> is not closely followed by <code>DeleteVpc
 	})
 }
 
-func detonate(params map[string]string) error {
-	ec2Client := ec2.NewFromConfig(providers.AWS().GetConnection())
+func detonate(providers domain.ProvidersFactory, params map[string]string) error {
+	ec2Client := ec2.NewFromConfig(providers.GetAWSProvider().GetConnection())
 
 	vpcId := params["vpc_id"]
 	flowLogsId := params["flow_logs_id"]

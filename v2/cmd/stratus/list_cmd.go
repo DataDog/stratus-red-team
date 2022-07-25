@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"github.com/fatih/color"
 	"github.com/jedib0t/go-pretty/v6/table"
@@ -34,7 +35,7 @@ func buildListCmd() *cobra.Command {
 func doListCmd(mitreAttackTactic string, platform string) {
 	filter := stratus.AttackTechniqueFilter{}
 	if platform != "" {
-		platform, err := stratus.PlatformFromString(platform)
+		platform, err := domain.PlatformFromString(platform)
 		if err != nil {
 			log.Fatal(err)
 		}

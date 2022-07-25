@@ -1,4 +1,4 @@
-package stratus
+package domain
 
 import (
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
@@ -32,13 +32,13 @@ type AttackTechnique struct {
 
 	// Detonation function
 	// Parameters are the Terraform outputs
-	Detonate func(params map[string]string) error
+	Detonate func(providers ProvidersFactory, params map[string]string) error
 
 	// Indicates if the detonation function is idempotent, i.e. if it can be run multiple times without reverting it
 	IsIdempotent bool
 
 	// Reversion function, to revert the side effects of a detonation
-	Revert func(params map[string]string) error
+	Revert func(providers ProvidersFactory, params map[string]string) error
 }
 
 func (m AttackTechnique) String() string {

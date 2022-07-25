@@ -5,9 +5,9 @@ import (
 	_ "embed"
 	"errors"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
 )
@@ -16,7 +16,7 @@ import (
 var tf []byte
 
 func init() {
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&domain.AttackTechnique{
 		ID:           "aws.persistence.iam-create-user-login-profile",
 		FriendlyName: "Create a Login Profile on an IAM User",
 		Description: `
@@ -36,7 +36,7 @@ Through CloudTrail's <code>CreateLoginProfile</code> or <code>UpdateLoginProfile
 
 In particular, it's suspicious when these events occur on IAM users intended to be used programmatically.
 `,
-		Platform:                   stratus.AWS,
+		Platform:                   domain.AWS,
 		IsIdempotent:               false, // cannot create a login profile twice on the same user
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence, mitreattack.PrivilegeEscalation},
 		PrerequisitesTerraformCode: tf,
@@ -45,8 +45,8 @@ In particular, it's suspicious when these events occur on IAM users intended to 
 	})
 }
 
-func detonate(params map[string]string) error {
-	iamClient := iam.NewFromConfig(providers.AWS().GetConnection())
+func detonate(providers domain.ProvidersFactory, params map[string]string) error {
+	iamClient := iam.NewFromConfig(providers.GetAWSProvider().GetConnection())
 	userName := params["user_name"]
 	password := utils.RandomString(16) + ".#1Aa" // extra characters to ensure we meet password requirements, no matter the password policy
 
@@ -60,7 +60,7 @@ func detonate(params map[string]string) error {
 		return errors.New("unable to create IAM login profile: " + err.Error())
 	}
 
-	accountId, _ := utils.GetCurrentAccountId(providers.AWS().GetConnection())
+	accountId, _ := utils.GetCurrentAccountId(providers.GetAWSProvider().GetConnection())
 	log.Println("Created a login profile with password " + password)
 	loginUrl := "https://" + accountId + ".signin.aws.amazon.com/console"
 	log.Println("You can log in at: " + loginUrl)
@@ -68,8 +68,8 @@ func detonate(params map[string]string) error {
 	return nil
 }
 
-func revert(params map[string]string) error {
-	iamClient := iam.NewFromConfig(providers.AWS().GetConnection())
+func revert(providers domain.ProvidersFactory, params map[string]string) error {
+	iamClient := iam.NewFromConfig(providers.GetAWSProvider().GetConnection())
 	userName := params["user_name"]
 
 	log.Println("Removing the login profile on IAM user " + userName)

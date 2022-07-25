@@ -10,9 +10,9 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/ssm"
 	"github.com/aws/aws-sdk-go-v2/service/ssm/types"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
 	"time"
@@ -22,7 +22,7 @@ import (
 var tf []byte
 
 func init() {
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&domain.AttackTechnique{
 		ID:           "aws.credential-access.ec2-steal-instance-credentials",
 		FriendlyName: "Steal EC2 Instance Credentials",
 		IsSlow:       true,
@@ -49,7 +49,7 @@ GuardDuty provides two findings to identify stolen EC2 instance credentials.
 
 See also: [Known detection bypasses](https://hackingthe.cloud/aws/avoiding-detection/steal-keys-undetected/).
 `,
-		Platform:                   stratus.AWS,
+		Platform:                   domain.AWS,
 		IsIdempotent:               true,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.CredentialAccess},
 		PrerequisitesTerraformCode: tf,
@@ -57,8 +57,8 @@ See also: [Known detection bypasses](https://hackingthe.cloud/aws/avoiding-detec
 	})
 }
 
-func detonate(params map[string]string) error {
-	ssmClient := ssm.NewFromConfig(providers.AWS().GetConnection())
+func detonate(providers domain.ProvidersFactory, params map[string]string) error {
+	ssmClient := ssm.NewFromConfig(providers.GetAWSProvider().GetConnection())
 	instanceId := params["instance_id"]
 	instanceRoleName := params["instance_role_name"]
 

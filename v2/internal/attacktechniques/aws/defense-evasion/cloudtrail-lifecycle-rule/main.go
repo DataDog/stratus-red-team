@@ -7,8 +7,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
 )
@@ -17,10 +17,10 @@ import (
 var tf []byte
 
 func init() {
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&domain.AttackTechnique{
 		ID:                 "aws.defense-evasion.cloudtrail-lifecycle-rule",
 		FriendlyName:       "CloudTrail Logs Impairment Through S3 Lifecycle Rule",
-		Platform:           stratus.AWS,
+		Platform:           domain.AWS,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.DefenseEvasion},
 		Description: `
 Set a 1-day retention policy on the S3 bucket used by a CloudTrail Trail, using a S3 Lifecycle Rule.
@@ -48,8 +48,8 @@ The CloudTrail event <code>PutBucketLifecycle</code> and its attribute
 	})
 }
 
-func detonate(params map[string]string) error {
-	s3Client := s3.NewFromConfig(providers.AWS().GetConnection())
+func detonate(providers domain.ProvidersFactory, params map[string]string) error {
+	s3Client := s3.NewFromConfig(providers.GetAWSProvider().GetConnection())
 	bucketName := params["s3_bucket_name"]
 
 	log.Println("Setting a short retention policy on CloudTrail S3 bucket " + bucketName)
@@ -75,8 +75,8 @@ func detonate(params map[string]string) error {
 	return nil
 }
 
-func revert(params map[string]string) error {
-	s3Client := s3.NewFromConfig(providers.AWS().GetConnection())
+func revert(providers domain.ProvidersFactory, params map[string]string) error {
+	s3Client := s3.NewFromConfig(providers.GetAWSProvider().GetConnection())
 	bucketName := params["s3_bucket_name"]
 
 	log.Println("Reverting S3 Lifecycle Rules on CloudTrail S3 bucket " + bucketName)

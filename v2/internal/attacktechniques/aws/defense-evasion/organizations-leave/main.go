@@ -8,8 +8,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/credentials/stscreds"
 	"github.com/aws/aws-sdk-go-v2/service/organizations"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
 	"strings"
@@ -19,10 +19,10 @@ import (
 var tf []byte
 
 func init() {
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&domain.AttackTechnique{
 		ID:                 "aws.defense-evasion.organizations-leave",
 		FriendlyName:       "Attempt to Leave the AWS Organization",
-		Platform:           stratus.AWS,
+		Platform:           domain.AWS,
 		IsIdempotent:       true,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.DefenseEvasion},
 		Description: `
@@ -48,10 +48,10 @@ Use the CloudTrail event <code>LeaveOrganization</code>.`,
 	})
 }
 
-func detonate(params map[string]string) error {
+func detonate(providers domain.ProvidersFactory, params map[string]string) error {
 	roleArn := params["role_arn"]
 
-	awsConnection := providers.AWS().GetConnection()
+	awsConnection := providers.GetAWSProvider().GetConnection()
 	stsClient := sts.NewFromConfig(awsConnection)
 	awsConnection.Credentials = aws.NewCredentialsCache(stscreds.NewAssumeRoleProvider(stsClient, roleArn))
 	organizationsClient := organizations.NewFromConfig(awsConnection)

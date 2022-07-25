@@ -3,9 +3,9 @@ package aws
 import (
 	"context"
 	_ "embed"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
 
@@ -20,7 +20,7 @@ import (
 var tf []byte
 
 func init() {
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&domain.AttackTechnique{
 		ID:           "aws.discovery.ec2-download-user-data",
 		FriendlyName: "Download EC2 Instance User Data",
 		Description: `
@@ -48,7 +48,7 @@ Through CloudTrail's <code>DescribeInstanceAttribute</code> event.
 See:
 
 * [Associated Sigma rule](https://github.com/SigmaHQ/sigma/blob/master/rules/cloud/aws/aws_ec2_download_userdata.yml)`,
-		Platform:                   stratus.AWS,
+		Platform:                   domain.AWS,
 		IsIdempotent:               true,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Discovery},
 		PrerequisitesTerraformCode: tf,
@@ -58,9 +58,9 @@ See:
 
 const numCalls = 15
 
-func detonate(params map[string]string) error {
+func detonate(providers domain.ProvidersFactory, params map[string]string) error {
 
-	awsConnection := providers.AWS().GetConnection()
+	awsConnection := providers.GetAWSProvider().GetConnection()
 	stsClient := sts.NewFromConfig(awsConnection)
 	awsConnection.Credentials = aws.NewCredentialsCache(stscreds.NewAssumeRoleProvider(stsClient, params["role_arn"]))
 	ec2Client := ec2.NewFromConfig(awsConnection)

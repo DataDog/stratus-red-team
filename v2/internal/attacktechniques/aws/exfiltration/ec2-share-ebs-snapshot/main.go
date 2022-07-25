@@ -5,9 +5,9 @@ import (
 	_ "embed"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
 )
@@ -16,10 +16,10 @@ import (
 var tf []byte
 
 func init() {
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&domain.AttackTechnique{
 		ID:                 "aws.exfiltration.ec2-share-ebs-snapshot",
 		FriendlyName:       "Exfiltrate EBS Snapshot by Sharing It",
-		Platform:           stratus.AWS,
+		Platform:           domain.AWS,
 		IsIdempotent:       true,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Exfiltration},
 		Description: `
@@ -58,8 +58,8 @@ will look like <code>{"groups":"all"}</code>.
 
 var ShareWithAccountId = "012345678912"
 
-func detonate(params map[string]string) error {
-	ec2Client := ec2.NewFromConfig(providers.AWS().GetConnection())
+func detonate(providers domain.ProvidersFactory, params map[string]string) error {
+	ec2Client := ec2.NewFromConfig(providers.GetAWSProvider().GetConnection())
 
 	// Find the snapshot to exfiltrate
 	ourSnapshotId := params["snapshot_id"]
@@ -85,8 +85,8 @@ func detonate(params map[string]string) error {
 	return err
 }
 
-func revert(params map[string]string) error {
-	ec2Client := ec2.NewFromConfig(providers.AWS().GetConnection())
+func revert(providers domain.ProvidersFactory, params map[string]string) error {
+	ec2Client := ec2.NewFromConfig(providers.GetAWSProvider().GetConnection())
 	ourSnapshotId := params["snapshot_id"]
 
 	log.Println("Unsharing the volume snapshot " + ourSnapshotId)

@@ -7,8 +7,8 @@ import (
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/runtime"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/to"
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/compute/armcompute"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
 	"time"
@@ -19,7 +19,7 @@ var tf []byte
 
 func init() {
 	const codeBlock = "```"
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&domain.AttackTechnique{
 		ID:           "azure.execution.vm-run-command",
 		FriendlyName: "Execute Commands on Virtual Machine using Run Command",
 		Description: `
@@ -82,7 +82,7 @@ Sample event (redacted for clarity):
 }
 ` + codeBlock + `
 `,
-		Platform:                   stratus.Azure,
+		Platform:                   domain.Azure,
 		IsSlow:                     true,
 		IsIdempotent:               true,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Execution},
@@ -91,17 +91,17 @@ Sample event (redacted for clarity):
 	})
 }
 
-func detonate(params map[string]string) error {
+func detonate(providers domain.ProvidersFactory, params map[string]string) error {
 	vmObjectId := params["vm_instance_object_id"]
 	vmName := params["vm_name"]
 	resourceGroup := params["resource_group_name"]
 
-	cred := providers.Azure().GetCredentials()
-	subscriptionID := providers.Azure().SubscriptionID
-	clientOptions := providers.Azure().ClientOptions
+	azure := providers.GetAzureProvider()
+	subscriptionID := azure.SubscriptionID
+	clientOptions := azure.ClientOptions
 
 	log.Println("Issuing Run Command for VM instance " + vmObjectId)
-	vmClient, err := armcompute.NewVirtualMachinesClient(subscriptionID, cred, clientOptions)
+	vmClient, err := armcompute.NewVirtualMachinesClient(subscriptionID, azure.GetCredentials(), clientOptions)
 	runCommandInput := armcompute.RunCommandInput{
 		CommandID: to.Ptr("RunPowerShellScript"),
 		Script:    []*string{to.Ptr("Get-Service")},

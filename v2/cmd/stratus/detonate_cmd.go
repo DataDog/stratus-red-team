@@ -3,8 +3,7 @@ package main
 import (
 	"errors"
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
-	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
-	"github.com/datadog/stratus-red-team/v2/pkg/stratus/runner"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"os"
 	"strings"
 
@@ -51,10 +50,10 @@ func buildDetonateCmd() *cobra.Command {
 
 	return detonateCmd
 }
-func doDetonateCmd(techniques []*stratus.AttackTechnique, cleanup bool) {
+func doDetonateCmd(techniques []*domain.AttackTechnique, cleanup bool) {
 	VerifyPlatformRequirements(techniques)
 	workerCount := len(techniques)
-	techniquesChan := make(chan *stratus.AttackTechnique, workerCount)
+	techniquesChan := make(chan *domain.AttackTechnique, workerCount)
 	errorsChan := make(chan error, workerCount)
 
 	// Create workers
@@ -73,9 +72,9 @@ func doDetonateCmd(techniques []*stratus.AttackTechnique, cleanup bool) {
 	}
 }
 
-func detonateCmdWorker(techniques <-chan *stratus.AttackTechnique, errors chan<- error) {
+func detonateCmdWorker(techniques <-chan *domain.AttackTechnique, errors chan<- error) {
 	for technique := range techniques {
-		stratusRunner := runner.NewRunner(technique, detonateForce)
+		stratusRunner := stratusRedTeam.NewRunner(technique, detonateForce)
 		detonateErr := stratusRunner.Detonate()
 		if detonateCleanup {
 			cleanupErr := stratusRunner.CleanUp()

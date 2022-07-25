@@ -6,8 +6,8 @@ import (
 	"errors"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
 )
@@ -16,10 +16,10 @@ import (
 var tf []byte
 
 func init() {
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&domain.AttackTechnique{
 		ID:                 "aws.exfiltration.ec2-security-group-open-port-22-ingress",
 		FriendlyName:       "Open Ingress Port 22 on a Security Group",
-		Platform:           stratus.AWS,
+		Platform:           domain.AWS,
 		IsIdempotent:       false, // cannot call ec2:AuthorizeSecurityGroupIngress multiple times with the same parameters
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Exfiltration},
 		Description: `
@@ -45,8 +45,8 @@ You can use the CloudTrail event <code>AuthorizeSecurityGroupIngress</code> when
 	})
 }
 
-func detonate(params map[string]string) error {
-	ec2Client := ec2.NewFromConfig(providers.AWS().GetConnection())
+func detonate(providers domain.ProvidersFactory, params map[string]string) error {
+	ec2Client := ec2.NewFromConfig(providers.GetAWSProvider().GetConnection())
 
 	// Find the snapshot to exfiltrate
 	securityGroupId := params["security_group_id"]
@@ -69,8 +69,8 @@ func detonate(params map[string]string) error {
 	return nil
 }
 
-func revert(params map[string]string) error {
-	ec2Client := ec2.NewFromConfig(providers.AWS().GetConnection())
+func revert(providers domain.ProvidersFactory, params map[string]string) error {
+	ec2Client := ec2.NewFromConfig(providers.GetAWSProvider().GetConnection())
 
 	// Find the snapshot to exfiltrate
 	securityGroupId := params["security_group_id"]

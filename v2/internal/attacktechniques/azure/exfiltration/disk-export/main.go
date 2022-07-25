@@ -10,6 +10,7 @@ import (
 	"github.com/aws/smithy-go/ptr"
 	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
 	"time"
@@ -20,7 +21,7 @@ var tf []byte
 
 func init() {
 	const codeBlock = "```"
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&domain.AttackTechnique{
 		ID:           "azure.exfiltration.disk-export",
 		FriendlyName: "Export Disk Through SAS URL",
 		Description: `
@@ -62,7 +63,7 @@ Sample event (redacted for clarity):
 }
 ` + codeBlock + `
 `,
-		Platform:                   stratus.Azure,
+		Platform:                   domain.Azure,
 		IsIdempotent:               true,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Exfiltration},
 		PrerequisitesTerraformCode: tf,
@@ -71,9 +72,9 @@ Sample event (redacted for clarity):
 	})
 }
 
-func detonate(params map[string]string) error {
+func detonate(providers domain.ProvidersFactory, params map[string]string) error {
 	diskName := params["disk_name"]
-	disksClient, err := getAzureDisksClient()
+	disksClient, err := getAzureDisksClient(providers.GetAzureProvider())
 	if err != nil {
 		return errors.New("unable to instantiate Azure disks client: " + err.Error())
 	}
@@ -99,9 +100,9 @@ func detonate(params map[string]string) error {
 	return nil
 }
 
-func revert(params map[string]string) error {
+func revert(providers domain.ProvidersFactory, params map[string]string) error {
 	diskName := params["disk_name"]
-	disksClient, err := getAzureDisksClient()
+	disksClient, err := getAzureDisksClient(providers.GetAzureProvider())
 	if err != nil {
 		return errors.New("unable to instantiate Azure disks client: " + err.Error())
 	}
@@ -122,9 +123,8 @@ func revert(params map[string]string) error {
 	return nil
 }
 
-func getAzureDisksClient() (*armcompute.DisksClient, error) {
-	cred := providers.Azure().GetCredentials()
-	subscriptionID := providers.Azure().SubscriptionID
-	clientOptions := providers.Azure().ClientOptions
-	return armcompute.NewDisksClient(subscriptionID, cred, clientOptions)
+func getAzureDisksClient(azure *providers.AzureProvider) (*armcompute.DisksClient, error) {
+	subscriptionID := azure.SubscriptionID
+	clientOptions := azure.ClientOptions
+	return armcompute.NewDisksClient(subscriptionID, azure.GetCredentials(), clientOptions)
 }

@@ -1,4 +1,4 @@
-package stratus
+package domain
 
 type AttackTechniqueState string
 

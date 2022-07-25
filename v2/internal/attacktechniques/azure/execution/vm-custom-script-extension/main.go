@@ -5,8 +5,8 @@ import (
 	_ "embed"
 	"errors"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/runtime"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
 	"time"
@@ -20,7 +20,7 @@ var tf []byte
 
 func init() {
 	const codeBlock = "```"
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&domain.AttackTechnique{
 		ID:           "azure.execution.vm-custom-script-extension",
 		FriendlyName: "Execute Command on Virtual Machine using Custom Script Extension",
 		Description: `
@@ -62,7 +62,7 @@ Identify Azure events of type <code>Microsoft.Compute/virtualMachines/extensions
 }
 ` + codeBlock + `
 `,
-		Platform:                   stratus.Azure,
+		Platform:                   domain.Azure,
 		IsSlow:                     true,
 		IsIdempotent:               false,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Execution},
@@ -74,16 +74,16 @@ Identify Azure events of type <code>Microsoft.Compute/virtualMachines/extensions
 
 const ExtensionName = "CustomScriptExtension-StratusRedTeam-Example"
 
-func detonate(params map[string]string) error {
+func detonate(providers domain.ProvidersFactory, params map[string]string) error {
 	vmName := params["vm_name"]
 	resourceGroup := params["resource_group_name"]
 
 	ctx := context.Background()
-	cred := providers.Azure().GetCredentials()
-	subscriptionID := providers.Azure().SubscriptionID
-	clientOptions := providers.Azure().ClientOptions
+	azure := providers.GetAzureProvider()
+	subscriptionID := azure.SubscriptionID
+	clientOptions := azure.ClientOptions
 
-	client, err := armcompute.NewVirtualMachineExtensionsClient(subscriptionID, cred, clientOptions)
+	client, err := armcompute.NewVirtualMachineExtensionsClient(subscriptionID, azure.GetCredentials(), clientOptions)
 	if err != nil {
 		return errors.New("failed to create VM extensions client: " + err.Error())
 	}
@@ -131,16 +131,16 @@ func detonate(params map[string]string) error {
 	return nil
 }
 
-func revert(params map[string]string) error {
+func revert(providers domain.ProvidersFactory, params map[string]string) error {
 	vmName := params["vm_name"]
 	resourceGroup := params["resource_group_name"]
 
 	ctx := context.Background()
-	cred := providers.Azure().GetCredentials()
-	subscriptionID := providers.Azure().SubscriptionID
-	clientOptions := providers.Azure().ClientOptions
+	azure := providers.GetAzureProvider()
+	subscriptionID := azure.SubscriptionID
+	clientOptions := azure.ClientOptions
 
-	client, err := armcompute.NewVirtualMachineExtensionsClient(subscriptionID, cred, clientOptions)
+	client, err := armcompute.NewVirtualMachineExtensionsClient(subscriptionID, azure.GetCredentials(), clientOptions)
 	if err != nil {
 		log.Fatalf("failed to create client: %v", err)
 	}

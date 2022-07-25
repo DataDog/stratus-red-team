@@ -3,7 +3,7 @@ package main
 import (
 	"errors"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
-	"github.com/datadog/stratus-red-team/v2/pkg/stratus/runner"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/spf13/cobra"
 	"log"
 	"os"
@@ -54,9 +54,9 @@ func buildCleanupCmd() *cobra.Command {
 	return cleanupCmd
 }
 
-func doCleanupCmd(techniques []*stratus.AttackTechnique) {
+func doCleanupCmd(techniques []*domain.AttackTechnique) {
 	workerCount := len(techniques)
-	techniquesChan := make(chan *stratus.AttackTechnique, workerCount)
+	techniquesChan := make(chan *domain.AttackTechnique, workerCount)
 	errorsChan := make(chan error, workerCount)
 	for i := 0; i < workerCount; i++ {
 		go cleanupCmdWorker(techniquesChan, errorsChan)
@@ -73,9 +73,9 @@ func doCleanupCmd(techniques []*stratus.AttackTechnique) {
 	}
 }
 
-func cleanupCmdWorker(techniques <-chan *stratus.AttackTechnique, errors chan<- error) {
+func cleanupCmdWorker(techniques <-chan *domain.AttackTechnique, errors chan<- error) {
 	for technique := range techniques {
-		stratusRunner := runner.NewRunner(technique, flagForceCleanup)
+		stratusRunner := stratusRedTeam.NewRunner(technique, flagForceCleanup)
 		err := stratusRunner.CleanUp()
 		errors <- err
 	}

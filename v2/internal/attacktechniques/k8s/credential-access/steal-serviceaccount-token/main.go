@@ -3,8 +3,8 @@ package kubernetes
 import (
 	_ "embed"
 	"errors"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"github.com/golang-jwt/jwt"
 	v1 "k8s.io/api/core/v1"
@@ -30,10 +30,10 @@ var execOptions = v1.PodExecOptions{
 
 func init() {
 	const codeBlock = "```"
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&domain.AttackTechnique{
 		ID:                 "k8s.credential-access.steal-serviceaccount-token",
 		FriendlyName:       "Steal Pod Service Account Token",
-		Platform:           stratus.Kubernetes,
+		Platform:           domain.Kubernetes,
 		IsIdempotent:       true,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.CredentialAccess},
 		Description: `
@@ -83,9 +83,9 @@ Sample event (shortened):
 	})
 }
 
-func detonate(params map[string]string) error {
-	config := providers.K8s().GetRestConfig()
-	client := providers.K8s().GetClient()
+func detonate(providers domain.ProvidersFactory, params map[string]string) error {
+	config := providers.GetK8sProvider().GetRestConfig()
+	client := providers.GetK8sProvider().GetClient()
 	namespace := params["namespace"]
 	podName := params["pod_name"]
 

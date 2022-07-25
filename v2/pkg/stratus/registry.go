@@ -1,6 +1,7 @@
 package stratus
 
 import (
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 )
 
@@ -15,18 +16,18 @@ func GetRegistry() *Registry {
 }
 
 type Registry struct {
-	techniques []*AttackTechnique
+	techniques []*domain.AttackTechnique
 }
 
 func NewRegistry() Registry {
-	return Registry{techniques: []*AttackTechnique{}}
+	return Registry{techniques: []*domain.AttackTechnique{}}
 }
 
-func (m *Registry) RegisterAttackTechnique(technique *AttackTechnique) {
+func (m *Registry) RegisterAttackTechnique(technique *domain.AttackTechnique) {
 	m.techniques = append(m.techniques, technique)
 }
 
-func (m *Registry) GetAttackTechniqueByName(name string) *AttackTechnique {
+func (m *Registry) GetAttackTechniqueByName(name string) *domain.AttackTechnique {
 	for i := range m.techniques {
 		if m.techniques[i].ID == name {
 			return m.techniques[i]
@@ -36,8 +37,8 @@ func (m *Registry) GetAttackTechniqueByName(name string) *AttackTechnique {
 	return nil
 }
 
-func (m *Registry) GetAttackTechniques(filter *AttackTechniqueFilter) []*AttackTechnique {
-	var ret []*AttackTechnique
+func (m *Registry) GetAttackTechniques(filter *AttackTechniqueFilter) []*domain.AttackTechnique {
+	var ret []*domain.AttackTechnique
 
 	for i := range m.techniques {
 		technique := m.techniques[i]
@@ -49,16 +50,16 @@ func (m *Registry) GetAttackTechniques(filter *AttackTechniqueFilter) []*AttackT
 	return ret
 }
 
-func (m *Registry) ListAttackTechniques() []*AttackTechnique {
+func (m *Registry) ListAttackTechniques() []*domain.AttackTechnique {
 	return m.techniques
 }
 
 type AttackTechniqueFilter struct {
-	Platform Platform
+	Platform domain.Platform
 	Tactic   mitreattack.Tactic
 }
 
-func (m *AttackTechniqueFilter) matches(technique *AttackTechnique) bool {
+func (m *AttackTechniqueFilter) matches(technique *domain.AttackTechnique) bool {
 	var platformMatches = false
 	var mitreAttackTacticMatches = false
 

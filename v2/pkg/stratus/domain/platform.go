@@ -1,4 +1,4 @@
-package stratus
+package domain
 
 import (
 	"errors"

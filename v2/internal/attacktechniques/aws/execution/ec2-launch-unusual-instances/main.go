@@ -9,8 +9,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
 	"strings"
@@ -23,7 +23,7 @@ const instanceType = types.InstanceTypeP2Xlarge
 const numInstances = 10
 
 func init() {
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&domain.AttackTechnique{
 		ID:           "aws.execution.ec2-launch-unusual-instances",
 		FriendlyName: "Launch Unusual EC2 instances",
 		Description: `
@@ -42,7 +42,7 @@ field will contain the instance type that was attempted to be launched.
 
 Depending on your account limits you might also see <code>VcpuLimitExceeded</code> error codes.
 `,
-		Platform:                   stratus.AWS,
+		Platform:                   domain.AWS,
 		IsIdempotent:               true,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Execution},
 		PrerequisitesTerraformCode: tf,
@@ -50,9 +50,9 @@ Depending on your account limits you might also see <code>VcpuLimitExceeded</cod
 	})
 }
 
-func detonate(params map[string]string) error {
+func detonate(providers domain.ProvidersFactory, params map[string]string) error {
 	ctx := context.Background()
-	awsConnection := providers.AWS().GetConnection()
+	awsConnection := providers.GetAWSProvider().GetConnection()
 
 	amiId := params["ami_id"]
 	roleArn := params["role_arn"]

@@ -2,13 +2,13 @@ package state
 
 import (
 	"github.com/datadog/stratus-red-team/v2/internal/state/mocks"
-	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"testing"
 )
 
-func noop(map[string]string) error {
+func noop(domain.ProvidersFactory, map[string]string) error {
 	return nil
 }
 
@@ -20,7 +20,7 @@ func TestStateManagerCreatesRootDirectoryIfNotExists(t *testing.T) {
 
 	statemanager := FileSystemStateManager{
 		RootDirectory: "/root/.stratus-red-team",
-		Technique:     &stratus.AttackTechnique{ID: "foo", Detonate: noop},
+		Technique:     &domain.AttackTechnique{ID: "foo", Detonate: noop},
 		FileSystem:    fsMock,
 	}
 	statemanager.Initialize()
@@ -39,7 +39,7 @@ func TestStateManagerDoesNotTryToCreateRootDirectoryIfExists(t *testing.T) {
 
 	statemanager := FileSystemStateManager{
 		RootDirectory: "/root/.stratus-red-team",
-		Technique:     &stratus.AttackTechnique{ID: "foo", Detonate: noop},
+		Technique:     &domain.AttackTechnique{ID: "foo", Detonate: noop},
 		FileSystem:    fsMock,
 	}
 	statemanager.Initialize()
@@ -57,7 +57,7 @@ func TestStateManagerExtractsTechniqueTerraformFile(t *testing.T) {
 
 	statemanager := FileSystemStateManager{
 		RootDirectory: "/root/.stratus-red-team",
-		Technique:     &stratus.AttackTechnique{ID: "my-technique", PrerequisitesTerraformCode: []byte("terraform"), Detonate: noop},
+		Technique:     &domain.AttackTechnique{ID: "my-technique", PrerequisitesTerraformCode: []byte("terraform"), Detonate: noop},
 		FileSystem:    fsMock,
 	}
 	statemanager.Initialize()
@@ -91,7 +91,7 @@ func TestStateManagerRetrievesTechniqueOutputs(t *testing.T) {
 
 	statemanager := FileSystemStateManager{
 		RootDirectory: "/root/.stratus-red-team",
-		Technique:     &stratus.AttackTechnique{ID: "my-technique", Detonate: noop},
+		Technique:     &domain.AttackTechnique{ID: "my-technique", Detonate: noop},
 		FileSystem:    fsMock,
 	}
 	statemanager.Initialize()
@@ -111,7 +111,7 @@ func TestStateManagerWritesTechniqueOutputs(t *testing.T) {
 
 	statemanager := FileSystemStateManager{
 		RootDirectory: "/root/.stratus-red-team",
-		Technique:     &stratus.AttackTechnique{ID: "my-technique", Detonate: noop},
+		Technique:     &domain.AttackTechnique{ID: "my-technique", Detonate: noop},
 		FileSystem:    fsMock,
 	}
 	statemanager.Initialize()
@@ -124,17 +124,17 @@ func TestStateManagerWritesTechniqueOutputs(t *testing.T) {
 func TestStateManagerReadsTechniqueState(t *testing.T) {
 	fsMock := new(mocks.FileSystemMock)
 	fsMock.On("FileExists", mock.Anything).Return(true)
-	fsMock.On("ReadFile", "/root/.stratus-red-team/my-technique/.state").Return([]byte(stratus.AttackTechniqueStatusCold), nil)
+	fsMock.On("ReadFile", "/root/.stratus-red-team/my-technique/.state").Return([]byte(domain.AttackTechniqueStatusCold), nil)
 
 	statemanager := FileSystemStateManager{
 		RootDirectory: "/root/.stratus-red-team",
-		Technique:     &stratus.AttackTechnique{ID: "my-technique", Detonate: noop},
+		Technique:     &domain.AttackTechnique{ID: "my-technique", Detonate: noop},
 		FileSystem:    fsMock,
 	}
 	statemanager.Initialize()
 
 	state := statemanager.GetTechniqueState()
-	assert.Equal(t, stratus.AttackTechniqueState(stratus.AttackTechniqueStatusCold), state)
+	assert.Equal(t, domain.AttackTechniqueState(domain.AttackTechniqueStatusCold), state)
 
 }
 
@@ -145,17 +145,17 @@ func TestStateManagerSetsTechniqueState(t *testing.T) {
 
 	statemanager := FileSystemStateManager{
 		RootDirectory: "/root/.stratus-red-team",
-		Technique:     &stratus.AttackTechnique{ID: "my-technique", Detonate: noop},
+		Technique:     &domain.AttackTechnique{ID: "my-technique", Detonate: noop},
 		FileSystem:    fsMock,
 	}
 	statemanager.Initialize()
 
-	err := statemanager.SetTechniqueState(stratus.AttackTechniqueStatusDetonated)
+	err := statemanager.SetTechniqueState(domain.AttackTechniqueStatusDetonated)
 	assert.Nil(t, err)
 	fsMock.AssertCalled(t,
 		"WriteFile",
 		"/root/.stratus-red-team/my-technique/.state",
-		[]byte(stratus.AttackTechniqueStatusDetonated),
+		[]byte(domain.AttackTechniqueStatusDetonated),
 		mock.Anything,
 	)
 }
@@ -171,12 +171,12 @@ func TestStateManagerSetsTechniqueStateWhenTechniqueDirDoesNotExist(t *testing.T
 
 	statemanager := FileSystemStateManager{
 		RootDirectory: "/root/.stratus-red-team",
-		Technique:     &stratus.AttackTechnique{ID: "my-technique", Detonate: noop},
+		Technique:     &domain.AttackTechnique{ID: "my-technique", Detonate: noop},
 		FileSystem:    fsMock,
 	}
 	statemanager.Initialize()
 
-	err := statemanager.SetTechniqueState(stratus.AttackTechniqueStatusDetonated)
+	err := statemanager.SetTechniqueState(domain.AttackTechniqueStatusDetonated)
 	assert.Nil(t, err)
 
 	fsMock.AssertCalled(t,
@@ -187,7 +187,7 @@ func TestStateManagerSetsTechniqueStateWhenTechniqueDirDoesNotExist(t *testing.T
 	fsMock.AssertCalled(t,
 		"WriteFile",
 		"/root/.stratus-red-team/my-technique/.state",
-		[]byte(stratus.AttackTechniqueStatusDetonated),
+		[]byte(domain.AttackTechniqueStatusDetonated),
 		mock.Anything,
 	)
 }
@@ -199,7 +199,7 @@ func TestStateManagerCleanupTechnique(t *testing.T) {
 	fsMock.On("RemoveDirectory", mock.Anything).Return(nil)
 	statemanager := FileSystemStateManager{
 		RootDirectory: "/root/.stratus-red-team",
-		Technique:     &stratus.AttackTechnique{ID: "my-technique", Detonate: noop},
+		Technique:     &domain.AttackTechnique{ID: "my-technique", Detonate: noop},
 		FileSystem:    fsMock,
 	}
 	statemanager.Initialize()

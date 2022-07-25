@@ -8,9 +8,9 @@ import (
 	"github.com/aws/aws-sdk-go-v2/credentials/stscreds"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
 	"strconv"
@@ -20,7 +20,7 @@ import (
 var tf []byte
 
 func init() {
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&domain.AttackTechnique{
 		ID:           "aws.credential-access.ec2-get-password-data",
 		FriendlyName: "Retrieve EC2 Password Data",
 		Description: `
@@ -39,7 +39,7 @@ Detonation:
 - Run a number of ec2:GetPasswordData calls (which will be denied) using fictitious instance IDs
 `,
 		Detection:                  "Identify principals making a large number of ec2:GetPasswordData calls, using CloudTrail's GetPasswordData event",
-		Platform:                   stratus.AWS,
+		Platform:                   domain.AWS,
 		IsIdempotent:               true,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.CredentialAccess},
 		PrerequisitesTerraformCode: tf,
@@ -49,10 +49,9 @@ Detonation:
 
 const numCalls = 30
 
-func detonate(params map[string]string) error {
+func detonate(providers domain.ProvidersFactory, params map[string]string) error {
 	roleArn := params["role_arn"]
-
-	awsConnection := providers.AWS().GetConnection()
+	awsConnection := providers.GetAWSProvider().GetConnection()
 	stsClient := sts.NewFromConfig(awsConnection)
 	awsConnection.Credentials = aws.NewCredentialsCache(stscreds.NewAssumeRoleProvider(stsClient, roleArn))
 	ec2Client := ec2.NewFromConfig(awsConnection)

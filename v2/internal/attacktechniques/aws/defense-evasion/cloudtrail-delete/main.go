@@ -5,8 +5,8 @@ import (
 	_ "embed"
 	"errors"
 	"github.com/aws/aws-sdk-go-v2/service/cloudtrail"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
 )
@@ -15,10 +15,10 @@ import (
 var tf []byte
 
 func init() {
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&domain.AttackTechnique{
 		ID:                 "aws.defense-evasion.cloudtrail-delete",
 		FriendlyName:       "Delete CloudTrail Trail",
-		Platform:           stratus.AWS,
+		Platform:           domain.AWS,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.DefenseEvasion},
 		Description: `
 Delete a CloudTrail trail. Simulates an attacker disrupting CloudTrail logging.
@@ -42,8 +42,8 @@ GuardDuty also provides a dedicated finding type, [Stealth:IAMUser/CloudTrailLog
 	})
 }
 
-func detonate(params map[string]string) error {
-	cloudtrailClient := cloudtrail.NewFromConfig(providers.AWS().GetConnection())
+func detonate(providers domain.ProvidersFactory, params map[string]string) error {
+	cloudtrailClient := cloudtrail.NewFromConfig(providers.GetAWSProvider().GetConnection())
 	trailName := params["cloudtrail_trail_name"]
 
 	log.Println("Deleting CloudTrail trail " + trailName)

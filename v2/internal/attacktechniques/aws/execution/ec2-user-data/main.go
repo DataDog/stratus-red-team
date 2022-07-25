@@ -7,8 +7,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
 	"time"
@@ -21,7 +21,7 @@ var tf []byte
 var maliciousUserData []byte
 
 func init() {
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&domain.AttackTechnique{
 		ID:           "aws.execution.ec2-user-data",
 		FriendlyName: "Execute Commands on EC2 Instance via User Data",
 		IsSlow:       true,
@@ -54,7 +54,7 @@ When not possible to perform such correlation, alerting on the second event only
 expected that the user data of an EC2 instance changes often, especially with the popularity of immutable machine images,
 provisioned before instantiation.
 `,
-		Platform:                   stratus.AWS,
+		Platform:                   domain.AWS,
 		IsIdempotent:               true,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Execution, mitreattack.PrivilegeEscalation},
 		PrerequisitesTerraformCode: tf,
@@ -62,11 +62,11 @@ provisioned before instantiation.
 	})
 }
 
-func detonate(params map[string]string) error {
-	ec2Client := ec2.NewFromConfig(providers.AWS().GetConnection())
+func detonate(providers domain.ProvidersFactory, params map[string]string) error {
+	ec2Client := ec2.NewFromConfig(providers.GetAWSProvider().GetConnection())
 	instanceId := params["instance_id"]
 
-	err := stopInstance(instanceId)
+	err := stopInstance(ec2Client, instanceId)
 	if err != nil {
 		return err
 	}
@@ -80,7 +80,7 @@ func detonate(params map[string]string) error {
 		return errors.New("unable to update user data: " + err.Error())
 	}
 
-	err = startInstance(instanceId)
+	err = startInstance(ec2Client, instanceId)
 	if err != nil {
 		return err
 	}
@@ -93,8 +93,7 @@ func detonate(params map[string]string) error {
 const maxWaitDuration = 2 * time.Minute
 
 // Stops an EC2 instance, and synchronously returns only when it is stopped
-func stopInstance(instanceId string) error {
-	ec2Client := ec2.NewFromConfig(providers.AWS().GetConnection())
+func stopInstance(ec2Client *ec2.Client, instanceId string) error {
 	log.Println("Stopping instance " + instanceId)
 	_, err := ec2Client.StopInstances(context.Background(), &ec2.StopInstancesInput{
 		InstanceIds: []string{instanceId},
@@ -121,8 +120,7 @@ func stopInstance(instanceId string) error {
 }
 
 // Starts an EC2 instance, and synchronously returns only when it is running
-func startInstance(instanceId string) error {
-	ec2Client := ec2.NewFromConfig(providers.AWS().GetConnection())
+func startInstance(ec2Client *ec2.Client, instanceId string) error {
 	log.Println("Starting instance")
 	_, err := ec2Client.StartInstances(context.Background(), &ec2.StartInstancesInput{
 		InstanceIds: []string{instanceId},

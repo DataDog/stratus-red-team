@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"log"
 	"os"
@@ -16,8 +17,8 @@ func GetDisplayTable() table.Writer {
 	return t
 }
 
-func resolveTechniques(names []string) ([]*stratus.AttackTechnique, error) {
-	var result []*stratus.AttackTechnique
+func resolveTechniques(names []string) ([]*domain.AttackTechnique, error) {
+	var result []*domain.AttackTechnique
 	for i := range names {
 		technique := stratus.GetRegistry().GetAttackTechniqueByName(names[i])
 		if technique == nil {
@@ -43,19 +44,30 @@ func handleErrorsChannel(errors <-chan error, jobsCount int) bool {
 
 // VerifyPlatformRequirements ensures that the user is properly authenticated against all platforms
 // of a list of attack techniques
-func VerifyPlatformRequirements(attackTechniques []*stratus.AttackTechnique) {
-	platforms := map[stratus.Platform]bool{}
+func VerifyPlatformRequirements(attackTechniques []*domain.AttackTechnique) {
+	platforms := map[domain.Platform]bool{}
 	for i := range attackTechniques {
 		currentPlatform := attackTechniques[i].Platform
 		if _, checked := platforms[currentPlatform]; !checked {
 			log.Println("Checking your authentication against " + string(currentPlatform))
-			err := stratus.EnsureAuthenticated(currentPlatform)
-			if err != nil {
-				log.Fatalf(err.Error())
+			if !IsAuthenticatedAgainstPlatform(currentPlatform) {
+				log.Fatalf("You are not properly authenticated against " + string(currentPlatform))
 			}
 			platforms[currentPlatform] = true
 		}
 	}
+}
+
+func IsAuthenticatedAgainstPlatform(platform domain.Platform) bool {
+	switch platform {
+	case domain.AWS:
+		return stratusRedTeam.Providers.GetAWSProvider().IsAuthenticatedAgainstAWS()
+	case domain.Azure:
+		return stratusRedTeam.Providers.GetAzureProvider().IsAuthenticatedAgainstAzure()
+	case domain.Kubernetes:
+		return stratusRedTeam.Providers.GetK8sProvider().IsAuthenticated()
+	}
+	return false
 }
 
 func getTechniquesCompletion(completionPrefix string) []string {

@@ -6,8 +6,8 @@ import (
 	"errors"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/ssm"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
 	"strings"
@@ -18,7 +18,7 @@ import (
 var tf []byte
 
 func init() {
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&domain.AttackTechnique{
 		ID:           "aws.discovery.ec2-enumerate-from-instance",
 		FriendlyName: "Execute Discovery Commands on an EC2 Instance",
 		IsSlow:       true,
@@ -55,7 +55,7 @@ An action can be determined to have been performed by an EC2 instance under its 
 arn:aws:sts::012345678901:assumed-role/my-instance-role/i-0adc17a5acb70d9ae
 </code>
 `,
-		Platform:                   stratus.AWS,
+		Platform:                   domain.AWS,
 		IsIdempotent:               true,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Discovery},
 		PrerequisitesTerraformCode: tf,
@@ -63,8 +63,8 @@ arn:aws:sts::012345678901:assumed-role/my-instance-role/i-0adc17a5acb70d9ae
 	})
 }
 
-func detonate(params map[string]string) error {
-	ssmClient := ssm.NewFromConfig(providers.AWS().GetConnection())
+func detonate(providers domain.ProvidersFactory, params map[string]string) error {
+	ssmClient := ssm.NewFromConfig(providers.GetAWSProvider().GetConnection())
 	instanceId := params["instance_id"]
 	commands := []string{
 		"aws sts get-caller-identity || true", // Note: we need the || true to ensure the command exits with status 0, even if the instance role doesn't have the permission

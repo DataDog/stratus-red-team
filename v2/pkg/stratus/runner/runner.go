@@ -2,9 +2,9 @@ package runner
 
 import (
 	"errors"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/internal/state"
-	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
+	"github.com/google/uuid"
 	"log"
 	"path/filepath"
 	"strings"
@@ -14,32 +14,21 @@ const StratusRunnerForce = true
 const StratusRunnerNoForce = false
 
 type Runner struct {
-	Technique        *stratus.AttackTechnique
-	TechniqueState   stratus.AttackTechniqueState
-	TerraformDir     string
-	ShouldForce      bool
-	TerraformManager TerraformManager
-	StateManager     state.StateManager
+	Technique         *domain.AttackTechnique
+	TechniqueState    domain.AttackTechniqueState
+	TerraformDir      string
+	ShouldForce       bool
+	TerraformManager  TerraformManager
+	StateManager      state.StateManager
+	Providers         domain.ProvidersFactory
+	UniqueExecutionId uuid.UUID
 }
 
-func NewRunner(technique *stratus.AttackTechnique, force bool) Runner {
-	stateManager := state.NewFileSystemStateManager(technique)
-	runner := Runner{
-		Technique:        technique,
-		ShouldForce:      force,
-		TerraformManager: NewTerraformManager(filepath.Join(stateManager.GetRootDirectory(), "terraform")),
-		StateManager:     stateManager,
-	}
-	runner.initialize()
-
-	return runner
-}
-
-func (m *Runner) initialize() {
+func (m *Runner) Initialize() {
 	m.TerraformDir = filepath.Join(m.StateManager.GetRootDirectory(), m.Technique.ID)
 	m.TechniqueState = m.StateManager.GetTechniqueState()
 	if m.TechniqueState == "" {
-		m.TechniqueState = stratus.AttackTechniqueStatusCold
+		m.TechniqueState = domain.AttackTechniqueStatusCold
 	}
 }
 
@@ -58,12 +47,12 @@ func (m *Runner) WarmUp() (map[string]string, error) {
 	var willWarmUp = true
 
 	// Technique is already warm
-	if m.TechniqueState == stratus.AttackTechniqueStatusWarm && !m.ShouldForce {
+	if m.TechniqueState == domain.AttackTechniqueStatusWarm && !m.ShouldForce {
 		log.Println("Not warming up - " + m.Technique.ID + " is already warm. Use --force to force")
 		willWarmUp = false
 	}
 
-	if m.TechniqueState == stratus.AttackTechniqueStatusDetonated {
+	if m.TechniqueState == domain.AttackTechniqueStatusDetonated {
 		log.Println(m.Technique.ID + " has been detonated but not cleaned up, not warming up as it should be warm already.")
 		willWarmUp = false
 	}
@@ -81,7 +70,7 @@ func (m *Runner) WarmUp() (map[string]string, error) {
 
 	// Persist outputs to disk
 	err = m.StateManager.WriteTerraformOutputs(outputs)
-	m.setState(stratus.AttackTechniqueStatusWarm)
+	m.setState(domain.AttackTechniqueStatusWarm)
 
 	if display, ok := outputs["display"]; ok {
 		log.Println(display)
@@ -95,7 +84,7 @@ func (m *Runner) Detonate() error {
 	var outputs map[string]string
 
 	// If the attack technique has already been detonated, make sure it's idempotent
-	if m.GetState() == stratus.AttackTechniqueStatusDetonated {
+	if m.GetState() == domain.AttackTechniqueStatusDetonated {
 		if !m.Technique.IsIdempotent && !m.ShouldForce {
 			return errors.New(m.Technique.ID + " has already been detonated and is not idempotent. " +
 				"Revert it with 'stratus revert' before detonating it again, or use --force")
@@ -114,16 +103,16 @@ func (m *Runner) Detonate() error {
 	}
 
 	// Detonate
-	err = m.Technique.Detonate(outputs)
+	err = m.Technique.Detonate(m.Providers, outputs)
 	if err != nil {
 		return errors.New("Error while detonating attack technique " + m.Technique.ID + ": " + err.Error())
 	}
-	m.setState(stratus.AttackTechniqueStatusDetonated)
+	m.setState(domain.AttackTechniqueStatusDetonated)
 	return nil
 }
 
 func (m *Runner) Revert() error {
-	if m.GetState() != stratus.AttackTechniqueStatusDetonated && !m.ShouldForce {
+	if m.GetState() != domain.AttackTechniqueStatusDetonated && !m.ShouldForce {
 		return errors.New(m.Technique.ID + " is not in DETONATED state and should not need to be reverted, use --force to force")
 	}
 
@@ -135,27 +124,27 @@ func (m *Runner) Revert() error {
 	log.Println("Reverting detonation of technique " + m.Technique.ID)
 
 	if m.Technique.Revert != nil {
-		err = m.Technique.Revert(outputs)
+		err = m.Technique.Revert(m.Providers, outputs)
 		if err != nil {
 			return errors.New("unable to revert detonation of " + m.Technique.ID + ": " + err.Error())
 		}
 	}
 
-	m.setState(stratus.AttackTechniqueStatusWarm)
+	m.setState(domain.AttackTechniqueStatusWarm)
 
 	return nil
 }
 
 func (m *Runner) CleanUp() error {
 	// Has the technique already been cleaned up?
-	if m.TechniqueState == stratus.AttackTechniqueStatusCold && !m.ShouldForce {
+	if m.TechniqueState == domain.AttackTechniqueStatusCold && !m.ShouldForce {
 		return errors.New(m.Technique.ID + " is already COLD and should already be clean, use --force to force cleanup")
 	}
 
 	log.Println("Cleaning up " + m.Technique.ID)
 
 	// Revert detonation
-	if m.Technique.Revert != nil && m.GetState() == stratus.AttackTechniqueStatusDetonated {
+	if m.Technique.Revert != nil && m.GetState() == domain.AttackTechniqueStatusDetonated {
 		err := m.Revert()
 		if err != nil {
 			return errors.New("unable to revert detonation of " + m.Technique.ID + ": " + err.Error())
@@ -171,7 +160,7 @@ func (m *Runner) CleanUp() error {
 		}
 	}
 
-	m.setState(stratus.AttackTechniqueStatusCold)
+	m.setState(domain.AttackTechniqueStatusCold)
 
 	// Remove terraform directory
 	err := m.StateManager.CleanupTechnique()
@@ -182,11 +171,11 @@ func (m *Runner) CleanUp() error {
 	return nil
 }
 
-func (m *Runner) GetState() stratus.AttackTechniqueState {
+func (m *Runner) GetState() domain.AttackTechniqueState {
 	return m.TechniqueState
 }
 
-func (m *Runner) setState(state stratus.AttackTechniqueState) {
+func (m *Runner) setState(state domain.AttackTechniqueState) {
 	err := m.StateManager.SetTechniqueState(state)
 	if err != nil {
 		log.Println("Warning: unable to set technique state: " + err.Error())
@@ -196,7 +185,7 @@ func (m *Runner) setState(state stratus.AttackTechniqueState) {
 
 // GetUniqueExecutionId returns an unique execution ID, unique per run of Stratus Red Team (not for each TTP detonated)
 func (m *Runner) GetUniqueExecutionId() string {
-	return providers.UniqueExecutionId.String()
+	return m.UniqueExecutionId.String()
 }
 
 // Utility function to display better error messages than the Terraform ones

@@ -7,8 +7,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
 	"github.com/aws/aws-sdk-go-v2/service/iam/types"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
 )
@@ -17,7 +17,7 @@ var userName = aws.String("malicious-iam-user")
 var adminPolicyArn = aws.String("arn:aws:iam::aws:policy/AdministratorAccess")
 
 func init() {
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&domain.AttackTechnique{
 		ID:           "aws.persistence.iam-create-admin-user",
 		FriendlyName: "Create an administrative IAM User",
 		Description: `
@@ -39,7 +39,7 @@ can help to craft more precise detections:
 
 - Identify a call to <code>CreateUser</code> resulting in an access denied error.
 `,
-		Platform:           stratus.AWS,
+		Platform:           domain.AWS,
 		IsIdempotent:       false, // cannot create twice an IAM user with the same name
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Persistence, mitreattack.PrivilegeEscalation},
 		Detonate:           detonate,
@@ -47,8 +47,8 @@ can help to craft more precise detections:
 	})
 }
 
-func detonate(map[string]string) error {
-	iamClient := iam.NewFromConfig(providers.AWS().GetConnection())
+func detonate(providers domain.ProvidersFactory, params map[string]string) error {
+	iamClient := iam.NewFromConfig(providers.GetAWSProvider().GetConnection())
 
 	log.Println("Creating a malicious IAM user")
 	_, err := iamClient.CreateUser(context.Background(), &iam.CreateUserInput{
@@ -83,8 +83,8 @@ func detonate(map[string]string) error {
 	return nil
 }
 
-func revert(map[string]string) error {
-	iamClient := iam.NewFromConfig(providers.AWS().GetConnection())
+func revert(providers domain.ProvidersFactory, params map[string]string) error {
+	iamClient := iam.NewFromConfig(providers.GetAWSProvider().GetConnection())
 
 	result, err := iamClient.ListAccessKeys(context.Background(), &iam.ListAccessKeysInput{
 		UserName: userName,

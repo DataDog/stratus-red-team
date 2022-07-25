@@ -3,7 +3,7 @@ package runner
 import (
 	"errors"
 	statemocks "github.com/datadog/stratus-red-team/v2/internal/state/mocks"
-	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/runner/mocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -14,9 +14,9 @@ func TestRunnerWarmUp(t *testing.T) {
 
 	type RunnerWarmupTestScenario struct {
 		Name                  string
-		Technique             *stratus.AttackTechnique
+		Technique             *domain.AttackTechnique
 		ShouldForce           bool
-		InitialTechniqueState stratus.AttackTechniqueState
+		InitialTechniqueState domain.AttackTechniqueState
 		TerraformOutputs      map[string]string
 		PersistedOutputs      map[string]string
 		// results
@@ -26,8 +26,8 @@ func TestRunnerWarmUp(t *testing.T) {
 	var scenario = []RunnerWarmupTestScenario{
 		{
 			Name:                  "Warming up a technique without prerequisite Terraform code",
-			Technique:             &stratus.AttackTechnique{ID: "foo"},
-			InitialTechniqueState: stratus.AttackTechniqueStatusCold,
+			Technique:             &domain.AttackTechnique{ID: "foo"},
+			InitialTechniqueState: domain.AttackTechniqueStatusCold,
 			PersistedOutputs:      map[string]string{"myoutput": "foo"},
 			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, outputs map[string]string, err error) {
 				terraform.AssertNotCalled(t, "TerraformInitAndApply")
@@ -40,14 +40,14 @@ func TestRunnerWarmUp(t *testing.T) {
 		},
 		{
 			Name:                  "Warming up a COLD technique",
-			Technique:             &stratus.AttackTechnique{ID: "foo", PrerequisitesTerraformCode: []byte("foo")},
-			InitialTechniqueState: stratus.AttackTechniqueStatusCold,
+			Technique:             &domain.AttackTechnique{ID: "foo", PrerequisitesTerraformCode: []byte("foo")},
+			InitialTechniqueState: domain.AttackTechniqueStatusCold,
 			TerraformOutputs:      map[string]string{"myoutput": "new"},
 			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, outputs map[string]string, err error) {
 				state.AssertCalled(t, "ExtractTechnique")
 				terraform.AssertCalled(t, "TerraformInitAndApply", "/root/foo")
 				state.AssertCalled(t, "WriteTerraformOutputs", map[string]string{"myoutput": "new"})
-				state.AssertCalled(t, "SetTechniqueState", stratus.AttackTechniqueState(stratus.AttackTechniqueStatusWarm))
+				state.AssertCalled(t, "SetTechniqueState", domain.AttackTechniqueState(domain.AttackTechniqueStatusWarm))
 
 				assert.Nil(t, err)
 				assert.Len(t, outputs, 1)
@@ -56,8 +56,8 @@ func TestRunnerWarmUp(t *testing.T) {
 		},
 		{
 			Name:                  "Warming up a WARM technique without force flag",
-			Technique:             &stratus.AttackTechnique{ID: "foo", PrerequisitesTerraformCode: []byte("bar")},
-			InitialTechniqueState: stratus.AttackTechniqueStatusWarm,
+			Technique:             &domain.AttackTechnique{ID: "foo", PrerequisitesTerraformCode: []byte("bar")},
+			InitialTechniqueState: domain.AttackTechniqueStatusWarm,
 			PersistedOutputs:      map[string]string{"myoutput": "new"},
 			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, outputs map[string]string, err error) {
 				terraform.AssertNotCalled(t, "TerraformInitAndApply")
@@ -68,9 +68,9 @@ func TestRunnerWarmUp(t *testing.T) {
 		},
 		{
 			Name:                  "Warming up a WARM technique with force flag",
-			Technique:             &stratus.AttackTechnique{ID: "foo", PrerequisitesTerraformCode: []byte("bar")},
+			Technique:             &domain.AttackTechnique{ID: "foo", PrerequisitesTerraformCode: []byte("bar")},
 			ShouldForce:           true,
-			InitialTechniqueState: stratus.AttackTechniqueStatusWarm,
+			InitialTechniqueState: domain.AttackTechniqueStatusWarm,
 			TerraformOutputs:      map[string]string{"myoutput": "old"},
 			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, outputs map[string]string, err error) {
 				terraform.AssertCalled(t, "TerraformInitAndApply", "/root/foo")
@@ -81,8 +81,8 @@ func TestRunnerWarmUp(t *testing.T) {
 		},
 		{
 			Name:                  "Warming up a DETONATED technique",
-			Technique:             &stratus.AttackTechnique{ID: "foo", PrerequisitesTerraformCode: []byte("bar")},
-			InitialTechniqueState: stratus.AttackTechniqueStatusDetonated,
+			Technique:             &domain.AttackTechnique{ID: "foo", PrerequisitesTerraformCode: []byte("bar")},
+			InitialTechniqueState: domain.AttackTechniqueStatusDetonated,
 			PersistedOutputs:      map[string]string{"myoutput": "old"},
 			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, outputs map[string]string, err error) {
 				terraform.AssertNotCalled(t, "TerraformInitAndApply")
@@ -111,7 +111,7 @@ func TestRunnerWarmUp(t *testing.T) {
 			TerraformManager: terraform,
 			StateManager:     state,
 		}
-		runner.initialize()
+		runner.Initialize()
 		outputs, err := runner.WarmUp()
 		t.Run(scenario[i].Name, func(t *testing.T) { scenario[i].CheckExpectations(t, terraform, state, outputs, err) })
 	}
@@ -121,7 +121,7 @@ func TestRunnerDetonate(t *testing.T) {
 
 	type TestDetonationScenario struct {
 		Name                            string
-		TechniqueState                  stratus.AttackTechniqueState
+		TechniqueState                  domain.AttackTechniqueState
 		IsIdempotent                    bool
 		Force                           bool
 		ExpectDetonated                 bool
@@ -133,7 +133,7 @@ func TestRunnerDetonate(t *testing.T) {
 	scenario := []TestDetonationScenario{
 		{
 			Name:                            "DetonateWarmIdempotentAttackTechnique",
-			TechniqueState:                  stratus.AttackTechniqueStatusWarm,
+			TechniqueState:                  domain.AttackTechniqueStatusWarm,
 			IsIdempotent:                    true,
 			Force:                           false,
 			ExpectWarmedUp:                  false,
@@ -143,7 +143,7 @@ func TestRunnerDetonate(t *testing.T) {
 		},
 		{
 			Name:                            "DetonateWarmNonIdempotentAttackTechnique",
-			TechniqueState:                  stratus.AttackTechniqueStatusWarm,
+			TechniqueState:                  domain.AttackTechniqueStatusWarm,
 			IsIdempotent:                    false,
 			Force:                           false,
 			ExpectWarmedUp:                  false,
@@ -153,7 +153,7 @@ func TestRunnerDetonate(t *testing.T) {
 		},
 		{
 			Name:                            "DetonateDetonatedIdempotentAttackTechnique",
-			TechniqueState:                  stratus.AttackTechniqueStatusDetonated,
+			TechniqueState:                  domain.AttackTechniqueStatusDetonated,
 			IsIdempotent:                    true,
 			Force:                           false,
 			ExpectWarmedUp:                  false,
@@ -163,7 +163,7 @@ func TestRunnerDetonate(t *testing.T) {
 		},
 		{
 			Name:                            "DetonateDetonatedNonIdempotentAttackTechnique",
-			TechniqueState:                  stratus.AttackTechniqueStatusDetonated,
+			TechniqueState:                  domain.AttackTechniqueStatusDetonated,
 			IsIdempotent:                    false,
 			Force:                           false,
 			ExpectWarmedUp:                  false,
@@ -173,7 +173,7 @@ func TestRunnerDetonate(t *testing.T) {
 		},
 		{
 			Name:                            "DetonateDetonatedNonIdempotentAttackTechniqueWithForceFlag",
-			TechniqueState:                  stratus.AttackTechniqueStatusDetonated,
+			TechniqueState:                  domain.AttackTechniqueStatusDetonated,
 			IsIdempotent:                    false,
 			Force:                           true,
 			ExpectWarmedUp:                  false,
@@ -198,9 +198,9 @@ func TestRunnerDetonate(t *testing.T) {
 
 			var wasDetonated = false
 			runner := Runner{
-				Technique: &stratus.AttackTechnique{
+				Technique: &domain.AttackTechnique{
 					ID: "sample-technique",
-					Detonate: func(map[string]string) error {
+					Detonate: func(domain.ProvidersFactory, map[string]string) error {
 						wasDetonated = true
 						return nil
 					},
@@ -210,7 +210,7 @@ func TestRunnerDetonate(t *testing.T) {
 				TerraformManager: terraform,
 				StateManager:     state,
 			}
-			runner.initialize()
+			runner.Initialize()
 			err := runner.Detonate()
 
 			if scenario[i].ExpectError {
@@ -232,7 +232,7 @@ func TestRunnerDetonate(t *testing.T) {
 			}
 
 			if scenario[i].ExpectedStateChangedToDetonated {
-				state.AssertCalled(t, "SetTechniqueState", stratus.AttackTechniqueState(stratus.AttackTechniqueStatusDetonated))
+				state.AssertCalled(t, "SetTechniqueState", domain.AttackTechniqueState(domain.AttackTechniqueStatusDetonated))
 			} else {
 				state.AssertNotCalled(t, "SetTechniqueState", mock.Anything)
 			}
@@ -243,7 +243,7 @@ func TestRunnerDetonate(t *testing.T) {
 func TestRunnerRevert(t *testing.T) {
 	type TestRevertScenario struct {
 		Name                        string
-		TechniqueState              stratus.AttackTechniqueState
+		TechniqueState              domain.AttackTechniqueState
 		Force                       bool
 		ExpectDidCallRevertFunction bool
 		ExpectDidChangeStateToWarm  bool
@@ -252,7 +252,7 @@ func TestRunnerRevert(t *testing.T) {
 	scenario := []TestRevertScenario{
 		{
 			Name:                        "DetonatedTechniqueIsReverted",
-			TechniqueState:              stratus.AttackTechniqueStatusDetonated,
+			TechniqueState:              domain.AttackTechniqueStatusDetonated,
 			Force:                       false,
 			ExpectDidCallRevertFunction: true,
 			ExpectDidChangeStateToWarm:  true,
@@ -260,7 +260,7 @@ func TestRunnerRevert(t *testing.T) {
 		},
 		{
 			Name:                        "WarmTechniqueIsNotReverted",
-			TechniqueState:              stratus.AttackTechniqueStatusWarm,
+			TechniqueState:              domain.AttackTechniqueStatusWarm,
 			Force:                       false,
 			ExpectDidCallRevertFunction: false,
 			ExpectDidChangeStateToWarm:  false,
@@ -268,7 +268,7 @@ func TestRunnerRevert(t *testing.T) {
 		},
 		{
 			Name:                        "WarmTechniqueIsRevertedWithForce",
-			TechniqueState:              stratus.AttackTechniqueStatusWarm,
+			TechniqueState:              domain.AttackTechniqueStatusWarm,
 			Force:                       true,
 			ExpectDidCallRevertFunction: true,
 			ExpectDidChangeStateToWarm:  true,
@@ -287,10 +287,10 @@ func TestRunnerRevert(t *testing.T) {
 
 			var wasReverted = false
 			runner := Runner{
-				Technique: &stratus.AttackTechnique{
+				Technique: &domain.AttackTechnique{
 					ID:       "foo",
-					Detonate: func(map[string]string) error { return nil },
-					Revert: func(params map[string]string) error {
+					Detonate: func(domain.ProvidersFactory, map[string]string) error { return nil },
+					Revert: func(factory domain.ProvidersFactory, params map[string]string) error {
 						wasReverted = true
 						return nil
 					},
@@ -298,7 +298,7 @@ func TestRunnerRevert(t *testing.T) {
 				ShouldForce:  scenario[i].Force,
 				StateManager: state,
 			}
-			runner.initialize()
+			runner.Initialize()
 
 			err := runner.Revert()
 
@@ -315,9 +315,9 @@ func TestRunnerRevert(t *testing.T) {
 			}
 
 			if scenario[i].ExpectDidChangeStateToWarm {
-				state.AssertCalled(t, "SetTechniqueState", stratus.AttackTechniqueState(stratus.AttackTechniqueStatusWarm))
+				state.AssertCalled(t, "SetTechniqueState", domain.AttackTechniqueState(domain.AttackTechniqueStatusWarm))
 			} else {
-				state.AssertNotCalled(t, "SetTechniqueState", stratus.AttackTechniqueState(stratus.AttackTechniqueStatusWarm))
+				state.AssertNotCalled(t, "SetTechniqueState", domain.AttackTechniqueState(domain.AttackTechniqueStatusWarm))
 			}
 		})
 	}
@@ -327,9 +327,9 @@ func TestRunnerRevert(t *testing.T) {
 func TestRunnerCleanup(t *testing.T) {
 	type RunnerCleanupTestScenario struct {
 		Name                  string
-		Technique             *stratus.AttackTechnique
+		Technique             *domain.AttackTechnique
 		ShouldForce           bool
-		InitialTechniqueState stratus.AttackTechniqueState
+		InitialTechniqueState domain.AttackTechniqueState
 		TerraformDestroyFails bool
 		RevertFails           bool
 		// results
@@ -339,8 +339,8 @@ func TestRunnerCleanup(t *testing.T) {
 	var scenario = []RunnerCleanupTestScenario{
 		{
 			Name:                  "Cleaning up an already cold technique without force flag",
-			Technique:             &stratus.AttackTechnique{ID: "foo", PrerequisitesTerraformCode: []byte("foo)")},
-			InitialTechniqueState: stratus.AttackTechniqueStatusCold,
+			Technique:             &domain.AttackTechnique{ID: "foo", PrerequisitesTerraformCode: []byte("foo)")},
+			InitialTechniqueState: domain.AttackTechniqueStatusCold,
 			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, err error) {
 				assert.NotNil(t, err)
 				terraform.AssertNotCalled(t, "TerraformDestroy")
@@ -350,8 +350,8 @@ func TestRunnerCleanup(t *testing.T) {
 		{
 
 			Name:                  "Cleaning up an already cold technique with force flag",
-			Technique:             &stratus.AttackTechnique{ID: "foo", PrerequisitesTerraformCode: []byte("foo)")},
-			InitialTechniqueState: stratus.AttackTechniqueStatusCold,
+			Technique:             &domain.AttackTechnique{ID: "foo", PrerequisitesTerraformCode: []byte("foo)")},
+			InitialTechniqueState: domain.AttackTechniqueStatusCold,
 			ShouldForce:           true,
 			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, err error) {
 				assert.Nil(t, err)
@@ -361,37 +361,37 @@ func TestRunnerCleanup(t *testing.T) {
 		},
 		{
 			Name:                  "Cleaning up a WARM technique",
-			Technique:             &stratus.AttackTechnique{ID: "foo", PrerequisitesTerraformCode: []byte("foo)")},
-			InitialTechniqueState: stratus.AttackTechniqueStatusWarm,
+			Technique:             &domain.AttackTechnique{ID: "foo", PrerequisitesTerraformCode: []byte("foo)")},
+			InitialTechniqueState: domain.AttackTechniqueStatusWarm,
 			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, err error) {
 				assert.Nil(t, err)
 				terraform.AssertCalled(t, "TerraformDestroy", mock.Anything)
 				state.AssertCalled(t, "CleanupTechnique")
-				state.AssertCalled(t, "SetTechniqueState", stratus.AttackTechniqueState(stratus.AttackTechniqueStatusCold))
+				state.AssertCalled(t, "SetTechniqueState", domain.AttackTechniqueState(domain.AttackTechniqueStatusCold))
 			},
 		},
 		{
 			Name:                  "Cleaning up a DETONATED technique and terraform destroy fails",
-			Technique:             &stratus.AttackTechnique{ID: "foo", PrerequisitesTerraformCode: []byte("foo)")},
-			InitialTechniqueState: stratus.AttackTechniqueStatusDetonated,
+			Technique:             &domain.AttackTechnique{ID: "foo", PrerequisitesTerraformCode: []byte("foo)")},
+			InitialTechniqueState: domain.AttackTechniqueStatusDetonated,
 			TerraformDestroyFails: true,
 			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, err error) {
 				assert.NotNil(t, err, "terraform destroy error should be propagated")
 
 				// The technique should not have been marked as properly cleaned up
-				state.AssertNotCalled(t, "SetTechniqueState", stratus.AttackTechniqueState(stratus.AttackTechniqueStatusCold))
+				state.AssertNotCalled(t, "SetTechniqueState", domain.AttackTechniqueState(domain.AttackTechniqueStatusCold))
 			},
 		},
 		{
 			Name:                  "Cleaning up a DETONATED technique and revert fails",
-			Technique:             &stratus.AttackTechnique{ID: "foo"},
-			InitialTechniqueState: stratus.AttackTechniqueStatusDetonated,
+			Technique:             &domain.AttackTechnique{ID: "foo"},
+			InitialTechniqueState: domain.AttackTechniqueStatusDetonated,
 			RevertFails:           true,
 			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, err error) {
 				assert.NotNil(t, err, "revert error should be propagated")
 
 				// The technique should not have been marked as properly cleaned up
-				state.AssertNotCalled(t, "SetTechniqueState", stratus.AttackTechniqueState(stratus.AttackTechniqueStatusCold))
+				state.AssertNotCalled(t, "SetTechniqueState", domain.AttackTechniqueState(domain.AttackTechniqueStatusCold))
 			},
 		},
 	}
@@ -412,7 +412,7 @@ func TestRunnerCleanup(t *testing.T) {
 			terraform.On("TerraformDestroy", mock.Anything).Return(nil)
 		}
 		if scenario[i].RevertFails {
-			scenario[i].Technique.Revert = func(map[string]string) error {
+			scenario[i].Technique.Revert = func(domain.ProvidersFactory, map[string]string) error {
 				return errors.New("nope")
 			}
 		}
@@ -422,7 +422,7 @@ func TestRunnerCleanup(t *testing.T) {
 			TerraformManager: terraform,
 			StateManager:     state,
 		}
-		runner.initialize()
+		runner.Initialize()
 		err := runner.CleanUp()
 		t.Run(scenario[i].Name, func(t *testing.T) { scenario[i].CheckExpectations(t, terraform, state, err) })
 	}

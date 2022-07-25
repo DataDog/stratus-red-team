@@ -6,8 +6,8 @@ import (
 	"errors"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/lambda"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
 )
@@ -16,7 +16,7 @@ import (
 var tf []byte
 
 func init() {
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&domain.AttackTechnique{
 		ID:           "aws.persistence.lambda-backdoor-function",
 		FriendlyName: "Backdoor Lambda Function Through Resource-Based Policy",
 		Description: `
@@ -36,7 +36,7 @@ Detonation:
 - Through [IAM Access Analyzer](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-resources.html#access-analyzer-lambda), which triggers a finding when permissions are added to a Lambda function making it 
 public or accessible from another account.
 `,
-		Platform:                   stratus.AWS,
+		Platform:                   domain.AWS,
 		IsIdempotent:               false, // lambda:AddPermissions cannot be called multiple times with the same statement ID
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence},
 		PrerequisitesTerraformCode: tf,
@@ -47,8 +47,8 @@ public or accessible from another account.
 
 var policyStatementId = "backdoor"
 
-func detonate(params map[string]string) error {
-	lambdaClient := lambda.NewFromConfig(providers.AWS().GetConnection())
+func detonate(providers domain.ProvidersFactory, params map[string]string) error {
+	lambdaClient := lambda.NewFromConfig(providers.GetAWSProvider().GetConnection())
 	lambdaFunctionName := params["lambda_function_name"]
 
 	log.Println("Backdooring the resource-based policy of the Lambda function " + lambdaFunctionName)
@@ -68,8 +68,8 @@ func detonate(params map[string]string) error {
 	return nil
 }
 
-func revert(params map[string]string) error {
-	lambdaClient := lambda.NewFromConfig(providers.AWS().GetConnection())
+func revert(providers domain.ProvidersFactory, params map[string]string) error {
+	lambdaClient := lambda.NewFromConfig(providers.GetAWSProvider().GetConnection())
 	lambdaFunctionName := params["lambda_function_name"]
 
 	log.Println("Removing the backdoor statement in the resource-based policy of the Lambda function " + lambdaFunctionName)

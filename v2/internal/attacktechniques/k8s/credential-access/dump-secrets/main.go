@@ -4,8 +4,8 @@ import (
 	"context"
 	_ "embed"
 	"errors"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"log"
@@ -14,10 +14,10 @@ import (
 
 func init() {
 	const codeBlock = "```"
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&domain.AttackTechnique{
 		ID:                 "k8s.credential-access.dump-secrets",
 		FriendlyName:       "Dump All Secrets",
-		Platform:           stratus.Kubernetes,
+		Platform:           domain.Kubernetes,
 		IsIdempotent:       true,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.CredentialAccess},
 		Description: `
@@ -76,8 +76,8 @@ Some built-in Kubernetes components might need to be excluded from such a detect
 	})
 }
 
-func detonate(map[string]string) error {
-	client := providers.K8s().GetClient()
+func detonate(providers domain.ProvidersFactory, params map[string]string) error {
+	client := providers.GetK8sProvider().GetClient()
 
 	log.Println("Attempting to dump secrets in all namespaces")
 	result, err := client.CoreV1().Secrets("").List(context.Background(), metav1.ListOptions{Limit: int64(1000)})

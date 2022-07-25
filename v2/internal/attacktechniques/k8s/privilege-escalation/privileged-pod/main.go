@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 	"github.com/aws/smithy-go/ptr"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	v1 "k8s.io/api/core/v1"
 	"log"
@@ -21,10 +21,10 @@ var tf []byte
 const codeBlock = "```"
 
 func init() {
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&domain.AttackTechnique{
 		ID:                 "k8s.privilege-escalation.privileged-pod",
 		FriendlyName:       "Run a Privileged Pod",
-		Platform:           stratus.Kubernetes,
+		Platform:           domain.Kubernetes,
 		IsIdempotent:       false,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.PrivilegeEscalation},
 		Description: `
@@ -88,8 +88,8 @@ Sample event (shortened):
 	})
 }
 
-func detonate(params map[string]string) error {
-	client := providers.K8s().GetClient()
+func detonate(providers domain.ProvidersFactory, params map[string]string) error {
+	client := providers.GetK8sProvider().GetClient()
 	namespace := params["namespace"]
 	podSpec := podSpec(namespace)
 
@@ -103,8 +103,8 @@ func detonate(params map[string]string) error {
 	return nil
 }
 
-func revert(params map[string]string) error {
-	client := providers.K8s().GetClient()
+func revert(providers domain.ProvidersFactory, params map[string]string) error {
+	client := providers.GetK8sProvider().GetClient()
 	namespace := params["namespace"]
 	podSpec := podSpec(namespace)
 

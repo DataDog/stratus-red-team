@@ -2,8 +2,7 @@ package main
 
 import (
 	"errors"
-	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
-	"github.com/datadog/stratus-red-team/v2/pkg/stratus/runner"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/spf13/cobra"
 	"os"
 )
@@ -42,10 +41,10 @@ func buildWarmupCmd() *cobra.Command {
 	return warmupCmd
 }
 
-func doWarmupCmd(techniques []*stratus.AttackTechnique) {
+func doWarmupCmd(techniques []*domain.AttackTechnique) {
 	VerifyPlatformRequirements(techniques)
 	workerCount := len(techniques)
-	techniquesChan := make(chan *stratus.AttackTechnique, workerCount)
+	techniquesChan := make(chan *domain.AttackTechnique, workerCount)
 	errorsChan := make(chan error, workerCount)
 	for i := 0; i < workerCount; i++ {
 		go warmupCmdWorker(techniquesChan, errorsChan)
@@ -60,9 +59,9 @@ func doWarmupCmd(techniques []*stratus.AttackTechnique) {
 	}
 }
 
-func warmupCmdWorker(techniques <-chan *stratus.AttackTechnique, errors chan<- error) {
+func warmupCmdWorker(techniques <-chan *domain.AttackTechnique, errors chan<- error) {
 	for technique := range techniques {
-		stratusRunner := runner.NewRunner(technique, forceWarmup)
+		stratusRunner := stratusRedTeam.NewRunner(technique, forceWarmup)
 		_, err := stratusRunner.WarmUp()
 		errors <- err
 	}

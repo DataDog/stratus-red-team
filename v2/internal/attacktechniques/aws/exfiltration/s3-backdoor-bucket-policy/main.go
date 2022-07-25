@@ -5,8 +5,8 @@ import (
 	_ "embed"
 	"fmt"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
 )
@@ -18,10 +18,10 @@ var tf []byte
 var backdooredPolicy string
 
 func init() {
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&domain.AttackTechnique{
 		ID:                 "aws.exfiltration.s3-backdoor-bucket-policy",
 		FriendlyName:       "Backdoor an S3 Bucket via its Bucket Policy",
-		Platform:           stratus.AWS,
+		Platform:           domain.AWS,
 		IsIdempotent:       true,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Exfiltration},
 		Description: `
@@ -56,8 +56,8 @@ which generates a finding when an S3 bucket is made public or accessible from an
 	})
 }
 
-func detonate(params map[string]string) error {
-	s3Client := s3.NewFromConfig(providers.AWS().GetConnection())
+func detonate(providers domain.ProvidersFactory, params map[string]string) error {
+	s3Client := s3.NewFromConfig(providers.GetAWSProvider().GetConnection())
 	bucketName := params["bucket_name"]
 	policy := fmt.Sprintf(backdooredPolicy, bucketName, bucketName)
 
@@ -70,8 +70,8 @@ func detonate(params map[string]string) error {
 	return err
 }
 
-func revert(params map[string]string) error {
-	s3Client := s3.NewFromConfig(providers.AWS().GetConnection())
+func revert(providers domain.ProvidersFactory, params map[string]string) error {
+	s3Client := s3.NewFromConfig(providers.GetAWSProvider().GetConnection())
 	bucketName := params["bucket_name"]
 
 	log.Println("Removing malicious bucket policy on " + bucketName)

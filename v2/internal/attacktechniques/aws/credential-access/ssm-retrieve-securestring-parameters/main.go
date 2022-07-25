@@ -5,8 +5,8 @@ import (
 	_ "embed"
 	"errors"
 	"github.com/aws/aws-sdk-go-v2/service/ssm"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
 	"strconv"
@@ -17,7 +17,7 @@ import (
 var tf []byte
 
 func init() {
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&domain.AttackTechnique{
 		ID:           "aws.credential-access.ssm-retrieve-securestring-parameters",
 		FriendlyName: "Retrieve And Decrypt SSM Parameters",
 		Description: `
@@ -43,7 +43,7 @@ The following may be use to tune the detection, or validate findings:
 - Principals who do not usually call ssm:GetParameter(s)
 - Attempts to call ssm:GetParameter(s) resulting in access denied errors
 `,
-		Platform:                   stratus.AWS,
+		Platform:                   domain.AWS,
 		IsIdempotent:               true,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.CredentialAccess},
 		PrerequisitesTerraformCode: tf,
@@ -51,8 +51,8 @@ The following may be use to tune the detection, or validate findings:
 	})
 }
 
-func detonate(map[string]string) error {
-	ssmClient := ssm.NewFromConfig(providers.AWS().GetConnection())
+func detonate(providers domain.ProvidersFactory, params map[string]string) error {
+	ssmClient := ssm.NewFromConfig(providers.GetAWSProvider().GetConnection())
 
 	log.Println("Running ssm:DescribeParameters and ssm:GetParameters by batch of 10 to find all SSM Parameters in the current region")
 	paginator := ssm.NewDescribeParametersPaginator(ssmClient, &ssm.DescribeParametersInput{}, func(options *ssm.DescribeParametersPaginatorOptions) {

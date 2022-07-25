@@ -7,8 +7,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/cloudtrail"
 	"github.com/aws/aws-sdk-go-v2/service/cloudtrail/types"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/domain"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
 )
@@ -17,10 +17,10 @@ import (
 var tf []byte
 
 func init() {
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
+	stratus.GetRegistry().RegisterAttackTechnique(&domain.AttackTechnique{
 		ID:                 "aws.defense-evasion.cloudtrail-event-selectors",
 		FriendlyName:       "Disable CloudTrail Logging Through Event Selectors",
-		Platform:           stratus.AWS,
+		Platform:           domain.AWS,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.DefenseEvasion},
 		Description: `
 Disrupt CloudTrail Logging by creating an event selector on the Trail, filtering out all management events.
@@ -45,8 +45,8 @@ Identify when event selectors of a CloudTrail trail are updated, through CloudTr
 	})
 }
 
-func detonate(params map[string]string) error {
-	cloudtrailClient := cloudtrail.NewFromConfig(providers.AWS().GetConnection())
+func detonate(providers domain.ProvidersFactory, params map[string]string) error {
+	cloudtrailClient := cloudtrail.NewFromConfig(providers.GetAWSProvider().GetConnection())
 	trailName := params["cloudtrail_trail_name"]
 
 	log.Println("Applying event selector on CloudTrail trail " + trailName + " to disable logging management and data events")
@@ -72,8 +72,8 @@ func detonate(params map[string]string) error {
 	return nil
 }
 
-func revert(params map[string]string) error {
-	cloudtrailClient := cloudtrail.NewFromConfig(providers.AWS().GetConnection())
+func revert(providers domain.ProvidersFactory, params map[string]string) error {
+	cloudtrailClient := cloudtrail.NewFromConfig(providers.GetAWSProvider().GetConnection())
 	trailName := params["cloudtrail_trail_name"]
 
 	log.Println("Reverting event selector on CloudTrail trail " + trailName)
