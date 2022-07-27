@@ -8,9 +8,9 @@ import (
 
 	"encoding/base64"
 
-	"github.com/datadog/stratus-red-team/internal/providers"
-	"github.com/datadog/stratus-red-team/pkg/stratus"
-	"github.com/datadog/stratus-red-team/pkg/stratus/mitreattack"
+	"github.com/datadog/stratus-red-team/v2/internal/providers"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	iam "google.golang.org/api/iam/v1"
 )
 
