@@ -21,10 +21,14 @@ func TestRegistryFiltering(t *testing.T) {
 	registry.RegisterAttackTechnique(&AttackTechnique{ID: "foo", Platform: AWS, MitreAttackTactics: []mitreattack.Tactic{mitreattack.Persistence}})
 	registry.RegisterAttackTechnique(&AttackTechnique{ID: "bar", Platform: AWS})
 	registry.RegisterAttackTechnique(&AttackTechnique{ID: "baz", Platform: Kubernetes, MitreAttackTactics: []mitreattack.Tactic{mitreattack.PrivilegeEscalation}})
+	registry.RegisterAttackTechnique(&AttackTechnique{ID: "qux", Platform: GCP, MitreAttackTactics: []mitreattack.Tactic{mitreattack.Discovery}})
 
 	assert.Len(t, registry.GetAttackTechniques(&AttackTechniqueFilter{Platform: AWS}), 2)
 	assert.Len(t, registry.GetAttackTechniques(&AttackTechniqueFilter{Platform: Kubernetes}), 1)
+	assert.Len(t, registry.GetAttackTechniques(&AttackTechniqueFilter{Platform: GCP}), 1)
 	assert.Len(t, registry.GetAttackTechniques(&AttackTechniqueFilter{Tactic: mitreattack.Persistence}), 1)
 	assert.Len(t, registry.GetAttackTechniques(&AttackTechniqueFilter{Tactic: mitreattack.Execution}), 0)
 	assert.Len(t, registry.GetAttackTechniques(&AttackTechniqueFilter{Tactic: mitreattack.PrivilegeEscalation}), 1)
+	assert.Len(t, registry.GetAttackTechniques(&AttackTechniqueFilter{Tactic: mitreattack.Discovery}), 1)
+
 }

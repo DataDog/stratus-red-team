@@ -138,12 +138,25 @@ $ az account list
 export AZURE_SUBSCRIPTION_ID=45e0ad3f-ff94-499a-a2f0-bbb884e9c4a3
 ```
 
-
 !!! Note
 
     When using Stratus Red Team with Azure, the location in which resources are created cannot be configured and is
     fixed to `West US` (California). See why [here](https://github.com/DataDog/stratus-red-team/discussions/125).
 
+
+### GCP
+
+- Use the [gcloud CLI](https://cloud.google.com/sdk/gcloud) to authenticate against GCP:
+
+```bash
+gcloud auth application-default login
+```
+
+- Then, set your project ID:
+
+```bash
+export GOOGLE_PROJECT=your-project-id
+```
 
 ### Kubernetes
 
