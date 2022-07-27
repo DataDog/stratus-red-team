@@ -120,6 +120,8 @@ func FormatPlatformName(platform stratus.Platform) string {
 		return "AWS"
 	case stratus.Azure:
 		return "Azure"
+	case stratus.GCP:
+		return "GCP"
 	case stratus.Kubernetes:
 		return "Kubernetes"
 	}
