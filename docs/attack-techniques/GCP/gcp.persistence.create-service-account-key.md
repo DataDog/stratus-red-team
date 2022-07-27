@@ -13,6 +13,7 @@ Platform: GCP
 
 
 - Persistence
+- Privilege Escalation
 
 ## Description
 
@@ -26,6 +27,11 @@ Establishes persistence by creating a service account key on an existing service
 <span style="font-variant: small-caps;">Detonation</span>:
 
 - Create a new key for the service account
+
+References:
+
+- https://expel.com/blog/incident-report-spotting-an-attacker-in-gcp/
+- https://rhinosecuritylabs.com/gcp/privilege-escalation-google-cloud-platform-part-1/
 
 
 ## Instructions
