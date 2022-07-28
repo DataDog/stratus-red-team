@@ -21,18 +21,24 @@ func init() {
 		ID:           "gcp.persistence.create-admin-service-account",
 		FriendlyName: "Create an Admin GCP Service Account",
 		Description: `
-Establishes persistence by creating X
+Establishes persistence by creating a new service account and assigning it 
+<code>owner</code> permissions inside the current GCP project.
 
 Warm-up: None
 
 Detonation:
 
-- TODO
+- Create a service account
+- Update the current GCP project's IAM policy to bind the service account to the <code>owner</code> role'
 
-References: TODO
+References:
+- https://about.gitlab.com/blog/2020/02/12/plundering-gcp-escalating-privileges-in-google-cloud-platform/
 `,
 		Detection: `
-Using GCP Admin Activity audit logs event <code>TODO</code>.
+Using the following GCP Admin Activity audit logs events:
+
+- <code>google.iam.admin.v1.CreateServiceAccount</code>
+- <code>SetIamPolicy</code> with <code>resource.type=project</code>
 `,
 		Platform:                   stratus.GCP,
 		IsIdempotent:               false,
@@ -44,7 +50,7 @@ Using GCP Admin Activity audit logs event <code>TODO</code>.
 }
 
 // Note: `roles/owner` cannot be granted through the API
-const roleToGrant = "roles/editor"
+const roleToGrant = "roles/owner"
 
 func detonate(params map[string]string) error {
 	gcp := providers.GCP()
@@ -80,7 +86,7 @@ func createServiceAccount(gcp *providers.GcpProvider, serviceAccountName string)
 	if err != nil {
 		return errors.New("Unable to create service account: " + err.Error())
 	}
-	log.Println("Successfuly created service account " + serviceAccountEmail)
+	log.Println("Successfully created service account " + serviceAccountEmail)
 	return nil
 }
 
@@ -95,29 +101,29 @@ func assignProjectRole(gcp *providers.GcpProvider, serviceAccountEmail string, r
 		return errors.New("unable to instantiate the GCP cloud resource manager: " + err.Error())
 	}
 
-	policyResponse, err := resourceManager.Projects.GetIamPolicy(gcp.GetProjectId(), &cloudresourcemanager.GetIamPolicyRequest{}).Do()
+	projectPolicy, err := resourceManager.Projects.GetIamPolicy(gcp.GetProjectId(), &cloudresourcemanager.GetIamPolicyRequest{}).Do()
 	if err != nil {
 		return err
 	}
 	var bindingFound = false
 	bindingValue := fmt.Sprintf("serviceAccount:" + serviceAccountEmail)
-	for _, b := range policyResponse.Bindings {
-		if b.Role == roleToGrant {
+	for _, binding := range projectPolicy.Bindings {
+		if binding.Role == roleToGrant {
 			bindingFound = true
 			log.Println("Adding the service account to an existing binding in the project's IAM policy to grant " + roleToGrant)
-			b.Members = append(b.Members, bindingValue)
+			binding.Members = append(binding.Members, bindingValue)
 		}
 	}
 	if !bindingFound {
 		log.Println("Creating a new binding in the project's IAM policy to grant " + roleToGrant)
-		policyResponse.Bindings = append(policyResponse.Bindings, &cloudresourcemanager.Binding{
+		projectPolicy.Bindings = append(projectPolicy.Bindings, &cloudresourcemanager.Binding{
 			Role:    roleToGrant,
 			Members: []string{bindingValue},
 		})
 	}
 
 	_, err = resourceManager.Projects.SetIamPolicy(gcp.GetProjectId(), &cloudresourcemanager.SetIamPolicyRequest{
-		Policy: policyResponse,
+		Policy: projectPolicy,
 	}).Do()
 
 	if err != nil {
@@ -151,14 +157,14 @@ func unassignProjectRole(gcp *providers.GcpProvider, serviceAccountEmail string,
 		return
 	}
 
-	policyResponse, err := resourceManager.Projects.GetIamPolicy(gcp.GetProjectId(), &cloudresourcemanager.GetIamPolicyRequest{}).Do()
+	projectPolicy, err := resourceManager.Projects.GetIamPolicy(gcp.GetProjectId(), &cloudresourcemanager.GetIamPolicyRequest{}).Do()
 	if err != nil {
 		log.Println("warning: unable to retrieve the project's IAM policy")
 		return
 	}
 	var bindingFound = false
 	bindingValue := fmt.Sprintf("serviceAccount:" + serviceAccountEmail)
-	for _, binding := range policyResponse.Bindings {
+	for _, binding := range projectPolicy.Bindings {
 		if binding.Role == roleToGrant {
 			index := indexOf(binding.Members, bindingValue)
 			if index > -1 {
@@ -170,7 +176,7 @@ func unassignProjectRole(gcp *providers.GcpProvider, serviceAccountEmail string,
 	if bindingFound {
 		log.Println("Updating project's IAM policy to remove reference to the service account")
 		_, err := resourceManager.Projects.SetIamPolicy(gcp.GetProjectId(), &cloudresourcemanager.SetIamPolicyRequest{
-			Policy: policyResponse,
+			Policy: projectPolicy,
 		}).Do()
 		if err != nil {
 			log.Println("Warning: unable to update project's IAM policy: " + err.Error())
