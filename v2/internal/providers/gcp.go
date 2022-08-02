@@ -12,7 +12,7 @@ import (
 // TF and GCP defines multiple environment variables for this
 // https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/provider_reference#full-reference
 
-func IsProjectEnvVarSet() bool {
+func getProjectId() string {
 	gcloudProjEnvVars := []string{
 		"GOOGLE_PROJECT",
 		"GOOGLE_CLOUD_PROJECT",
@@ -20,19 +20,21 @@ func IsProjectEnvVarSet() bool {
 		"CLOUDSDK_CORE_PROJECT",
 	}
 	for _, key := range gcloudProjEnvVars {
-		if _, hasEnvVariable := os.LookupEnv(key); hasEnvVariable {
-			return true
+		if projectId, hasEnvVariable := os.LookupEnv(key); hasEnvVariable {
+			return projectId
 		}
 	}
-	return false
+	return ""
 }
 
 type GcpProvider struct {
 	UniqueCorrelationId uuid.UUID
+	ProjectId           string
 }
 
 var gcpProvider = GcpProvider{
 	UniqueCorrelationId: UniqueExecutionId,
+	ProjectId:           getProjectId(),
 }
 
 func GCP() *GcpProvider {
@@ -46,5 +48,9 @@ func (m *GcpProvider) Options() option.ClientOption {
 func (m *GcpProvider) IsAuthenticated() bool {
 	ctx := context.Background()
 	_, err := iam.NewService(ctx)
-	return err == nil && IsProjectEnvVarSet()
+	return err == nil && m.ProjectId != ""
+}
+
+func (m *GcpProvider) GetProjectId() string {
+	return m.ProjectId
 }
