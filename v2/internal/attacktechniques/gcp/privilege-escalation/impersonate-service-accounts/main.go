@@ -35,6 +35,13 @@ Detonation:
 - Attempt to impersonate each of the service accounts
 - One impersonation request will succeed, simulating a successful privilege escalation
 
+
+!!! info
+
+    GCP takes a few seconds to propagate the new <code>roles/iam.serviceAccountTokenCreator</code> role binding to the current user.
+
+    It is recommended to first warm up this attack technique (<code>stratus warmup ...</code>), wait for 30 seconds, then detonate it.
+
 References:
 
 - https://about.gitlab.com/blog/2020/02/12/plundering-gcp-escalating-privileges-in-google-cloud-platform/
@@ -161,6 +168,7 @@ func detonate(params map[string]string) error {
 
 	log.Println("Attempting to impersonate each of the " + strconv.Itoa(numServiceAccounts) + " service accounts")
 
+	success := false
 	for _, serviceAccountEmail := range serviceAccountEmails {
 		accessToken, err := impersonateServiceAccount(iamCredentialsClient, serviceAccountEmail)
 		if err != nil {
@@ -171,7 +179,13 @@ func detonate(params map[string]string) error {
 			}
 		} else {
 			log.Printf("Successfully retrieved an access token for %s: \n  %s\n", serviceAccountEmail, getPrintableAccessToken(accessToken))
+			success = true
 		}
+	}
+
+	if !success {
+		log.Println("Note: None of the impersonation attempts succeeded. " +
+			"It might take a few seconds for GCP to take the permissions into account; try again in a few seconds!")
 	}
 	return nil
 }

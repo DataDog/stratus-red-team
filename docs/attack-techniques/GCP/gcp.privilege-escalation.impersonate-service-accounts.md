@@ -30,6 +30,13 @@ temporary credentials allowing to act as a service account.
 - Attempt to impersonate each of the service accounts
 - One impersonation request will succeed, simulating a successful privilege escalation
 
+
+!!! info
+
+    GCP takes a few seconds to propagate the new <code>roles/iam.serviceAccountTokenCreator</code> role binding to the current user.
+
+    It is recommended to first warm up this attack technique (<code>stratus warmup ...</code>), wait for 30 seconds, then detonate it.
+
 References:
 
 - https://about.gitlab.com/blog/2020/02/12/plundering-gcp-escalating-privileges-in-google-cloud-platform/
