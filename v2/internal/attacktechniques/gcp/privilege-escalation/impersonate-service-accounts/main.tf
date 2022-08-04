@@ -14,7 +14,7 @@ locals {
 }
 
 resource "random_string" "suffix" {
-  count = local.num-service-accounts
+  count       = local.num-service-accounts
   length      = 8
   special     = false
   min_lower   = 4
@@ -23,8 +23,8 @@ resource "random_string" "suffix" {
 
 // Create N service accounts
 resource "google_service_account" "service_account" {
-  count = local.num-service-accounts
-  account_id = format("stratus-red-team-%s", random_string.suffix[count.index].result)
+  count       = local.num-service-accounts
+  account_id  = format("stratus-red-team-%s", random_string.suffix[count.index].result)
   description = "Service account used by Stratus Red Team for gcp.privilege-escalation.impersonate-service-accounts"
 }
 
@@ -32,7 +32,7 @@ resource "google_service_account" "service_account" {
 // Allow the current user to impersonate a single of the created service accounts
 resource "google_service_account_iam_policy" "iam_policy" {
   service_account_id = google_service_account.service_account[local.num-service-accounts - 1].name
-  policy_data = data.google_iam_policy.allow-impersonation.policy_data
+  policy_data        = data.google_iam_policy.allow-impersonation.policy_data
 }
 
 data "google_iam_policy" "allow-impersonation" {
