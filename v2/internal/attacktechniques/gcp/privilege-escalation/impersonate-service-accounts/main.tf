@@ -37,13 +37,6 @@ resource "google_service_account_iam_policy" "iam_policy" {
 
 data "google_iam_policy" "allow-impersonation" {
   binding {
-    role = "roles/iam.serviceAccountUser"
-    members = [
-      format("user:%s", data.google_client_openid_userinfo.whoami.email)
-    ]
-  }
-
-  binding {
     role = "roles/iam.serviceAccountTokenCreator"
     members = [
       format("user:%s", data.google_client_openid_userinfo.whoami.email)
