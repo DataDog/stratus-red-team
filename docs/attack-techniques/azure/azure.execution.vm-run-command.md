@@ -26,7 +26,7 @@ References:
 
 - https://docs.microsoft.com/en-us/azure/virtual-machines/windows/run-command
 - https://docs.microsoft.com/en-us/azure/virtual-machines/linux/run-command
-- https://github.com/hausec/Azure-Attack-Matrix/blob/main/Execution/AZT201/AZT201-1.md
+- https://microsoft.github.io/Azure-Threat-Research-Matrix/Execution/AZT301/AZT301-1/
 
 <span style="font-variant: small-caps;">Warm-up</span>: 
 

@@ -29,7 +29,7 @@ By utilizing the 'CustomScriptExtension' extension on a Virtual Machine, an atta
 References:
 
 - https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/custom-script-windows
-- https://github.com/hausec/Azure-Attack-Matrix/blob/main/Execution/AZT201/AZT201-2.md
+- https://microsoft.github.io/Azure-Threat-Research-Matrix/Execution/AZT301/AZT301-2/
 
 Warm-up: 
 
