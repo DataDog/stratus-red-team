@@ -84,6 +84,7 @@ func (m *Runner) WarmUp() (map[string]string, error) {
 	m.setState(stratus.AttackTechniqueStatusWarm)
 
 	if display, ok := outputs["display"]; ok {
+		display := strings.ReplaceAll(display, "\\n", "\n")
 		log.Println(display)
 	}
 	return outputs, err
