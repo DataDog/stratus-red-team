@@ -84,7 +84,7 @@ You can then clean up any leftovers from the technique, which in this case will 
 stratus cleanup aws.exfiltration.ec2-share-ebs-snapshot
 ```
 
-For more information, see [Usage](./usage.md), [Examples](./examples.md) and the [Command Reference](./commands/).
+For more information, see [Usage](./usage.md), [Examples](./examples.md) and the [Command Reference](./commands/list/).
 
 ## Connecting to your cloud account
 
