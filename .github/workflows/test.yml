@@ -18,7 +18,13 @@ jobs:
       - name: Harden Runner
         uses: step-security/harden-runner@v1
         with:
-          egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+          egress-policy: block
+          allowed-endpoints:
+            pipelines.actions.githubusercontent.com:443
+            github.com:443
+            proxy.golang.org:443
+            storage.googleapis.com:443
+            api.snapcraft.io:443
 
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -37,7 +43,17 @@ jobs:
       - name: Harden Runner
         uses: step-security/harden-runner@v1
         with:
-          egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+          egress-policy: block
+          allowed-endpoints:
+            github.com
+            registry-1.docker.io
+            auth.docker.io
+            pipelines.actions.githubusercontent.com
+            production.cloudflare.docker.com
+            dl-cdn.alpinelinux.org
+            proxy.golang.org
+            storage.googleapis.com
+            api.snapcraft.io
 
       - name: Checkout repository
         uses: actions/checkout@v2
