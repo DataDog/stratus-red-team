@@ -2,6 +2,7 @@ package stratus
 
 import (
 	"errors"
+
 	"github.com/datadog/stratus-red-team/v2/internal/providers"
 )
 
@@ -32,6 +33,12 @@ func EnsureAuthenticated(platform Platform) error {
 		if !providers.K8s().IsAuthenticated() {
 			return errors.New("You do not have a kubeconfig set up, or you do not have proper permissions for " +
 				"this cluster. Make sure you have proper credentials set in " + providers.GetKubeConfigPath())
+		}
+	case GCP:
+		if !providers.GCP().IsAuthenticated() {
+			return errors.New("you are not authenticated against GCP, or you have not set your project. " +
+				"Make sure you are authenticated against GCP and you have set your GCP Project ID in your environment variables" +
+				" (export GOOGLE_PROJECT=xxx)")
 		}
 	default:
 		return errors.New("unhandled platform " + string(platform))
