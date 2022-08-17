@@ -4,13 +4,18 @@ on:
     branches:
       - main
     paths:
-      - 'docs/**'
+      - "docs/**"
       - mkdocs.yml
-      - 'tools/**'
+      - "tools/**"
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@v1
+        with:
+          egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
         with:

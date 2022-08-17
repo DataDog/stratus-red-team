@@ -3,7 +3,7 @@ name: Tests
 on:
   push:
     branches:
-    - main
+      - main
   pull_request:
     branches:
       - main
@@ -15,6 +15,16 @@ jobs:
   unit-test:
     runs-on: ubuntu-latest
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@v1
+        with:
+          egress-policy: block
+          allowed-endpoints:
+            pipelines.actions.githubusercontent.com:443
+            github.com:443
+            proxy.golang.org:443
+            storage.googleapis.com:443
+
       - name: Checkout repository
         uses: actions/checkout@v2
 
@@ -29,6 +39,20 @@ jobs:
   build-docker:
     runs-on: ubuntu-latest
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@v1
+        with:
+          egress-policy: block
+          allowed-endpoints:
+            github.com:443
+            registry-1.docker.io:443
+            auth.docker.io:443
+            pipelines.actions.githubusercontent.com:443
+            production.cloudflare.docker.com:443
+            dl-cdn.alpinelinux.org:443
+            proxy.golang.org:443
+            storage.googleapis.com
+
       - name: Checkout repository
         uses: actions/checkout@v2
 
