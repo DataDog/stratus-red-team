@@ -13,15 +13,20 @@ jobs:
     name: "Run Go static analysis"
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-      with:
-        fetch-depth: 1
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: 1.18
-    - uses: dominikh/staticcheck-action@v1.2.0
-      with:
-        version: "2022.1"
-        install-go: false
-        working-directory: "./v2"
+      - name: Harden Runner
+        uses: step-security/harden-runner@v1
+        with:
+          egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.18
+      - uses: dominikh/staticcheck-action@v1.2.0
+        with:
+          version: "2022.1"
+          install-go: false
+          working-directory: "./v2"
