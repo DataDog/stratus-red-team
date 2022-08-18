@@ -9,6 +9,7 @@ import (
 	"encoding/asn1"
 	"encoding/pem"
 	"errors"
+	"fmt"
 	"log"
 	"time"
 
@@ -81,6 +82,8 @@ func detonate(map[string]string) error {
 			Request: pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE REQUEST", Bytes: bytes}),
 		},
 	}
+
+	log.Println("Issuing certificate signing request")
 	_, err = client.CertificatesV1().CertificateSigningRequests().Create(context.Background(), csr, v1.CreateOptions{})
 	if err != nil {
 		return errors.New("Unable to create certificate signing request: " + err.Error())
@@ -117,9 +120,29 @@ func detonate(map[string]string) error {
 	}
 
 	log.Printf("Certificate successfully issued to %s, by %s, valid until %s\n", issuedCert.Subject.CommonName, issuedCert.Issuer.CommonName, issuedCert.NotAfter.String())
+	fmt.Println(dumpPrivateKey(key))
+	fmt.Println(dumpCertificate(issuedCert))
+
 	err = client.CertificatesV1().CertificateSigningRequests().Delete(context.Background(), csr.GetName(), v1.DeleteOptions{})
 	if err != nil {
 		return errors.New("Unable to delete CSR: " + err.Error())
 	}
 	return nil
+}
+
+func dumpPrivateKey(key *rsa.PrivateKey) string {
+	return string(pem.EncodeToMemory(
+		&pem.Block{
+			Type:  "RSA PRIVATE KEY",
+			Bytes: x509.MarshalPKCS1PrivateKey(key),
+		},
+	))
+}
+
+func dumpCertificate(cert *x509.Certificate) string {
+	return string(pem.EncodeToMemory(
+		&pem.Block{
+			Type:  "CERTIFICATE",
+			Bytes: cert.Raw,
+		}))
 }
