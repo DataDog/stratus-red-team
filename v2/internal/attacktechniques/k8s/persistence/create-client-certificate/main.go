@@ -31,12 +31,15 @@ func init() {
 		IsIdempotent:       true,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Persistence},
 		Description: `
-Creates a client certificate for a privileged user which can be used to authenticate to the cluster.
+Creates a client certificate for a privileged user. This client certificate can be used to authenticate to the cluster.
+
+Note: This attack technique does not succeed on AWS EKS. Due to apparent [undocumented behavior](https://github.com/aws/containers-roadmap/issues/1604), 
+the managed EKS control plane does not issue a certificate for the certificate signing request (CSR), even when approved. However, it is still relevant
+to simulate attacker behavior.
 `,
 		Detection: `
 Using Kubernetes API server audit logs. In particular, look for creation and approval of CSR objects, which do 
 not relate to standard cluster operation (e.g. Kubelet certificate issuance).
-
 `,
 		Detonate: detonate,
 	})
@@ -111,7 +114,8 @@ func detonate(map[string]string) error {
 	//For example EKS. We clean up the CSR first then exit.
 	if pb == nil {
 		_ = client.CertificatesV1().CertificateSigningRequests().Delete(context.Background(), csr.GetName(), v1.DeleteOptions{})
-		return errors.New("unable to retrieve client certificate signing did not happen")
+		return errors.New("unable to retrieve client certificate - signing did not happen. " +
+			"Note that this attack technique cannot be successful for EKS, see https://github.com/aws/containers-roadmap/issues/1604")
 	}
 
 	issuedCert, err := x509.ParseCertificate(pb.Bytes)
