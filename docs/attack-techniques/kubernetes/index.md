@@ -15,6 +15,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 - [Create Admin ClusterRole](./k8s.persistence.create-admin-clusterrole.md)
 
+- [Create Client Certificate Credential](./k8s.persistence.create-client-certificate.md)
+
 - [Create Long-Lived Token](./k8s.persistence.create-token.md)
 
 

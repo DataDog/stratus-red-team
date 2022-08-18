@@ -45,6 +45,7 @@ This page contains the list of all Stratus Attack Techniques.
 | [Dump All Secrets](./kubernetes/k8s.credential-access.dump-secrets.md) | [Kubernetes](./kubernetes/index.md) | Credential Access |
 | [Steal Pod Service Account Token](./kubernetes/k8s.credential-access.steal-serviceaccount-token.md) | [Kubernetes](./kubernetes/index.md) | Credential Access |
 | [Create Admin ClusterRole](./kubernetes/k8s.persistence.create-admin-clusterrole.md) | [Kubernetes](./kubernetes/index.md) | Persistence, Privilege Escalation |
+| [Create Client Certificate Credential](./kubernetes/k8s.persistence.create-client-certificate.md) | [Kubernetes](./kubernetes/index.md) | Persistence |
 | [Create Long-Lived Token](./kubernetes/k8s.persistence.create-token.md) | [Kubernetes](./kubernetes/index.md) | Persistence |
 | [Container breakout via hostPath volume mount](./kubernetes/k8s.privilege-escalation.hostpath-volume.md) | [Kubernetes](./kubernetes/index.md) | Privilege Escalation |
 | [Privilege escalation through node/proxy permissions](./kubernetes/k8s.privilege-escalation.nodes-proxy.md) | [Kubernetes](./kubernetes/index.md) | Privilege Escalation |
