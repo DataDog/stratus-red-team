@@ -1,5 +1,6 @@
 name: generate-docs
 on:
+  workflow_dispatch: {} # allow manually triggering the workflow
   push:
     branches:
       - main
