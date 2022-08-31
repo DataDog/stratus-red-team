@@ -30,7 +30,11 @@ Detonate an attack technique using:
 stratus detonate aws.exfiltration.ec2-share-ebs-snapshot
 ```
 
-This will handle warm-up and detonation (but not clean-up - explicitly use `--clean-up` for this).
+This will handle warm-up and detonation (but not cleanup - explicitly use `--cleanup` for this).
+
+```bash
+stratus detonate aws.exfiltration.ec2-share-ebs-snapshot --cleanup
+```
 
 Alternatively, you can handle warm-up and detonation independently:
 
@@ -39,7 +43,7 @@ stratus warmup aws.exfiltration.ec2-share-ebs-snapshot
 stratus detonate aws.exfiltration.ec2-share-ebs-snapshot
 ```
 
-Cleanup can be done through:
+Cleanup can also be done through:
 
 ```bash
 stratus cleanup aws.exfiltration.ec2-share-ebs-snapshot
