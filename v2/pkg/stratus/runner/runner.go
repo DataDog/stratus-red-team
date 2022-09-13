@@ -159,7 +159,11 @@ func (m *Runner) CleanUp() error {
 	if m.Technique.Revert != nil && m.GetState() == stratus.AttackTechniqueStatusDetonated {
 		err := m.Revert()
 		if err != nil {
-			return errors.New("unable to revert detonation of " + m.Technique.ID + ": " + err.Error())
+			if m.ShouldForce {
+				log.Println("Warning: failed to revert detonation of " + m.Technique.ID + ". Ignoring and cleaning up anyway as --force was used.")
+			} else {
+				return errors.New("unable to revert detonation of " + m.Technique.ID + " before cleaning up (use --force to cleanup anyway): " + err.Error())
+			}
 		}
 	}
 
