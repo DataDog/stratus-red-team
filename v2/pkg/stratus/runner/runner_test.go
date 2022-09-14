@@ -394,6 +394,22 @@ func TestRunnerCleanup(t *testing.T) {
 				state.AssertNotCalled(t, "SetTechniqueState", stratus.AttackTechniqueState(stratus.AttackTechniqueStatusCold))
 			},
 		},
+		{
+			Name:                  "Cleaning up a DETONATED technique with force flag and revert fails",
+			Technique:             &stratus.AttackTechnique{ID: "foo"},
+			InitialTechniqueState: stratus.AttackTechniqueStatusDetonated,
+			ShouldForce:           true,
+			RevertFails:           true,
+			TerraformDestroyFails: false,
+			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, err error) {
+				assert.Nil(t, err, "revert error should not be propagated")
+
+				// The technique should have been marked as properly cleaned up
+				// We assume that the cleanup operation will anyway be a superset of revert, i.e. anything reverted / cleaned up in revert
+				// should also be in cleanup
+				state.AssertCalled(t, "SetTechniqueState", stratus.AttackTechniqueState(stratus.AttackTechniqueStatusCold))
+			},
+		},
 	}
 
 	for i := range scenario {
