@@ -1,4 +1,4 @@
-FROM golang:1.18.3-alpine3.16 AS builder
+FROM golang:1.19.1-alpine3.16 AS builder
 ARG VERSION=dev-snapshot
 RUN mkdir /build
 RUN apk add --update make
