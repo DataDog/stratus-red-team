@@ -22,7 +22,7 @@ jobs:
           egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
         with:
           fetch-depth: 0
       - name: Set up Go
