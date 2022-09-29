@@ -7,12 +7,12 @@ require (
 	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.0.0
 	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/compute/armcompute v1.0.0
 	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resources/armresources v1.0.0
-	github.com/aws/aws-sdk-go-v2 v1.16.7
+	github.com/aws/aws-sdk-go-v2 v1.16.16
 	github.com/aws/aws-sdk-go-v2/config v1.13.0
 	github.com/aws/aws-sdk-go-v2/credentials v1.8.0
 	github.com/aws/aws-sdk-go-v2/service/cloudtrail v1.13.0
 	github.com/aws/aws-sdk-go-v2/service/ec2 v1.26.0
-	github.com/aws/aws-sdk-go-v2/service/iam v1.14.0
+	github.com/aws/aws-sdk-go-v2/service/iam v1.18.19
 	github.com/aws/aws-sdk-go-v2/service/lambda v1.17.0
 	github.com/aws/aws-sdk-go-v2/service/organizations v1.12.0
 	github.com/aws/aws-sdk-go-v2/service/rds v1.16.0
@@ -21,7 +21,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.13.0
 	github.com/aws/aws-sdk-go-v2/service/ssm v1.20.0
 	github.com/aws/aws-sdk-go-v2/service/sts v1.14.0
-	github.com/aws/smithy-go v1.12.0
+	github.com/aws/smithy-go v1.13.3
 	github.com/fatih/color v1.13.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.3.0
@@ -41,8 +41,8 @@ require (
 	github.com/Microsoft/go-winio v0.5.0 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.1.0 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.10.0 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.14 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.8 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.23 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.17 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/ini v1.3.4 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding v1.6.0 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.7.0 // indirect
