@@ -4,6 +4,7 @@ import (
 	"context"
 	_ "embed"
 	"errors"
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/secretsmanager"
 	"github.com/aws/aws-sdk-go-v2/service/secretsmanager/types"
 	"github.com/datadog/stratus-red-team/v2/internal/providers"
@@ -53,7 +54,7 @@ func detonate(map[string]string) error {
 		Filters: []types.Filter{
 			{Key: types.FilterNameStringTypeTagKey, Values: []string{"StratusRedTeam"}},
 		},
-		MaxResults: 100,
+		MaxResults: aws.Int32(100),
 	})
 
 	if err != nil {
