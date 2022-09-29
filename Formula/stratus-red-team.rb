@@ -5,21 +5,21 @@
 class StratusRedTeam < Formula
   desc ""
   homepage "https://stratus-red-team.cloud"
-  version "2.4.1"
+  version "2.4.2"
   license "Apache-2.0"
 
   on_macos do
-    if Hardware::CPU.arm?
-      url "https://github.com/DataDog/stratus-red-team/releases/download/v2.4.1/stratus-red-team_2.4.1_Darwin_arm64.tar.gz"
-      sha256 "d186a6438bebf9a2aabeb33733d20ed087e1db36ea0e9d969b749e7833ca082d"
+    if Hardware::CPU.intel?
+      url "https://github.com/DataDog/stratus-red-team/releases/download/v2.4.2/stratus-red-team_2.4.2_Darwin_x86_64.tar.gz"
+      sha256 "cafbf4e676d55229500fba87c24e978d8cd0836ee0b4fa97c75585ee28e97107"
 
       def install
         bin.install "stratus"
       end
     end
-    if Hardware::CPU.intel?
-      url "https://github.com/DataDog/stratus-red-team/releases/download/v2.4.1/stratus-red-team_2.4.1_Darwin_x86_64.tar.gz"
-      sha256 "1f0b9d95bb6138748be10efa3ef503692e7bea0c05ce107475ba0cd34e259eb6"
+    if Hardware::CPU.arm?
+      url "https://github.com/DataDog/stratus-red-team/releases/download/v2.4.2/stratus-red-team_2.4.2_Darwin_arm64.tar.gz"
+      sha256 "07c085c534dc30ba343098ccef5cd5a5328db3971d54c808b6d7b5d15f1b0584"
 
       def install
         bin.install "stratus"
@@ -29,16 +29,16 @@ class StratusRedTeam < Formula
 
   on_linux do
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      url "https://github.com/DataDog/stratus-red-team/releases/download/v2.4.1/stratus-red-team_2.4.1_Linux_arm64.tar.gz"
-      sha256 "69273397ef1eb018def9c863347a6527bb4fcb6f1813186e0d36de219c7649f8"
+      url "https://github.com/DataDog/stratus-red-team/releases/download/v2.4.2/stratus-red-team_2.4.2_Linux_arm64.tar.gz"
+      sha256 "59f34141ee1fbf566d521e97886b37d29727d8cbdb1f1d352d34ab208524da66"
 
       def install
         bin.install "stratus"
       end
     end
     if Hardware::CPU.intel?
-      url "https://github.com/DataDog/stratus-red-team/releases/download/v2.4.1/stratus-red-team_2.4.1_Linux_x86_64.tar.gz"
-      sha256 "19b1c84f14d20592d3cf833f1e0f9ca182f7dbe09c17b2f859f98e78026087c6"
+      url "https://github.com/DataDog/stratus-red-team/releases/download/v2.4.2/stratus-red-team_2.4.2_Linux_x86_64.tar.gz"
+      sha256 "55e9943717f64f21b861b5d5a6c8d34fccaeadd5e3166a4241caeaf2ac4cff84"
 
       def install
         bin.install "stratus"
