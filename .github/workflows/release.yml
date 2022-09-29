@@ -5,19 +5,21 @@ on:
     tags:
       - "*"
 
-permissions:
-  contents: write
-
 defaults:
   run:
     working-directory: ./v2
 
+permissions:
+  contents: read
+
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@v1
+        uses: step-security/harden-runner@dd2c410b088af7c0dc8046f3ac9a8f4148492a95
         with:
           egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
 
@@ -26,12 +28,12 @@ jobs:
         with:
           fetch-depth: 0
       - name: Set up Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@bfdd3570ce990073878bf10f6b2d79082de49492
         with:
           go-version: 1.18
       - name: Run GoReleaser
         timeout-minutes: 60
-        uses: goreleaser/goreleaser-action@v3
+        uses: goreleaser/goreleaser-action@ff11ca24a9b39f2d36796d1fbd7a4e39c182630a
         with:
           distribution: goreleaser
           version: latest
