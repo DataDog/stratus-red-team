@@ -10,7 +10,7 @@ require (
 	github.com/aws/aws-sdk-go-v2 v1.16.16
 	github.com/aws/aws-sdk-go-v2/config v1.13.0
 	github.com/aws/aws-sdk-go-v2/credentials v1.8.0
-	github.com/aws/aws-sdk-go-v2/service/cloudtrail v1.13.0
+	github.com/aws/aws-sdk-go-v2/service/cloudtrail v1.18.1
 	github.com/aws/aws-sdk-go-v2/service/ec2 v1.26.0
 	github.com/aws/aws-sdk-go-v2/service/iam v1.18.19
 	github.com/aws/aws-sdk-go-v2/service/lambda v1.17.0
