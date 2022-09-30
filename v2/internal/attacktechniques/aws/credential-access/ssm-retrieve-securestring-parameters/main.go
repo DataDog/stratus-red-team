@@ -4,6 +4,7 @@ import (
 	"context"
 	_ "embed"
 	"errors"
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/ssm"
 	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
@@ -79,7 +80,7 @@ func detonate(map[string]string) error {
 
 		response, err := ssmClient.GetParameters(context.Background(), &ssm.GetParametersInput{
 			Names:          names,
-			WithDecryption: true,
+			WithDecryption: aws.Bool(true),
 		})
 		if err != nil {
 			return errors.New("unable to retrieve SSM parameters: " + err.Error())
