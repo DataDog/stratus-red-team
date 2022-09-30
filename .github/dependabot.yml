@@ -2,6 +2,7 @@ version: 2
 updates:
 - package-ecosystem: "gomod"
   directory: "/v2/"
+  open-pull-requests-limit: 20
   schedule:
     interval: "daily"
 - package-ecosystem: "docker"
