@@ -16,7 +16,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/lambda v1.17.0
 	github.com/aws/aws-sdk-go-v2/service/organizations v1.12.0
 	github.com/aws/aws-sdk-go-v2/service/rds v1.16.0
-	github.com/aws/aws-sdk-go-v2/service/rolesanywhere v1.0.0
+	github.com/aws/aws-sdk-go-v2/service/rolesanywhere v1.0.10
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.23.0
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.16.2
 	github.com/aws/aws-sdk-go-v2/service/ssm v1.20.0
