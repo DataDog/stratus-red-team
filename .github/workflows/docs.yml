@@ -28,7 +28,7 @@ jobs:
             pypi.org:443
 
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-      - uses: actions/setup-python@7f80679172b057fc5e90d70d197929d454754a5a
+      - uses: actions/setup-python@b55428b1882923874294fa556849718a1d7f2ca5
         with:
           python-version: 3.x
       - run: pip install mkdocs-material mkdocs-awesome-pages-plugin
