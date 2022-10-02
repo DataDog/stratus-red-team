@@ -48,3 +48,9 @@ func AttackTacticFromString(name string) (Tactic, error) {
 func AttackTacticToString(tactic Tactic) string {
 	return tactics[tactic]
 }
+
+// MarshalYAML implements the Marshaler interface from "gopkg.in/yaml.v3".
+// This method makes Tactic type to return a string rather than an int when marshalling to YAML.
+func (t Tactic) MarshalYAML() (interface{}, error) {
+	return tactics[t], nil
+}

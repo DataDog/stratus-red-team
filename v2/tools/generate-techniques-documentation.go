@@ -3,14 +3,16 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
-	_ "github.com/datadog/stratus-red-team/v2/pkg/stratus/loader"
-	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
 	"text/template"
+
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	_ "github.com/datadog/stratus-red-team/v2/pkg/stratus/loader"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
+	"gopkg.in/yaml.v3"
 )
 
 func main() {
@@ -107,6 +109,29 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	// Write a single index file with all techniques. File is enconded in YAML.
+	yamlIndex := filepath.Join(docsDirectory, "index.yaml")
+	if err := writeYaml(yamlIndex, index); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func writeYaml(path string, index interface{}) error {
+	// if file doesn't exist, it creates. Truncates file and open it in write only mode.
+	yamlFile, err := os.OpenFile(path, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0644)
+	if err != nil {
+		return err
+	}
+	defer yamlFile.Close()
+
+	enconder := yaml.NewEncoder(yamlFile)
+	defer enconder.Close()
+
+	if err := enconder.Encode(&index); err != nil {
+		return err
+	}
+	return nil
 }
 
 func formatTechniqueDescription(technique *stratus.AttackTechnique) {
@@ -115,18 +140,11 @@ func formatTechniqueDescription(technique *stratus.AttackTechnique) {
 }
 
 func FormatPlatformName(platform stratus.Platform) string {
-	switch platform {
-	case stratus.AWS:
-		return "AWS"
-	case stratus.Azure:
-		return "Azure"
-	case stratus.GCP:
-		return "GCP"
-	case stratus.Kubernetes:
-		return "Kubernetes"
+	n, err := platform.FormatName()
+	if err != nil {
+		log.Fatal("unknown platform " + platform)
 	}
-	log.Fatal("unknown platform " + platform)
-	return ""
+	return n
 }
 
 // Utility function

@@ -6,39 +6,39 @@ import (
 
 type AttackTechnique struct {
 	// Short identifier, e.g. aws.persistence.create-iam-user
-	ID string
+	ID string `yaml:"id"`
 
 	// Friendly-looking short name
-	FriendlyName string
+	FriendlyName string `yaml:"name"`
 
 	// Full description (multi-line)
-	Description string
+	Description string `yaml:"-"`
 
 	// Pointer and leads for detection opportunities (multi-line)
-	Detection string
+	Detection string `yaml:"-"`
 
 	// Indicates if the technique is expected to be slow to warm-up or detonate
-	IsSlow bool
+	IsSlow bool `yaml:"slow"`
 
 	// MITRE ATT&CK Tactics to which this technique maps
 	// see https://attack.mitre.org/techniques/enterprise/
-	MitreAttackTactics []mitreattack.Tactic
+	MitreAttackTactics []mitreattack.Tactic `yaml:"mitre-attack-tactic"`
 
 	// The platform of the technique, e.g. AWS
-	Platform Platform
+	Platform Platform `yaml:"platform"`
 
 	// Terraform code to apply to create the necessary prerequisites for the technique to be detonated
-	PrerequisitesTerraformCode []byte
+	PrerequisitesTerraformCode []byte `yaml:"-"`
 
 	// Detonation function
 	// Parameters are the Terraform outputs
-	Detonate func(params map[string]string) error
+	Detonate func(params map[string]string) error `yaml:"-"`
 
 	// Indicates if the detonation function is idempotent, i.e. if it can be run multiple times without reverting it
-	IsIdempotent bool
+	IsIdempotent bool `yaml:"idempotent"`
 
 	// Reversion function, to revert the side effects of a detonation
-	Revert func(params map[string]string) error
+	Revert func(params map[string]string) error `yaml:"-"`
 }
 
 func (m AttackTechnique) String() string {
