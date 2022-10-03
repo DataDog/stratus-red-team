@@ -26,7 +26,7 @@ require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.3.0
 	github.com/hashicorp/terraform-exec v0.17.3
-	github.com/jedib0t/go-pretty/v6 v6.3.9
+	github.com/jedib0t/go-pretty/v6 v6.4.0
 	github.com/spf13/cobra v1.5.0
 	github.com/stretchr/testify v1.8.0
 	k8s.io/api v0.25.2
