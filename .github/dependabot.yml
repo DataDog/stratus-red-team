@@ -4,12 +4,12 @@ updates:
   directory: "/v2/"
   open-pull-requests-limit: 20
   schedule:
-    interval: "daily"
+    interval: "weekly"
 - package-ecosystem: "docker"
   directory: "/"
   schedule:
-    interval: "daily"
+    interval: "monthly"
 - package-ecosystem: "github-actions"
   directory: "/"
   schedule:
-    interval: "daily"
+    interval: "weekly"
