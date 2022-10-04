@@ -22,7 +22,7 @@ type AttackTechnique struct {
 
 	// MITRE ATT&CK Tactics to which this technique maps
 	// see https://attack.mitre.org/techniques/enterprise/
-	MitreAttackTactics []mitreattack.Tactic `yaml:"mitre-attack-tactic"`
+	MitreAttackTactics []mitreattack.Tactic `yaml:"mitre-attack-tactics"`
 
 	// The platform of the technique, e.g. AWS
 	Platform Platform `yaml:"platform"`
