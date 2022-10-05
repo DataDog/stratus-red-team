@@ -10,7 +10,7 @@ build:
 	cd v2 && go build -ldflags="-X main.BuildVersion=$(BUILD_VERSION)" -o ../bin/stratus cmd/stratus/*.go
 
 docs:
-	cd v2 && go run tools/generate-techniques-documentation.go ../docs
+	cd v2 && go run ./tools/ ../docs
 
 test:
 	cd v2 && go test ./... -v
