@@ -2,377 +2,377 @@ AWS:
     Credential Access:
         - id: aws.credential-access.ec2-get-password-data
           name: Retrieve EC2 Password Data
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Credential Access
           platform: AWS
-          idempotent: true
+          isIdempotent: true
         - id: aws.credential-access.ec2-steal-instance-credentials
           name: Steal EC2 Instance Credentials
-          slow: true
-          mitre-attack-tactic:
+          isSlow: true
+          mitreAttackTactics:
             - Credential Access
           platform: AWS
-          idempotent: true
+          isIdempotent: true
         - id: aws.credential-access.secretsmanager-retrieve-secrets
           name: Retrieve a High Number of Secrets Manager secrets
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Credential Access
           platform: AWS
-          idempotent: true
+          isIdempotent: true
         - id: aws.credential-access.ssm-retrieve-securestring-parameters
           name: Retrieve And Decrypt SSM Parameters
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Credential Access
           platform: AWS
-          idempotent: true
+          isIdempotent: true
     Defense Evasion:
         - id: aws.defense-evasion.cloudtrail-delete
           name: Delete CloudTrail Trail
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Defense Evasion
           platform: AWS
-          idempotent: false
+          isIdempotent: false
         - id: aws.defense-evasion.cloudtrail-event-selectors
           name: Disable CloudTrail Logging Through Event Selectors
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Defense Evasion
           platform: AWS
-          idempotent: true
+          isIdempotent: true
         - id: aws.defense-evasion.cloudtrail-lifecycle-rule
           name: CloudTrail Logs Impairment Through S3 Lifecycle Rule
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Defense Evasion
           platform: AWS
-          idempotent: false
+          isIdempotent: false
         - id: aws.defense-evasion.cloudtrail-stop
           name: Stop CloudTrail Trail
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Defense Evasion
           platform: AWS
-          idempotent: true
+          isIdempotent: true
         - id: aws.defense-evasion.organizations-leave
           name: Attempt to Leave the AWS Organization
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Defense Evasion
           platform: AWS
-          idempotent: true
+          isIdempotent: true
         - id: aws.defense-evasion.vpc-remove-flow-logs
           name: Remove VPC Flow Logs
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Defense Evasion
           platform: AWS
-          idempotent: false
+          isIdempotent: false
     Discovery:
         - id: aws.discovery.ec2-enumerate-from-instance
           name: Execute Discovery Commands on an EC2 Instance
-          slow: true
-          mitre-attack-tactic:
+          isSlow: true
+          mitreAttackTactics:
             - Discovery
           platform: AWS
-          idempotent: true
+          isIdempotent: true
         - id: aws.discovery.ec2-download-user-data
           name: Download EC2 Instance User Data
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Discovery
           platform: AWS
-          idempotent: true
+          isIdempotent: true
     Execution:
         - id: aws.execution.ec2-launch-unusual-instances
           name: Launch Unusual EC2 instances
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Execution
           platform: AWS
-          idempotent: true
+          isIdempotent: true
         - id: aws.execution.ec2-user-data
           name: Execute Commands on EC2 Instance via User Data
-          slow: true
-          mitre-attack-tactic:
+          isSlow: true
+          mitreAttackTactics:
             - Execution
             - Privilege Escalation
           platform: AWS
-          idempotent: true
+          isIdempotent: true
     Exfiltration:
         - id: aws.exfiltration.ec2-security-group-open-port-22-ingress
           name: Open Ingress Port 22 on a Security Group
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Exfiltration
           platform: AWS
-          idempotent: false
+          isIdempotent: false
         - id: aws.exfiltration.ec2-share-ami
           name: Exfiltrate an AMI by Sharing It
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Exfiltration
           platform: AWS
-          idempotent: true
+          isIdempotent: true
         - id: aws.exfiltration.ec2-share-ebs-snapshot
           name: Exfiltrate EBS Snapshot by Sharing It
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Exfiltration
           platform: AWS
-          idempotent: true
+          isIdempotent: true
         - id: aws.exfiltration.rds-share-snapshot
           name: Exfiltrate RDS Snapshot by Sharing
-          slow: true
-          mitre-attack-tactic:
+          isSlow: true
+          mitreAttackTactics:
             - Exfiltration
           platform: AWS
-          idempotent: true
+          isIdempotent: true
         - id: aws.exfiltration.s3-backdoor-bucket-policy
           name: Backdoor an S3 Bucket via its Bucket Policy
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Exfiltration
           platform: AWS
-          idempotent: true
+          isIdempotent: true
     Initial Access:
         - id: aws.initial-access.console-login-without-mfa
           name: Console Login without MFA
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Initial Access
           platform: AWS
-          idempotent: true
+          isIdempotent: true
     Persistence:
         - id: aws.persistence.iam-backdoor-role
           name: Backdoor an IAM Role
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Persistence
           platform: AWS
-          idempotent: true
+          isIdempotent: true
         - id: aws.persistence.iam-backdoor-user
           name: Create an Access Key on an IAM User
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Persistence
             - Privilege Escalation
           platform: AWS
-          idempotent: false
+          isIdempotent: false
         - id: aws.persistence.iam-create-admin-user
           name: Create an administrative IAM User
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Persistence
             - Privilege Escalation
           platform: AWS
-          idempotent: false
+          isIdempotent: false
         - id: aws.persistence.iam-create-user-login-profile
           name: Create a Login Profile on an IAM User
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Persistence
             - Privilege Escalation
           platform: AWS
-          idempotent: false
+          isIdempotent: false
         - id: aws.persistence.lambda-backdoor-function
           name: Backdoor Lambda Function Through Resource-Based Policy
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Persistence
           platform: AWS
-          idempotent: false
+          isIdempotent: false
         - id: aws.persistence.lambda-overwrite-code
           name: Overwrite Lambda Function Code
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Persistence
           platform: AWS
-          idempotent: true
+          isIdempotent: true
         - id: aws.persistence.rolesanywhere-create-trust-anchor
           name: Create an IAM Roles Anywhere trust anchor
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Persistence
             - Privilege Escalation
           platform: AWS
-          idempotent: false
+          isIdempotent: false
     Privilege Escalation:
         - id: aws.execution.ec2-user-data
           name: Execute Commands on EC2 Instance via User Data
-          slow: true
-          mitre-attack-tactic:
+          isSlow: true
+          mitreAttackTactics:
             - Execution
             - Privilege Escalation
           platform: AWS
-          idempotent: true
+          isIdempotent: true
         - id: aws.persistence.iam-backdoor-user
           name: Create an Access Key on an IAM User
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Persistence
             - Privilege Escalation
           platform: AWS
-          idempotent: false
+          isIdempotent: false
         - id: aws.persistence.iam-create-admin-user
           name: Create an administrative IAM User
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Persistence
             - Privilege Escalation
           platform: AWS
-          idempotent: false
+          isIdempotent: false
         - id: aws.persistence.iam-create-user-login-profile
           name: Create a Login Profile on an IAM User
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Persistence
             - Privilege Escalation
           platform: AWS
-          idempotent: false
+          isIdempotent: false
         - id: aws.persistence.rolesanywhere-create-trust-anchor
           name: Create an IAM Roles Anywhere trust anchor
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Persistence
             - Privilege Escalation
           platform: AWS
-          idempotent: false
+          isIdempotent: false
 GCP:
     Persistence:
         - id: gcp.persistence.create-admin-service-account
           name: Create an Admin GCP Service Account
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Persistence
             - Privilege Escalation
           platform: GCP
-          idempotent: false
+          isIdempotent: false
         - id: gcp.persistence.create-service-account-key
           name: Create a GCP Service Account Key
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Persistence
             - Privilege Escalation
           platform: GCP
-          idempotent: false
+          isIdempotent: false
     Privilege Escalation:
         - id: gcp.persistence.create-admin-service-account
           name: Create an Admin GCP Service Account
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Persistence
             - Privilege Escalation
           platform: GCP
-          idempotent: false
+          isIdempotent: false
         - id: gcp.persistence.create-service-account-key
           name: Create a GCP Service Account Key
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Persistence
             - Privilege Escalation
           platform: GCP
-          idempotent: false
+          isIdempotent: false
         - id: gcp.privilege-escalation.impersonate-service-accounts
           name: Impersonate GCP Service Accounts
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Privilege Escalation
           platform: GCP
-          idempotent: true
+          isIdempotent: true
 Azure:
     Execution:
         - id: azure.execution.vm-custom-script-extension
           name: Execute Command on Virtual Machine using Custom Script Extension
-          slow: true
-          mitre-attack-tactic:
+          isSlow: true
+          mitreAttackTactics:
             - Execution
           platform: Azure
-          idempotent: false
+          isIdempotent: false
         - id: azure.execution.vm-run-command
           name: Execute Commands on Virtual Machine using Run Command
-          slow: true
-          mitre-attack-tactic:
+          isSlow: true
+          mitreAttackTactics:
             - Execution
           platform: Azure
-          idempotent: true
+          isIdempotent: true
     Exfiltration:
         - id: azure.exfiltration.disk-export
           name: Export Disk Through SAS URL
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Exfiltration
           platform: Azure
-          idempotent: true
+          isIdempotent: true
 Kubernetes:
     Credential Access:
         - id: k8s.credential-access.dump-secrets
           name: Dump All Secrets
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Credential Access
           platform: Kubernetes
-          idempotent: true
+          isIdempotent: true
         - id: k8s.credential-access.steal-serviceaccount-token
           name: Steal Pod Service Account Token
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Credential Access
           platform: Kubernetes
-          idempotent: true
+          isIdempotent: true
     Persistence:
         - id: k8s.persistence.create-admin-clusterrole
           name: Create Admin ClusterRole
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Persistence
             - Privilege Escalation
           platform: Kubernetes
-          idempotent: false
+          isIdempotent: false
         - id: k8s.persistence.create-client-certificate
           name: Create Client Certificate Credential
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Persistence
           platform: Kubernetes
-          idempotent: true
+          isIdempotent: true
         - id: k8s.persistence.create-token
           name: Create Long-Lived Token
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Persistence
           platform: Kubernetes
-          idempotent: true
+          isIdempotent: true
     Privilege Escalation:
         - id: k8s.persistence.create-admin-clusterrole
           name: Create Admin ClusterRole
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Persistence
             - Privilege Escalation
           platform: Kubernetes
-          idempotent: false
+          isIdempotent: false
         - id: k8s.privilege-escalation.hostpath-volume
           name: Container breakout via hostPath volume mount
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Privilege Escalation
           platform: Kubernetes
-          idempotent: false
+          isIdempotent: false
         - id: k8s.privilege-escalation.nodes-proxy
           name: Privilege escalation through node/proxy permissions
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Privilege Escalation
           platform: Kubernetes
-          idempotent: true
+          isIdempotent: true
         - id: k8s.privilege-escalation.privileged-pod
           name: Run a Privileged Pod
-          slow: false
-          mitre-attack-tactic:
+          isSlow: false
+          mitreAttackTactics:
             - Privilege Escalation
           platform: Kubernetes
-          idempotent: false
+          isIdempotent: false

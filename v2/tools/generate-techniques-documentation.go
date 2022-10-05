@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -12,19 +11,19 @@ import (
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	_ "github.com/datadog/stratus-red-team/v2/pkg/stratus/loader"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
-	"gopkg.in/yaml.v3"
 )
 
-func main() {
-	if len(os.Args) != 2 {
-		fmt.Fprintln(os.Stderr, "specify the docs output directory")
-		os.Exit(1)
+func GenerateTechDocs(docsDirectory string, techniques []*stratus.AttackTechnique, index map[stratus.Platform]map[string][]*stratus.AttackTechnique) error {
+	techniqueTemplate, err := os.ReadFile("tools/doc.tpl")
+	if err != nil {
+		return err
 	}
-	docsDirectory := os.Args[1]
-	techniqueTemplate, _ := os.ReadFile("tools/doc.tpl")
-	indexTemplate, _ := os.ReadFile("tools/index-by-platform.tpl")
-	registry := stratus.GetRegistry()
-	techniques := registry.ListAttackTechniques()
+
+	indexTemplate, err := os.ReadFile("tools/index-by-platform.tpl")
+	if err != nil {
+		return err
+	}
+
 	funcMap := template.FuncMap{
 		"ToUpper": strings.ToUpper,
 		"JoinTactics": func(tactics []mitreattack.Tactic, prefix string, sep string) string {
@@ -38,22 +37,9 @@ func main() {
 		"FormatPlatformName": FormatPlatformName,
 	}
 
-	// Platform => [MITRE ATT&CK tactic => list of stratus techniques]
-	index := map[stratus.Platform]map[string][]*stratus.AttackTechnique{}
-
 	// Pass 1: write techniques docs
 	for i := range techniques {
 		technique := techniques[i]
-		for j := range technique.MitreAttackTactics {
-			tactic := mitreattack.AttackTacticToString(technique.MitreAttackTactics[j])
-			if index[technique.Platform] == nil {
-				index[technique.Platform] = make(map[string][]*stratus.AttackTechnique)
-			}
-			if index[technique.Platform][tactic] == nil {
-				index[technique.Platform][tactic] = make([]*stratus.AttackTechnique, 0)
-			}
-			index[technique.Platform][tactic] = append(index[technique.Platform][tactic], technique)
-		}
 
 		tpl, _ := template.New("technique").Funcs(funcMap).Parse(string(techniqueTemplate))
 		result := ""
@@ -61,7 +47,7 @@ func main() {
 		formatTechniqueDescription(technique)
 		err := tpl.Execute(buf, technique)
 		if err != nil {
-			panic(err)
+			return err
 		}
 		dir := filepath.Join(docsDirectory, "attack-techniques", string(technique.Platform))
 		if !FileExists(dir) {
@@ -69,7 +55,7 @@ func main() {
 		}
 		err = os.WriteFile(filepath.Join(dir, technique.ID+".md"), buf.Bytes(), 0744)
 		if err != nil {
-			panic(err)
+			return err
 		}
 	}
 
@@ -87,11 +73,11 @@ func main() {
 		}
 		err := tpl.Execute(buf, vars)
 		if err != nil {
-			panic(err)
+			return err
 		}
 		err = os.WriteFile(platformIndexFile, buf.Bytes(), 0744)
 		if err != nil {
-			panic(err)
+			return err
 		}
 	}
 
@@ -101,36 +87,15 @@ func main() {
 	tpl, _ := template.New("index-by-platform").Funcs(funcMap).Parse(string(listTemplate))
 	result := ""
 	buf := bytes.NewBufferString(result)
-	err := tpl.Execute(buf, techniques)
+	err = tpl.Execute(buf, techniques)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	err = os.WriteFile(listFile, buf.Bytes(), 0744)
 	if err != nil {
-		panic(err)
-	}
-
-	// Write a single index file with all techniques. File is enconded in YAML.
-	yamlIndex := filepath.Join(docsDirectory, "index.yaml")
-	if err := writeYaml(yamlIndex, index); err != nil {
-		log.Fatal(err)
-	}
-}
-
-func writeYaml(path string, index interface{}) error {
-	// if file doesn't exist, it creates. Truncates file and open it in write only mode.
-	yamlFile, err := os.OpenFile(path, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0644)
-	if err != nil {
 		return err
 	}
-	defer yamlFile.Close()
 
-	enconder := yaml.NewEncoder(yamlFile)
-	defer enconder.Close()
-
-	if err := enconder.Encode(&index); err != nil {
-		return err
-	}
 	return nil
 }
 
