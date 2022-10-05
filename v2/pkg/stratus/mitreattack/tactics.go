@@ -3,6 +3,8 @@ package mitreattack
 import (
 	"errors"
 	"strings"
+
+	"gopkg.in/yaml.v3"
 )
 
 type Tactic int
@@ -53,4 +55,13 @@ func AttackTacticToString(tactic Tactic) string {
 // This method makes Tactic type to return a string rather than an int when marshalling to YAML.
 func (t Tactic) MarshalYAML() (interface{}, error) {
 	return tactics[t], nil
+}
+
+// UnmarshalYAML implements the Marshaler interface from "gopkg.in/yaml.v3".
+// This method moes the reverse of MarshalYAML, it gets a string with the tactic name mutates into an int.
+func (t Tactic) UnmarshalYAML(node *yaml.Node) error {
+	value := node.Value
+	//lint:ignore SA4006 this is mutating the value of t rather than using it later.
+	t, err := AttackTacticFromString(value)
+	return err
 }
