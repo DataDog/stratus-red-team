@@ -18,11 +18,11 @@ type AttackTechnique struct {
 	Detection string `yaml:"-"`
 
 	// Indicates if the technique is expected to be slow to warm-up or detonate
-	IsSlow bool `yaml:"slow"`
+	IsSlow bool `yaml:"isSlow"`
 
 	// MITRE ATT&CK Tactics to which this technique maps
 	// see https://attack.mitre.org/techniques/enterprise/
-	MitreAttackTactics []mitreattack.Tactic `yaml:"mitre-attack-tactics"`
+	MitreAttackTactics []mitreattack.Tactic `yaml:"mitreAttackTactics"`
 
 	// The platform of the technique, e.g. AWS
 	Platform Platform `yaml:"platform"`
@@ -35,7 +35,7 @@ type AttackTechnique struct {
 	Detonate func(params map[string]string) error `yaml:"-"`
 
 	// Indicates if the detonation function is idempotent, i.e. if it can be run multiple times without reverting it
-	IsIdempotent bool `yaml:"idempotent"`
+	IsIdempotent bool `yaml:"isIdempotent"`
 
 	// Reversion function, to revert the side effects of a detonation
 	Revert func(params map[string]string) error `yaml:"-"`
