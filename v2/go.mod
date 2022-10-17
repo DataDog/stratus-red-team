@@ -19,7 +19,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/rolesanywhere v1.0.10
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.27.11
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.16.2
-	github.com/aws/aws-sdk-go-v2/service/ssm v1.30.0
+	github.com/aws/aws-sdk-go-v2/service/ssm v1.31.0
 	github.com/aws/aws-sdk-go-v2/service/sts v1.16.19
 	github.com/aws/smithy-go v1.13.3
 	github.com/fatih/color v1.13.0
