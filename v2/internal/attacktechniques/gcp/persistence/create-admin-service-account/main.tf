@@ -8,12 +8,12 @@ terraform {
 }
 
 resource "random_string" "suffix" {
-  length      = 6
+  length      = 4
   special     = false
   min_lower   = 3
   min_numeric = 3
 }
 
 output "service_account_name" {
-  value = format("stratus-red-team-sa-%s", random_string.suffix.result)
+  value = "stratus-red-team-admin-sa-${random_string.suffix.result}"
 }

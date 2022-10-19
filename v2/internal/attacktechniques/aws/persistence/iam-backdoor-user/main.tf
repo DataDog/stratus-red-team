@@ -19,7 +19,7 @@ provider "aws" {
 }
 
 resource "aws_iam_user" "legit-user" {
-  name          = "sample-legit-user" # TODO parametrize
+  name          = "stratus-red-team-backdoor-user" # TODO parametrize
   force_destroy = true
 }
 

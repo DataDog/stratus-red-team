@@ -9,7 +9,7 @@ terraform {
 
 locals {
   kubeconfig_path = pathexpand("~/.kube/config")
-  namespace       = format("stratus-red-team-%s", random_string.suffix.result)
+  namespace       = "stratus-red-team-privileged-name-${random_string.suffix.result}"
 }
 
 # Use ~/.kube/config as a configuration file if it exists (with current context).
@@ -20,8 +20,8 @@ provider "kubernetes" {
 }
 
 resource "random_string" "suffix" {
-  length    = 8
-  min_lower = 8
+  length    = 4
+  min_lower = 4
 }
 
 resource "kubernetes_namespace" "namespace" {

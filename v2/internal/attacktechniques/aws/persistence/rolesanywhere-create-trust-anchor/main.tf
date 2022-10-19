@@ -19,7 +19,7 @@ provider "aws" {
 }
 
 resource "aws_iam_role" "role" {
-  name = "sample-rolesanywhere-role-stratus-red-team"
+  name = "stratus-red-team-trust-anchor-role"
 
   assume_role_policy = <<EOF
 {

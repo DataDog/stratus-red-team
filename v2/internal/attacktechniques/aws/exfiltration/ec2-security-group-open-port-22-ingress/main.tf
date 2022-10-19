@@ -26,7 +26,7 @@ resource "aws_vpc" "vpc" {
 }
 
 resource "aws_security_group" "allow_tls" {
-  name        = "allow_tls"
+  name        = "stratus-red-team-open-sg-sg"
   description = "Allow TLS inbound traffic"
   vpc_id      = aws_vpc.vpc.id
 
@@ -47,7 +47,7 @@ resource "aws_security_group" "allow_tls" {
   }
 
   tags = {
-    Name = "allow_tls",
+    Name = "StratusRedTeam",
   }
 }
 

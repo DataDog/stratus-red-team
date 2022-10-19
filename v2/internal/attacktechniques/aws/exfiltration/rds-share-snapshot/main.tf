@@ -29,7 +29,7 @@ resource "aws_db_instance" "default" {
   engine                  = "mysql"
   engine_version          = "8.0"
   instance_class          = "db.t3.micro"
-  name                    = "samplerdsdatabase"
+  name                    = "stratus-red-team-share-snap-db"
   backup_retention_period = 0
   username                = "admin"
   password                = random_password.password.result

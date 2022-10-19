@@ -26,7 +26,7 @@ data "aws_availability_zones" "available" {
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
-  name = "stratus-red-team-vpc-discovery"
+  name = "stratus-red-team-ec2-enumerate-vpc"
   cidr = "10.0.0.0/16"
 
   azs             = [data.aws_availability_zones.available.names[0]]
@@ -57,7 +57,7 @@ resource "aws_network_interface" "iface" {
 }
 
 resource "aws_iam_role" "instance-role" {
-  name = "stratus-discovery-instance-role"
+  name = "stratus-red-team-ec2-enumerate-role"
   path = "/"
 
   assume_role_policy = <<EOF
@@ -83,7 +83,7 @@ resource "aws_iam_role_policy_attachment" "rolepolicy" {
 }
 
 resource "aws_iam_instance_profile" "instance" {
-  name = "stratus-discovery-instance"
+  name = "stratus-red-team-ec2-enumerate-instance"
   role = aws_iam_role.instance-role.name
 }
 

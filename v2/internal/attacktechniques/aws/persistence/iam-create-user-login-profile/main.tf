@@ -19,7 +19,7 @@ provider "aws" {
 }
 
 resource "aws_iam_user" "legit-user" {
-  name          = "sample-iam-user"
+  name          = "stratus-red-team-login-profile-user"
   force_destroy = true
 }
 

@@ -13,7 +13,7 @@ locals {
   labels = {
     "datadoghq.com/stratus-red-team" : true
   }
-  pod_name = "stratus-red-team-sample-pod"
+  pod_name = "stratus-red-team-steal-sa-token-pod"
 }
 
 # Use ~/.kube/config as a configuration file if it exists (with current context).
@@ -37,7 +37,7 @@ resource "kubernetes_namespace" "namespace" {
 
 resource "kubernetes_service_account" "serviceaccount" {
   metadata {
-    name      = "stratus-red-team-sa"
+    name      = "stratus-red-team-steal-sa"
     labels    = local.labels
     namespace = kubernetes_namespace.namespace.metadata[0].name
   }

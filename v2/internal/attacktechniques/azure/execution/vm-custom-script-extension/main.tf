@@ -16,7 +16,7 @@ provider "azurerm" {
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 resource "random_string" "lab_name" {
-  length  = 8
+  length  = 4
   special = false
   upper   = false
 }
@@ -32,7 +32,7 @@ resource "random_password" "password" {
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 resource "azurerm_resource_group" "lab_environment" {
-  name     = "rg-${random_string.lab_name.result}"
+  name     = "stratus-red-team-custom-rg-${random_string.lab_name.result}"
   location = "West US"
 }
 
@@ -41,26 +41,26 @@ resource "azurerm_resource_group" "lab_environment" {
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 resource "azurerm_virtual_network" "lab_vnet" {
-  name                = "vnet-${random_string.lab_name.result}"
+  name                = "stratus-red-team-custom-vnet-${random_string.lab_name.result}"
   address_space       = ["10.0.0.0/16"]
   location            = azurerm_resource_group.lab_environment.location
   resource_group_name = azurerm_resource_group.lab_environment.name
 }
 
 resource "azurerm_subnet" "lab_subnet" {
-  name                 = "subnet-${random_string.lab_name.result}"
+  name                 = "stratus-red-team-custom-subnet-${random_string.lab_name.result}"
   resource_group_name  = azurerm_resource_group.lab_environment.name
   virtual_network_name = azurerm_virtual_network.lab_vnet.name
   address_prefixes     = ["10.0.2.0/24"]
 }
 
 resource "azurerm_network_interface" "lab_nic" {
-  name                = "nic-${random_string.lab_name.result}"
+  name                = "stratus-red-team-custom-nic-${random_string.lab_name.result}"
   location            = azurerm_resource_group.lab_environment.location
   resource_group_name = azurerm_resource_group.lab_environment.name
 
   ip_configuration {
-    name                          = "ip-${random_string.lab_name.result}"
+    name                          = "stratus-red-team-custom-ip-${random_string.lab_name.result}"
     subnet_id                     = azurerm_subnet.lab_subnet.id
     private_ip_address_allocation = "Dynamic"
   }

@@ -8,7 +8,7 @@ terraform {
 }
 
 resource "google_service_account" "service_account" {
-  account_id = "target-sa-stratus-red-team"
+  account_id = "stratus-red-team-sa-key-sa"
 }
 
 output "sa_email" {

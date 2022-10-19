@@ -27,7 +27,7 @@ resource "aws_ebs_volume" "volume" {
   size              = 1
 
   tags = {
-    Name = "StratusRedTeamVolumeForAmi"
+    Name = "StratusRedTeam"
   }
 }
 
@@ -37,7 +37,7 @@ resource "aws_ebs_snapshot" "snapshot" {
 
 
 resource "aws_ami" "ami" {
-  name                = "stratus-red-team-ami"
+  name                = "stratus-red-team-share-ami-ami"
   virtualization_type = "hvm"
   root_device_name    = "/dev/xvda"
 

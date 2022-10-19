@@ -34,7 +34,7 @@ resource "aws_cloudwatch_log_group" "logs" {
 }
 
 resource "aws_iam_role" "role" {
-  name = "example"
+  name = "stratus-red-team-remove-flow-logs-role"
 
   assume_role_policy = <<EOF
 {
@@ -54,7 +54,7 @@ EOF
 }
 
 resource "aws_iam_role_policy" "example" {
-  name = "allow-writing-to-cloudwatch"
+  name = "stratus-red-team-remove-flow-logs-policy"
   role = aws_iam_role.role.id
 
   policy = <<EOF

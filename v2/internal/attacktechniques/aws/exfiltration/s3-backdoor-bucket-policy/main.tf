@@ -19,13 +19,13 @@ provider "aws" {
 }
 
 resource "random_string" "suffix" {
-  length    = 16
-  min_lower = 16
+  length    = 4
+  min_lower = 4
   special   = false
 }
 
 resource "aws_s3_bucket" "bucket" {
-  bucket = "stratus-red-team-${random_string.suffix.result}"
+  bucket = "stratus-red-team-backdoor-policy-bucket${random_string.suffix.result}"
   acl    = "private"
 }
 

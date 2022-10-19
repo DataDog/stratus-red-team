@@ -19,18 +19,18 @@ provider "aws" {
 }
 
 resource "aws_cloudtrail" "trail" {
-  name           = "my-cloudtrail-trail-4"
+  name           = "stratus-red-team-event-selector-trail"
   s3_bucket_name = aws_s3_bucket.cloudtrail.id
 }
 
 resource "random_string" "suffix" {
-  length    = 16
-  min_lower = 16
+  length    = 4
+  min_lower = 4
   special   = false
 }
 
 locals {
-  bucket-name = "my-cloudtrail-bucket-${random_string.suffix.result}"
+  bucket-name = "stratus-red-team-event-selector-bucket-${random_string.suffix.result}"
 }
 resource "aws_s3_bucket" "cloudtrail" {
   bucket        = local.bucket-name

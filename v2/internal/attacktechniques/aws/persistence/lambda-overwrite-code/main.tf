@@ -19,13 +19,13 @@ provider "aws" {
 }
 
 resource "random_string" "suffix" {
-  length    = 8
-  min_lower = 8
+  length    = 4
+  min_lower = 4
   special   = false
 }
 
 resource "aws_iam_role" "lambda-update" {
-  name = "lambda-function-role-stratus-red-team-${random_string.suffix.result}"
+  name = "stratus-red-team-overwrite-lambda-${random_string.suffix.result}"
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -44,7 +44,7 @@ resource "aws_iam_role" "lambda-update" {
 
 
 resource "aws_s3_bucket" "bucket" {
-  bucket        = "stratus-red-team-lambda-function-code-${random_string.suffix.result}"
+  bucket        = "stratus-red-team-overwrite-lambda-bucket-${random_string.suffix.result}"
   force_destroy = true
 }
 
@@ -60,7 +60,7 @@ resource "aws_s3_object" "lambda_zip" {
 }
 
 resource "aws_lambda_function" "lambda" {
-  function_name = "stratus-sample-lambda-function-${random_string.suffix.result}"
+  function_name = "stratus-red-team-overwrite-lambda-func-${random_string.suffix.result}"
   s3_bucket     = aws_s3_bucket.bucket.id
   s3_key        = aws_s3_object.lambda_zip.key
   role          = aws_iam_role.lambda-update.arn

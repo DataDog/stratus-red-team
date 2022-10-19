@@ -21,12 +21,12 @@ provider "aws" {
 data "aws_caller_identity" "current" {}
 
 resource "aws_iam_role" "role" {
-  name = "stratus-red-team-role-leave-organization"
+  name = "stratus-red-team-leave-org-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Action = ["sts:AssumeRole", "sts:SetSourceIdentity"]"
+        Action = ["sts:AssumeRole", "sts:SetSourceIdentity"]
         Effect = "Allow"
         Sid    = ""
         Principal = {

@@ -15,7 +15,7 @@ locals {
 
 resource "random_string" "suffix" {
   count       = local.num-service-accounts
-  length      = 8
+  length      = 4
   special     = false
   min_lower   = 4
   min_numeric = 4
@@ -24,7 +24,7 @@ resource "random_string" "suffix" {
 // Create N service accounts
 resource "google_service_account" "service_account" {
   count       = local.num-service-accounts
-  account_id  = format("stratus-red-team-%s", random_string.suffix[count.index].result)
+  account_id  = "stratus-red-team-impersonate-sa-${random_string.suffix[count.index].result}"
   description = "Service account used by Stratus Red Team for gcp.privilege-escalation.impersonate-service-accounts"
 }
 
