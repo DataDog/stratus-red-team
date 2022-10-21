@@ -33,7 +33,7 @@ resource "aws_iam_role" "role" {
     Statement = [
       {
         Sid    = "AllowAssumeRole"
-        Action = ["sts:AssumeRole", "sts:SetSourceIdentity"]"
+        Action = ["sts:AssumeRole", "sts:SetSourceIdentity"]
         Effect = "Allow"
         Principal = {
           AWS = data.aws_caller_identity.current.account_id
