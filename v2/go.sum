@@ -78,8 +78,8 @@ github.com/aws/aws-sdk-go-v2/service/rolesanywhere v1.0.10 h1:FYBnb1z07t3qpAFddD
 github.com/aws/aws-sdk-go-v2/service/rolesanywhere v1.0.10/go.mod h1:61Oc8W4jS9kp9xNyrBkzir82bq5AV7moeXLkHR6nzLY=
 github.com/aws/aws-sdk-go-v2/service/s3 v1.27.11 h1:3/gm/JTX9bX8CpzTgIlrtYpB3EVBDxyg/GY/QdcIEZw=
 github.com/aws/aws-sdk-go-v2/service/s3 v1.27.11/go.mod h1:fmgDANqTUCxciViKl9hb/zD5LFbvPINFRgWhDbR+vZo=
-github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.16.2 h1:3x1Qilin49XQ1rK6pDNAfG+DmCFPfB7Rrpl+FUDAR/0=
-github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.16.2/go.mod h1:HEBBc70BYi5eUvxBqC3xXjU/04NO96X/XNUe5qhC7Bc=
+github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.16.3 h1:d5S+OhXne5O3cIo999RARy/N1dgXW2ldWgD53qbEAP4=
+github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.16.3/go.mod h1:+X/VSQcuvHPWPRlM64HoWUJAPwsD86KpU9Z52lrsodM=
 github.com/aws/aws-sdk-go-v2/service/ssm v1.31.0 h1:zBiXS2v+ycKZ61bTBR1jGqIJhEW7Qjcl8c/mrkUNeog=
 github.com/aws/aws-sdk-go-v2/service/ssm v1.31.0/go.mod h1:JtkQSJFGEovwP6s+guH5Ap7iUemh3nMqHtg5liCv9ok=
 github.com/aws/aws-sdk-go-v2/service/sso v1.11.23 h1:pwvCchFUEnlceKIgPUouBJwK81aCkQ8UDMORfeFtW10=
