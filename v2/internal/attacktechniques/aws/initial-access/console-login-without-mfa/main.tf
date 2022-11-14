@@ -16,13 +16,17 @@ provider "aws" {
 data "aws_caller_identity" "current" {}
 
 resource "random_string" "suffix" {
-  length    = 4
-  min_lower = 4
+  length    = 10
+  min_lower = 10
   special   = false
 }
 
+locals {
+  resource_prefix = "stratus-red-team-nmfalu" # non-mfa login user
+}
+
 resource "aws_iam_user" "console-user" {
-  name          = "stratus-red-team-non-mfa-login-user-${random_string.suffix.result}"
+  name          = "${local.resource_prefix}-${random_string.suffix.result}"
   force_destroy = true
 }
 

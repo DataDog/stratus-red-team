@@ -18,8 +18,12 @@ provider "aws" {
   }
 }
 
+locals {
+  resource_prefix = "stratus-red-team-login-profile"
+}
+
 resource "aws_iam_user" "legit-user" {
-  name          = "stratus-red-team-login-profile-user"
+  name          = "${local.resource_prefix}-user"
   force_destroy = true
 }
 

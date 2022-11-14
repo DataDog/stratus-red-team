@@ -9,7 +9,8 @@ terraform {
 
 locals {
   kubeconfig_path = pathexpand("~/.kube/config")
-  namespace       = "stratus-red-team-node-proxy-name-${random_string.suffix.result}"
+  namespace       = format("stratus-red-team-np-name-%s", random_string.suffix.result)
+  resource_prefix = "stratus-red-team-np"
 }
 
 # Use ~/.kube/config as a configuration file if it exists (with current context).
@@ -20,8 +21,8 @@ provider "kubernetes" {
 }
 
 resource "random_string" "suffix" {
-  length    = 4
-  min_lower = 4
+  length    = 8
+  min_lower = 8
 }
 
 resource "kubernetes_namespace" "namespace" {
@@ -37,7 +38,7 @@ output "namespace" {
 
 resource "kubernetes_cluster_role" "clusterrole" {
   metadata {
-    name = "stratus-red-team-node-proxy-clusterrole"
+    name = format("%s-clusterrole", local.resource_prefix)
   }
 
   rule {
@@ -49,14 +50,14 @@ resource "kubernetes_cluster_role" "clusterrole" {
 
 resource "kubernetes_service_account" "sa" {
   metadata {
-    name      = "stratus-red-team-node-proxy-sa"
+    name      = format("%s-sa", local.resource_prefix)
     namespace = kubernetes_namespace.namespace.metadata[0].name
   }
 }
 
 resource "kubernetes_cluster_role_binding" "crb" {
   metadata {
-    name = "stratus-red-team-node-proxy-crb"
+    name = format("%s-crb", local.resource_prefix)
   }
 
   role_ref {

@@ -9,7 +9,7 @@ terraform {
 
 locals {
   kubeconfig_path = pathexpand("~/.kube/config")
-  namespace       = "stratus-red-team-hostpath-namespace-${random_string.suffix.result}"
+  namespace       = format("stratus-red-team-hpns-%s", random_string.suffix.result)
 }
 
 # Use ~/.kube/config as a configuration file if it exists (with current context).

@@ -13,8 +13,12 @@ provider "aws" {
   skip_metadata_api_check     = true
 }
 
+locals {
+  resource_prefix = "stratus-red-team-backdoor-r"
+}
+
 resource "aws_iam_role" "legit-role" {
-  name = "stratus-red-team-backdoor-role" # TODO parametrize
+  name = "${local.resource_prefix}-role" # TODO parametrize
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [

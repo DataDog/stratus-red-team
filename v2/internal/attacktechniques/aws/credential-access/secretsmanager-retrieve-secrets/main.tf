@@ -20,6 +20,7 @@ provider "aws" {
 
 locals {
   num_secrets = 20
+  resource_prefix = "stratus-red-team-retrieve-secret"
 }
 
 resource "random_string" "secrets" {
@@ -30,7 +31,7 @@ resource "random_string" "secrets" {
 
 resource "aws_secretsmanager_secret" "secrets" {
   count = local.num_secrets
-  name  = "stratus-red-team-retrieve-secret-${count.index}"
+  name  = "${local.resource_prefix}-${count.index}"
 
   recovery_window_in_days = 0
 }

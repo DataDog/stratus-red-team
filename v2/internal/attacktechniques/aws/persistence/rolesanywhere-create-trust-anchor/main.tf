@@ -18,8 +18,12 @@ provider "aws" {
   }
 }
 
+locals {
+  resource_prefix = "stratus-red-team-trust-anchor"
+}
+
 resource "aws_iam_role" "role" {
-  name = "stratus-red-team-trust-anchor-role"
+  name = "${local.resource_prefix}-role"
 
   assume_role_policy = <<EOF
 {

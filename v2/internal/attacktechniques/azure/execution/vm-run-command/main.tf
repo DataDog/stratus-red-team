@@ -11,6 +11,10 @@ provider "azurerm" {
   features {}
 }
 
+locals {
+  resource_prefix = "stratus-red-team-vmrc" # stratus red team vm run commant
+}
+
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # Random
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -32,7 +36,7 @@ resource "random_password" "password" {
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 resource "azurerm_resource_group" "lab_environment" {
-  name     = "stratus-red-team-vm-run-rg-${random_string.lab_name.result}"
+  name     = "${local.resource_prefix}-rg-${random_string.lab_name.result}"
   location = "West US"
 }
 
@@ -41,26 +45,26 @@ resource "azurerm_resource_group" "lab_environment" {
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 resource "azurerm_virtual_network" "lab_vnet" {
-  name                = "stratus-red-team-vm-run-vnet-${random_string.lab_name.result}"
+  name                = "${local.resource_prefix}-vnet-${random_string.lab_name.result}"
   address_space       = ["10.0.0.0/16"]
   location            = azurerm_resource_group.lab_environment.location
   resource_group_name = azurerm_resource_group.lab_environment.name
 }
 
 resource "azurerm_subnet" "lab_subnet" {
-  name                 = "stratus-red-team-vm-run-subnet-${random_string.lab_name.result}"
+  name                 = "${local.resource_prefix}-subnet-${random_string.lab_name.result}"
   resource_group_name  = azurerm_resource_group.lab_environment.name
   virtual_network_name = azurerm_virtual_network.lab_vnet.name
   address_prefixes     = ["10.0.2.0/24"]
 }
 
 resource "azurerm_network_interface" "lab_nic" {
-  name                = "stratus-red-team-vm-run-nic-${random_string.lab_name.result}"
+  name                = "${local.resource_prefix}-nic-${random_string.lab_name.result}"
   location            = azurerm_resource_group.lab_environment.location
   resource_group_name = azurerm_resource_group.lab_environment.name
 
   ip_configuration {
-    name                          = "stratus-red-team-vm-run-ip-${random_string.lab_name.result}"
+    name                          = "${local.resource_prefix}-ip-${random_string.lab_name.result}"
     subnet_id                     = azurerm_subnet.lab_subnet.id
     private_ip_address_allocation = "Dynamic"
   }
@@ -71,7 +75,7 @@ resource "azurerm_network_interface" "lab_nic" {
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 resource "azurerm_windows_virtual_machine" "lab_windows_vm" {
-  name                = "stratus-red-team-vm-run-vm-${random_string.lab_name.result}"
+  name                = "${local.resource_prefix}-vm-${random_string.lab_name.result}"
   resource_group_name = azurerm_resource_group.lab_environment.name
   location            = azurerm_resource_group.lab_environment.location
   size                = "Standard_F2"
