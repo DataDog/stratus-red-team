@@ -18,7 +18,7 @@ provider "aws" {
   }
 }
 
-locals { 
+locals {
   resource_prefix = "stratus-red-team-leave-org"
 }
 

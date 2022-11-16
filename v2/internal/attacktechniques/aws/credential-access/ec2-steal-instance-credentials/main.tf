@@ -41,7 +41,7 @@ module "vpc" {
   enable_nat_gateway      = true
 
   tags = {
-      StratusRedTeam = true
+    StratusRedTeam = true
   }
 }
 

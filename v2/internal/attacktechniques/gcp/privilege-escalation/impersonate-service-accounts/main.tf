@@ -11,7 +11,7 @@ data "google_client_openid_userinfo" "whoami" {}
 
 locals {
   num-service-accounts = 10
-  resource_prefix = "stratus-red-team-isa" # stratus red team impersonate service accounts
+  resource_prefix      = "stratus-red-team-isa" # stratus red team impersonate service accounts
 }
 
 resource "random_string" "suffix" {

@@ -19,7 +19,7 @@ provider "aws" {
 }
 
 locals {
-  num_secrets = 20
+  num_secrets     = 20
   resource_prefix = "stratus-red-team-retrieve-secret"
 }
 
