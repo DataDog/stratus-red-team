@@ -18,8 +18,12 @@ provider "aws" {
   }
 }
 
+locals {
+  resource_prefix = "stratus-red-team-backdoor-f"
+}
+
 resource "aws_iam_role" "lambda" {
-  name = "lambda-function-role-stratus-red-team"
+  name = "${local.resource_prefix}-lambda"
 
   assume_role_policy = <<EOF
 {
@@ -39,13 +43,13 @@ EOF
 }
 
 resource "random_string" "suffix" {
-  length    = 16
-  min_lower = 16
+  length    = 10
+  min_lower = 10
   special   = false
 }
 
 resource "aws_s3_bucket" "bucket" {
-  bucket        = "stratus-red-team-lambda-function-code-${random_string.suffix.result}"
+  bucket        = "${local.resource_prefix}-bucket-${random_string.suffix.result}"
   acl           = "private"
   force_destroy = true
 }
@@ -56,7 +60,7 @@ resource "aws_s3_bucket_object" "code" {
 }
 
 resource "aws_lambda_function" "lambda" {
-  function_name = "stratus-sample-lambda-function"
+  function_name = "${local.resource_prefix}-func"
   s3_bucket     = aws_s3_bucket.bucket.id
   s3_key        = aws_s3_bucket_object.code.key
   role          = aws_iam_role.lambda.arn

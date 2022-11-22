@@ -18,6 +18,10 @@ provider "aws" {
   }
 }
 
+locals {
+  resource_prefix = "stratus-red-team-share-ami"
+}
+
 data "aws_availability_zones" "available" {
   state = "available"
 }
@@ -27,7 +31,7 @@ resource "aws_ebs_volume" "volume" {
   size              = 1
 
   tags = {
-    Name = "StratusRedTeamVolumeForAmi"
+    Name = "${local.resource_prefix}-ami"
   }
 }
 
@@ -37,7 +41,7 @@ resource "aws_ebs_snapshot" "snapshot" {
 
 
 resource "aws_ami" "ami" {
-  name                = "stratus-red-team-ami"
+  name                = "${local.resource_prefix}-ami"
   virtualization_type = "hvm"
   root_device_name    = "/dev/xvda"
 

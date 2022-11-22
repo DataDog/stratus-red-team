@@ -24,12 +24,16 @@ resource "random_password" "password" {
   special   = false
 }
 
+locals {
+  resource_prefix = "stratus-red-team-share-snap"
+}
+
 resource "aws_db_instance" "default" {
   allocated_storage       = 10 // minimum size
   engine                  = "mysql"
   engine_version          = "8.0"
   instance_class          = "db.t3.micro"
-  name                    = "samplerdsdatabase"
+  name                    = "${local.resource_prefix}-db"
   backup_retention_period = 0
   username                = "admin"
   password                = random_password.password.result

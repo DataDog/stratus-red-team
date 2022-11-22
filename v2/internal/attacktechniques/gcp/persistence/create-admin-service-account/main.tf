@@ -7,6 +7,10 @@ terraform {
   }
 }
 
+locals {
+  resource_prefix = "stratus-red-team-casa" # stratus red team create admin service account
+}
+
 resource "random_string" "suffix" {
   length      = 6
   special     = false
@@ -15,5 +19,5 @@ resource "random_string" "suffix" {
 }
 
 output "service_account_name" {
-  value = format("stratus-red-team-sa-%s", random_string.suffix.result)
+  value = format("%s-sa-%s", local.resource_prefix, random_string.suffix.result)
 }

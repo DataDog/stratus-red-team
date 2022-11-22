@@ -18,6 +18,10 @@ provider "aws" {
   }
 }
 
+locals {
+  resource_prefix = "stratus-red-team-remove-flow-logs"
+}
+
 resource "aws_vpc" "vpc" {
   cidr_block = "10.0.0.0/16"
 }
@@ -34,7 +38,7 @@ resource "aws_cloudwatch_log_group" "logs" {
 }
 
 resource "aws_iam_role" "role" {
-  name = "example"
+  name = "${local.resource_prefix}-role"
 
   assume_role_policy = <<EOF
 {
@@ -54,7 +58,7 @@ EOF
 }
 
 resource "aws_iam_role_policy" "example" {
-  name = "allow-writing-to-cloudwatch"
+  name = "${local.resource_prefix}-policy"
   role = aws_iam_role.role.id
 
   policy = <<EOF

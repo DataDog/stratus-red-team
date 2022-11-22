@@ -21,13 +21,17 @@ provider "aws" {
 data "aws_caller_identity" "current" {}
 
 resource "random_string" "suffix" {
-  length    = 8
-  min_lower = 8
+  length    = 10
+  min_lower = 10
   special   = false
 }
 
+locals {
+  resource_prefix = "stratus-red-team-ec2lui" # ec2 launch unusual instance
+}
+
 resource "aws_iam_role" "role" {
-  name = "sample-role-used-by-stratus-${random_string.suffix.result}"
+  name = "${local.resource_prefix}-role-${random_string.suffix.result}"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -44,7 +48,7 @@ resource "aws_iam_role" "role" {
 }
 
 resource "aws_iam_policy" "policy" {
-  name = "inline-policy-${random_string.suffix.result}"
+  name = "${local.resource_prefix}-policy-${random_string.suffix.result}"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -58,7 +62,7 @@ resource "aws_iam_policy" "policy" {
 }
 
 resource "aws_iam_policy_attachment" "attachment" {
-  name       = "iam-policy-attachement-${random_string.suffix.result}"
+  name       = "${local.resource_prefix}-attachment-${random_string.suffix.result}"
   roles      = [aws_iam_role.role.name]
   policy_arn = aws_iam_policy.policy.arn
 }
@@ -70,7 +74,7 @@ data "aws_availability_zones" "available" {
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
-  name = "stratus-red-team-vpc-unusual-instances"
+  name = "${local.resource_prefix}-vpc"
   cidr = "10.0.0.0/16"
 
   azs             = [data.aws_availability_zones.available.names[0]]

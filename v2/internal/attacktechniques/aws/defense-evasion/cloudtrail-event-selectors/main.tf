@@ -18,20 +18,25 @@ provider "aws" {
   }
 }
 
-resource "aws_cloudtrail" "trail" {
-  name           = "my-cloudtrail-trail-4"
-  s3_bucket_name = aws_s3_bucket.cloudtrail.id
-}
-
 resource "random_string" "suffix" {
-  length    = 16
-  min_lower = 16
+  length    = 10
+  min_lower = 10
   special   = false
 }
 
 locals {
-  bucket-name = "my-cloudtrail-bucket-${random_string.suffix.result}"
+  resource_prefix = "stratus-red-team-ctes" # cloudtrail event selectors
 }
+
+locals {
+  bucket-name = "${local.resource_prefix}-bucket-${random_string.suffix.result}"
+}
+
+resource "aws_cloudtrail" "trail" {
+  name           = "${local.resource_prefix}-trail-${random_string.suffix.result}"
+  s3_bucket_name = aws_s3_bucket.cloudtrail.id
+}
+
 resource "aws_s3_bucket" "cloudtrail" {
   bucket        = local.bucket-name
   force_destroy = true

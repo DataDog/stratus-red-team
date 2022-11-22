@@ -11,11 +11,12 @@ data "google_client_openid_userinfo" "whoami" {}
 
 locals {
   num-service-accounts = 10
+  resource_prefix      = "stratus-red-team-isa" # stratus red team impersonate service accounts
 }
 
 resource "random_string" "suffix" {
   count       = local.num-service-accounts
-  length      = 8
+  length      = 4
   special     = false
   min_lower   = 4
   min_numeric = 4
@@ -24,7 +25,7 @@ resource "random_string" "suffix" {
 // Create N service accounts
 resource "google_service_account" "service_account" {
   count       = local.num-service-accounts
-  account_id  = format("stratus-red-team-%s", random_string.suffix[count.index].result)
+  account_id  = format("%s-sa-%s", local.resource_prefix, random_string.suffix[count.index].result)
   description = "Service account used by Stratus Red Team for gcp.privilege-escalation.impersonate-service-accounts"
 }
 

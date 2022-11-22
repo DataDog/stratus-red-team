@@ -18,10 +18,14 @@ provider "aws" {
   }
 }
 
+locals {
+  resource_prefix = "stratus-red-team-get-usr-data"
+}
+
 data "aws_caller_identity" "current" {}
 
 resource "aws_iam_role" "role" {
-  name = "sample-role-used-by-stratus"
+  name = "${local.resource_prefix}-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [

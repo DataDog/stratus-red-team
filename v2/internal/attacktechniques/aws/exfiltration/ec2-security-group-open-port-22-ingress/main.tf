@@ -18,6 +18,10 @@ provider "aws" {
   }
 }
 
+locals {
+  resource_prefix = "stratus-red-team-open-sg"
+}
+
 resource "aws_vpc" "vpc" {
   cidr_block = "10.0.0.0/16"
   tags = {
@@ -26,7 +30,7 @@ resource "aws_vpc" "vpc" {
 }
 
 resource "aws_security_group" "allow_tls" {
-  name        = "allow_tls"
+  name        = "${local.resource_prefix}-sg"
   description = "Allow TLS inbound traffic"
   vpc_id      = aws_vpc.vpc.id
 
@@ -47,7 +51,7 @@ resource "aws_security_group" "allow_tls" {
   }
 
   tags = {
-    Name = "allow_tls",
+    Name = "${local.resource_prefix}-sg",
   }
 }
 

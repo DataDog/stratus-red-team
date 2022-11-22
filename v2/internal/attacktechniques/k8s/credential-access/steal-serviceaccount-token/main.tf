@@ -13,7 +13,7 @@ locals {
   labels = {
     "datadoghq.com/stratus-red-team" : true
   }
-  pod_name = "stratus-red-team-sample-pod"
+  resource_prefix = "stratus-red-team-ssat" # stratus red team steal service account token
 }
 
 # Use ~/.kube/config as a configuration file if it exists (with current context).
@@ -37,7 +37,7 @@ resource "kubernetes_namespace" "namespace" {
 
 resource "kubernetes_service_account" "serviceaccount" {
   metadata {
-    name      = "stratus-red-team-sa"
+    name      = format("%s-sa", local.resource_prefix)
     labels    = local.labels
     namespace = kubernetes_namespace.namespace.metadata[0].name
   }
@@ -45,7 +45,7 @@ resource "kubernetes_service_account" "serviceaccount" {
 
 resource "kubernetes_pod" "pod" {
   metadata {
-    name      = local.pod_name
+    name      = format("%s-pod", local.resource_prefix)
     labels    = local.labels
     namespace = local.namespace
   }

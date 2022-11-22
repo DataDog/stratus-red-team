@@ -7,8 +7,12 @@ terraform {
   }
 }
 
+locals {
+  resource_prefix = "stratus-red-team-csak" # stratus red team create service account key
+}
+
 resource "google_service_account" "service_account" {
-  account_id = "target-sa-stratus-red-team"
+  account_id = format("%s-sa", local.resource_prefix)
 }
 
 output "sa_email" {
