@@ -25,7 +25,7 @@ jobs:
         with:
           fetch-depth: 1
 
-      - uses: hashicorp/setup-terraform@bbe167fbdaa1a3bd046bdd70eba9dd3dddcca99c # tag:v2
+      - uses: hashicorp/setup-terraform@633666f66e0061ca3b725c73b2ec20cd13a8fdd1 # tag:v2
       
       - name: Lint Terraform
         run: terraform fmt -recursive -check
