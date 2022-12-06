@@ -2,12 +2,13 @@ package runner
 
 import (
 	"errors"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
-	"github.com/datadog/stratus-red-team/v2/internal/state"
-	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"log"
 	"path/filepath"
 	"strings"
+
+	"github.com/datadog/stratus-red-team/v2/internal/providers"
+	"github.com/datadog/stratus-red-team/v2/internal/state"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 )
 
 const StratusRunnerForce = true
@@ -102,6 +103,10 @@ func (m *Runner) Detonate() error {
 				"Revert it with 'stratus revert' before detonating it again, or use --force")
 		}
 		willWarmUp = false
+	}
+
+	if m.Technique.IsSlow {
+		log.Println("Note: This is a slow attack technique, it might take a long time to detonate")
 	}
 
 	if willWarmUp {

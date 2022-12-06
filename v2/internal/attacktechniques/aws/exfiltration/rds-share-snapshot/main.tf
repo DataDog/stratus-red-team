@@ -28,13 +28,35 @@ locals {
   resource_prefix = "stratus-red-team-share-snap"
 }
 
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
+module "vpc" {
+  source = "terraform-aws-modules/vpc/aws"
+
+  name = "${local.resource_prefix}-vpc"
+  cidr = "10.0.0.0/16"
+
+  azs              = [data.aws_availability_zones.available.names[0], data.aws_availability_zones.available.names[1]]
+  database_subnets = ["10.0.1.0/24", "10.0.2.0/24"]
+
+  map_public_ip_on_launch = false
+  enable_nat_gateway      = false
+
+  tags = {
+    StratusRedTeam = true
+  }
+}
+
 resource "aws_db_instance" "default" {
   allocated_storage       = 10 // minimum size
   engine                  = "mysql"
   engine_version          = "8.0"
   instance_class          = "db.t3.micro"
-  name                    = "${local.resource_prefix}-db"
+  name                    = "${replace(local.resource_prefix, "-", "")}db"
   backup_retention_period = 0
+  db_subnet_group_name    = module.vpc.database_subnet_group_name
   username                = "admin"
   password                = random_password.password.result
   skip_final_snapshot     = true
