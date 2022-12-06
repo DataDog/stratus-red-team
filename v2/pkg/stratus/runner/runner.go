@@ -2,13 +2,12 @@ package runner
 
 import (
 	"errors"
-	"log"
-	"path/filepath"
-	"strings"
-
 	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/internal/state"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"log"
+	"path/filepath"
+	"strings"
 )
 
 const StratusRunnerForce = true
