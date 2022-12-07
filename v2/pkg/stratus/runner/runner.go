@@ -104,6 +104,10 @@ func (m *Runner) Detonate() error {
 		willWarmUp = false
 	}
 
+	if m.Technique.IsSlow {
+		log.Println("Note: This is a slow attack technique, it might take a long time to warm up or detonate")
+	}
+
 	if willWarmUp {
 		outputs, err = m.WarmUp()
 	} else {
