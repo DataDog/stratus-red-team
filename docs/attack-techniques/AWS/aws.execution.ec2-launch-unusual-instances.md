@@ -35,7 +35,7 @@ stratus detonate aws.execution.ec2-launch-unusual-instances
 
 Trough CloudTrail events with the event name <code>RunInstances</code> and error
 <code>Client.UnauthorizedOperation</code>. The <code>eventSource</code> will be
-<code>ec2.amazonaws.com</code> and the <code>requestParameters.instanceType<code>
+<code>ec2.amazonaws.com</code> and the <code>requestParameters.instanceType</code>
 field will contain the instance type that was attempted to be launched.
 
 Depending on your account limits you might also see <code>VcpuLimitExceeded</code> error codes.
