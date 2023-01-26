@@ -13,7 +13,6 @@ import (
 	"log"
 	"time"
 
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	certificates "k8s.io/api/certificates/v1"
@@ -59,7 +58,7 @@ not relate to standard cluster operation (e.g. Kubelet certificate issuance).
 const csrName = "stratus-red-team-csr"
 const commonName = "system:kube-controller-manager"
 
-func detonate(map[string]string) error {
+func detonate(_ map[string]string, providers stratus.CloudProviders) error {
 	client := providers.K8s().GetClient()
 
 	key, err := rsa.GenerateKey(rand.Reader, 1024)

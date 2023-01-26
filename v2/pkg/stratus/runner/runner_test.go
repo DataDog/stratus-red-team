@@ -200,7 +200,7 @@ func TestRunnerDetonate(t *testing.T) {
 			runner := Runner{
 				Technique: &stratus.AttackTechnique{
 					ID: "sample-technique",
-					Detonate: func(map[string]string) error {
+					Detonate: func(map[string]string, stratus.CloudProviders) error {
 						wasDetonated = true
 						return nil
 					},
@@ -289,8 +289,8 @@ func TestRunnerRevert(t *testing.T) {
 			runner := Runner{
 				Technique: &stratus.AttackTechnique{
 					ID:       "foo",
-					Detonate: func(map[string]string) error { return nil },
-					Revert: func(params map[string]string) error {
+					Detonate: func(map[string]string, stratus.CloudProviders) error { return nil },
+					Revert: func(params map[string]string, factory stratus.CloudProviders) error {
 						wasReverted = true
 						return nil
 					},
@@ -428,7 +428,7 @@ func TestRunnerCleanup(t *testing.T) {
 			terraform.On("TerraformDestroy", mock.Anything).Return(nil)
 		}
 		if scenario[i].RevertFails {
-			scenario[i].Technique.Revert = func(map[string]string) error {
+			scenario[i].Technique.Revert = func(map[string]string, stratus.CloudProviders) error {
 				return errors.New("nope")
 			}
 		}

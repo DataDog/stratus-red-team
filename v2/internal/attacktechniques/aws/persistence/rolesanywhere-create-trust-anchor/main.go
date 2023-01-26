@@ -7,7 +7,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/rolesanywhere"
 	"github.com/aws/aws-sdk-go-v2/service/rolesanywhere/types"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
@@ -68,7 +67,7 @@ Identify when a trust anchor is created, through CloudTrail's <code>CreateTrustA
 	})
 }
 
-func detonate(params map[string]string) error {
+func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	rolesAnywhereClient := rolesanywhere.NewFromConfig(providers.AWS().GetConnection())
 	roleArn := params["role_arn"]
 	tags := []types.Tag{
@@ -114,7 +113,7 @@ func detonate(params map[string]string) error {
 	return nil
 }
 
-func revert(map[string]string) error {
+func revert(_ map[string]string, providers stratus.CloudProviders) error {
 	rolesanywhereClient := rolesanywhere.NewFromConfig(providers.AWS().GetConnection())
 
 	errTrustAnchor := removeTrustAnchor(rolesanywhereClient)

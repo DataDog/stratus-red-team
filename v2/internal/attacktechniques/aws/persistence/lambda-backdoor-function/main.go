@@ -6,7 +6,6 @@ import (
 	"errors"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/lambda"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
@@ -47,7 +46,7 @@ public or accessible from another account.
 
 var policyStatementId = "backdoor"
 
-func detonate(params map[string]string) error {
+func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	lambdaClient := lambda.NewFromConfig(providers.AWS().GetConnection())
 	lambdaFunctionName := params["lambda_function_name"]
 
@@ -68,7 +67,7 @@ func detonate(params map[string]string) error {
 	return nil
 }
 
-func revert(params map[string]string) error {
+func revert(params map[string]string, providers stratus.CloudProviders) error {
 	lambdaClient := lambda.NewFromConfig(providers.AWS().GetConnection())
 	lambdaFunctionName := params["lambda_function_name"]
 

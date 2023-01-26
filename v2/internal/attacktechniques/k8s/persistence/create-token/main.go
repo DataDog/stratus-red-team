@@ -5,7 +5,6 @@ import (
 	_ "embed"
 	"errors"
 	"github.com/aws/smithy-go/ptr"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	authenticationv1 "k8s.io/api/authentication/v1"
@@ -81,7 +80,7 @@ var params = authenticationv1.TokenRequest{
 	},
 }
 
-func detonate(map[string]string) error {
+func detonate(_ map[string]string, providers stratus.CloudProviders) error {
 	client := providers.K8s().GetClient()
 	ctx := context.Background()
 

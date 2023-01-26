@@ -92,8 +92,9 @@ See [kubeletctl](https://github.com/cyberark/kubeletctl/blob/master/pkg/api/cons
 	})
 }
 
-func detonate(params map[string]string) error {
-	client := providers.K8s().GetClient()
+func detonate(params map[string]string, providers stratus.CloudProviders) error {
+	k8s := providers.K8s()
+	client := k8s.GetClient()
 	serviceAccountName := params["service_account_name"]
 	serviceAccountNamespace := params["service_account_namespace"]
 
@@ -112,7 +113,7 @@ func detonate(params map[string]string) error {
 
 	// Step 3: Proxy the request to the Kubelet through this node
 	log.Println("Using worker node '" + node + "' to proxy to the Kubelet API")
-	_, err = proxyKubeletRequest("/runningpods/", authenticationToken, node, client)
+	_, err = proxyKubeletRequest(k8s, "/runningpods/", authenticationToken, node, client)
 	if err != nil {
 		return err
 	}
@@ -144,20 +145,19 @@ func getRandomNodeName(client *kubernetes.Clientset) (string, error) {
 
 // Uses the nodes proxy API to proxy a request through a node to hit the Kubelet
 // see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.22/#-strong-proxy-operations-node-v1-core-strong-
-func proxyKubeletRequest(kubeletApiPath string, token string, node string, client *kubernetes.Clientset) (string, error) {
+func proxyKubeletRequest(k8s *providers.K8sProvider, kubeletApiPath string, token string, node string, client *kubernetes.Clientset) (string, error) {
 	// Note: We have to use a raw HTTP request because it's not straightforward to create a new K8s API client from
 	// a static bearer token
-	config := providers.K8s().GetRestConfig()
 	httpClient := &http.Client{
 		Transport: &http.Transport{
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 		},
 	}
-	apiServerUrl := fmt.Sprintf("%s/%s", config.Host, config.APIPath)
+	apiServerUrl := fmt.Sprintf("%s/%s", k8s.RestConfig.Host, k8s.RestConfig.APIPath)
 	endpointUrl := fmt.Sprintf("%sapi/v1/nodes/%s/proxy%s", apiServerUrl, node, kubeletApiPath)
 	req, _ := http.NewRequest("GET", endpointUrl, nil)
 	req.Header.Set("Authorization", "Bearer "+token)
-	req.Header.Set("User-Agent", providers.StratusUserAgent)
+	req.Header.Set("User-Agent", providers.GetStratusUserAgentForUUID(k8s.UniqueCorrelationId))
 
 	log.Println("Performing request to " + endpointUrl)
 	response, err := httpClient.Do(req)

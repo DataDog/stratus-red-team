@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"github.com/aws/smithy-go/ptr"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	v1 "k8s.io/api/core/v1"
@@ -48,7 +47,7 @@ Detonation:
 	})
 }
 
-func detonate(params map[string]string) error {
+func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	client := providers.K8s().GetClient()
 	namespace := params["namespace"]
 	podSpec := nodeRootPodSpec(namespace)
@@ -63,7 +62,7 @@ func detonate(params map[string]string) error {
 	return nil
 }
 
-func revert(params map[string]string) error {
+func revert(params map[string]string, providers stratus.CloudProviders) error {
 	client := providers.K8s().GetClient()
 	namespace := params["namespace"]
 	podSpec := nodeRootPodSpec(namespace)

@@ -3,7 +3,6 @@ package aws
 import (
 	"context"
 	_ "embed"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
@@ -58,7 +57,7 @@ See:
 
 const numCalls = 15
 
-func detonate(params map[string]string) error {
+func detonate(params map[string]string, providers stratus.CloudProviders) error {
 
 	awsConnection := providers.AWS().GetConnection()
 	stsClient := sts.NewFromConfig(awsConnection)

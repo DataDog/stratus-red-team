@@ -4,7 +4,6 @@ import (
 	"context"
 	_ "embed"
 	"fmt"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"google.golang.org/api/iamcredentials/v1"
@@ -157,7 +156,7 @@ short amount of time (successfully or not)
 	})
 }
 
-func detonate(params map[string]string) error {
+func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	serviceAccountEmails := strings.Split(params["service_account_emails"], ",")
 	numServiceAccounts := len(serviceAccountEmails)
 

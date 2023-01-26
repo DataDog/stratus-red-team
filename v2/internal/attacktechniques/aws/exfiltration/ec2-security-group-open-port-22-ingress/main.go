@@ -6,7 +6,6 @@ import (
 	"errors"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
@@ -45,7 +44,7 @@ You can use the CloudTrail event <code>AuthorizeSecurityGroupIngress</code> when
 	})
 }
 
-func detonate(params map[string]string) error {
+func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	ec2Client := ec2.NewFromConfig(providers.AWS().GetConnection())
 
 	// Find the snapshot to exfiltrate
@@ -69,7 +68,7 @@ func detonate(params map[string]string) error {
 	return nil
 }
 
-func revert(params map[string]string) error {
+func revert(params map[string]string, providers stratus.CloudProviders) error {
 	ec2Client := ec2.NewFromConfig(providers.AWS().GetConnection())
 
 	// Find the snapshot to exfiltrate

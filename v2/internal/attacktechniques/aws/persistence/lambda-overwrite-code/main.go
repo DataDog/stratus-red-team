@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/aws/aws-sdk-go-v2/service/lambda"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"io/ioutil"
@@ -50,7 +49,7 @@ Through CloudTrail's <code>UpdateFunctionCode*</code> event, e.g. <code>UpdateFu
 	})
 }
 
-func detonate(params map[string]string) error {
+func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	functionName := params["lambda_function_name"]
 	lambdaClient := lambda.NewFromConfig(providers.AWS().GetConnection())
 	zip := "UEsDBAoDAAAAABGy0lRE4o1NOwAAADsAAAAJAAAAbGFtYmRhLnB5ZGVmIGxhbWJkYV9oYW5kbGVyKGUsIGMpOgogICAgcHJpbnQoIlN0cmF0dXMgc2F5cyBoZWxsbyEiKQpQSwECPwMKAwAAAAARstJUROKNTTsAAAA7AAAACQAkAAAAAAAAACCApIEAAAAAbGFtYmRhLnB5CgAgAAAAAAABABgAAL0yTlCD2AEA6mNPUIPYAQC9Mk5Qg9gBUEsFBgAAAAABAAEAWwAAAGIAAAAAAA=="
@@ -76,7 +75,7 @@ func detonate(params map[string]string) error {
 }
 
 // revert to original unmodified lambda
-func revert(params map[string]string) error {
+func revert(params map[string]string, providers stratus.CloudProviders) error {
 	functionName := params["lambda_function_name"]
 	bucketName := params["bucket_name"]
 	bucketKey := params["bucket_object_key"]

@@ -52,10 +52,10 @@ Using the following GCP Admin Activity audit logs events:
 // Note: `roles/owner` cannot be granted through the API
 const roleToGrant = "roles/owner"
 
-func detonate(params map[string]string) error {
+func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	gcp := providers.GCP()
 	serviceAccountName := params["service_account_name"]
-	serviceAccountEmail := getServiceAccountEmail(serviceAccountName)
+	serviceAccountEmail := getServiceAccountEmail(serviceAccountName, gcp.ProjectId)
 
 	if err := createServiceAccount(gcp, serviceAccountName); err != nil {
 		return err
@@ -69,13 +69,13 @@ func detonate(params map[string]string) error {
 }
 
 // createServiceAccount creates a new service account inside of a GCP project
-func createServiceAccount(gcp *providers.GcpProvider, serviceAccountName string) error {
+func createServiceAccount(gcp *providers.GCPProvider, serviceAccountName string) error {
 	iamClient, err := iam.NewService(context.Background(), gcp.Options())
 	if err != nil {
 		return errors.New("Error instantiating GCP IAM Client: " + err.Error())
 	}
 	serviceAccountDisplayName := fmt.Sprintf("%s (service account used by stratus red team)", serviceAccountName)
-	serviceAccountEmail := getServiceAccountEmail(serviceAccountName)
+	serviceAccountEmail := getServiceAccountEmail(serviceAccountName, gcp.GetProjectId())
 	path := fmt.Sprintf("projects/%s", gcp.GetProjectId())
 
 	log.Println("Creating service account " + serviceAccountName)
@@ -95,7 +95,7 @@ func createServiceAccount(gcp *providers.GcpProvider, serviceAccountName string)
 // * Step 1: Read the project's IAM policy using [getIamPolicy](https://cloud.google.com/resource-manager/reference/rest/v1/projects/getIamPolicy)
 // * Step 2: Create a binding, or add the service account to an existing binding for the role to grant
 // * Step 3: Update the project's IAM policy using [setIamPolicy](https://cloud.google.com/resource-manager/reference/rest/v1/projects/setIamPolicy)
-func assignProjectRole(gcp *providers.GcpProvider, serviceAccountEmail string, roleToGrant string) error {
+func assignProjectRole(gcp *providers.GCPProvider, serviceAccountEmail string, roleToGrant string) error {
 	resourceManager, err := cloudresourcemanager.NewService(context.Background(), gcp.Options())
 	if err != nil {
 		return errors.New("unable to instantiate the GCP cloud resource manager: " + err.Error())
@@ -132,10 +132,10 @@ func assignProjectRole(gcp *providers.GcpProvider, serviceAccountEmail string, r
 	return nil
 }
 
-func revert(params map[string]string) error {
+func revert(params map[string]string, providers stratus.CloudProviders) error {
 	gcp := providers.GCP()
 	serviceAccountName := params["service_account_name"]
-	serviceAccountEmail := getServiceAccountEmail(serviceAccountName)
+	serviceAccountEmail := getServiceAccountEmail(serviceAccountName, gcp.ProjectId)
 
 	// Attempt to remove the role from the service account in the project's IAM policy
 	// fail with a warning (but continue) in case of error
@@ -150,7 +150,7 @@ func revert(params map[string]string) error {
 // * Step 1: Read the project's IAM policy using [getIamPolicy](https://cloud.google.com/resource-manager/reference/rest/v1/projects/getIamPolicy)
 // * Step 2: Remove a binding, or remove the service account from an existing binding for the role to grant
 // * Step 3: Update the project's IAM policy using [setIamPolicy](https://cloud.google.com/resource-manager/reference/rest/v1/projects/setIamPolicy)
-func unassignProjectRole(gcp *providers.GcpProvider, serviceAccountEmail string, roleToGrant string) {
+func unassignProjectRole(gcp *providers.GCPProvider, serviceAccountEmail string, roleToGrant string) {
 	resourceManager, err := cloudresourcemanager.NewService(context.Background(), gcp.Options())
 	if err != nil {
 		log.Println("Warning: unable to instantiate the GCP cloud resource manager: " + err.Error())
@@ -187,14 +187,14 @@ func unassignProjectRole(gcp *providers.GcpProvider, serviceAccountEmail string,
 
 }
 
-func removeServiceAccount(gcp *providers.GcpProvider, serviceAccountName string) error {
+func removeServiceAccount(gcp *providers.GCPProvider, serviceAccountName string) error {
 	iamClient, err := iam.NewService(context.Background(), gcp.Options())
 	if err != nil {
 		return errors.New("Error instantiating GCP IAM Client: " + err.Error())
 	}
 
 	log.Println("Removing service account " + serviceAccountName)
-	_, err = iamClient.Projects.ServiceAccounts.Delete(getServiceAccountPath(serviceAccountName)).Do()
+	_, err = iamClient.Projects.ServiceAccounts.Delete(getServiceAccountPath(serviceAccountName, gcp.GetProjectId())).Do()
 	if err != nil {
 		return errors.New("Unable to delete service account: " + err.Error())
 	}
@@ -203,12 +203,12 @@ func removeServiceAccount(gcp *providers.GcpProvider, serviceAccountName string)
 
 // Utility functions
 
-func getServiceAccountPath(name string) string {
-	return fmt.Sprintf("projects/-/serviceAccounts/%s", getServiceAccountEmail(name))
+func getServiceAccountPath(name string, projectId string) string {
+	return fmt.Sprintf("projects/-/serviceAccounts/%s", getServiceAccountEmail(name, projectId))
 }
 
-func getServiceAccountEmail(name string) string {
-	return fmt.Sprintf("%s@%s.iam.gserviceaccount.com", name, providers.GCP().GetProjectId())
+func getServiceAccountEmail(name string, projectId string) string {
+	return fmt.Sprintf("%s@%s.iam.gserviceaccount.com", name, projectId)
 }
 
 func remove(slice []string, index int) []string {

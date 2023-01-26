@@ -7,7 +7,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
@@ -48,7 +47,7 @@ The CloudTrail event <code>PutBucketLifecycle</code> and its attribute
 	})
 }
 
-func detonate(params map[string]string) error {
+func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	s3Client := s3.NewFromConfig(providers.AWS().GetConnection())
 	bucketName := params["s3_bucket_name"]
 
@@ -75,7 +74,7 @@ func detonate(params map[string]string) error {
 	return nil
 }
 
-func revert(params map[string]string) error {
+func revert(params map[string]string, providers stratus.CloudProviders) error {
 	s3Client := s3.NewFromConfig(providers.AWS().GetConnection())
 	bucketName := params["s3_bucket_name"]
 

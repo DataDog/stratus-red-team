@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func noop(map[string]string) error {
+func noop(map[string]string, stratus.CloudProviders) error {
 	return nil
 }
 

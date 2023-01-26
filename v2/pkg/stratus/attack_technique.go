@@ -32,13 +32,13 @@ type AttackTechnique struct {
 
 	// Detonation function
 	// Parameters are the Terraform outputs
-	Detonate func(params map[string]string) error `yaml:"-"`
+	Detonate func(params map[string]string, providerFactory CloudProviders) error `yaml:"-"`
 
 	// Indicates if the detonation function is idempotent, i.e. if it can be run multiple times without reverting it
 	IsIdempotent bool `yaml:"isIdempotent"`
 
 	// Reversion function, to revert the side effects of a detonation
-	Revert func(params map[string]string) error `yaml:"-"`
+	Revert func(params map[string]string, providerFactory CloudProviders) error `yaml:"-"`
 }
 
 func (m AttackTechnique) String() string {

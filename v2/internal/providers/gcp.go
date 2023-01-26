@@ -27,30 +27,27 @@ func getProjectId() string {
 	return ""
 }
 
-type GcpProvider struct {
+type GCPProvider struct {
 	UniqueCorrelationId uuid.UUID
 	ProjectId           string
 }
 
-var gcpProvider = GcpProvider{
-	UniqueCorrelationId: UniqueExecutionId,
-	ProjectId:           getProjectId(),
+func NewGCPProvider(uuid uuid.UUID) *GCPProvider {
+	return &GCPProvider{
+		UniqueCorrelationId: uuid,
+		ProjectId:           getProjectId(),
+	}
 }
 
-func GCP() *GcpProvider {
-	return &gcpProvider
+func (m *GCPProvider) Options() option.ClientOption {
+	return option.WithUserAgent(GetStratusUserAgentForUUID(m.UniqueCorrelationId))
 }
 
-func (m *GcpProvider) Options() option.ClientOption {
-	return option.WithUserAgent(GetStratusUserAgent())
-}
-
-func (m *GcpProvider) IsAuthenticated() bool {
-	ctx := context.Background()
-	_, err := iam.NewService(ctx)
+func (m *GCPProvider) IsAuthenticated() bool {
+	_, err := iam.NewService(context.Background())
 	return err == nil && m.ProjectId != ""
 }
 
-func (m *GcpProvider) GetProjectId() string {
+func (m *GCPProvider) GetProjectId() string {
 	return m.ProjectId
 }

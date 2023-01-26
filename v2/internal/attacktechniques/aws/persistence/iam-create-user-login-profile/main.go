@@ -5,7 +5,6 @@ import (
 	_ "embed"
 	"errors"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
@@ -45,7 +44,7 @@ In particular, it's suspicious when these events occur on IAM users intended to 
 	})
 }
 
-func detonate(params map[string]string) error {
+func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	iamClient := iam.NewFromConfig(providers.AWS().GetConnection())
 	userName := params["user_name"]
 	password := utils.RandomString(16) + ".#1Aa" // extra characters to ensure we meet password requirements, no matter the password policy
@@ -68,7 +67,7 @@ func detonate(params map[string]string) error {
 	return nil
 }
 
-func revert(params map[string]string) error {
+func revert(params map[string]string, providers stratus.CloudProviders) error {
 	iamClient := iam.NewFromConfig(providers.AWS().GetConnection())
 	userName := params["user_name"]
 

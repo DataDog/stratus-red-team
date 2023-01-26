@@ -5,6 +5,7 @@ import (
 	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/internal/state"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/google/uuid"
 	"log"
 	"path/filepath"
 	"strings"
@@ -14,21 +15,27 @@ const StratusRunnerForce = true
 const StratusRunnerNoForce = false
 
 type Runner struct {
-	Technique        *stratus.AttackTechnique
-	TechniqueState   stratus.AttackTechniqueState
-	TerraformDir     string
-	ShouldForce      bool
-	TerraformManager TerraformManager
-	StateManager     state.StateManager
+	Technique           *stratus.AttackTechnique
+	TechniqueState      stratus.AttackTechniqueState
+	TerraformDir        string
+	ShouldForce         bool
+	TerraformManager    TerraformManager
+	StateManager        state.StateManager
+	ProviderFactory     stratus.CloudProviders
+	UniqueCorrelationID uuid.UUID
 }
 
 func NewRunner(technique *stratus.AttackTechnique, force bool) Runner {
 	stateManager := state.NewFileSystemStateManager(technique)
+	uuid := uuid.New()
 	runner := Runner{
-		Technique:        technique,
-		ShouldForce:      force,
-		TerraformManager: NewTerraformManager(filepath.Join(stateManager.GetRootDirectory(), "terraform")),
-		StateManager:     stateManager,
+		Technique:           technique,
+		ShouldForce:         force,
+		StateManager:        stateManager,
+		UniqueCorrelationID: uuid,
+		TerraformManager: NewTerraformManager(
+			filepath.Join(stateManager.GetRootDirectory(), "terraform"), providers.GetStratusUserAgentForUUID(uuid),
+		),
 	}
 	runner.initialize()
 
@@ -41,6 +48,7 @@ func (m *Runner) initialize() {
 	if m.TechniqueState == "" {
 		m.TechniqueState = stratus.AttackTechniqueStatusCold
 	}
+	m.ProviderFactory = stratus.CloudProvidersImpl{UniqueCorrelationID: m.UniqueCorrelationID}
 }
 
 func (m *Runner) WarmUp() (map[string]string, error) {
@@ -119,7 +127,7 @@ func (m *Runner) Detonate() error {
 	}
 
 	// Detonate
-	err = m.Technique.Detonate(outputs)
+	err = m.Technique.Detonate(outputs, m.ProviderFactory)
 	if err != nil {
 		return errors.New("Error while detonating attack technique " + m.Technique.ID + ": " + err.Error())
 	}
@@ -140,7 +148,7 @@ func (m *Runner) Revert() error {
 	log.Println("Reverting detonation of technique " + m.Technique.ID)
 
 	if m.Technique.Revert != nil {
-		err = m.Technique.Revert(outputs)
+		err = m.Technique.Revert(outputs, m.ProviderFactory)
 		if err != nil {
 			return errors.New("unable to revert detonation of " + m.Technique.ID + ": " + err.Error())
 		}
@@ -203,9 +211,9 @@ func (m *Runner) setState(state stratus.AttackTechniqueState) {
 	m.TechniqueState = state
 }
 
-// GetUniqueExecutionId returns an unique execution ID, unique per run of Stratus Red Team (not for each TTP detonated)
+// GetUniqueExecutionId returns an unique execution ID, unique for each runner instance
 func (m *Runner) GetUniqueExecutionId() string {
-	return providers.UniqueExecutionId.String()
+	return m.UniqueCorrelationID.String()
 }
 
 // Utility function to display better error messages than the Terraform ones

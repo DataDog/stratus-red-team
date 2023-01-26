@@ -3,7 +3,6 @@ package kubernetes
 import (
 	_ "embed"
 	"errors"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"github.com/golang-jwt/jwt"
@@ -83,7 +82,7 @@ Sample event (shortened):
 	})
 }
 
-func detonate(params map[string]string) error {
+func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	config := providers.K8s().GetRestConfig()
 	client := providers.K8s().GetClient()
 	namespace := params["namespace"]

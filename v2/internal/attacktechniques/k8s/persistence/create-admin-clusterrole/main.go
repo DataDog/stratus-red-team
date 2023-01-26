@@ -5,13 +5,13 @@ import (
 	_ "embed"
 	"errors"
 	"github.com/aws/smithy-go/ptr"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	corev1 "k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/wait"
+	"k8s.io/client-go/kubernetes"
 	"log"
 	"time"
 )
@@ -61,7 +61,7 @@ var clusterRoleBinding = &rbacv1.ClusterRoleBinding{
 	RoleRef:    rbacv1.RoleRef{Kind: "ClusterRole", Name: clusterRole.Name},
 }
 
-func detonate(map[string]string) error {
+func detonate(_ map[string]string, providers stratus.CloudProviders) error {
 	client := providers.K8s().GetClient()
 	ctx := context.Background()
 
@@ -89,7 +89,7 @@ func detonate(map[string]string) error {
 	// see https://kubernetes.io/docs/reference/access-authn-authz/service-accounts-admin/#token-controller
 	var secretName string
 	err = wait.PollImmediate(1*time.Second, 1*time.Minute, func() (done bool, err error) {
-		name, err := getServiceAccountSecretName()
+		name, err := getServiceAccountSecretName(client)
 		secretName = name
 		return name != "", err
 	})
@@ -109,8 +109,7 @@ func detonate(map[string]string) error {
 }
 
 // Returns the name of the K8s secret containing the long-lived service account token
-func getServiceAccountSecretName() (string, error) {
-	client := providers.K8s().GetClient()
+func getServiceAccountSecretName(client *kubernetes.Clientset) (string, error) {
 	serviceAccount, err := client.CoreV1().ServiceAccounts(namespace).Get(context.Background(), serviceAccount.Name, metav1.GetOptions{})
 	if err != nil {
 		return "", err
@@ -121,7 +120,7 @@ func getServiceAccountSecretName() (string, error) {
 	return "", nil
 }
 
-func revert(map[string]string) error {
+func revert(_ map[string]string, providers stratus.CloudProviders) error {
 	client := providers.K8s().GetClient()
 	roleName := clusterRole.Name
 	deleteOpts := metav1.DeleteOptions{GracePeriodSeconds: ptr.Int64(0)}

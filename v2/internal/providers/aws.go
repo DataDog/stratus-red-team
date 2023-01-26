@@ -12,34 +12,23 @@ import (
 	"log"
 )
 
-var awsProvider = AWSProvider{
-	UniqueCorrelationId: UniqueExecutionId,
-}
-
-func AWS() *AWSProvider {
-	return &awsProvider
-}
-
 type AWSProvider struct {
 	awsConfig           *aws.Config
 	UniqueCorrelationId uuid.UUID // unique value injected in the user-agent, to differentiate Stratus Red Team executions
 }
 
-func (m *AWSProvider) GetConnection() aws.Config {
-	if m.awsConfig == nil {
-		cfg, err := config.LoadDefaultConfig(context.Background(), customUserAgentApiOptions(m.UniqueCorrelationId))
-		if err != nil {
-			log.Fatalf("unable to load AWS configuration, %v", err)
-		}
-		m.awsConfig = &cfg
+func NewAWSProvider(uuid uuid.UUID) *AWSProvider {
+	cfg, err := config.LoadDefaultConfig(context.Background(), customUserAgentApiOptions(uuid))
+	if err != nil {
+		log.Fatalf("unable to load AWS configuration, %v", err)
 	}
-
+	return &AWSProvider{UniqueCorrelationId: uuid, awsConfig: &cfg}
+}
+func (m *AWSProvider) GetConnection() aws.Config {
 	return *m.awsConfig
 }
 
 func (m *AWSProvider) IsAuthenticatedAgainstAWS() bool {
-	m.GetConnection()
-
 	// We make a sample API call to AWS to ensure the user is authenticated
 	// Note: We use ec2:DescribeAccountAttributes as an arbitrary API call
 	// instead of sts:GetCallerIdentity, to ensure an AWS region was properly set
@@ -68,7 +57,7 @@ func customUserAgentMiddleware(uniqueId uuid.UUID) middleware.BuildMiddleware {
 		if !ok {
 			return out, metadata, fmt.Errorf("unknown transport type %T", input.Request)
 		}
-		request.Header.Set("User-Agent", GetStratusUserAgent())
+		request.Header.Set("User-Agent", GetStratusUserAgentForUUID(uniqueId))
 
 		return next.HandleBuild(ctx, input)
 	})

@@ -7,7 +7,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
@@ -62,11 +61,11 @@ provisioned before instantiation.
 	})
 }
 
-func detonate(params map[string]string) error {
+func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	ec2Client := ec2.NewFromConfig(providers.AWS().GetConnection())
 	instanceId := params["instance_id"]
 
-	err := stopInstance(instanceId)
+	err := stopInstance(instanceId, ec2Client)
 	if err != nil {
 		return err
 	}
@@ -80,7 +79,7 @@ func detonate(params map[string]string) error {
 		return errors.New("unable to update user data: " + err.Error())
 	}
 
-	err = startInstance(instanceId)
+	err = startInstance(instanceId, ec2Client)
 	if err != nil {
 		return err
 	}
@@ -93,8 +92,7 @@ func detonate(params map[string]string) error {
 const maxWaitDuration = 2 * time.Minute
 
 // Stops an EC2 instance, and synchronously returns only when it is stopped
-func stopInstance(instanceId string) error {
-	ec2Client := ec2.NewFromConfig(providers.AWS().GetConnection())
+func stopInstance(instanceId string, ec2Client *ec2.Client) error {
 	log.Println("Stopping instance " + instanceId)
 	_, err := ec2Client.StopInstances(context.Background(), &ec2.StopInstancesInput{
 		InstanceIds: []string{instanceId},
@@ -121,8 +119,7 @@ func stopInstance(instanceId string) error {
 }
 
 // Starts an EC2 instance, and synchronously returns only when it is running
-func startInstance(instanceId string) error {
-	ec2Client := ec2.NewFromConfig(providers.AWS().GetConnection())
+func startInstance(instanceId string, ec2Client *ec2.Client) error {
 	log.Println("Starting instance")
 	_, err := ec2Client.StartInstances(context.Background(), &ec2.StartInstancesInput{
 		InstanceIds: []string{instanceId},
