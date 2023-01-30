@@ -7,7 +7,6 @@ import (
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/runtime"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/to"
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/compute/armcompute"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
@@ -91,7 +90,7 @@ Sample event (redacted for clarity):
 	})
 }
 
-func detonate(params map[string]string) error {
+func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	vmObjectId := params["vm_instance_object_id"]
 	vmName := params["vm_name"]
 	resourceGroup := params["resource_group_name"]

@@ -6,7 +6,6 @@ import (
 	"errors"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/rds"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
@@ -57,7 +56,7 @@ An attacker can also make an RDS snapshot completely public. In this case, the v
 
 var AccountIdToShareWith = []string{"193672423079"}
 
-func detonate(params map[string]string) error {
+func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	snapshotId := params["snapshot_id"]
 	rdsClient := rds.NewFromConfig(providers.AWS().GetConnection())
 
@@ -75,7 +74,7 @@ func detonate(params map[string]string) error {
 	return nil
 }
 
-func revert(params map[string]string) error {
+func revert(params map[string]string, providers stratus.CloudProviders) error {
 	snapshotId := params["snapshot_id"]
 	rdsClient := rds.NewFromConfig(providers.AWS().GetConnection())
 

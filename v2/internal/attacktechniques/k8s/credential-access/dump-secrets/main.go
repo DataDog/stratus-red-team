@@ -4,7 +4,6 @@ import (
 	"context"
 	_ "embed"
 	"errors"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -76,7 +75,7 @@ Some built-in Kubernetes components might need to be excluded from such a detect
 	})
 }
 
-func detonate(map[string]string) error {
+func detonate(_ map[string]string, providers stratus.CloudProviders) error {
 	client := providers.K8s().GetClient()
 
 	log.Println("Attempting to dump secrets in all namespaces")

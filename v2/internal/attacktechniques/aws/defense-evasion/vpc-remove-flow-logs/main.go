@@ -5,7 +5,6 @@ import (
 	_ "embed"
 	"errors"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
@@ -43,7 +42,7 @@ only when <code>DeleteFlowLogs</code> is not closely followed by <code>DeleteVpc
 	})
 }
 
-func detonate(params map[string]string) error {
+func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	ec2Client := ec2.NewFromConfig(providers.AWS().GetConnection())
 
 	vpcId := params["vpc_id"]

@@ -10,7 +10,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/ssm"
 	"github.com/aws/aws-sdk-go-v2/service/ssm/types"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
@@ -57,7 +56,7 @@ See also: [Known detection bypasses](https://hackingthe.cloud/aws/avoiding-detec
 	})
 }
 
-func detonate(params map[string]string) error {
+func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	ssmClient := ssm.NewFromConfig(providers.AWS().GetConnection())
 	instanceId := params["instance_id"]
 	instanceRoleName := params["instance_role_name"]

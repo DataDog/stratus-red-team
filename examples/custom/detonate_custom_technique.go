@@ -31,9 +31,9 @@ func buildCustomAttackTechnique() *stratus.AttackTechnique {
 	}
 }
 
-func detonate(params map[string]string) error {
+func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	iamUserName := params["iam_user_name"]
-	iamClient := iam.NewFromConfig(stratus.AWSProvider().GetConnection())
+	iamClient := iam.NewFromConfig(providers.AWS().GetConnection())
 
 	userResponse, err := iamClient.GetUser(context.Background(), &iam.GetUserInput{
 		UserName: &iamUserName,

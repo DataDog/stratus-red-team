@@ -7,7 +7,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
 	"github.com/aws/aws-sdk-go-v2/service/iam/types"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
@@ -47,7 +46,7 @@ can help to craft more precise detections:
 	})
 }
 
-func detonate(map[string]string) error {
+func detonate(_ map[string]string, providers stratus.CloudProviders) error {
 	iamClient := iam.NewFromConfig(providers.AWS().GetConnection())
 
 	log.Println("Creating a malicious IAM user")
@@ -83,7 +82,7 @@ func detonate(map[string]string) error {
 	return nil
 }
 
-func revert(map[string]string) error {
+func revert(_ map[string]string, providers stratus.CloudProviders) error {
 	iamClient := iam.NewFromConfig(providers.AWS().GetConnection())
 
 	result, err := iamClient.ListAccessKeys(context.Background(), &iam.ListAccessKeysInput{

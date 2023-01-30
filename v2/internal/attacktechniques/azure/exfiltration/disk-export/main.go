@@ -71,9 +71,9 @@ Sample event (redacted for clarity):
 	})
 }
 
-func detonate(params map[string]string) error {
+func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	diskName := params["disk_name"]
-	disksClient, err := getAzureDisksClient()
+	disksClient, err := getAzureDisksClient(providers.Azure())
 	if err != nil {
 		return errors.New("unable to instantiate Azure disks client: " + err.Error())
 	}
@@ -99,9 +99,9 @@ func detonate(params map[string]string) error {
 	return nil
 }
 
-func revert(params map[string]string) error {
+func revert(params map[string]string, providers stratus.CloudProviders) error {
 	diskName := params["disk_name"]
-	disksClient, err := getAzureDisksClient()
+	disksClient, err := getAzureDisksClient(providers.Azure())
 	if err != nil {
 		return errors.New("unable to instantiate Azure disks client: " + err.Error())
 	}
@@ -122,9 +122,6 @@ func revert(params map[string]string) error {
 	return nil
 }
 
-func getAzureDisksClient() (*armcompute.DisksClient, error) {
-	cred := providers.Azure().GetCredentials()
-	subscriptionID := providers.Azure().SubscriptionID
-	clientOptions := providers.Azure().ClientOptions
-	return armcompute.NewDisksClient(subscriptionID, cred, clientOptions)
+func getAzureDisksClient(azure *providers.AzureProvider) (*armcompute.DisksClient, error) {
+	return armcompute.NewDisksClient(azure.SubscriptionID, azure.GetCredentials(), azure.ClientOptions)
 }

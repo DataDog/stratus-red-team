@@ -4,7 +4,7 @@ import (
 	_ "embed"
 	"encoding/json"
 	"errors"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
+	providersInternal "github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"io"
@@ -84,13 +84,13 @@ Sample CloudTrail event (redacted for clarity):
 	})
 }
 
-func detonate(params map[string]string) error {
+func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	// The code to generate a 'ConsoleLogin' event programmatically was inspired from
 	// https://naikordian.github.io/blog/posts/brute-force-aws-console/
 	// courtesy of Naikordian (naikordian@protonmail.com)
 
 	// Build the HTTP request
-	request := buildHttpRequest(params)
+	request := buildHttpRequest(params, providers)
 	log.Println("Performing a console login for user " + params["username"] + " in account " + params["account_id"])
 
 	// Perform the HTTP request
@@ -116,7 +116,7 @@ func detonate(params map[string]string) error {
 }
 
 // buildHttpRequest builds the HTTP request to send to the AWS console sign-in endpoint
-func buildHttpRequest(params map[string]string) *http.Request {
+func buildHttpRequest(params map[string]string, providers stratus.CloudProviders) *http.Request {
 	// https://naikordian.github.io/blog/posts/brute-force-aws-console/
 	postData := url.Values{
 		"action":       {"iam-user-authentication"},
@@ -134,7 +134,7 @@ func buildHttpRequest(params map[string]string) *http.Request {
 	// http.DefaultTransport = &http.Transport{Proxy: http.ProxyURL(proxyUrl), TLSClientConfig: &tls.Config{InsecureSkipVerify: true}}
 	req.Header.Add("Referer", "https://signin.aws.amazon.com")
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	req.Header.Set("User-Agent", providers.GetStratusUserAgent())
+	req.Header.Set("User-Agent", providersInternal.GetStratusUserAgentForUUID(providers.AWS().UniqueCorrelationId))
 
 	return req
 }

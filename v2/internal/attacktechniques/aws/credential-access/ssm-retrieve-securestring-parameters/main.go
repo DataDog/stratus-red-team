@@ -6,7 +6,6 @@ import (
 	"errors"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/ssm"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
@@ -52,7 +51,7 @@ The following may be use to tune the detection, or validate findings:
 	})
 }
 
-func detonate(map[string]string) error {
+func detonate(_ map[string]string, providers stratus.CloudProviders) error {
 	ssmClient := ssm.NewFromConfig(providers.AWS().GetConnection())
 
 	log.Println("Running ssm:DescribeParameters and ssm:GetParameters by batch of 10 to find all SSM Parameters in the current region")

@@ -5,7 +5,6 @@ import (
 	_ "embed"
 	"errors"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/runtime"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
@@ -74,7 +73,7 @@ Identify Azure events of type <code>Microsoft.Compute/virtualMachines/extensions
 
 const ExtensionName = "CustomScriptExtension-StratusRedTeam-Example"
 
-func detonate(params map[string]string) error {
+func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	vmName := params["vm_name"]
 	resourceGroup := params["resource_group_name"]
 
@@ -131,7 +130,7 @@ func detonate(params map[string]string) error {
 	return nil
 }
 
-func revert(params map[string]string) error {
+func revert(params map[string]string, providers stratus.CloudProviders) error {
 	vmName := params["vm_name"]
 	resourceGroup := params["resource_group_name"]
 

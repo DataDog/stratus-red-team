@@ -6,7 +6,6 @@ import (
 	"errors"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/ssm"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
@@ -63,7 +62,7 @@ arn:aws:sts::012345678901:assumed-role/my-instance-role/i-0adc17a5acb70d9ae
 	})
 }
 
-func detonate(params map[string]string) error {
+func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	ssmClient := ssm.NewFromConfig(providers.AWS().GetConnection())
 	instanceId := params["instance_id"]
 	commands := []string{

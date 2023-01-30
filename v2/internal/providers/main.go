@@ -5,10 +5,8 @@ import (
 	"github.com/google/uuid"
 )
 
-const StratusUserAgent = "stratus-red-team"
+const StratusUserAgentPrefix = "stratus-red-team"
 
-var UniqueExecutionId = uuid.New()
-
-func GetStratusUserAgent() string {
-	return fmt.Sprintf("%s_%s", StratusUserAgent, UniqueExecutionId)
+func GetStratusUserAgentForUUID(uuid uuid.UUID) string {
+	return fmt.Sprintf("%s_%s", StratusUserAgentPrefix, uuid.String())
 }

@@ -26,13 +26,30 @@ type K8sProvider struct {
 }
 
 var (
-	k8sProvider               = K8sProvider{UniqueCorrelationId: UniqueExecutionId}
 	kubeConfigPath            string
 	kubeConfigPathWasResolved bool
 )
 
-func K8s() *K8sProvider {
-	return &k8sProvider
+func NewK8sProvider(uuid uuid.UUID) *K8sProvider {
+	kubeconfig := GetKubeConfigPath()
+
+	// Will default to an in-cluster client config if kubeconfig path is not set
+	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
+	if err != nil {
+		log.Fatalf("unable to build kube config: %v", err)
+	}
+	restConfig := config
+	restConfig.UserAgent = GetStratusUserAgentForUUID(uuid)
+	k8sClient, err := kubernetes.NewForConfig(restConfig)
+	if err != nil {
+		log.Fatalf("unable to create kube client: %v", err)
+	}
+
+	return &K8sProvider{
+		UniqueCorrelationId: uuid,
+		RestConfig:          restConfig,
+		k8sClient:           k8sClient,
+	}
 }
 
 // GetKubeConfigPath returns the path of the kubeconfig, with the following priority:
@@ -68,19 +85,6 @@ func getKubeConfigPath() string {
 
 // GetClient is used to authenticate with Kubernetes and build the client from a kubeconfig
 func (m *K8sProvider) GetClient() *kubernetes.Clientset {
-	kubeconfig := GetKubeConfigPath()
-
-	// Will default to an in-cluster client config if kubeconfig path is not set
-	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
-	if err != nil {
-		log.Fatalf("unable to build kube config: %v", err)
-	}
-	m.RestConfig = config
-	m.RestConfig.UserAgent = GetStratusUserAgent()
-	m.k8sClient, err = kubernetes.NewForConfig(m.RestConfig)
-	if err != nil {
-		log.Fatalf("unable to create kube client: %v", err)
-	}
 	return m.k8sClient
 }
 
@@ -89,8 +93,6 @@ func (m *K8sProvider) GetRestConfig() *rest.Config {
 }
 
 func (m *K8sProvider) IsAuthenticated() bool {
-	m.GetClient()
-
 	// We assume if the current user can do 'kubectl list pods' in the default namespace, they are authenticated
 	// Note: we do not perform authorization checks
 	var self = authv1.SelfSubjectAccessReview{

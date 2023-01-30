@@ -5,7 +5,6 @@ import (
 	_ "embed"
 	"errors"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
@@ -54,11 +53,12 @@ which generates a finding when a role can be assumed from a new AWS account or p
 	})
 }
 
-func detonate(params map[string]string) error {
+func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	roleName := params["role_name"]
+	iamClient := iam.NewFromConfig(providers.AWS().GetConnection())
 
 	log.Println("Backdooring IAM role " + roleName + " by allowing sts:AssumeRole from an external AWS account")
-	err := updateAssumeRolePolicy(roleName, maliciousIamPolicy)
+	err := updateAssumeRolePolicy(iamClient, roleName, maliciousIamPolicy)
 	if err != nil {
 		return errors.New("unable to backdoor IAM role: " + err.Error())
 	}
@@ -67,12 +67,13 @@ func detonate(params map[string]string) error {
 	return nil
 }
 
-func revert(params map[string]string) error {
+func revert(params map[string]string, providers stratus.CloudProviders) error {
 	roleName := params["role_name"]
 	roleTrustPolicy := strings.ReplaceAll(params["role_trust_policy"], "\\", "") // Terraform output adds backslashes for some reason
+	iamClient := iam.NewFromConfig(providers.AWS().GetConnection())
 
 	log.Println("Reverting trust policy of IAM role " + roleName + " to its original state")
-	err := updateAssumeRolePolicy(roleName, roleTrustPolicy)
+	err := updateAssumeRolePolicy(iamClient, roleName, roleTrustPolicy)
 
 	if err != nil {
 		return errors.New("unable to backdoor IAM role: " + err.Error())
@@ -80,8 +81,7 @@ func revert(params map[string]string) error {
 	return nil
 }
 
-func updateAssumeRolePolicy(roleName string, roleTrustPolicy string) error {
-	iamClient := iam.NewFromConfig(providers.AWS().GetConnection())
+func updateAssumeRolePolicy(iamClient *iam.Client, roleName string, roleTrustPolicy string) error {
 	_, err := iamClient.UpdateAssumeRolePolicy(context.Background(), &iam.UpdateAssumeRolePolicyInput{
 		RoleName:       &roleName,
 		PolicyDocument: &roleTrustPolicy,

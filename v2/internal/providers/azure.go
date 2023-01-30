@@ -21,41 +21,35 @@ type AzureProvider struct {
 	UniqueCorrelationId uuid.UUID // unique value injected in the user-agent, to differentiate Stratus Red Team executions
 }
 
-var DefaultClientOptions = arm.ClientOptions{
-	ClientOptions: azcore.ClientOptions{
-		Telemetry: policy.TelemetryOptions{ApplicationID: UniqueExecutionId.String(), Disabled: false},
-	},
-}
-
-var azureProvider = AzureProvider{
-	UniqueCorrelationId: UniqueExecutionId,
-	SubscriptionID:      os.Getenv(azureSubscriptionIdEnvVarKey),
-	ClientOptions:       &DefaultClientOptions,
-}
-
-func Azure() *AzureProvider {
-	return &azureProvider
-}
-
-func (m *AzureProvider) GetCredentials() *azidentity.DefaultAzureCredential {
-
-	if len(m.SubscriptionID) == 0 {
+func NewAzureProvider(uuid uuid.UUID) *AzureProvider {
+	subscriptionID := os.Getenv(azureSubscriptionIdEnvVarKey)
+	if len(subscriptionID) == 0 {
 		log.Fatal(azureSubscriptionIdEnvVarKey + " is not set.")
 	}
-
-	cred, err := azidentity.NewDefaultAzureCredential(nil)
+	creds, err := azidentity.NewDefaultAzureCredential(nil)
 	if err != nil {
 		log.Fatalf("failed to pull the result: %v", err)
 	}
-	m.Credentials = cred
 
+	var DefaultClientOptions = arm.ClientOptions{
+		ClientOptions: azcore.ClientOptions{
+			Telemetry: policy.TelemetryOptions{ApplicationID: uuid.String(), Disabled: false},
+		},
+	}
+	return &AzureProvider{
+		Credentials:         creds,
+		ClientOptions:       &DefaultClientOptions,
+		SubscriptionID:      subscriptionID,
+		UniqueCorrelationId: uuid,
+	}
+}
+
+func (m *AzureProvider) GetCredentials() *azidentity.DefaultAzureCredential {
 	return m.Credentials
 }
 
 func (m *AzureProvider) IsAuthenticatedAgainstAzure() bool {
-
-	cred := m.GetCredentials()
-	_, err := armresources.NewClient(m.SubscriptionID, cred, nil)
+	_, err := armresources.NewClient(m.SubscriptionID, m.Credentials, nil)
 
 	return err == nil
 }

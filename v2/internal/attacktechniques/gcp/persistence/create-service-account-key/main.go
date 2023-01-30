@@ -8,7 +8,6 @@ import (
 
 	"encoding/base64"
 
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	iam "google.golang.org/api/iam/v1"
@@ -49,7 +48,7 @@ Using GCP Admin Activity audit logs event <code>google.iam.admin.v1.CreateServic
 	})
 }
 
-func detonate(params map[string]string) error {
+func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	saEmail := params["sa_email"]
 	ctx := context.Background()
 	service, err := iam.NewService(ctx, providers.GCP().Options())
@@ -72,7 +71,7 @@ func detonate(params map[string]string) error {
 	return nil
 }
 
-func revert(params map[string]string) error {
+func revert(params map[string]string, providers stratus.CloudProviders) error {
 	saEmail := params["sa_email"]
 	resource := "projects/-/serviceAccounts/" + saEmail
 
