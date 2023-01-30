@@ -184,7 +184,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 
 	if !success {
 		log.Println("Note: None of the impersonation attempts succeeded. " +
-			"It might take a few seconds for GCP to take the permissions into account; try again in a few seconds!")
+			"It might take a few minutes for GCP to take the permissions into account; try again shortly!")
 	}
 	return nil
 }
