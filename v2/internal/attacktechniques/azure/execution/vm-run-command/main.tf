@@ -12,7 +12,7 @@ provider "azurerm" {
 }
 
 locals {
-  resource_prefix = "stratus-red-team-vmrc" # stratus red team vm run commant
+  resource_prefix = "srt-vmrc" # stratus red team vm run commant
 }
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -75,7 +75,7 @@ resource "azurerm_network_interface" "lab_nic" {
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 resource "azurerm_windows_virtual_machine" "lab_windows_vm" {
-  name                = "${local.resource_prefix}-vm-${random_string.lab_name.result}"
+  name                = "srt-vm-vmrc"
   resource_group_name = azurerm_resource_group.lab_environment.name
   location            = azurerm_resource_group.lab_environment.location
   size                = "Standard_F2"
