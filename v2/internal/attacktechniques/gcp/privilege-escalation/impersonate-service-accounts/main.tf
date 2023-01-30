@@ -15,11 +15,10 @@ locals {
 }
 
 resource "random_string" "suffix" {
-  count       = local.num-service-accounts
-  length      = 4
-  special     = false
-  min_lower   = 4
-  min_numeric = 4
+  count     = local.num-service-accounts
+  length    = 4
+  special   = false
+  min_lower = 4
 }
 
 // Create N service accounts
