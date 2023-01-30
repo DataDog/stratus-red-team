@@ -12,10 +12,9 @@ locals {
 }
 
 resource "random_string" "suffix" {
-  length      = 6
-  special     = false
-  min_lower   = 3
-  min_numeric = 3
+  length    = 4
+  special   = false
+  min_lower = 4
 }
 
 output "service_account_name" {
