@@ -207,7 +207,8 @@ func impersonateServiceAccount(iamCredentialsClient *iamcredentials.Service, ser
 
 // Checks if an error returned by `GenerateAccessToken` corresponds to an (expected) access denied error
 func isPermissionDeniedError(err error) bool {
-	return strings.Contains(err.Error(), "403: The caller does not have permission")
+	errorMessage := strings.ToLower(err.Error())
+	return strings.Contains(errorMessage, "403") && strings.Contains(errorMessage, "denied")
 }
 
 // For some reason, the access tokens are padded with dots, which isn't pretty to display
