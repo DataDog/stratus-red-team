@@ -184,7 +184,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 
 	if !success {
 		log.Println("Note: None of the impersonation attempts succeeded. " +
-			"It might take a few seconds for GCP to take the permissions into account; try again in a few seconds!")
+			"It might take a few minutes for GCP to take the permissions into account; try again shortly!")
 	}
 	return nil
 }
@@ -207,7 +207,8 @@ func impersonateServiceAccount(iamCredentialsClient *iamcredentials.Service, ser
 
 // Checks if an error returned by `GenerateAccessToken` corresponds to an (expected) access denied error
 func isPermissionDeniedError(err error) bool {
-	return strings.Contains(err.Error(), "403: The caller does not have permission")
+	errorMessage := strings.ToLower(err.Error())
+	return strings.Contains(errorMessage, "403") && strings.Contains(errorMessage, "denied")
 }
 
 // For some reason, the access tokens are padded with dots, which isn't pretty to display
