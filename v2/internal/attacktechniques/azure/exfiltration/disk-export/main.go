@@ -106,7 +106,7 @@ func revert(params map[string]string) error {
 		return errors.New("unable to instantiate Azure disks client: " + err.Error())
 	}
 
-	log.Println("Creating Shared Access Secret (SAS) URL for disk " + diskName)
+	log.Println("Revoking Shared Access Secret (SAS) URL for disk " + diskName)
 
 	revokeTask, err := disksClient.BeginRevokeAccess(context.Background(), params["resource_group_name"], diskName, nil)
 	if err != nil {
