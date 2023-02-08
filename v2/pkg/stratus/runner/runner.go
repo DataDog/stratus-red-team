@@ -84,6 +84,8 @@ func (m *Runner) WarmUp() (map[string]string, error) {
 	log.Println("Warming up " + m.Technique.ID)
 	outputs, err := m.TerraformManager.TerraformInitAndApply(m.TerraformDir)
 	if err != nil {
+		log.Println("Error during warm up. Cleaning up technique prerequisites with terraform destroy")
+		_ = m.TerraformManager.TerraformDestroy(m.TerraformDir)
 		return nil, errors.New("unable to run terraform apply on prerequisite: " + errorMessageFromTerraformError(err))
 	}
 
