@@ -19,6 +19,7 @@ func TestRunnerWarmUp(t *testing.T) {
 		InitialTechniqueState stratus.AttackTechniqueState
 		TerraformOutputs      map[string]string
 		PersistedOutputs      map[string]string
+		Error                 error
 		// results
 		CheckExpectations func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, outputs map[string]string, err error)
 	}
@@ -91,6 +92,18 @@ func TestRunnerWarmUp(t *testing.T) {
 				assert.Equal(t, "old", outputs["myoutput"])
 			},
 		},
+		{
+			Name:                  "Warming up a COLD technique with error",
+			Technique:             &stratus.AttackTechnique{ID: "foo", PrerequisitesTerraformCode: []byte("bar")},
+			InitialTechniqueState: stratus.AttackTechniqueStatusCold,
+			Error:                 errors.New("error during init and apply"),
+			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, outputs map[string]string, err error) {
+				terraform.AssertCalled(t, "TerraformInitAndApply", "/root/foo")
+				terraform.AssertCalled(t, "TerraformDestroy", "/root/foo")
+				assert.NotNil(t, err)
+				assert.Len(t, outputs, 0)
+			},
+		},
 	}
 
 	for i := range scenario {
@@ -101,7 +114,8 @@ func TestRunnerWarmUp(t *testing.T) {
 		state.On("ExtractTechnique").Return(nil)
 		state.On("GetTechniqueState", mock.Anything).Return(scenario[i].InitialTechniqueState, nil)
 		state.On("GetTerraformOutputs").Return(scenario[i].PersistedOutputs, nil)
-		terraform.On("TerraformInitAndApply", mock.Anything).Return(scenario[i].TerraformOutputs, nil)
+		terraform.On("TerraformInitAndApply", mock.Anything).Return(scenario[i].TerraformOutputs, scenario[i].Error)
+		terraform.On("TerraformDestroy", mock.Anything).Return(nil)
 		state.On("WriteTerraformOutputs", mock.Anything).Return(nil)
 		state.On("SetTechniqueState", mock.Anything).Return(nil)
 
