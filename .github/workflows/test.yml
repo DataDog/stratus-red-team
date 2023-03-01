@@ -24,7 +24,7 @@ jobs:
             proxy.golang.org:443
             storage.googleapis.com:443
       - name: Checkout repository
-        uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b
+        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
 
       - name: Set up Go
         uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568
@@ -51,7 +51,7 @@ jobs:
             storage.googleapis.com:443
 
       - name: Checkout repository
-        uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b
+        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
 
       - name: Build local Docker image
         run: docker build .
