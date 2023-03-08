@@ -94,7 +94,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 		Name:            aws.String(profileName),
 		RoleArns:        []string{roleArn},
 		Enabled:         aws.Bool(true),
-		DurationSeconds: aws.Int32(3600 * 12),
+		DurationSeconds: aws.Int32(3600),
 		Tags:            tags,
 	})
 	if err != nil {
