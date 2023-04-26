@@ -4,16 +4,9 @@
 
 > Atomic Red Team™ is library of tests mapped to the MITRE ATT&CK® framework. Security teams can use Atomic Red Team to quickly, portably, and reproducibly test their environments.
 
-In 2021, Atomic Red Team added [support](https://redcanary.com/blog/art-cloud-containers/) for Cloud TTPs.
+In 2021, Atomic Red Team added [support](https://redcanary.com/blog/art-cloud-containers/) for Cloud TTPs. In the summer 2022, Atomic Red Team also started [leveraging Stratus Red Team](https://github.com/search?q=repo%3Aredcanaryco%2Fatomic-red-team%20%22stratus%20red%20team%22&type=code) to execute some of its cloud attack techniques.
 
-At the [time of writing](https://github.com/redcanaryco/atomic-red-team/blob/7576aff377781ba3546c0835e48bffc980b4cbc8/atomics/Indexes/Indexes-Markdown/index.md), Atomic Red Team has only 4 TTPs for AWS:
-
-- AWS CloudTrail Changes
-- AWS - Create a group and add a user to that group
-- AWS - Create Access Key and Secret Key
-- AWS - Create a new IAM user
-
-While Atomic Red Team is an *awesome* tool for endpoint security, it wasn't built purposely for cloud environments.
+Atomic Red Team has very few cloud TTPs it implements itself. While Atomic Red Team is an *awesome* tool for endpoint security, it wasn't built purposely for cloud environments.
 In particular, it doesn't handle the prerequisite infrastructure and configuration necessary to detonate TTPs, and leaves that to the user. 
 For instance, [AWS - Create Access Key and Secret Key](https://github.com/redcanaryco/atomic-red-team/blob/7576aff377781ba3546c0835e48bffc980b4cbc8/atomics/T1098.001/T1098.001.md#atomic-test-3---aws---create-access-key-and-secret-key) requires you to create an IAM user prior to detonating the attack. Stratus Red Team packages this prerequisite logic, so you can detonate attack techniques without having to create any infrastructure or cloud configuration manually.
 
@@ -42,10 +35,18 @@ Pacu is an offensive AWS exploitation framework, aimed at penetration testers. I
 
 Stratus Red Team is self-contained and does not necessitate prior infrastructure or configuration in your cloud environment. You can also use it [programmatically](user-guide/programmatic-usage.md), from Go code, as a library.
 
-## [Amazon GuardDuty Tester](https://github.com/awslabs/amazon-guardduty-tester)
+## [Amazon GuardDuty Tester](https://github.com/awslabs/amazon-guardduty-tester) by AWS
 
 Amazon GuardDuty Tester is helpful to trigger GuardDuty findings. However, it is tightly coupled with GuardDuty and is a product-specific tool, even within the AWS ecosystem.
 If GuardDuty doesn't detect an attack technique, you won't find it in here.
+
+## [AWS CloudSaga](https://github.com/awslabs/aws-cloudsaga) by AWS
+
+AWS CloudSaga has a few simulation scenarios (five [at the time of writing](https://github.com/awslabs/aws-cloudsaga/tree/e4f065a8bb7558af94768301f41f7679ea9baa8b)). Some of them are more focused around identifying vulnerable resources in your account (such as [`imds_reveal`](https://github.com/awslabs/aws-cloudsaga/blob/e4f065a8bb7558af94768301f41f7679ea9baa8b/cloudsaga/scenarios/imds_reveal.py) listing your EC2 instances without IMDSv2 enforced), while others are designed to simulate attacker behavior.
+
+The attacker behavior implemented by AWS Cloud Saga emulates several stages of the attack lifecycle, while Stratus Red Team purposely attempts to stay as granular as possible (see: [Philosophy](https://stratus-red-team.cloud/attack-techniques/philosophy/)). As much as possible, Stratus Red Team techniques also reference real-world incidents or breaches.
+
+Finally, AWS CloudSaga is by design specific to AWS, while Stratus Red Team supports AWS, Azure, GCP and even Kubernetes.
 
 ## [CloudGoat](https://github.com/RhinoSecurityLabs/cloudgoat) by Rhino Security Labs
 
