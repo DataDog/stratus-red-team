@@ -26,7 +26,7 @@ brews:
     bin.install "stratus"
 
     # Install shell completions
-    generate_completions_from_executable(bin/"stratus", "completions", shells: [:bash, :fish, :zsh])
+    generate_completions_from_executable(bin/"stratus", "completion", shells: [:bash, :fish, :zsh])
 archives:
   - replacements:
       darwin: Darwin
