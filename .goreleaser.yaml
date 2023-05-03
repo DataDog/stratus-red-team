@@ -22,6 +22,11 @@ brews:
   url_template: "https://github.com/DataDog/stratus-red-team/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
   license: Apache-2.0
   homepage: "https://stratus-red-team.cloud"
+  install: |
+    bin.install "stratus"
+
+    # Install shell completions
+    generate_completions_from_executable(bin/"stratus", "completion", shells: [:bash, :fish, :zsh], base_name: "stratus")
 archives:
   - replacements:
       darwin: Darwin

@@ -6,7 +6,19 @@ title: CLI autocompletion
 
 Stratus Red Team uses [cobra](https://github.com/spf13/cobra)'s built-in support to add autocompletions when working with the CLI.
 
+## Sample usage
+
+```bash
+stratus deton[tab]
+stratus detonate aws[tab][tab]
+```
 ## Setup
+
+### Through Homebrew
+
+When installing Stratus Red Team through Homebrew, shell completions are automatically installed for bash, zsh and fish shells.
+
+### Manually
 
 === "bash"
 
@@ -47,9 +59,4 @@ Stratus Red Team uses [cobra](https://github.com/spf13/cobra)'s built-in support
     stratus completion fish > ~/.config/fish/completions/stratus.fish
     ```
 
-## Sample usage
 
-```bash
-stratus deton[tab]
-stratus detonate aws[tab][tab]
-```
