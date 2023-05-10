@@ -50,7 +50,6 @@ resource "random_string" "suffix" {
 
 resource "aws_s3_bucket" "bucket" {
   bucket        = "${local.resource_prefix}-bucket-${random_string.suffix.result}"
-  acl           = "private"
   force_destroy = true
 }
 resource "aws_s3_bucket_object" "code" {

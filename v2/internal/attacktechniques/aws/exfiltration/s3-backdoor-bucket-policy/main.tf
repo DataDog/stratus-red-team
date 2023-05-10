@@ -30,7 +30,6 @@ locals {
 
 resource "aws_s3_bucket" "bucket" {
   bucket = "${local.resource_prefix}-${random_string.suffix.result}"
-  acl    = "private"
 }
 
 output "bucket_name" {
