@@ -4,10 +4,7 @@ import (
 	"context"
 	_ "embed"
 	"errors"
-	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/credentials/stscreds"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
-	"github.com/aws/aws-sdk-go-v2/service/sts"
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
@@ -52,12 +49,12 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	roleArn := params["role_arn"]
 
 	awsConnection := providers.AWS().GetConnection()
-	stsClient := sts.NewFromConfig(awsConnection)
-	awsConnection.Credentials = aws.NewCredentialsCache(stscreds.NewAssumeRoleProvider(stsClient, roleArn))
+	if err := utils.WaitForAndAssumeAWSRole(&awsConnection, roleArn); err != nil {
+		return err
+	}
 	ec2Client := ec2.NewFromConfig(awsConnection)
 
 	log.Println("Running ec2:GetPasswordData on " + strconv.Itoa(numCalls) + " random instance IDs")
-
 	for i := 0; i < numCalls; i++ {
 		// Generate a fake, real-looking instance ID
 		// Since we don't have the permission, we don't care if the instance actually exists

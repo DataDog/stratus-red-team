@@ -2,12 +2,16 @@ package utils
 
 import (
 	"context"
+	"fmt"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
+	"github.com/aws/aws-sdk-go-v2/credentials/stscreds"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
+	backoff "github.com/cenkalti/backoff/v4"
 	"log"
 	"strings"
+	"time"
 )
 
 func GetCurrentAccountId(cfg aws.Config) (string, error) {
@@ -29,6 +33,26 @@ func AwsConfigFromCredentials(accessKeyId string, secretAccessKey string, sessio
 	}
 
 	return cfg
+}
+
+// WaitForAndAssumeAWSRole waits for an AWS role to be assumable (due to eventual consistency)
+// then sets a credentials provider that can be used to assume the role.
+func WaitForAndAssumeAWSRole(awsConnection *aws.Config, roleArn string) error {
+	assumeRoleProvider := stscreds.NewAssumeRoleProvider(sts.NewFromConfig(*awsConnection), roleArn)
+	backoffStrategy := backoff.NewExponentialBackOff()
+	backoffStrategy.InitialInterval = 1 * time.Second // try to assume the role after 1s
+	backoffStrategy.Multiplier = 2                    // double the interval after each failed attempt
+	backoffStrategy.MaxInterval = 10 * time.Second    // never wait more than 10s between attempts
+	backoffStrategy.MaxElapsedTime = 1 * time.Minute  // stop trying after 1 minute
+	err := backoff.Retry(func() error {
+		_, err := assumeRoleProvider.Retrieve(context.Background())
+		return err
+	}, backoffStrategy)
+	if err != nil {
+		return fmt.Errorf("unable to assume role %s: %v", roleArn, err)
+	}
+	awsConnection.Credentials = aws.NewCredentialsCache(assumeRoleProvider)
+	return nil
 }
 
 func IsErrorDueToEBSEncryptionByDefault(err error) bool {
