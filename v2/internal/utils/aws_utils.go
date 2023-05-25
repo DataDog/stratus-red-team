@@ -46,6 +46,11 @@ func WaitForAndAssumeAWSRole(awsConnection *aws.Config, roleArn string) error {
 	backoffStrategy.MaxElapsedTime = 1 * time.Minute  // stop trying after 1 minute
 	err := backoff.Retry(func() error {
 		_, err := assumeRoleProvider.Retrieve(context.Background())
+		if err == nil {
+			log.Println("[DEBUG] Successfully assumed role!")
+		} else {
+			log.Println("[DEBUG] Unable to assume role, error: ", err.Error())
+		}
 		return err
 	}, backoffStrategy)
 	if err != nil {
