@@ -5,10 +5,9 @@ import (
 	_ "embed"
 	"errors"
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/credentials/stscreds"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
-	"github.com/aws/aws-sdk-go-v2/service/sts"
+	"github.com/datadog/stratus-red-team/v2/internal/utils"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
@@ -57,8 +56,9 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	roleArn := params["role_arn"]
 	subnetId := params["subnet_id"]
 
-	stsClient := sts.NewFromConfig(awsConnection)
-	awsConnection.Credentials = aws.NewCredentialsCache(stscreds.NewAssumeRoleProvider(stsClient, roleArn))
+	if err := utils.WaitForAndAssumeAWSRole(&awsConnection, roleArn); err != nil {
+		return err
+	}
 	ec2Client := ec2.NewFromConfig(awsConnection)
 
 	log.Printf("Attempting to run up to %d instances of type %s\n", numInstances, string(instanceType))

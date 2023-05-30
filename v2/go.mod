@@ -22,6 +22,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/ssm v1.31.0
 	github.com/aws/aws-sdk-go-v2/service/sts v1.16.19
 	github.com/aws/smithy-go v1.13.3
+	github.com/cenkalti/backoff/v4 v4.2.1
 	github.com/fatih/color v1.13.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.3.0

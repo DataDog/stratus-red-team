@@ -4,10 +4,8 @@ import (
 	"context"
 	_ "embed"
 	"errors"
-	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/credentials/stscreds"
 	"github.com/aws/aws-sdk-go-v2/service/organizations"
-	"github.com/aws/aws-sdk-go-v2/service/sts"
+	"github.com/datadog/stratus-red-team/v2/internal/utils"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
@@ -51,8 +49,9 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	roleArn := params["role_arn"]
 
 	awsConnection := providers.AWS().GetConnection()
-	stsClient := sts.NewFromConfig(awsConnection)
-	awsConnection.Credentials = aws.NewCredentialsCache(stscreds.NewAssumeRoleProvider(stsClient, roleArn))
+	if err := utils.WaitForAndAssumeAWSRole(&awsConnection, roleArn); err != nil {
+		return err
+	}
 	organizationsClient := organizations.NewFromConfig(awsConnection)
 
 	log.Println("Attempting to leave the AWS organization (will trigger an Access Denied error)")

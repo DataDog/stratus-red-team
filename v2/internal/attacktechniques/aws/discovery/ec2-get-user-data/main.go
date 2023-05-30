@@ -8,11 +8,8 @@ import (
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
 
-	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/credentials/stscreds"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
-	"github.com/aws/aws-sdk-go-v2/service/sts"
 )
 
 //go:embed main.tf
@@ -58,10 +55,11 @@ See:
 const numCalls = 15
 
 func detonate(params map[string]string, providers stratus.CloudProviders) error {
-
+	roleArn := params["role_arn"]
 	awsConnection := providers.AWS().GetConnection()
-	stsClient := sts.NewFromConfig(awsConnection)
-	awsConnection.Credentials = aws.NewCredentialsCache(stscreds.NewAssumeRoleProvider(stsClient, params["role_arn"]))
+	if err := utils.WaitForAndAssumeAWSRole(&awsConnection, roleArn); err != nil {
+		return err
+	}
 	ec2Client := ec2.NewFromConfig(awsConnection)
 
 	for i := 0; i < numCalls; i++ {
