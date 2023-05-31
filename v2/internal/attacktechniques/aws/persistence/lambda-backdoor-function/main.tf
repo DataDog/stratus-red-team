@@ -64,7 +64,7 @@ resource "aws_lambda_function" "lambda" {
   s3_key        = aws_s3_bucket_object.code.key
   role          = aws_iam_role.lambda.arn
   handler       = "index.test"
-  runtime       = "nodejs12.x"
+  runtime       = "nodejs18.x"
 }
 
 output "lambda_function_name" {
