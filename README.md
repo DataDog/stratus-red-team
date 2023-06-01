@@ -61,6 +61,7 @@ Blog posts:
 - [Detecting realistic AWS cloud-attacks using Azure Sentinel](https://www.falconforce.nl/en/blog/20220211_gijs_falconfriday0xff1c/)
 - [A Data Driven Comparison of Open Source Adversary Emulation Tools](https://www.picussecurity.com/resource/blog/data-driven-comparison-between-open-source-adversary-emulation-tools)
 - [Making Security Relevant in the Cloud](https://www.cloudreach.com/en/technical-blog/making-security-relevant-in-the-cloud/)
+- [Detonating attacks with Datadog Stratus Red Team](https://www.chrisdunne.com/detonating-attacks-with-datadog-stratus-red-team/)
 
 Talks:
 - [Purple Teaming & Adversary Emulation in the Cloud with Stratus Red Team, DEF CON Cloud Village 2022](https://www.youtube.com/watch?v=rXFFuYbkntU) (recorded after the event as the talks were not recorded)
