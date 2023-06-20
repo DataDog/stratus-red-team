@@ -31,6 +31,7 @@ import (
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/azure/execution/vm-custom-script-extension"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/azure/execution/vm-run-command"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/azure/exfiltration/disk-export"
+	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/exfiltration/share-compute-disk"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/persistence/create-admin-service-account"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/persistence/create-service-account-key"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/privilege-escalation/impersonate-service-accounts"
