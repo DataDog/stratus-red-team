@@ -242,6 +242,14 @@ AWS:
           platform: AWS
           isIdempotent: false
 GCP:
+    Exfiltration:
+        - id: gcp.exfiltration.share-compute-disk
+          name: Exfiltrate Compute Disk by sharing it
+          isSlow: false
+          mitreAttackTactics:
+            - Exfiltration
+          platform: GCP
+          isIdempotent: true
     Persistence:
         - id: gcp.persistence.create-admin-service-account
           name: Create an Admin GCP Service Account
