@@ -61,7 +61,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 		return err
 	}
 
-	if err := gcp_utils.GCPAssignProjectRole(gcp, "serviceAccountEmail:"+serviceAccountEmail, roleToGrant); err != nil {
+	if err := gcp_utils.GCPAssignProjectRole(gcp, "serviceAccount:"+serviceAccountEmail, roleToGrant); err != nil {
 		return err
 	}
 
