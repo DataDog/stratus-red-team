@@ -267,6 +267,13 @@ GCP:
             - Privilege Escalation
           platform: GCP
           isIdempotent: false
+        - id: gcp.persistence.invite-external-user
+          name: Invite an External User to a GCP Project
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+          platform: GCP
+          isIdempotent: true
     Privilege Escalation:
         - id: gcp.persistence.create-admin-service-account
           name: Create an Admin GCP Service Account
