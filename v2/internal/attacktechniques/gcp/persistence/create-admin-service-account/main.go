@@ -6,10 +6,11 @@ import (
 	"errors"
 	"fmt"
 	"github.com/datadog/stratus-red-team/v2/internal/providers"
+	gcp_utils "github.com/datadog/stratus-red-team/v2/internal/utils/gcp"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
-	cloudresourcemanager "google.golang.org/api/cloudresourcemanager/v1"
 	iam "google.golang.org/api/iam/v1"
+
 	"log"
 )
 
@@ -49,7 +50,6 @@ Using the following GCP Admin Activity audit logs events:
 	})
 }
 
-// Note: `roles/owner` cannot be granted through the API
 const roleToGrant = "roles/owner"
 
 func detonate(params map[string]string, providers stratus.CloudProviders) error {
@@ -61,7 +61,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 		return err
 	}
 
-	if err := assignProjectRole(gcp, serviceAccountEmail, roleToGrant); err != nil {
+	if err := gcp_utils.GCPAssignProjectRole(gcp, "serviceAccountEmail:"+serviceAccountEmail, roleToGrant); err != nil {
 		return err
 	}
 
@@ -90,101 +90,19 @@ func createServiceAccount(gcp *providers.GCPProvider, serviceAccountName string)
 	return nil
 }
 
-// assignProjectRole grants a project-wide role to a specific service account
-// it works the same as 'gcloud projects add-iam-policy-binding':
-// * Step 1: Read the project's IAM policy using [getIamPolicy](https://cloud.google.com/resource-manager/reference/rest/v1/projects/getIamPolicy)
-// * Step 2: Create a binding, or add the service account to an existing binding for the role to grant
-// * Step 3: Update the project's IAM policy using [setIamPolicy](https://cloud.google.com/resource-manager/reference/rest/v1/projects/setIamPolicy)
-func assignProjectRole(gcp *providers.GCPProvider, serviceAccountEmail string, roleToGrant string) error {
-	resourceManager, err := cloudresourcemanager.NewService(context.Background(), gcp.Options())
-	if err != nil {
-		return errors.New("unable to instantiate the GCP cloud resource manager: " + err.Error())
-	}
-
-	projectPolicy, err := resourceManager.Projects.GetIamPolicy(gcp.GetProjectId(), &cloudresourcemanager.GetIamPolicyRequest{}).Do()
-	if err != nil {
-		return err
-	}
-	var bindingFound = false
-	bindingValue := fmt.Sprintf("serviceAccount:" + serviceAccountEmail)
-	for _, binding := range projectPolicy.Bindings {
-		if binding.Role == roleToGrant {
-			bindingFound = true
-			log.Println("Adding the service account to an existing binding in the project's IAM policy to grant " + roleToGrant)
-			binding.Members = append(binding.Members, bindingValue)
-		}
-	}
-	if !bindingFound {
-		log.Println("Creating a new binding in the project's IAM policy to grant " + roleToGrant)
-		projectPolicy.Bindings = append(projectPolicy.Bindings, &cloudresourcemanager.Binding{
-			Role:    roleToGrant,
-			Members: []string{bindingValue},
-		})
-	}
-
-	_, err = resourceManager.Projects.SetIamPolicy(gcp.GetProjectId(), &cloudresourcemanager.SetIamPolicyRequest{
-		Policy: projectPolicy,
-	}).Do()
-
-	if err != nil {
-		return fmt.Errorf("Failed to update project IAM policy: " + err.Error())
-	}
-	return nil
-}
-
 func revert(params map[string]string, providers stratus.CloudProviders) error {
 	gcp := providers.GCP()
 	serviceAccountName := params["service_account_name"]
 	serviceAccountEmail := getServiceAccountEmail(serviceAccountName, gcp.ProjectId)
 
 	// Attempt to remove the role from the service account in the project's IAM policy
-	// fail with a warning (but continue) in case of error
-	unassignProjectRole(gcp, serviceAccountEmail, roleToGrant)
+	if err := gcp_utils.GCPUnassignProjectRole(gcp, "serviceAccount:"+serviceAccountEmail, roleToGrant); err != nil {
+		// display a warning (but continue) in case of error
+		log.Println("Warning: unable to remove role from service account: " + err.Error())
+	}
 
 	// Remove service account itself
 	return removeServiceAccount(gcp, serviceAccountName)
-}
-
-// unassignProjectRole un-assigns a project-wide role to a specific service account
-// it works the same as 'gcloud projects remove-iam-policy-binding':
-// * Step 1: Read the project's IAM policy using [getIamPolicy](https://cloud.google.com/resource-manager/reference/rest/v1/projects/getIamPolicy)
-// * Step 2: Remove a binding, or remove the service account from an existing binding for the role to grant
-// * Step 3: Update the project's IAM policy using [setIamPolicy](https://cloud.google.com/resource-manager/reference/rest/v1/projects/setIamPolicy)
-func unassignProjectRole(gcp *providers.GCPProvider, serviceAccountEmail string, roleToGrant string) {
-	resourceManager, err := cloudresourcemanager.NewService(context.Background(), gcp.Options())
-	if err != nil {
-		log.Println("Warning: unable to instantiate the GCP cloud resource manager: " + err.Error())
-		return
-	}
-
-	projectPolicy, err := resourceManager.Projects.GetIamPolicy(gcp.GetProjectId(), &cloudresourcemanager.GetIamPolicyRequest{}).Do()
-	if err != nil {
-		log.Println("warning: unable to retrieve the project's IAM policy")
-		return
-	}
-	var bindingFound = false
-	bindingValue := fmt.Sprintf("serviceAccount:" + serviceAccountEmail)
-	for _, binding := range projectPolicy.Bindings {
-		if binding.Role == roleToGrant {
-			index := indexOf(binding.Members, bindingValue)
-			if index > -1 {
-				bindingFound = true
-				binding.Members = remove(binding.Members, index)
-			}
-		}
-	}
-	if bindingFound {
-		log.Println("Updating project's IAM policy to remove reference to the service account")
-		_, err := resourceManager.Projects.SetIamPolicy(gcp.GetProjectId(), &cloudresourcemanager.SetIamPolicyRequest{
-			Policy: projectPolicy,
-		}).Do()
-		if err != nil {
-			log.Println("Warning: unable to update project's IAM policy: " + err.Error())
-		}
-	} else {
-		log.Println("Warning: did not find reference to the service account in the project's IAM policy")
-	}
-
 }
 
 func removeServiceAccount(gcp *providers.GCPProvider, serviceAccountName string) error {
@@ -209,17 +127,4 @@ func getServiceAccountPath(name string, projectId string) string {
 
 func getServiceAccountEmail(name string, projectId string) string {
 	return fmt.Sprintf("%s@%s.iam.gserviceaccount.com", name, projectId)
-}
-
-func remove(slice []string, index int) []string {
-	return append(slice[:index], slice[index+1:]...)
-}
-
-func indexOf(slice []string, searchValue string) int {
-	for i, current := range slice {
-		if current == searchValue {
-			return i
-		}
-	}
-	return -1
 }

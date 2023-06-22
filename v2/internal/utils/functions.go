@@ -43,3 +43,18 @@ func Min(a int, b int) int {
 	}
 	return b
 }
+
+// Remove removes an element from a slice at a given index
+func Remove(slice []string, index int) []string {
+	return append(slice[:index], slice[index+1:]...)
+}
+
+// IndexOf returns the index of a given value in a slice, or -1 if not found
+func IndexOf[T comparable](slice []T, searchValue T) int {
+	for i, current := range slice {
+		if current == searchValue {
+			return i
+		}
+	}
+	return -1
+}
