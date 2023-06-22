@@ -15,6 +15,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 - [Create a GCP Service Account Key](./gcp.persistence.create-service-account-key.md)
 
+- [Invite an External User to a GCP Project](./gcp.persistence.invite-external-user.md)
+
 
 ## Privilege Escalation
 

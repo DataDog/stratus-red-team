@@ -34,6 +34,7 @@ import (
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/exfiltration/share-compute-disk"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/persistence/create-admin-service-account"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/persistence/create-service-account-key"
+	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/persistence/invite-external-user"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/privilege-escalation/impersonate-service-accounts"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/k8s/credential-access/dump-secrets"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/k8s/credential-access/steal-serviceaccount-token"

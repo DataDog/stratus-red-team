@@ -56,7 +56,7 @@ func GCPAssignProjectRole(gcp *providers.GCPProvider, principal string, roleToGr
 // * Step 1: Read the project's IAM policy using [getIamPolicy](https://cloud.google.com/resource-manager/reference/rest/v1/projects/getIamPolicy)
 // * Step 2: Remove a binding, or remove the service account from an existing binding for the role to grant
 // * Step 3: Update the project's IAM policy using [setIamPolicy](https://cloud.google.com/resource-manager/reference/rest/v1/projects/setIamPolicy)
-// Notes: this functions assumes that the binding does exist, and will return an error if not
+// Note: no error is returned if the principal does not have a binding in the project's IAM policy
 func GCPUnassignProjectRole(gcp *providers.GCPProvider, principal string, roleToRemove string) error {
 	resourceManager, err := cloudresourcemanager.NewService(context.Background(), gcp.Options())
 	if err != nil {
@@ -87,5 +87,7 @@ func GCPUnassignProjectRole(gcp *providers.GCPProvider, principal string, roleTo
 		}
 		return nil
 	}
-	return errors.New("did not find reference to the principal " + principal + " in the project's IAM policy")
+
+	// no reference to the principal in the project's IAM policy, we're good to go - nothing to do
+	return nil
 }
