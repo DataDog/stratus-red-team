@@ -23,7 +23,7 @@ Persists in the GCP project by inviting an external (fictitious) user to the pro
 
 <span style="font-variant: small-caps;">Detonation</span>:
 
-- Updates the project IAM policy to grant the attacker account the role of <code>roles/editor</code>
+- Updates the project IAM policy to grant the attacker account the role <code>roles/editor</code>
 
 !!! note
 
