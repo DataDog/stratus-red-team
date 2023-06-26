@@ -18,9 +18,9 @@ resource "google_service_account" "service_account" {
 }
 
 resource "google_project_iam_member" "binding" {
-    project = data.google_project.current.project_id
-    role      = "roles/viewer"
-    member    = "serviceAccount:${google_service_account.service_account.email}"
+  project = data.google_project.current.project_id
+  role    = "roles/viewer"
+  member  = "serviceAccount:${google_service_account.service_account.email}"
 }
 
 output "sa_email" {
