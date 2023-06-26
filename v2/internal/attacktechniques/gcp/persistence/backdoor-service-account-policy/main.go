@@ -113,7 +113,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 		return err
 	}
 	log.Println("The attacker can now impersonate the service account and generate access tokens for it, for instance using the following command:")
-	log.Println(fmt.Sprintf("gcloud --impersonate-service-account=%s storage ls", params["sa_email"]))
+	log.Printf("gcloud --impersonate-service-account=%s storage ls\n", params["sa_email"])
 	return nil
 }
 
