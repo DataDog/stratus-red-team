@@ -11,6 +11,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 ## Persistence
 
+- [Backdoor a GCP Service Account through its IAM Policy](./gcp.persistence.backdoor-service-account-policy.md)
+
 - [Create an Admin GCP Service Account](./gcp.persistence.create-admin-service-account.md)
 
 - [Create a GCP Service Account Key](./gcp.persistence.create-service-account-key.md)
