@@ -62,7 +62,8 @@ Blog posts:
 - [A Data Driven Comparison of Open Source Adversary Emulation Tools](https://www.picussecurity.com/resource/blog/data-driven-comparison-between-open-source-adversary-emulation-tools)
 - [Making Security Relevant in the Cloud](https://www.cloudreach.com/en/technical-blog/making-security-relevant-in-the-cloud/)
 - [Detonating attacks with Datadog Stratus Red Team](https://www.chrisdunne.com/detonating-attacks-with-datadog-stratus-red-team/)
-
+- [AWS CloudTrail cheatsheet](https://invictus-ir.medium.com/aws-cloudtrail-cheat-sheet-dcf2b92e37e2)
+  
 Talks:
 - [Purple Teaming & Adversary Emulation in the Cloud with Stratus Red Team, DEF CON Cloud Village 2022](https://www.youtube.com/watch?v=rXFFuYbkntU) (recorded after the event as the talks were not recorded)
 - [Threat-Driven Development with Stratus Red Team](https://www.youtube.com/watch?v=AbWwcqLwcYI) by Ryan Marcotte Cobb
