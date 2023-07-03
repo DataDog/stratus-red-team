@@ -75,6 +75,8 @@ Sample CloudTrail event (redacted for clarity):
 	}
 }
 ` + codeBlock + `
+
+Note that for failed console authentication events, the field <code>userIdentity.arn</code> is not set (see https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-event-reference-aws-console-sign-in-events.html#cloudtrail-aws-console-sign-in-events-iam-user-failure).
 `,
 		Platform:                   stratus.AWS,
 		IsIdempotent:               true,
