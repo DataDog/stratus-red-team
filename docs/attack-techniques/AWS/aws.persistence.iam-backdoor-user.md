@@ -28,6 +28,9 @@ Establishes persistence by creating an access key on an existing IAM user.
 
 - Create an IAM access key on the user.
 
+References:
+- https://sysdig.com/blog/scarleteel-2-0/
+
 
 ## Instructions
 

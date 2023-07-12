@@ -26,12 +26,16 @@ Warm-up:
 Detonation: 
 
 - Create an IAM access key on the user.
+
+References:
+- https://sysdig.com/blog/scarleteel-2-0/
 `,
 		Detection: `
 Through CloudTrail's <code>CreateAccessKey</code> event. This event can hardly be considered suspicious by itself, unless
 correlated with other indicators.
 '`,
 		Platform:                   stratus.AWS,
+		
 		IsIdempotent:               false, // iam:CreateAccessKey can only be called twice (limit of 2 access keys per user)
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence, mitreattack.PrivilegeEscalation},
 		PrerequisitesTerraformCode: tf,
