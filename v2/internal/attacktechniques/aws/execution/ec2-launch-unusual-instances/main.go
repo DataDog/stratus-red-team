@@ -76,12 +76,18 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 		return errors.New("expected ec2:RunInstances to return an error")
 	}
 
-	if !strings.Contains(err.Error(), "AccessDenied") {
-		// We expected an *AccessDenied* error
+	if !isExpectedError(err) {
 		return errors.New("expected ec2:RunInstances to return an access denied error, got instead: " + err.Error())
 	}
 
 	log.Println("Got an access denied error as expected")
 
 	return nil
+}
+
+func isExpectedError(err error) bool {
+	// We expected an *AccessDenied* or *UnauthorizedOperation* error
+	errorMessage := err.Error()
+	return strings.Contains(errorMessage, "AccessDenied") ||
+		strings.Contains(errorMessage, "UnauthorizedOperation")
 }
