@@ -65,7 +65,7 @@ Blog posts:
 - [Detonating attacks with Datadog Stratus Red Team](https://www.chrisdunne.com/detonating-attacks-with-datadog-stratus-red-team/)
 - [AWS CloudTrail cheatsheet](https://invictus-ir.medium.com/aws-cloudtrail-cheat-sheet-dcf2b92e37e2)
 - [Adversary emulation on GCP with Stratus Red Team and Wazuh](https://wazuh.com/blog/adversary-emulation-on-gcp-with-stratus-red-team-and-wazuh/)
-
+- [Automated First-Response in AWS using Sigma and Athena](https://invictus-ir.medium.com/automated-first-response-in-aws-using-sigma-and-athena-615940bedc56)
 
 Talks:
 - [Purple Teaming & Adversary Emulation in the Cloud with Stratus Red Team, DEF CON Cloud Village 2022](https://www.youtube.com/watch?v=rXFFuYbkntU) (recorded after the event as the talks were not recorded)
