@@ -62,7 +62,7 @@ Blog posts:
 - [Detecting realistic AWS cloud-attacks using Azure Sentinel](https://medium.com/falconforce/falconfriday-detecting-realistic-aws-cloud-attacks-using-azure-sentinel-0xff1c-b62fd45c87dc)
 - [A Data Driven Comparison of Open Source Adversary Emulation Tools](https://www.picussecurity.com/resource/blog/data-driven-comparison-between-open-source-adversary-emulation-tools)
 - [Making Security Relevant in the Cloud](https://www.cloudreach.com/en/technical-blog/making-security-relevant-in-the-cloud/)
-- [Detonating attacks with Datadog Stratus Red Team](https://www.chrisdunne.com/detonating-attacks-with-datadog-stratus-red-team/)
+- [Detonating attacks with Datadog Stratus Red Team](https://chrisdunne.com/post/detonating-attacks-with-datadog-stratus-red-team)
 - [AWS CloudTrail cheatsheet](https://invictus-ir.medium.com/aws-cloudtrail-cheat-sheet-dcf2b92e37e2)
 - [Adversary emulation on GCP with Stratus Red Team and Wazuh](https://wazuh.com/blog/adversary-emulation-on-gcp-with-stratus-red-team-and-wazuh/)
 - [Automated First-Response in AWS using Sigma and Athena](https://invictus-ir.medium.com/automated-first-response-in-aws-using-sigma-and-athena-615940bedc56)
