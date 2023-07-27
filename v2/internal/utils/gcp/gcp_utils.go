@@ -1,6 +1,8 @@
 package gcp_utils
 
 import (
+	"os"
+	"strings"
 	"context"
 	"errors"
 	"fmt"
@@ -90,4 +92,16 @@ func GCPUnassignProjectRole(gcp *providers.GCPProvider, principal string, roleTo
 
 	// no reference to the principal in the project's IAM policy, we're good to go - nothing to do
 	return nil
+}
+
+const DefaultFictitiousAttackerEmail = "stratusredteam@gmail.com"
+const AttackerEmailEnvVarKey = "STRATUS_RED_TEAM_ATTACKER_EMAIL"
+
+func GetAttackerPrincipal() string {
+	const UserPrefix = "user:"
+	if attackerEmail := os.Getenv(AttackerEmailEnvVarKey); attackerEmail != "" {
+		return UserPrefix + strings.ToLower(attackerEmail)
+	} else {
+		return UserPrefix + DefaultFictitiousAttackerEmail
+	}
 }

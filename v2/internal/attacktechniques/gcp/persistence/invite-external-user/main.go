@@ -6,8 +6,6 @@ import (
 	gcp_utils "github.com/datadog/stratus-red-team/v2/internal/utils/gcp"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
-	"os"
-	"strings"
 )
 
 const AttackTechniqueId = "gcp.persistence.invite-external-user"
@@ -28,12 +26,12 @@ Detonation:
 
 !!! note
 
-	Since the target e-mail must exist for this attack simulation to work, Stratus Red Team grants the role to ` + DefaultFictitiousAttackerEmail + ` by default.
+	Since the target e-mail must exist for this attack simulation to work, Stratus Red Team grants the role to ` + gcp_utils.DefaultFictitiousAttackerEmail + ` by default.
 	This is a real Google account, owned by Stratus Red Team maintainers and that is not used for any other purpose than this attack simulation. However, you can override
-	this behavior by setting the environment variable <code>` + AttackerEmailEnvVarKey + `</code>, for instance:
+	this behavior by setting the environment variable <code>` + gcp_utils.AttackerEmailEnvVarKey + `</code>, for instance:
 
 	` + codeBlock + `bash
-	export ` + AttackerEmailEnvVarKey + `="your-own-gmail-account@gmail.com"
+	export ` + gcp_utils.AttackerEmailEnvVarKey + `="your-own-gmail-account@gmail.com"
 	stratus detonate ` + AttackTechniqueId + `
 	` + codeBlock + `
 `,
@@ -101,12 +99,10 @@ which cannot be done through the SetIamPolicy API call. In that case, an <code>I
 	})
 }
 
-const DefaultFictitiousAttackerEmail = "stratusredteam@gmail.com"
-const AttackerEmailEnvVarKey = "STRATUS_RED_TEAM_ATTACKER_EMAIL"
 const RoleToGrant = "roles/editor"
 
 func detonate(_ map[string]string, providers stratus.CloudProviders) error {
-	attackerPrincipal := getAttackerPrincipal()
+	attackerPrincipal := gcp_utils.GetAttackerPrincipal()
 	err := gcp_utils.GCPAssignProjectRole(providers.GCP(), attackerPrincipal, RoleToGrant)
 	if err != nil {
 		return fmt.Errorf("unable to assign %s to %s: %w", attackerPrincipal, RoleToGrant, err)
@@ -115,7 +111,7 @@ func detonate(_ map[string]string, providers stratus.CloudProviders) error {
 }
 
 func revert(_ map[string]string, providers stratus.CloudProviders) error {
-	attackerPrincipal := getAttackerPrincipal()
+	attackerPrincipal := gcp_utils.GetAttackerPrincipal()
 	err := gcp_utils.GCPUnassignProjectRole(providers.GCP(), attackerPrincipal, RoleToGrant)
 	if err != nil {
 		return fmt.Errorf("unable to assign %s to %s: %w", attackerPrincipal, RoleToGrant, err)
@@ -123,11 +119,3 @@ func revert(_ map[string]string, providers stratus.CloudProviders) error {
 	return nil
 }
 
-func getAttackerPrincipal() string {
-	const UserPrefix = "user:"
-	if attackerEmail := os.Getenv(AttackerEmailEnvVarKey); attackerEmail != "" {
-		return UserPrefix + strings.ToLower(attackerEmail)
-	} else {
-		return UserPrefix + DefaultFictitiousAttackerEmail
-	}
-}
