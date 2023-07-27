@@ -5,13 +5,13 @@
 class StratusRedTeam < Formula
   desc ""
   homepage "https://stratus-red-team.cloud"
-  version "2.8.1"
+  version "2.8.2"
   license "Apache-2.0"
 
   on_macos do
-    if Hardware::CPU.intel?
-      url "https://github.com/DataDog/stratus-red-team/releases/download/v2.8.1/stratus-red-team_Darwin_x86_64.tar.gz"
-      sha256 "d820c800a9b5c7f2193cd84228dd066c5042db59efc3eb8695ca4cec084f43de"
+    if Hardware::CPU.arm?
+      url "https://github.com/DataDog/stratus-red-team/releases/download/v2.8.2/stratus-red-team_Darwin_arm64.tar.gz"
+      sha256 "2e0610ba0784289fc8bdb081a5e8d73f1c651f460e20124eee282d714c4da287"
 
       def install
         bin.install "stratus"
@@ -20,9 +20,9 @@ class StratusRedTeam < Formula
         generate_completions_from_executable(bin/"stratus", "completion", shells: [:bash, :fish, :zsh], base_name: "stratus")
       end
     end
-    if Hardware::CPU.arm?
-      url "https://github.com/DataDog/stratus-red-team/releases/download/v2.8.1/stratus-red-team_Darwin_arm64.tar.gz"
-      sha256 "ff07ebc2ad6e5f05dafbf405f9d3e2643607632756e9acf19ee271138478e5e4"
+    if Hardware::CPU.intel?
+      url "https://github.com/DataDog/stratus-red-team/releases/download/v2.8.2/stratus-red-team_Darwin_x86_64.tar.gz"
+      sha256 "c1d93d612600ad26fa5cf95240b8a32d757719fa98d8f7c646b28192d9c45998"
 
       def install
         bin.install "stratus"
@@ -34,9 +34,9 @@ class StratusRedTeam < Formula
   end
 
   on_linux do
-    if Hardware::CPU.intel?
-      url "https://github.com/DataDog/stratus-red-team/releases/download/v2.8.1/stratus-red-team_Linux_x86_64.tar.gz"
-      sha256 "f06a5f6808f156246fee28ef5ee463f562479caa701e0ef6b959a4382d707b6d"
+    if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
+      url "https://github.com/DataDog/stratus-red-team/releases/download/v2.8.2/stratus-red-team_Linux_arm64.tar.gz"
+      sha256 "e6480ae4e12cd68f2b26ae22da8f6cd3dfae5057bd99dd345e94e269ccb6df1a"
 
       def install
         bin.install "stratus"
@@ -45,9 +45,9 @@ class StratusRedTeam < Formula
         generate_completions_from_executable(bin/"stratus", "completion", shells: [:bash, :fish, :zsh], base_name: "stratus")
       end
     end
-    if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      url "https://github.com/DataDog/stratus-red-team/releases/download/v2.8.1/stratus-red-team_Linux_arm64.tar.gz"
-      sha256 "183955329795613f1cdb8a470f1da57dc5777f0859a91bd09c1c4bc856e60d87"
+    if Hardware::CPU.intel?
+      url "https://github.com/DataDog/stratus-red-team/releases/download/v2.8.2/stratus-red-team_Linux_x86_64.tar.gz"
+      sha256 "14578da6e7f96a47452abc9c2be622d8fa464a209f5ef357d501dfa60d3bb813"
 
       def install
         bin.install "stratus"
