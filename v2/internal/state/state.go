@@ -2,11 +2,14 @@ package state
 
 import (
 	"encoding/json"
-	"github.com/datadog/stratus-red-team/v2/internal/utils"
-	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"errors"
+	"io/fs"
 	"log"
 	"os"
 	"path/filepath"
+
+	"github.com/datadog/stratus-red-team/v2/internal/utils"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 )
 
 const StratusStateDirectoryName = ".stratus-red-team"
@@ -76,14 +79,16 @@ func (m *FileSystemStateManager) Initialize() {
 	if !m.FileSystem.FileExists(m.RootDirectory) {
 		log.Println("Creating " + m.RootDirectory + " as it doesn't exist yet")
 		err := m.FileSystem.CreateDirectory(m.RootDirectory, 0744)
-		if err != nil {
+		// ignore "already exists" errors caused by concurrent instances
+		if err != nil && !errors.Is(err, fs.ErrExist) {
 			panic("Unable to create persistent directory: " + err.Error())
 		}
 	}
 
 	if !m.FileSystem.FileExists(m.getTechniqueStateDirectory()) {
 		err := m.FileSystem.CreateDirectory(m.getTechniqueStateDirectory(), 0744)
-		if err != nil {
+		// ignore "already exists" errors caused by concurrent instances
+		if err != nil && !errors.Is(err, fs.ErrExist) {
 			panic("Unable to create persistent directory: " + err.Error())
 		}
 	}

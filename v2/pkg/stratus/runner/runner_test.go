@@ -2,12 +2,17 @@ package runner
 
 import (
 	"errors"
+	"os"
+	"sync"
+	"testing"
+
+	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/credential-access/ec2-get-password-data"
 	statemocks "github.com/datadog/stratus-red-team/v2/internal/state/mocks"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/runner/mocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"testing"
+	"github.com/stretchr/testify/require"
 )
 
 func TestRunnerWarmUp(t *testing.T) {
@@ -456,4 +461,35 @@ func TestRunnerCleanup(t *testing.T) {
 		err := runner.CleanUp()
 		t.Run(scenario[i].Name, func(t *testing.T) { scenario[i].CheckExpectations(t, terraform, state, err) })
 	}
+}
+
+func TestNewRunnerParallel(t *testing.T) {
+	// check that we can create the runner in multiple goroutines without hitting errors
+	// set the user's home dir to a temporary dir during this test
+	tempDir := t.TempDir()
+	const homeEnvVar = "HOME"
+	previousHome := os.Getenv(homeEnvVar)
+	defer func() {
+		os.Setenv(homeEnvVar, previousHome)
+	}()
+	os.Setenv(homeEnvVar, tempDir)
+	homeDir, err := os.UserHomeDir()
+	require.NoError(t, err)
+	require.Equal(t, homeDir, tempDir)
+
+	technique := stratus.GetRegistry().GetAttackTechniqueByName(
+		"aws.credential-access.ec2-get-password-data")
+	require.NotNil(t, technique)
+
+	const numGoroutines = 3
+	var wg sync.WaitGroup
+	wg.Add(numGoroutines)
+	for i := 0; i < numGoroutines; i++ {
+		go func() {
+			defer wg.Done()
+			NewRunner(technique, StratusRunnerNoForce)
+		}()
+	}
+
+	wg.Wait()
 }
