@@ -27,6 +27,17 @@ Exfiltrates a Compute Disk by sharing with a fictitious attacker account. The at
 
 - Set the IAM policy of the disk so that the attacker account has permissions to read the disk in their own project
 
+!!! note
+
+	Since the target e-mail must exist for this attack simulation to work, Stratus Red Team grants the role to stratusredteam@gmail.com by default.
+	This is a real Google account, owned by Stratus Red Team maintainers and that is not used for any other purpose than this attack simulation. However, you can override
+	this behavior by setting the environment variable <code>STRATUS_RED_TEAM_ATTACKER_EMAIL</code>, for instance:
+
+	```bash
+	export STRATUS_RED_TEAM_ATTACKER_EMAIL="your-own-gmail-account@gmail.com"
+	stratus detonate gcp.exfiltration.share-compute-disk
+	```
+
 
 ## Instructions
 

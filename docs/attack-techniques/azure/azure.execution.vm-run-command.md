@@ -27,6 +27,7 @@ References:
 - https://docs.microsoft.com/en-us/azure/virtual-machines/windows/run-command
 - https://docs.microsoft.com/en-us/azure/virtual-machines/linux/run-command
 - https://microsoft.github.io/Azure-Threat-Research-Matrix/Execution/AZT301/AZT301-1/
+- https://go.crowdstrike.com/rs/281-OBQ-266/images/report-crowdstrike-2023-threat-hunting-report.pdf (page 34)
 
 <span style="font-variant: small-caps;">Warm-up</span>: 
 
