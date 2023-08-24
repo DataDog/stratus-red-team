@@ -20,10 +20,10 @@ resource "random_string" "suffix" {
 
 locals {
   resource_prefix = "stratus-red-team-ransomware-bucket"
-  bucket_name = format("%s-%s", local.resource_prefix, random_string.suffix.result)
-  num-files = 51
-  min-size-bytes = 1
-  max-size-bytes = 200
+  bucket_name     = format("%s-%s", local.resource_prefix, random_string.suffix.result)
+  num-files       = 51
+  min-size-bytes  = 1
+  max-size-bytes  = 200
   file-extensions = ["sql", "txt", "docx", "pdf", "png", "tar.gz"]
   wordlist = split("\n", <<EOW
 liable
@@ -331,18 +331,14 @@ EOW
 }
 
 resource "aws_s3_bucket" "bucket" {
-    bucket = local.bucket_name
+  bucket = local.bucket_name
 
-    server_side_encryption_configuration {
-      rule {
-        apply_server_side_encryption_by_default {
-          sse_algorithm = "AES256"
-        }
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
       }
     }
-
-  versioning {
-      enabled = true
   }
   force_destroy = true
 }
@@ -357,40 +353,40 @@ resource "aws_s3_bucket_versioning" "bucket" {
 
 resource "random_integer" "fake-objects-size" {
   count = local.num-files
-  min = local.min-size-bytes
-  max = local.max-size-bytes
+  min   = local.min-size-bytes
+  max   = local.max-size-bytes
 }
 
 resource "random_id" "fake-objects-content" {
-  count = local.num-files
+  count       = local.num-files
   byte_length = random_integer.fake-objects-size[count.index].result
 }
 
 resource "random_shuffle" "fake-objects-names" {
-  count = local.num-files
-  input = local.wordlist
+  count        = local.num-files
+  input        = local.wordlist
   result_count = 2
 }
 
 resource "random_shuffle" "fake-objects-extensions" {
-  count = local.num-files
-  input = local.file-extensions
+  count        = local.num-files
+  input        = local.file-extensions
   result_count = 1
 }
 
 resource "random_shuffle" "fake-objects-name-separators" {
-  count = local.num-files
-  input = [" ", "-", "_"]
+  count        = local.num-files
+  input        = [" ", "-", "_"]
   result_count = 1
 }
 
 resource "aws_s3_bucket_object" "fake-objects" {
-    count = local.num-files
-    bucket = aws_s3_bucket.bucket.id
-    key    = format("%s.%s", join(random_shuffle.fake-objects-name-separators[count.index].result[0], random_shuffle.fake-objects-names[count.index].result), random_shuffle.fake-objects-extensions[count.index].result[0])
-    content = random_id.fake-objects-content[count.index].hex
+  count   = local.num-files
+  bucket  = aws_s3_bucket.bucket.id
+  key     = format("%s.%s", join(random_shuffle.fake-objects-name-separators[count.index].result[0], random_shuffle.fake-objects-names[count.index].result), random_shuffle.fake-objects-extensions[count.index].result[0])
+  content = random_id.fake-objects-content[count.index].hex
 
-    depends_on = [aws_s3_bucket_versioning.bucket] # Make sure versioning is enabled before objects are uploaded
+  depends_on = [aws_s3_bucket_versioning.bucket] # Make sure versioning is enabled before objects are uploaded
 }
 
 output "display" {
