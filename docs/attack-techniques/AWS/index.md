@@ -59,7 +59,9 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 ## Impact
 
-- [S3 Ransomware through DeleteObjects](./aws.impact.s3-ransomware-deleteobjects.md)
+- [S3 Ransomware through individual file deletion](./aws.impact.s3-ransomware-individual-deletion.md)
+
+- [S3 Ransomware through batch file deletion](./aws.impact.s3-ransomware-batch-deletion.md)
 
 
 ## Initial Access

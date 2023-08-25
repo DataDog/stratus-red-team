@@ -139,8 +139,15 @@ AWS:
           platform: AWS
           isIdempotent: true
     Impact:
-        - id: aws.impact.s3-ransomware-deleteobjects
-          name: S3 Ransomware through DeleteObjects
+        - id: aws.impact.s3-ransomware-individual-deletion
+          name: S3 Ransomware through individual file deletion
+          isSlow: false
+          mitreAttackTactics:
+            - Impact
+          platform: AWS
+          isIdempotent: false
+        - id: aws.impact.s3-ransomware-batch-deletion
+          name: S3 Ransomware through batch file deletion
           isSlow: false
           mitreAttackTactics:
             - Impact

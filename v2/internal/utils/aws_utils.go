@@ -7,6 +7,9 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/credentials/stscreds"
+	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
 	backoff "github.com/cenkalti/backoff/v4"
 	"log"
@@ -75,4 +78,54 @@ func IsErrorDueToEBSEncryptionByDefault(err error) bool {
 
 	return false
 
+}
+
+// S3 utils
+
+func ListAllObjectVersions(s3Client *s3.Client, bucketName string) ([]types.ObjectIdentifier, error) {
+	log.Println("Listing objects in bucket " + bucketName)
+	var result []types.ObjectIdentifier
+	objectVersions, err := s3Client.ListObjectVersions(context.Background(), &s3.ListObjectVersionsInput{Bucket: &bucketName})
+	if err != nil {
+		return nil, fmt.Errorf("unable to list bucket objects: %w", err)
+	}
+	for _, objectVersion := range objectVersions.Versions {
+		result = append(result, types.ObjectIdentifier{Key: objectVersion.Key, VersionId: objectVersion.VersionId})
+	}
+	return result, nil
+}
+
+func DownloadAllObjects(client *s3.Client, bucketName string) error {
+	downloader := manager.NewDownloader(client)
+	paginator := s3.NewListObjectsV2Paginator(client, &s3.ListObjectsV2Input{
+		Bucket: &bucketName,
+	})
+	for paginator.HasMorePages() {
+		page, err := paginator.NextPage(context.Background())
+		if err != nil {
+			return fmt.Errorf("unable to list bucket objects: %w", err)
+		}
+		for _, obj := range page.Contents {
+			buf := manager.NewWriteAtBuffer([]byte{})
+			_, err := downloader.Download(context.Background(), buf, &s3.GetObjectInput{
+				Bucket: &bucketName,
+				Key:    obj.Key,
+			})
+			if err != nil {
+				return fmt.Errorf("unable to download object %s: %w", *obj.Key, err)
+			}
+		}
+	}
+	log.Println("Successfully downloaded all objects from the bucket")
+
+	return nil
+}
+
+func UploadFile(s3Client *s3.Client, bucketName string, filename string, contents string) error {
+	_, err := s3Client.PutObject(context.Background(), &s3.PutObjectInput{
+		Bucket: &bucketName,
+		Key:    aws.String(filename),
+		Body:   strings.NewReader(contents),
+	})
+	return err
 }
