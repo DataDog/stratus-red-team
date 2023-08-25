@@ -8,6 +8,7 @@ import (
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
+	"strings"
 
 	"log"
 	"strconv"
@@ -46,6 +47,8 @@ References:
 - [The anatomy of a ransomware event targeting S3 (re:Inforce, 2022)](https://d1.awsstatic.com/events/aws-reinforce-2022/TDR431_The-anatomy-of-a-ransomware-event-targeting-data-residing-in-Amazon-S3.pdf)
 - [The anatomy of ransomware event targeting data residing in Amazon S3 (AWS Security Blog)](https://aws.amazon.com/blogs/security/anatomy-of-a-ransomware-event-targeting-data-in-amazon-s3/)
 - [Ransomware in the cloud](https://invictus-ir.medium.com/ransomware-in-the-cloud-7f14805bbe82)
+- https://www.firemon.com/what-you-need-to-know-about-ransomware-in-aws/
+- https://rhinosecuritylabs.com/aws/s3-ransomware-part-1-attack-vector/
 `,
 		Detection: `
 You can detect ransomware activity by identifying abnormal patterns of objects being downloaded or deleted in the bucket. 
@@ -107,7 +110,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	}
 
 	log.Println("Uploading fake ransom note")
-	if err := utils.UploadFile(s3Client, bucketName, RansomNoteFilename, RansomNoteContents); err != nil {
+	if err := utils.UploadFile(s3Client, bucketName, RansomNoteFilename, strings.NewReader(RansomNoteContents)); err != nil {
 		return fmt.Errorf("failed to upload ransom note to the bucket: %w", err)
 	}
 

@@ -12,6 +12,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
 	backoff "github.com/cenkalti/backoff/v4"
+	"io"
 	"log"
 	"strings"
 	"time"
@@ -121,11 +122,11 @@ func DownloadAllObjects(client *s3.Client, bucketName string) error {
 	return nil
 }
 
-func UploadFile(s3Client *s3.Client, bucketName string, filename string, contents string) error {
+func UploadFile(s3Client *s3.Client, bucketName string, filename string, contents io.Reader) error {
 	_, err := s3Client.PutObject(context.Background(), &s3.PutObjectInput{
 		Bucket: &bucketName,
 		Key:    aws.String(filename),
-		Body:   strings.NewReader(contents),
+		Body:   contents,
 	})
 	return err
 }

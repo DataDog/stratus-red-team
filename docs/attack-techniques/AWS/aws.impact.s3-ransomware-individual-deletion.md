@@ -37,6 +37,8 @@ References:
 - [The anatomy of a ransomware event targeting S3 (re:Inforce, 2022)](https://d1.awsstatic.com/events/aws-reinforce-2022/TDR431_The-anatomy-of-a-ransomware-event-targeting-data-residing-in-Amazon-S3.pdf)
 - [The anatomy of ransomware event targeting data residing in Amazon S3 (AWS Security Blog)](https://aws.amazon.com/blogs/security/anatomy-of-a-ransomware-event-targeting-data-in-amazon-s3/)
 - [Ransomware in the cloud](https://invictus-ir.medium.com/ransomware-in-the-cloud-7f14805bbe82)
+- https://www.firemon.com/what-you-need-to-know-about-ransomware-in-aws/
+- https://rhinosecuritylabs.com/aws/s3-ransomware-part-1-attack-vector/
 
 
 ## Instructions
