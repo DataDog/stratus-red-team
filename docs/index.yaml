@@ -138,6 +138,28 @@ AWS:
             - Exfiltration
           platform: AWS
           isIdempotent: true
+    Impact:
+        - id: aws.impact.s3-ransomware-batch-deletion
+          name: S3 Ransomware through batch file deletion
+          isSlow: false
+          mitreAttackTactics:
+            - Impact
+          platform: AWS
+          isIdempotent: false
+        - id: aws.impact.s3-ransomware-client-side-encryption
+          name: S3 Ransomware through client-side encryption
+          isSlow: false
+          mitreAttackTactics:
+            - Impact
+          platform: AWS
+          isIdempotent: false
+        - id: aws.impact.s3-ransomware-individual-deletion
+          name: S3 Ransomware through individual file deletion
+          isSlow: false
+          mitreAttackTactics:
+            - Impact
+          platform: AWS
+          isIdempotent: false
     Initial Access:
         - id: aws.initial-access.console-login-without-mfa
           name: Console Login without MFA

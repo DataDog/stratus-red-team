@@ -21,6 +21,7 @@ var tactics = []string{
 	"Lateral Movement",
 	"Collection",
 	"Exfiltration",
+	"Impact",
 }
 
 const (
@@ -35,6 +36,7 @@ const (
 	LateralMovement
 	Collection
 	Exfiltration
+	Impact
 )
 
 func AttackTacticFromString(name string) (Tactic, error) {
