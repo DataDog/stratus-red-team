@@ -57,6 +57,11 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 - [Backdoor an S3 Bucket via its Bucket Policy](./aws.exfiltration.s3-backdoor-bucket-policy.md)
 
 
+## Impact
+
+- [S3 Ransomware through DeleteObjects](./aws.impact.s3-ransomware-deleteobjects.md)
+
+
 ## Initial Access
 
 - [Console Login without MFA](./aws.initial-access.console-login-without-mfa.md)

@@ -20,16 +20,18 @@ var tf []byte
 const RansomNoteFilename = `FILES-DELETED.txt`
 const RansomNoteContents = `Your data is backed up in a safe location. To negotiate with us for recovery, get in touch with rick@astley.io. In 7 days, if we don't hear from you, that data will either be sold or published, and might no longer be recoverable.'`
 
+const CodeBlock = "```"
+
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
-		ID:           "aws.impact.s3-ransomware",
-		FriendlyName: "S3 Ransomware Activity",
+		ID:           "aws.impact.s3-ransomware-deleteobjects",
+		FriendlyName: "S3 Ransomware through DeleteObjects",
 		Description: `
 Simulates S3 ransomware activity.
 
 Warm-up: 
 
-- Create an S3 bucket
+- Create an S3 bucket, with versioning enabled
 - Create a number of files in the bucket, with random content and extensions
 
 Detonation: 
@@ -38,9 +40,10 @@ Detonation:
 - List objects in the target bucket
 - Retrieve versioning configuration of the bucket
 - Retrieve a few random files from the bucket
-- Disable versioning on the bucket
-- Delete all objects in the bucket
+- Delete all objects in the bucket in one request, using [DeleteObjects](https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteObjects.html)
 - Upload a random note to the bucket
+
+Note: Versioning does not need to be disabled, and it does not protect against ransomware. This attack technique removes all versions of the objects in the bucket.
 
 References:
 
@@ -48,7 +51,39 @@ References:
 - [Ransomware in the cloud](https://invictus-ir.medium.com/ransomware-in-the-cloud-7f14805bbe82)
 `,
 		Detection: `
-TODO
+You can use the CloudTrail event <code>DeleteObjects</code> to identify when batch deletion of objects occurs, and <code>DeleteObject</code> for individual object deletion.
+
+Note that <code>DeleteObjects</code> does not list the files being deleted or how many files are being deleted. Sample event, shortened for readability:
+
+` + CodeBlock + `json hl_lines="3 5"
+{
+  "eventSource": "s3.amazonaws.com",
+  "eventName": "DeleteObjects",
+  "requestParameters": {
+    "bucketName": "target-bucket",
+    "Host": "target-bucket.s3.us-east-1.amazonaws.com",
+    "delete": "",
+    "x-id": "DeleteObjects"
+  },
+  "responseElements": null,
+  "readOnly": false,
+  "resources": [
+    {
+      "type": "AWS::S3::Object",
+      "ARNPrefix": "arn:aws:s3:::target-bucket/"
+    },
+    {
+      "accountId": "012345678901",
+      "type": "AWS::S3::Bucket",
+      "ARN": "arn:aws:s3:::target-bucket"
+    }
+  ],
+  "eventType": "AwsApiCall",
+  "managementEvent": false,
+  "recipientAccountId": "012345678901",
+  "eventCategory": "Data"
+}
+` + CodeBlock + `
 `,
 		Platform:                   stratus.AWS,
 		IsIdempotent:               false, // ransomware cannot be reverted :)
@@ -64,10 +99,6 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 
 	log.Println("Simulating a ransomware attack on bucket " + bucketName)
 
-	if err := disableVersioning(s3Client, bucketName); err != nil {
-		return fmt.Errorf("failed to disable bucket versioning: %w", err)
-	}
-
 	if err := removeAllObjects(s3Client, bucketName); err != nil {
 		return fmt.Errorf("failed to remove objects in the bucket: %w", err)
 	}
@@ -77,18 +108,6 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	}
 
 	return nil
-}
-
-func disableVersioning(s3Client *s3.Client, bucketName string) error {
-	log.Println("Disabling versioning on bucket " + bucketName)
-	_, err := s3Client.PutBucketVersioning(context.Background(), &s3.PutBucketVersioningInput{
-		Bucket: &bucketName,
-		VersioningConfiguration: &types.VersioningConfiguration{
-			MFADelete: types.MFADeleteDisabled,
-			Status:    types.BucketVersioningStatusSuspended,
-		},
-	})
-	return err
 }
 
 func removeAllObjects(s3Client *s3.Client, bucketName string) error {

@@ -138,6 +138,14 @@ AWS:
             - Exfiltration
           platform: AWS
           isIdempotent: true
+    Impact:
+        - id: aws.impact.s3-ransomware-deleteobjects
+          name: S3 Ransomware through DeleteObjects
+          isSlow: false
+          mitreAttackTactics:
+            - Impact
+          platform: AWS
+          isIdempotent: false
     Initial Access:
         - id: aws.initial-access.console-login-without-mfa
           name: Console Login without MFA

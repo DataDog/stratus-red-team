@@ -36,7 +36,7 @@ const (
 	LateralMovement
 	Collection
 	Exfiltration
-	Impact = 11
+	Impact
 )
 
 func AttackTacticFromString(name string) (Tactic, error) {
