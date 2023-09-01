@@ -25,7 +25,7 @@ jobs:
             storage.googleapis.com:443
             *.actions.githubusercontent.com:443
       - name: Checkout repository
-        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
 
       - name: Set up Go
         uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753
@@ -52,7 +52,7 @@ jobs:
             storage.googleapis.com:443
             *.actions.githubusercontent.com:443
       - name: Checkout repository
-        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
 
       - name: Build local Docker image
         run: docker build .
