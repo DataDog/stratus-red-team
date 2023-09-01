@@ -6,7 +6,7 @@ WORKDIR /build
 ADD . /build
 RUN make BUILD_VERSION=${VERSION}
 
-FROM alpine:3.18.2@sha256:82d1e9d7ed48a7523bdebc18cf6290bdb97b82302a8a9c27d4fe885949ea94d1 AS runner
+FROM alpine:3.18.3@sha256:7144f7bab3d4c2648d7e59409f15ec52a18006a128c733fcff20d3a4a54ba44a AS runner
 LABEL org.opencontainers.image.source="https://github.com/DataDog/stratus-red-team/"
 COPY --from=builder /build/bin/stratus /stratus
 RUN apk add --update git # git is needed for Terraform to download external modules at runtime
