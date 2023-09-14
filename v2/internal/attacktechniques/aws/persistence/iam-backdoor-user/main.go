@@ -28,6 +28,7 @@ Detonation:
 - Create an IAM access key on the user.
 
 References:
+
 - https://sysdig.com/blog/scarleteel-2-0/
 `,
 		Detection: `
