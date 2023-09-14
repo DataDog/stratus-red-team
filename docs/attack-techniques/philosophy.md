@@ -21,6 +21,7 @@ In Stratus Red Team, we aim to follow the following acceptance criteria for addi
 - It should always be possible to derive a reasonable detection rule from a technique
 
 Examples:
+
 - Good: Delete a CloudTrail trail
 - Bad: Run `sts:GetCallerIdentity`
     - While attackers might use this API call, it is in no way indicative of attacker activity, as it's used by many services and client applications.
