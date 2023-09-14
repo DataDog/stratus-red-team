@@ -32,6 +32,7 @@ Detonation:
 
 References:
 - https://permiso.io/blog/s/approach-to-detection-androxgh0st-greenbot-persistence/
+- https://permiso.io/blog/s/unmasking-guivil-new-cloud-threat-actor/
 - https://blog.darklab.hk/2021/07/06/trouble-in-paradise/
 - https://expel.com/blog/incident-report-from-cli-to-console-chasing-an-attacker-in-aws/
 `,
