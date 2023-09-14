@@ -34,6 +34,7 @@ Detonation:
 - Update the Lambda function code.
 
 References:
+
 - https://research.splunk.com/cloud/aws_lambda_updatefunctioncode/
 - Expel's AWS security mindmap
 `,
