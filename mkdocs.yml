@@ -64,6 +64,8 @@ markdown_extensions:
 extra_javascript:
   - https://cdnjs.cloudflare.com/ajax/libs/tablesort/5.2.1/tablesort.min.js
   - javascripts/tablesort.js
+  - javascripts/ga.js
+  - https://www.googletagmanager.com/gtag/js?id=G-8QPPPHCKMM
 extra_css:
   - css/extra.css
   - css/w3.css
