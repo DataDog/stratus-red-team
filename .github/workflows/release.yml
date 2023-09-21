@@ -32,6 +32,8 @@ jobs:
             uploads.github.com:443
             sum.golang.org:443
             *.actions.githubusercontent.com:443
+            go.dev:443
+            golang.org:443
 
       - name: Checkout
         uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
