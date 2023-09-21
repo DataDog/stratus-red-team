@@ -55,6 +55,11 @@ Open-source projects:
 - [Threatest](https://github.com/DataDog/threatest)
 - [AWS Threat Detection with Stratus Red Team](https://github.com/sbasu7241/AWS-Threat-Simulation-and-Detection)
 
+
+Videos:
+- [Reproducing common attacks in the cloud with Stratus Red Team](https://www.youtube.com/watch?v=M5DGXWF2ld0)
+- [Stratus Red Team: AWS EC2 Instance Credential Theft | Threat SnapShot](https://www.youtube.com/watch?v=TVS-M6DrSPw)
+
 Blog posts:
 - [AWS threat emulation and detection validation with Stratus Red Team and Datadog Cloud SIEM](https://www.datadoghq.com/blog/aws-threat-emulation-detection-validation-datadog/)
 - [Adversary emulation on AWS with Stratus Red Team and Wazuh](https://wazuh.com/blog/adversary-emulation-on-aws-with-stratus-red-team-and-wazuh/)
@@ -72,8 +77,8 @@ Talks:
 - [Threat-Driven Development with Stratus Red Team](https://www.youtube.com/watch?v=AbWwcqLwcYI) by Ryan Marcotte Cobb
 - [Cloudy With a Chance of Purple Rain: Leveraging Stratus Red Team - BSides Portland 2022](https://www.youtube.com/watch?v=Oq9ObzATZDI)
 
-Videos:
-- [Stratus Red Team: AWS EC2 Instance Credential Theft | Threat SnapShot](https://www.youtube.com/watch?v=TVS-M6DrSPw)
+Papers:
+- [A Purple Team Approach to Attack Automation in the Cloud Native Environment](https://aaltodoc.aalto.fi/bitstream/handle/123456789/116425/master_Chaplinska_Svitlana_2022.pdf?sequence=1&isAllowed=y)
 
 ## Using Stratus Red Team as a Go Library
 
