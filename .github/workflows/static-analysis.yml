@@ -28,6 +28,8 @@ jobs:
             sum.golang.org:443
             golang.org:443
             *.actions.githubusercontent.com:443
+            objects.githubusercontent.com:443
+            go.dev:443
       - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
         with:
           fetch-depth: 1
