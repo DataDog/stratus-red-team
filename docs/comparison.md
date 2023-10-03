@@ -57,3 +57,15 @@ CloudGoat is focused on spinning up vulnerable AWS infrastructure, so that you c
 Use CloudGoat to: practice your AWS offensive security and enumeration skills.
 
 Use Stratus Red Team to: emulate adversary behavior in AWS to validate your threat detection.
+
+## [DeRF](https://thederf.cloud/)
+
+DeRF takes inspiration from Stratus Red Team and implements a subset of its attack techniques. DeRF works by deploying a set of Google Cloud Workflows that detonate attack techniques by calling cloud providers' API  (see [here](https://github.com/vectra-ai-research/derf/blob/main/attack-techniques/aws/execution/ec2-modify-user-data/attack.tf#L36) for a sample attack technique).
+
+DerF is more extensible than Stratus Red Team, might be more suitable for a shared team usage. The barrier to entry to use Stratus Red Team is lower, since it's a single binary you can run from anywhere with access to a cloud environment with no setup required.
+
+## [Cloud Katana](https://cloud-katana.com)
+
+Cloud Katana is an attack simulation tool, similar to Stratus Red Team. It works by detonating attack techniques in Azure functions. Attack techniques are described using a [JSON schema](https://cloud-katana.com/learn/schema.html), making it more extensible than Stratus Red Team.
+
+As of September 27 2023, Cloud Katana contains 3 built-in attack techniques, all for Azure, while Stratus Red Team ships with attack techniques for Azure, AWS, GCP and Kubernetes.
