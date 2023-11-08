@@ -29,6 +29,7 @@ A further, more advanced, use-case could be updating the code to exfiltrate the 
 - Update the Lambda function code.
 
 References:
+
 - https://research.splunk.com/cloud/aws_lambda_updatefunctioncode/
 - Expel's AWS security mindmap
 
