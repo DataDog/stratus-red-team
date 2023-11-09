@@ -41,12 +41,11 @@ stratus detonate aws.persistence.lambda-layer-extension
 ## Detection
 
 
-Through CloudTrail's <code>UpdateFunctionConfiguration20150331v2<code> event.
+Through CloudTrail's <code>UpdateFunctionConfiguration20150331v2</code> event.
 
 While matching this event may be impractical and prone to false positives in most environments, the following can help to craft more precise detections:
 		
-Identify a call to <code>UpdateFunctionConfiguration20150331v2<code> where the layers field exists inside responseElements.
-		
-Identify a call to <code>UpdateFunctionConfiguration20150331v2<code> where the layers, within responseElements, include a layer that is not from the same account.
+- Identify calls to <code>UpdateFunctionConfiguration20150331v2</code> where the <code>responseElements</code> field contains <code>layer</code>, indicating that the function's layers were modified.
+- Identify calls to <code>UpdateFunctionConfiguration20150331v2</code> where <code>responseElements.layers</code> includes a layer that's from a different AWS account.'
 
 
