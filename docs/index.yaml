@@ -222,6 +222,14 @@ AWS:
             - Privilege Escalation
           platform: AWS
           isIdempotent: false
+        - id: aws.persistence.lambda-layer-extension
+          name: Add a Malicious Lambda Extension
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: AWS
+          isIdempotent: true
     Privilege Escalation:
         - id: aws.execution.ec2-user-data
           name: Execute Commands on EC2 Instance via User Data
@@ -263,6 +271,14 @@ AWS:
             - Privilege Escalation
           platform: AWS
           isIdempotent: false
+        - id: aws.persistence.lambda-layer-extension
+          name: Add a Malicious Lambda Extension
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: AWS
+          isIdempotent: true
 GCP:
     Exfiltration:
         - id: gcp.exfiltration.share-compute-disk

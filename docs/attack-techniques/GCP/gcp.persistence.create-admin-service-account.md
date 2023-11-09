@@ -29,6 +29,7 @@ Establishes persistence by creating a new service account and assigning it
 - Update the current GCP project's IAM policy to bind the service account to the <code>owner</code> role'
 
 References:
+
 - https://about.gitlab.com/blog/2020/02/12/plundering-gcp-escalating-privileges-in-google-cloud-platform/
 
 
