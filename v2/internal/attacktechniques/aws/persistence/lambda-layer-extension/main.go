@@ -6,7 +6,6 @@ import (
 	"errors"
 	"log"
 
-	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/lambda"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
@@ -57,20 +56,17 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	lambdaExtensionLayerArn := params["lambda_extension_layer_arn"]
 	lambdaArn := params["lambda_arn"]
 
-	var layerArns []string
-	layerArns = append(layerArns, *aws.String(lambdaExtensionLayerArn))
-
 	// Update the function configuration with our layer
 	_, err := lambdaClient.UpdateFunctionConfiguration(ctx, &lambda.UpdateFunctionConfigurationInput{
-		FunctionName: aws.String(lambdaArn),
-		Layers:       layerArns,
+		FunctionName: &lambdaArn,
+		Layers:       []string{lambdaExtensionLayerArn},
 	})
 
 	if err != nil {
 		return errors.New("unable to update function configuration: " + err.Error())
 	}
 
-	log.Println("Added layer to Lambda function:", lambdaArn)
+	log.Println("Added simulated malicious layer to Lambda function ", lambdaArn)
 	return nil
 }
 
@@ -81,13 +77,13 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 
 	// Update the function configuration with an empty list of layers
 	_, err := lambdaClient.UpdateFunctionConfiguration(ctx, &lambda.UpdateFunctionConfigurationInput{
-		FunctionName: aws.String(lambdaArn),
+		FunctionName: &lambdaArn,
 		Layers:       []string{},
 	})
 
 	if err != nil {
 		return errors.New("unable to update function configuration: " + err.Error())
 	}
-	log.Printf("Layers have been removed from Lambda function: %s\n", lambdaArn)
+	log.Printf("Layers have been removed from the Lambda function %s\n", lambdaArn)
 	return nil
 }
