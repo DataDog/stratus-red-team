@@ -97,8 +97,8 @@ resource "aws_s3_bucket_object" "code_layer" {
 }
 
 resource "aws_lambda_layer_version" "lambda_extension_layer" {
-  s3_bucket     = aws_s3_bucket.bucket.id
-  s3_key        = aws_s3_bucket_object.code_layer.key
+  s3_bucket  = aws_s3_bucket.bucket.id
+  s3_key     = aws_s3_bucket_object.code_layer.key
   layer_name = "${local.resource_prefix}-my-lambda-extension"
 
   compatible_runtimes = ["python3.10"]
