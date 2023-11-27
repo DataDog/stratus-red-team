@@ -83,11 +83,11 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 - [Backdoor Lambda Function Through Resource-Based Policy](./aws.persistence.lambda-backdoor-function.md)
 
+- [Add a Malicious Lambda Extension](./aws.persistence.lambda-layer-extension.md)
+
 - [Overwrite Lambda Function Code](./aws.persistence.lambda-overwrite-code.md)
 
 - [Create an IAM Roles Anywhere trust anchor](./aws.persistence.rolesanywhere-create-trust-anchor.md)
-
-- [Add a Malicious Lambda Extension](./aws.persistence.lambda-layer-extension.md)
 
 
 ## Privilege Escalation
@@ -100,7 +100,7 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 - [Create a Login Profile on an IAM User](./aws.persistence.iam-create-user-login-profile.md)
 
-- [Create an IAM Roles Anywhere trust anchor](./aws.persistence.rolesanywhere-create-trust-anchor.md)
-
 - [Add a Malicious Lambda Extension](./aws.persistence.lambda-layer-extension.md)
+
+- [Create an IAM Roles Anywhere trust anchor](./aws.persistence.rolesanywhere-create-trust-anchor.md)
 

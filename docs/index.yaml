@@ -207,6 +207,14 @@ AWS:
             - Persistence
           platform: AWS
           isIdempotent: false
+        - id: aws.persistence.lambda-layer-extension
+          name: Add a Malicious Lambda Extension
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: AWS
+          isIdempotent: true
         - id: aws.persistence.lambda-overwrite-code
           name: Overwrite Lambda Function Code
           isSlow: false
@@ -222,14 +230,6 @@ AWS:
             - Privilege Escalation
           platform: AWS
           isIdempotent: false
-        - id: aws.persistence.lambda-layer-extension
-          name: Add a Malicious Lambda Extension
-          isSlow: false
-          mitreAttackTactics:
-            - Persistence
-            - Privilege Escalation
-          platform: AWS
-          isIdempotent: true
     Privilege Escalation:
         - id: aws.execution.ec2-user-data
           name: Execute Commands on EC2 Instance via User Data
@@ -263,14 +263,6 @@ AWS:
             - Privilege Escalation
           platform: AWS
           isIdempotent: false
-        - id: aws.persistence.rolesanywhere-create-trust-anchor
-          name: Create an IAM Roles Anywhere trust anchor
-          isSlow: false
-          mitreAttackTactics:
-            - Persistence
-            - Privilege Escalation
-          platform: AWS
-          isIdempotent: false
         - id: aws.persistence.lambda-layer-extension
           name: Add a Malicious Lambda Extension
           isSlow: false
@@ -279,10 +271,25 @@ AWS:
             - Privilege Escalation
           platform: AWS
           isIdempotent: true
+        - id: aws.persistence.rolesanywhere-create-trust-anchor
+          name: Create an IAM Roles Anywhere trust anchor
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: AWS
+          isIdempotent: false
 GCP:
     Exfiltration:
         - id: gcp.exfiltration.share-compute-disk
           name: Exfiltrate Compute Disk by sharing it
+          isSlow: false
+          mitreAttackTactics:
+            - Exfiltration
+          platform: GCP
+          isIdempotent: true
+        - id: gcp.exfiltration.share-compute-snapshot
+          name: Exfiltrate Compute Disk by sharing a snapshot
           isSlow: false
           mitreAttackTactics:
             - Exfiltration
