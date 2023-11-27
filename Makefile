@@ -1,26 +1,47 @@
-BUILD_VERSION=dev-snapshot
+BUILD_VERSION := dev-snapshot
 
 MAKEFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
 ROOT_DIR := $(dir $(MAKEFILE_PATH))
 
-.PHONY: docs
+# Use go modules
+export GO111MODULE=on
+
+# Define binaries directory
+BIN_DIR := $(ROOT_DIR)/bin
+
+# Define go flags
+GOFLAGS := -ldflags="-X main.BuildVersion=$(BUILD_VERSION)"
+
+.PHONY: build docs test thirdparty-licenses mocks
+
+# Default target
 all: build
 
 build:
-	cd v2 && go build -ldflags="-X main.BuildVersion=$(BUILD_VERSION)" -o ../bin/stratus cmd/stratus/*.go
+	@echo "Building Stratus..."
+	@cd v2 && go build $(GOFLAGS) -o $(BIN_DIR)/stratus cmd/stratus/*.go
+	@echo "Build completed. Binaries are saved in $(BIN_DIR)"
 
 docs:
-	cd v2 && go run ./tools/ ../docs
+	@echo "Generating documentation..."
+	@cd v2 && go run ./tools/ ../docs
+	@echo "Documentation generated successfully."
 
 test:
-	cd v2 && go test ./... -v
+	@echo "Running tests..."
+	@cd v2 && go test ./... -v
+	@echo "Tests completed successfully."
 
 thirdparty-licenses:
-	go get github.com/google/go-licenses
-	go install github.com/google/go-licenses
-	cd v2 && $(GOPATH)/bin/go-licenses csv github.com/datadog/stratus-red-team/v2/cmd/stratus | sort > $(ROOT_DIR)/LICENSE-3rdparty.csv
+	@echo "Retrieving third-party licenses..."
+	@cd v2 && go get github.com/google/go-licenses
+	@cd v2 && go install github.com/google/go-licenses
+	@cd v2 && $(GOPATH)/bin/go-licenses csv github.com/datadog/stratus-red-team/v2/cmd/stratus | sort > $(ROOT_DIR)/LICENSE-3rdparty.csv
+	@echo "Third-party licenses retrieved and saved to $(ROOT_DIR)/LICENSE-3rdparty.csv"
 
 mocks:
-	cd v2 && mockery --name=StateManager --dir internal/state --output internal/state/mocks
-	cd v2 && mockery --name=TerraformManager --dir pkg/stratus/runner --output pkg/stratus/runner/mocks
-	cd v2 && mockery --name=FileSystem --structname FileSystemMock --dir internal/state --output internal/state/mocks
+	@echo "Generating mocks..."
+	@cd v2 && mockery --name=StateManager --dir internal/state --output internal/state/mocks
+	@cd v2 && mockery --name=TerraformManager --dir pkg/stratus/runner --output pkg/stratus/runner/mocks
+	@cd v2 && mockery --name=FileSystem --structname FileSystemMock --dir internal/state --output internal/state/mocks
+	@echo "Mocks generated successfully."
