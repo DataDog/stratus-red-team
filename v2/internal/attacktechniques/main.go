@@ -3,6 +3,7 @@ package attacktechniques
 import (
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/credential-access/ec2-get-password-data"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/credential-access/ec2-steal-instance-credentials"
+	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/credential-access/secretsmanager-batch-retrieve-secrets"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/credential-access/secretsmanager-retrieve-secrets"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/credential-access/ssm-retrieve-securestring-parameters"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/defense-evasion/cloudtrail-delete"
@@ -29,9 +30,9 @@ import (
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/persistence/iam-create-admin-user"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/persistence/iam-create-user-login-profile"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/persistence/lambda-backdoor-function"
+	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/persistence/lambda-layer-extension"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/persistence/lambda-overwrite-code"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/persistence/rolesanywhere-create-trust-anchor"
-	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/persistence/lambda-layer-extension"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/azure/execution/vm-custom-script-extension"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/azure/execution/vm-run-command"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/azure/exfiltration/disk-export"
