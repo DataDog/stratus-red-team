@@ -10,13 +10,12 @@ defaults:
     working-directory: ./v2
 
 permissions:
-  contents: read
+  contents: write
+  pull-requests: write
 
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@1b05615854632b887b69ae1be8cbefe72d3ae423
