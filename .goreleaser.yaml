@@ -15,11 +15,8 @@ builds:
     binary: stratus
 brews:
 - name: stratus-red-team
-  tap:
-    owner: datadog
-    name: stratus-red-team
   repository:
-    owner: DataDog
+    owner: datadog
     name: stratus-red-team
     pull_request:
       enabled: true
