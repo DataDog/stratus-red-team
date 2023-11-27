@@ -20,7 +20,10 @@ brews:
     name: stratus-red-team
     pull_request:
       enabled: true
-      draft: false
+      base:
+        owner: datadog
+        name: stratus-red-team
+        name: main
   folder: Formula
   url_template: "https://github.com/DataDog/stratus-red-team/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
   license: Apache-2.0
