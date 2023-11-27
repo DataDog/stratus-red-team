@@ -48,7 +48,7 @@ jobs:
         uses: goreleaser/goreleaser-action@44dd9927f499a126e26ae024981569ce889f15aa # v5.0.0
         with:
           distribution: goreleaser
-          version: latest
+          version: v1.22.1
           args: release --clean --config ../.goreleaser.yaml
           workdir: ./v2
         env:
