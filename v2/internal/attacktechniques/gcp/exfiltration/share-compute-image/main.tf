@@ -12,7 +12,11 @@ locals {
 }
 
 resource "google_compute_image" "this" {
-  family = "debian-11"
+  name = local.image-name
+
+  raw_disk {
+    source = "https://storage.googleapis.com/bosh-gce-raw-stemcells/bosh-stemcell-97.98-google-kvm-ubuntu-xenial-go_agent-raw-1557960142.tar.gz"
+  }
 }
 
 output "image_name" {

