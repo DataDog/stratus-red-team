@@ -18,6 +18,7 @@ brews:
   repository:
     owner: datadog
     name: stratus-red-team
+    branch: "homebrew-update-{{ .Version	}}"
     pull_request:
       enabled: true
       base:
