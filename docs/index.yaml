@@ -298,6 +298,10 @@ GCP:
         - id: gcp.exfiltration.share-compute-image
           name: Exfiltrate Compute Image by sharing it
           isSlow: true
+          mitreAttackTactics:
+            - Exfiltration
+          platform: GCP
+          isIdempotent: true
         - id: gcp.exfiltration.share-compute-snapshot
           name: Exfiltrate Compute Disk by sharing a snapshot
           isSlow: false
