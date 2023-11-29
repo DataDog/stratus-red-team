@@ -51,6 +51,7 @@ This page contains the list of all Stratus Attack Techniques.
 | [Create an Admin GCP Service Account](./GCP/gcp.persistence.create-admin-service-account.md) | [GCP](./GCP/index.md) | Persistence, Privilege Escalation |
 | [Create a GCP Service Account Key](./GCP/gcp.persistence.create-service-account-key.md) | [GCP](./GCP/index.md) | Persistence, Privilege Escalation |
 | [Invite an External User to a GCP Project](./GCP/gcp.persistence.invite-external-user.md) | [GCP](./GCP/index.md) | Persistence |
+| [Impersonate GCP Service Accounts](./GCP/gcp.privilege-escalation.impersonate-service-accounts.md) | [GCP](./GCP/index.md) | Privilege Escalation |
 | [Dump All Secrets](./kubernetes/k8s.credential-access.dump-secrets.md) | [Kubernetes](./kubernetes/index.md) | Credential Access |
 | [Steal Pod Service Account Token](./kubernetes/k8s.credential-access.steal-serviceaccount-token.md) | [Kubernetes](./kubernetes/index.md) | Credential Access |
 | [Create Admin ClusterRole](./kubernetes/k8s.persistence.create-admin-clusterrole.md) | [Kubernetes](./kubernetes/index.md) | Persistence, Privilege Escalation |
@@ -59,4 +60,3 @@ This page contains the list of all Stratus Attack Techniques.
 | [Container breakout via hostPath volume mount](./kubernetes/k8s.privilege-escalation.hostpath-volume.md) | [Kubernetes](./kubernetes/index.md) | Privilege Escalation |
 | [Privilege escalation through node/proxy permissions](./kubernetes/k8s.privilege-escalation.nodes-proxy.md) | [Kubernetes](./kubernetes/index.md) | Privilege Escalation |
 | [Run a Privileged Pod](./kubernetes/k8s.privilege-escalation.privileged-pod.md) | [Kubernetes](./kubernetes/index.md) | Privilege Escalation |
-| [Impersonate GCP Service Accounts](./GCP/gcp.privilege-escalation.impersonate-service-accounts.md) | [GCP](./GCP/index.md) | Privilege Escalation |
