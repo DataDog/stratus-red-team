@@ -22,7 +22,7 @@ const AttackTechniqueId = "gcp.exfiltration.share-compute-snapshot"
 
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
-		ID:           "gcp.exfiltration.share-compute-snapshot",
+		ID:           AttackTechniqueId,
 		FriendlyName: "Exfiltrate Compute Disk by sharing a snapshot",
 		Description: `
 Exfiltrates a Compute Disk by sharing a snapshot with a fictitious attacker account.
