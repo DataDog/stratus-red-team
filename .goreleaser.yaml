@@ -15,9 +15,16 @@ builds:
     binary: stratus
 brews:
 - name: stratus-red-team
-  tap:
+  repository:
     owner: datadog
     name: stratus-red-team
+    branch: "homebrew-update-{{ .Version	}}"
+    pull_request:
+      enabled: true
+      base:
+        owner: datadog
+        name: stratus-red-team
+        branch: main
   folder: Formula
   url_template: "https://github.com/DataDog/stratus-red-team/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
   license: Apache-2.0
@@ -27,6 +34,7 @@ brews:
 
     # Install shell completions
     generate_completions_from_executable(bin/"stratus", "completion", shells: [:bash, :fish, :zsh], base_name: "stratus")
+  
 archives:
   - name_template: >-
       {{ .ProjectName }}_

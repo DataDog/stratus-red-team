@@ -3,6 +3,7 @@ package attacktechniques
 import (
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/credential-access/ec2-get-password-data"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/credential-access/ec2-steal-instance-credentials"
+	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/credential-access/secretsmanager-batch-retrieve-secrets"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/credential-access/secretsmanager-retrieve-secrets"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/credential-access/ssm-retrieve-securestring-parameters"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/defense-evasion/cloudtrail-delete"
@@ -37,6 +38,7 @@ import (
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/azure/exfiltration/disk-export"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/exfiltration/share-compute-disk"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/exfiltration/share-compute-image"
+	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/exfiltration/share-compute-snapshot"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/persistence/backdoor-service-account-policy"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/persistence/create-admin-service-account"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/persistence/create-service-account-key"

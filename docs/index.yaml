@@ -14,6 +14,13 @@ AWS:
             - Credential Access
           platform: AWS
           isIdempotent: true
+        - id: aws.credential-access.secretsmanager-batch-retrieve-secrets
+          name: Retrieve a High Number of Secrets Manager secrets (Batch)
+          isSlow: false
+          mitreAttackTactics:
+            - Credential Access
+          platform: AWS
+          isIdempotent: true
         - id: aws.credential-access.secretsmanager-retrieve-secrets
           name: Retrieve a High Number of Secrets Manager secrets
           isSlow: false
@@ -291,6 +298,9 @@ GCP:
         - id: gcp.exfiltration.share-compute-image
           name: Exfiltrate Compute Image by sharing it
           isSlow: true
+        - id: gcp.exfiltration.share-compute-snapshot
+          name: Exfiltrate Compute Disk by sharing a snapshot
+          isSlow: false
           mitreAttackTactics:
             - Exfiltration
           platform: GCP

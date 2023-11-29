@@ -10,13 +10,12 @@ defaults:
     working-directory: ./v2
 
 permissions:
-  contents: read
+  contents: write
+  pull-requests: write
 
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@1b05615854632b887b69ae1be8cbefe72d3ae423
@@ -45,10 +44,10 @@ jobs:
           go-version: 1.18
       - name: Run GoReleaser
         timeout-minutes: 60
-        uses: goreleaser/goreleaser-action@7ec5c2b0c6cdda6e8bbb49444bc797dd33d74dd8
+        uses: goreleaser/goreleaser-action@44dd9927f499a126e26ae024981569ce889f15aa # v5.0.0
         with:
           distribution: goreleaser
-          version: latest
+          version: v1.22.1
           args: release --clean --config ../.goreleaser.yaml
           workdir: ./v2
         env:

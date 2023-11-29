@@ -11,6 +11,7 @@ This page contains the list of all Stratus Attack Techniques.
 | :----: | :------: | :------------------: |
 | [Retrieve EC2 Password Data](./AWS/aws.credential-access.ec2-get-password-data.md) | [AWS](./AWS/index.md) | Credential Access |
 | [Steal EC2 Instance Credentials](./AWS/aws.credential-access.ec2-steal-instance-credentials.md) | [AWS](./AWS/index.md) | Credential Access |
+| [Retrieve a High Number of Secrets Manager secrets (Batch)](./AWS/aws.credential-access.secretsmanager-batch-retrieve-secrets.md) | [AWS](./AWS/index.md) | Credential Access |
 | [Retrieve a High Number of Secrets Manager secrets](./AWS/aws.credential-access.secretsmanager-retrieve-secrets.md) | [AWS](./AWS/index.md) | Credential Access |
 | [Retrieve And Decrypt SSM Parameters](./AWS/aws.credential-access.ssm-retrieve-securestring-parameters.md) | [AWS](./AWS/index.md) | Credential Access |
 | [Delete CloudTrail Trail](./AWS/aws.defense-evasion.cloudtrail-delete.md) | [AWS](./AWS/index.md) | Defense Evasion |
@@ -45,6 +46,7 @@ This page contains the list of all Stratus Attack Techniques.
 | [Export Disk Through SAS URL](./azure/azure.exfiltration.disk-export.md) | [Azure](./azure/index.md) | Exfiltration |
 | [Exfiltrate Compute Disk by sharing it](./GCP/gcp.exfiltration.share-compute-disk.md) | [GCP](./GCP/index.md) | Exfiltration |
 | [Exfiltrate Compute Image by sharing it](./GCP/gcp.exfiltration.share-compute-image.md) | [GCP](./GCP/index.md) | Exfiltration |
+| [Exfiltrate Compute Disk by sharing a snapshot](./GCP/gcp.exfiltration.share-compute-snapshot.md) | [GCP](./GCP/index.md) | Exfiltration |
 | [Backdoor a GCP Service Account through its IAM Policy](./GCP/gcp.persistence.backdoor-service-account-policy.md) | [GCP](./GCP/index.md) | Persistence |
 | [Create an Admin GCP Service Account](./GCP/gcp.persistence.create-admin-service-account.md) | [GCP](./GCP/index.md) | Persistence, Privilege Escalation |
 | [Create a GCP Service Account Key](./GCP/gcp.persistence.create-service-account-key.md) | [GCP](./GCP/index.md) | Persistence, Privilege Escalation |
