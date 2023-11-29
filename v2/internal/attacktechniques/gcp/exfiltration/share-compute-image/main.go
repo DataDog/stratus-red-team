@@ -22,7 +22,7 @@ const AttackTechniqueId = "gcp.exfiltration.share-compute-image"
 
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
-		ID:           "gcp.exfiltration.share-compute-image",
+		ID:           AttackTechniqueId,
 		FriendlyName: "Exfiltrate Compute Image by sharing it",
 		IsSlow:       true,
 		Description: `
