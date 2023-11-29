@@ -8,9 +8,9 @@ terraform {
 }
 
 locals {
-  disk-name = "stratus-red-team-victim-disk"
+  disk-name     = "stratus-red-team-victim-disk"
   snapshot-name = "stratus-red-team-victim-snapshot"
-  zone = "us-central1-a"
+  zone          = "us-central1-a"
 }
 
 resource "google_compute_disk" "this" {
@@ -20,9 +20,9 @@ resource "google_compute_disk" "this" {
 }
 
 resource "google_compute_snapshot" "this" {
-  name = local.snapshot-name
+  name        = local.snapshot-name
   source_disk = google_compute_disk.this.id
-  zone = local.zone
+  zone        = local.zone
 }
 
 output "snapshot_name" {
