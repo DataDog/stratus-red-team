@@ -59,7 +59,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 				{
 					ID:         aws.String("nuke-cloudtrail-logs-after-1-day"),
 					Status:     types.ExpirationStatusEnabled,
-					Expiration: &types.LifecycleExpiration{Days: 1},
+					Expiration: &types.LifecycleExpiration{Days: aws.Int32(1)},
 					Filter: &types.LifecycleRuleFilterMemberPrefix{
 						Value: "*",
 					},
