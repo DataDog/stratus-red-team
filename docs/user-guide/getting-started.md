@@ -2,7 +2,13 @@
 
 ## Installation
 
-- Mac OS:
+Direct install (required Go 1.18+):
+
+```
+go install -v github.com/datadog/stratus-red-team/v2/cmd/stratus@latest
+```
+
+- Homebrew:
 
 ```bash
 brew tap "datadog/stratus-red-team" "https://github.com/DataDog/stratus-red-team"

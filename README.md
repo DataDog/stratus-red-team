@@ -31,7 +31,13 @@ See the documentation at **[stratus-red-team.cloud](https://stratus-red-team.clo
 
 ## Installation
 
-- Mac OS:
+Direct install (requires Go 1.18+):
+
+```
+go install -v github.com/datadog/stratus-red-team/v2/cmd/stratus@latest
+```
+
+- Homebrew:
 
 ```
 brew tap datadog/stratus-red-team https://github.com/DataDog/stratus-red-team
