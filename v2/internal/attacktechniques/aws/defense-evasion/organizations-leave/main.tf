@@ -29,7 +29,7 @@ resource "aws_iam_role" "role" {
     Version = "2012-10-17"
     Statement = [
       {
-        Action = ["sts:AssumeRole", "sts:SetSourceIdentity"]
+        Action = ["sts:AssumeRole", "sts:SetSourceIdentity", "sts:TagSession"]
         Effect = "Allow"
         Sid    = ""
         Principal = {
