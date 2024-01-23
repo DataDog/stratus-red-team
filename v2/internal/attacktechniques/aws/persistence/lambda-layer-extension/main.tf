@@ -67,10 +67,18 @@ resource "aws_iam_role_policy_attachment" "lambda_logs_attach" {
   policy_arn = aws_iam_policy.lambda_logs.arn
 }
 
+
+resource "random_string" "suffix" {
+  length    = 6
+  min_lower = 6
+  special   = false
+}
+
 resource "aws_s3_bucket" "bucket" {
-  bucket        = "${local.resource_prefix}-bucket"
+  bucket        = "${local.resource_prefix}-${random_string.suffix.result}"
   force_destroy = true
 }
+
 resource "aws_s3_bucket_object" "code" {
   bucket         = aws_s3_bucket.bucket.id
   key            = "simpleLambda.zip"
