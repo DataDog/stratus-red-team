@@ -85,21 +85,6 @@ resource "aws_iam_role" "instance-role" {
     ]
 }
 EOF
-  inline_policy {
-    name   = "inline"
-    policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Action": "ec2:Describe*",
-            "Resource": "*",
-            "Effect": "Allow"
-        }
-    ]
-}
-EOF
-  }
 }
 
 resource "aws_iam_role_policy_attachment" "rolepolicy" {
@@ -122,6 +107,10 @@ resource "aws_instance" "instance" {
     device_index         = 0
     network_interface_id = aws_network_interface.iface[count.index].id
   }
+
+  tags = {
+    Name = "${local.resource_prefix}-instance-${count.index}"
+  }
 }
 
 output "instance_ids" {
@@ -129,10 +118,10 @@ output "instance_ids" {
 }
 
 output "display" {
-  value = join("\n", [
+  value = format("Instances ready: \n%s", join("\n", [
     for i in aws_instance.instance :
-    format("Instance id %s in %s ready", i.id, data.aws_availability_zones.available.names[0])
-  ])
+    format("  %s in %s", i.id, data.aws_availability_zones.available.names[0])
+  ]))
 }
 
 output "instance_role_name" {

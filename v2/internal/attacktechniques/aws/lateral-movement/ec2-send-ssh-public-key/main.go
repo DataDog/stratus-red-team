@@ -3,13 +3,12 @@ package aws
 import (
 	"context"
 	_ "embed"
-	"errors"
-	"strings"
-	"github.com/aws/aws-sdk-go-v2/aws"
+	"fmt"
 	"github.com/aws/aws-sdk-go-v2/service/ec2instanceconnect"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
+	"strings"
 )
 
 //go:embed my_key.pub
@@ -19,17 +18,18 @@ var publicSSHKey string
 var tf []byte
 
 func init() {
+	const codeBlock = "```"
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
-		ID:           "aws.lateral-movement.ec2-send-ssh-public-key",
-		FriendlyName: "Usage of ec2instanceconnect:SendSSHPublicKey on multiple instances",
+		ID:           "aws.lateral-movement.ec2-instance-connect",
+		FriendlyName: "Usage of EC2 Instance Connect on multiple instances",
 		IsSlow:       true,
 		Description: `
-Simulates an attacker pushing a Secure Shell (SSH) public key to multiple EC2 instances, which then will allow anyone with the corresponding private key to 
+Simulates an attacker pushing an SSH public key to multiple EC2 instances, which then will allow anyone with the corresponding private key to 
 connect directly to the systems via SSH.
 
 Warm-up:
 
-- Create multiple EC2s instances and VPC (takes a few minutes).
+- Create multiple EC2 instances and a VPC (takes a few minutes).
 
 Detonation: 
 
@@ -37,14 +37,27 @@ Detonation:
 
 References:
 
+- https://securitylabs.datadoghq.com/articles/tales-from-the-cloud-trenches-ecs-crypto-mining/#hands-on-keyboard-activity-begins
 - https://sysdig.com/blog/2023-global-cloud-threat-report/
 `,
 		Detection: `
-Identify, through CloudTrail's <code>SendSSHPublicKey</code> event, when a user is adding an SSH key to multiple EC2s.
+Identify, through CloudTrail's <code>SendSSHPublicKey</code> event, when a user is adding an SSH key to multiple EC2 instances. Sample event:
+
+` + codeBlock + `
+{
+  "eventSource": "ec2-instance-connect.amazonaws.com",
+  "eventName": "SendSSHPublicKey",
+  "requestParameters": {
+    "instanceId": "i-123456",
+    "instanceOSUser": "ec2-user",
+    "sSHPublicKey": "ssh-ed25519 ..."
+  }
+}
+` + codeBlock + `
 `,
 		Platform:                   stratus.AWS,
 		PrerequisitesTerraformCode: tf,
-		IsIdempotent:               true, 
+		IsIdempotent:               true,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.LateralMovement},
 		Detonate:                   detonate,
 	})
@@ -52,27 +65,27 @@ Identify, through CloudTrail's <code>SendSSHPublicKey</code> event, when a user 
 
 func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	ec2instanceconnectClient := ec2instanceconnect.NewFromConfig(providers.AWS().GetConnection())
-	ec2IDsString := params["instance_ids"]
-	splitec2IDsString := strings.Split(ec2IDsString, ",")
+	instanceIDs := strings.Split(params["instance_ids"], ",")
 
-    for _, instanceID := range splitec2IDsString {
+	for _, instanceID := range instanceIDs {
 		cleanInstanceID := strings.Trim(instanceID, " \"\n\r")
-        err := sendSSHPublicKey(context.TODO(), ec2instanceconnectClient, cleanInstanceID, "ec2-user", publicSSHKey)
-        if err != nil {
-            return errors.New("failed to send SSH public key to instance " + cleanInstanceID + err.Error())
-        }
+		err := sendSSHPublicKey(ec2instanceconnectClient, cleanInstanceID, "ec2-user", publicSSHKey)
+		if err != nil {
+			return fmt.Errorf("failed to send SSH public key to instance %s: %v", cleanInstanceID, err)
+		}
 
-        log.Printf("SSH public key sent successfully to instance %s", cleanInstanceID)
-    }
+		log.Printf("SSH public key successfully added to instance %s", cleanInstanceID)
+	}
+
 	return nil
 }
 
-func sendSSHPublicKey(ctx context.Context, ec2instanceconnectClient *ec2instanceconnect.Client, instanceId, instanceOSUser, sshPublicKey string) error {
-    _, err := ec2instanceconnectClient.SendSSHPublicKey(ctx, &ec2instanceconnect.SendSSHPublicKeyInput{
-        InstanceId:     aws.String(instanceId),
-        InstanceOSUser: aws.String(instanceOSUser),
-        SSHPublicKey:   aws.String(sshPublicKey),
-    })
+func sendSSHPublicKey(ec2instanceconnectClient *ec2instanceconnect.Client, instanceId, instanceOSUser, sshPublicKey string) error {
+	_, err := ec2instanceconnectClient.SendSSHPublicKey(context.Background(), &ec2instanceconnect.SendSSHPublicKeyInput{
+		InstanceId:     &instanceId,
+		InstanceOSUser: &instanceOSUser,
+		SSHPublicKey:   &sshPublicKey,
+	})
 
-    return err
+	return err
 }

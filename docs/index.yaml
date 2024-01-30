@@ -176,8 +176,8 @@ AWS:
           platform: AWS
           isIdempotent: true
     Lateral Movement:
-        - id: aws.lateral-movement.ec2-send-ssh-public-key
-          name: Usage of ec2instanceconnect:SendSSHPublicKey on multiple instances
+        - id: aws.lateral-movement.ec2-instance-connect
+          name: Usage of EC2 Instance Connect on multiple instances
           isSlow: true
           mitreAttackTactics:
             - Lateral Movement
