@@ -2,8 +2,6 @@ module github.com/datadog/stratus-red-team/v2
 
 go 1.18
 
-replace github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/lateral-movement/ec2-send-ssh-public-key => /home/fleky/StratusRedTeamDevelopment/stratus-red-team/v2/internal/attacktechniques/aws/lateral-movement/ec2-send-ssh-public-key
-
 require (
 	cloud.google.com/go/compute v1.10.0
 	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.1.4
