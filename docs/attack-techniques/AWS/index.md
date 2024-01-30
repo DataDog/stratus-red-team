@@ -73,6 +73,11 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 - [Console Login without MFA](./aws.initial-access.console-login-without-mfa.md)
 
 
+## Lateral Movement
+
+- [Usage of ec2instanceconnect:SendSSHPublicKey on multiple instances](./aws.lateral-movement.ec2-send-ssh-public-key.md)
+
+
 ## Persistence
 
 - [Backdoor an IAM Role](./aws.persistence.iam-backdoor-role.md)
