@@ -175,6 +175,14 @@ AWS:
             - Initial Access
           platform: AWS
           isIdempotent: true
+    Lateral Movement:
+        - id: aws.lateral-movement.ec2-instance-connect
+          name: Usage of EC2 Instance Connect on multiple instances
+          isSlow: true
+          mitreAttackTactics:
+            - Lateral Movement
+          platform: AWS
+          isIdempotent: true
     Persistence:
         - id: aws.persistence.iam-backdoor-role
           name: Backdoor an IAM Role
