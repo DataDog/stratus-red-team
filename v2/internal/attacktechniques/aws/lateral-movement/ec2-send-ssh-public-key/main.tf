@@ -60,8 +60,8 @@ data "aws_ami" "amazon-2" {
 }
 
 resource "aws_network_interface" "iface" {
-  count      = var.instance_count
-  subnet_id  = module.vpc.private_subnets[0]
+  count     = var.instance_count
+  subnet_id = module.vpc.private_subnets[0]
 
   private_ips = [format("10.0.1.%d", count.index + 10)]
 }
@@ -113,10 +113,10 @@ resource "aws_iam_instance_profile" "instance" {
 }
 
 resource "aws_instance" "instance" {
-  count                 = var.instance_count
-  ami                   = data.aws_ami.amazon-2.id
-  instance_type         = "t3.micro"
-  iam_instance_profile  = aws_iam_instance_profile.instance.name
+  count                = var.instance_count
+  ami                  = data.aws_ami.amazon-2.id
+  instance_type        = "t3.micro"
+  iam_instance_profile = aws_iam_instance_profile.instance.name
 
   network_interface {
     device_index         = 0
@@ -130,8 +130,8 @@ output "instance_ids" {
 
 output "display" {
   value = join("\n", [
-    for i in aws_instance.instance : 
-      format("Instance id %s in %s ready", i.id, data.aws_availability_zones.available.names[0])
+    for i in aws_instance.instance :
+    format("Instance id %s in %s ready", i.id, data.aws_availability_zones.available.names[0])
   ])
 }
 
