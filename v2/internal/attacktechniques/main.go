@@ -10,6 +10,7 @@ import (
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/defense-evasion/cloudtrail-event-selectors"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/defense-evasion/cloudtrail-lifecycle-rule"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/defense-evasion/cloudtrail-stop"
+	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/defense-evasion/dns-delete"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/defense-evasion/organizations-leave"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/defense-evasion/vpc-remove-flow-logs"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/discovery/ec2-enumerate-from-instance"
