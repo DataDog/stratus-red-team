@@ -190,6 +190,13 @@ AWS:
             - Lateral Movement
           platform: AWS
           isIdempotent: true
+        - id: aws.lateral-movement.ssm-start-session
+          name: Usage of AWS Systems Manager console to start a session on multiple instances
+          isSlow: true
+          mitreAttackTactics:
+            - Lateral Movement
+          platform: AWS
+          isIdempotent: true
     Persistence:
         - id: aws.persistence.iam-backdoor-role
           name: Backdoor an IAM Role

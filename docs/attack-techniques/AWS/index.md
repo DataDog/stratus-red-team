@@ -79,6 +79,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 - [Usage of EC2 Instance Connect on multiple instances](./aws.lateral-movement.ec2-instance-connect.md)
 
+- [Usage of AWS Systems Manager console to start a session on multiple instances](./aws.lateral-movement.ssm-start-session.md)
+
 
 ## Persistence
 
