@@ -29,6 +29,7 @@ import (
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/persistence/iam-backdoor-role"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/persistence/iam-backdoor-user"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/persistence/iam-create-admin-user"
+	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/persistence/iam-create-backdoor-role"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/persistence/iam-create-user-login-profile"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/persistence/lambda-backdoor-function"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/persistence/lambda-layer-extension"
