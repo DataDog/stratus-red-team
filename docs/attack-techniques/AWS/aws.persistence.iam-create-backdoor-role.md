@@ -67,7 +67,7 @@ which generates a finding when a role can be assumed from a new AWS account or p
 
 - Identify a call to <code>CreateRole</code> closely followed by <code>AttachRolePolicy</code> with an administrator policy.
 
-- Identify a call to <code>CreateRole</code> that contains an assumeRolePolicyDocument in the requestParameters that allows access from an external AWS account. Sample event:
+- Identify a call to <code>CreateRole</code> that contains an <code>assumeRolePolicyDocument</code> in the <code>requestParameters</code> that allows access from an external AWS account. Sample event:
 
 ```
 {
