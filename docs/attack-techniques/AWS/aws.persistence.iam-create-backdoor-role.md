@@ -1,8 +1,8 @@
 ---
-title: Create a new backdoor IAM Role
+title: Create a backdoored IAM Role
 ---
 
-# Create a new backdoor IAM Role
+# Create a backdoored IAM Role
 
 
 
@@ -17,15 +17,16 @@ Platform: AWS
 ## Description
 
 
-Establishes persistence by creating a backdoored new role with a policy allowing it to be assumed from an external AWS account and administrative permissions.
+Establishes persistence by creating a new backdoor role with a trust policy allowing it to be assumed from 
+an external, fictitious attack AWS account.
 
 <span style="font-variant: small-caps;">Warm-up</span>: None.
 
 <span style="font-variant: small-caps;">Detonation</span>: 
 
-- Create a new IAM role with an assume role policy backdoored, making it accessible from an external, fictitious AWS account:
+- Create a new IAM role with the following trust policy:
 
-```
+```json
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -47,7 +48,7 @@ Establishes persistence by creating a backdoored new role with a policy allowing
 }
 ```
 
-and attach the 'AdministratorAccess' managed IAM policy to it. 
+- Attach the 'AdministratorAccess' managed IAM policy to it. 
 
 References:
 
@@ -67,7 +68,7 @@ which generates a finding when a role can be assumed from a new AWS account or p
 
 - Identify a call to <code>CreateRole</code> closely followed by <code>AttachRolePolicy</code> with an administrator policy.
 
-- Identify a call to <code>CreateRole</code> that contains an <code>assumeRolePolicyDocument</code> in the <code>requestParameters</code> that allows access from an external AWS account. Sample event:
+- Identify a call to <code>CreateRole</code> that contains an assumeRolePolicyDocument in the requestParameters that allows access from an external AWS account. Sample event:
 
 ```
 {

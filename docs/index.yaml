@@ -208,7 +208,7 @@ AWS:
           platform: AWS
           isIdempotent: false
         - id: aws.persistence.iam-create-backdoor-role
-          name: Create a new backdoor IAM Role
+          name: Create a backdoored IAM Role
           isSlow: false
           mitreAttackTactics:
             - Persistence

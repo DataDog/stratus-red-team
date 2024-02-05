@@ -86,7 +86,7 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 - [Create an administrative IAM User](./aws.persistence.iam-create-admin-user.md)
 
-- [Create a new backdoor IAM Role](./aws.persistence.iam-create-backdoor-role.md)
+- [Create a backdoored IAM Role](./aws.persistence.iam-create-backdoor-role.md)
 
 - [Create a Login Profile on an IAM User](./aws.persistence.iam-create-user-login-profile.md)
 
