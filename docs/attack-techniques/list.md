@@ -39,7 +39,7 @@ This page contains the list of all Stratus Attack Techniques.
 | [Backdoor an IAM Role](./AWS/aws.persistence.iam-backdoor-role.md) | [AWS](./AWS/index.md) | Persistence |
 | [Create an Access Key on an IAM User](./AWS/aws.persistence.iam-backdoor-user.md) | [AWS](./AWS/index.md) | Persistence, Privilege Escalation |
 | [Create an administrative IAM User](./AWS/aws.persistence.iam-create-admin-user.md) | [AWS](./AWS/index.md) | Persistence, Privilege Escalation |
-| [Create a new backdoor IAM Role](./AWS/aws.persistence.iam-create-backdoor-role.md) | [AWS](./AWS/index.md) | Persistence |
+| [Create a backdoored IAM Role](./AWS/aws.persistence.iam-create-backdoor-role.md) | [AWS](./AWS/index.md) | Persistence |
 | [Create a Login Profile on an IAM User](./AWS/aws.persistence.iam-create-user-login-profile.md) | [AWS](./AWS/index.md) | Persistence, Privilege Escalation |
 | [Backdoor Lambda Function Through Resource-Based Policy](./AWS/aws.persistence.lambda-backdoor-function.md) | [AWS](./AWS/index.md) | Persistence |
 | [Add a Malicious Lambda Extension](./AWS/aws.persistence.lambda-layer-extension.md) | [AWS](./AWS/index.md) | Persistence, Privilege Escalation |
