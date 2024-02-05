@@ -18,6 +18,7 @@ This page contains the list of all Stratus Attack Techniques.
 | [Disable CloudTrail Logging Through Event Selectors](./AWS/aws.defense-evasion.cloudtrail-event-selectors.md) | [AWS](./AWS/index.md) | Defense Evasion |
 | [CloudTrail Logs Impairment Through S3 Lifecycle Rule](./AWS/aws.defense-evasion.cloudtrail-lifecycle-rule.md) | [AWS](./AWS/index.md) | Defense Evasion |
 | [Stop CloudTrail Trail](./AWS/aws.defense-evasion.cloudtrail-stop.md) | [AWS](./AWS/index.md) | Defense Evasion |
+| [Delete DNS query logs](./AWS/aws.defense-evasion.dns-delete-logs.md) | [AWS](./AWS/index.md) | Defense Evasion |
 | [Attempt to Leave the AWS Organization](./AWS/aws.defense-evasion.organizations-leave.md) | [AWS](./AWS/index.md) | Defense Evasion |
 | [Remove VPC Flow Logs](./AWS/aws.defense-evasion.vpc-remove-flow-logs.md) | [AWS](./AWS/index.md) | Defense Evasion |
 | [Execute Discovery Commands on an EC2 Instance](./AWS/aws.discovery.ec2-enumerate-from-instance.md) | [AWS](./AWS/index.md) | Discovery |

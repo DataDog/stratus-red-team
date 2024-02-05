@@ -16,12 +16,12 @@ var tf []byte
 
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
-		ID:                 "aws.defense-evasion.dns-delete",
-		FriendlyName:       "Delete DNS Logging Config",
+		ID:                 "aws.defense-evasion.dns-delete-logs",
+		FriendlyName:       "Delete DNS query logs",
 		Platform:           stratus.AWS,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.DefenseEvasion},
 		Description: `
-Delete a Route53 DNS Resolver query logging configuration. Simulates an attacker disrupting DNS logging.
+Deletes a Route53 DNS Resolver query logging configuration. Simulates an attacker disrupting DNS logging.
 
 Warm-up:
 
@@ -29,7 +29,7 @@ Warm-up:
 
 Detonation:
 
-- Delete the DNS logging configuration.`,
+- Delete the DNS logging configuration using <code>route53:DeleteQueryLoggingConfig</code>.`,
 		Detection: `
 Identify when a DNS logging configuration is deleted, through CloudTrail's <code>DeleteQueryLoggingConfig</code> event.
 `,
