@@ -84,6 +84,8 @@ github.com/aws/aws-sdk-go-v2/service/rds v1.64.2 h1:PTOyeFw0q+Kikm+9PlUaZdYFrPOA
 github.com/aws/aws-sdk-go-v2/service/rds v1.64.2/go.mod h1:Ty2c2SC4jhY6hvGeeOe8T50m1PkioZD9lk6iiOsADkU=
 github.com/aws/aws-sdk-go-v2/service/rolesanywhere v1.6.2 h1:c7gZpO0xBXSbbm8nH2t/5W13rCcuemF7FXe47pItP2o=
 github.com/aws/aws-sdk-go-v2/service/rolesanywhere v1.6.2/go.mod h1:TbYAZgmTmONcilZvOzb6J6cJ33kp0wGrFum3Mkgeimo=
+github.com/aws/aws-sdk-go-v2/service/route53resolver v1.25.0 h1:wftl1cNbDzGzpZ9Bv54ZWkTOniXQEbyEvQfMkyAigwA=
+github.com/aws/aws-sdk-go-v2/service/route53resolver v1.25.0/go.mod h1:6cJ6NO+7rGkv3+QNG9woezF+jDf8eYcz71wKaEIbKtE=
 github.com/aws/aws-sdk-go-v2/service/s3 v1.47.2 h1:DLSAG8zpJV2pYsU+UPkj1IEZghyBnnUsvIRs6UuXSDU=
 github.com/aws/aws-sdk-go-v2/service/s3 v1.47.2/go.mod h1:thjZng67jGsvMyVZnSxlcqKyLwB0XTG8bHIRZPTJ+Bs=
 github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.25.2 h1:JKbfiLwEqJp8zaOAOn6AVSMS96gdwP3TjBMvZYsbxqE=

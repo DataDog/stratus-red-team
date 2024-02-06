@@ -27,6 +27,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 - [Stop CloudTrail Trail](./aws.defense-evasion.cloudtrail-stop.md)
 
+- [Delete DNS query logs](./aws.defense-evasion.dns-delete-logs.md)
+
 - [Attempt to Leave the AWS Organization](./aws.defense-evasion.organizations-leave.md)
 
 - [Remove VPC Flow Logs](./aws.defense-evasion.vpc-remove-flow-logs.md)

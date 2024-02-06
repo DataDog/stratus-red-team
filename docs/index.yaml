@@ -64,6 +64,13 @@ AWS:
             - Defense Evasion
           platform: AWS
           isIdempotent: true
+        - id: aws.defense-evasion.dns-delete-logs
+          name: Delete DNS query logs
+          isSlow: false
+          mitreAttackTactics:
+            - Defense Evasion
+          platform: AWS
+          isIdempotent: false
         - id: aws.defense-evasion.organizations-leave
           name: Attempt to Leave the AWS Organization
           isSlow: false
