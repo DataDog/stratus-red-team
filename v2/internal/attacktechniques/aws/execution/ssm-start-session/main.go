@@ -32,8 +32,8 @@ Detonation:
 
 References:
 
+- https://awstip.com/responding-to-an-attack-in-aws-9048a1a551ac (evidence of usage in the wild)
 - https://hackingthe.cloud/aws/post_exploitation/run_shell_commands_on_ec2/#session-manager
-- https://awstip.com/responding-to-an-attack-in-aws-9048a1a551ac
 `,
 		Detection: `
 Identify, through CloudTrail's <code>StartSession</code> event, when a user is starting an interactive session to multiple EC2 instances. Sample event:
@@ -67,7 +67,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 
 	for _, instanceID := range instanceIDs {
 		cleanInstanceID := strings.Trim(instanceID, " \"\n\r")
-		_, err := ssmClient.StartSession(context.TODO(), &ssm.StartSessionInput{
+		_, err := ssmClient.StartSession(context.Background(), &ssm.StartSessionInput{
 			Target: &cleanInstanceID,
 		})
 
