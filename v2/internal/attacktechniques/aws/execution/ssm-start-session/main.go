@@ -67,15 +67,21 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 
 	for _, instanceID := range instanceIDs {
 		cleanInstanceID := strings.Trim(instanceID, " \"\n\r")
-		_, err := ssmClient.StartSession(context.Background(), &ssm.StartSessionInput{
+		session, err := ssmClient.StartSession(context.Background(), &ssm.StartSessionInput{
 			Target: &cleanInstanceID,
 		})
-
 		if err != nil {
 			return fmt.Errorf("failed to start session with instance %s: %v", cleanInstanceID, err)
 		}
-
 		fmt.Printf("Session started with instance %s\n", cleanInstanceID)
+
+		// Terminate the session to not leave it hanging
+		_, err = ssmClient.TerminateSession(context.Background(), &ssm.TerminateSessionInput{
+			SessionId: session.SessionId,
+		})
+		if err != nil {
+			return fmt.Errorf("failed to terminate SSM session with instance %s: %v", cleanInstanceID, err)
+		}
 	}
 
 	return nil

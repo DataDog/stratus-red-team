@@ -116,6 +116,13 @@ AWS:
             - Privilege Escalation
           platform: AWS
           isIdempotent: true
+        - id: aws.execution.ssm-start-session
+          name: Usage of ssm:StartSession on multiple instances
+          isSlow: true
+          mitreAttackTactics:
+            - Execution
+          platform: AWS
+          isIdempotent: true
     Exfiltration:
         - id: aws.exfiltration.ec2-security-group-open-port-22-ingress
           name: Open Ingress Port 22 on a Security Group
@@ -183,13 +190,6 @@ AWS:
           platform: AWS
           isIdempotent: true
     Lateral Movement:
-        - id: aws.execution.ssm-start-session
-          name: Usage of ssm:StartSession on multiple instances
-          isSlow: true
-          mitreAttackTactics:
-            - Lateral Movement
-          platform: AWS
-          isIdempotent: true
         - id: aws.lateral-movement.ec2-instance-connect
           name: Usage of EC2 Instance Connect on multiple instances
           isSlow: true

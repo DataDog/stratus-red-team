@@ -47,6 +47,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 - [Execute Commands on EC2 Instance via User Data](./aws.execution.ec2-user-data.md)
 
+- [Usage of ssm:StartSession on multiple instances](./aws.execution.ssm-start-session.md)
+
 
 ## Exfiltration
 
@@ -76,8 +78,6 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 
 ## Lateral Movement
-
-- [Usage of ssm:StartSession on multiple instances](./aws.execution.ssm-start-session.md)
 
 - [Usage of EC2 Instance Connect on multiple instances](./aws.lateral-movement.ec2-instance-connect.md)
 

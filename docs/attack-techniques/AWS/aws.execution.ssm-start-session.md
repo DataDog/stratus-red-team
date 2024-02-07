@@ -12,7 +12,7 @@ Platform: AWS
 ## MITRE ATT&CK Tactics
 
 
-- Lateral Movement
+- Execution
 
 ## Description
 
@@ -29,8 +29,8 @@ Simulates an attacker utilizing AWS Systems Manager (SSM) StartSession to gain u
 
 References:
 
+- https://awstip.com/responding-to-an-attack-in-aws-9048a1a551ac (evidence of usage in the wild)
 - https://hackingthe.cloud/aws/post_exploitation/run_shell_commands_on_ec2/#session-manager
-- https://awstip.com/responding-to-an-attack-in-aws-9048a1a551ac
 
 
 ## Instructions
