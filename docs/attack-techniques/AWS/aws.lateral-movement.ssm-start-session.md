@@ -30,6 +30,7 @@ Simulates an attacker utilizing AWS Systems Manager (SSM) StartSession to gain u
 References:
 
 - https://hackingthe.cloud/aws/post_exploitation/run_shell_commands_on_ec2/#session-manager
+- https://awstip.com/responding-to-an-attack-in-aws-9048a1a551ac
 
 
 ## Instructions
