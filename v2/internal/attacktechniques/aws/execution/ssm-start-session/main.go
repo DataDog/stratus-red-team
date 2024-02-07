@@ -4,6 +4,7 @@ import (
 	"context"
 	_ "embed"
 	"fmt"
+	"time"
 	"github.com/aws/aws-sdk-go-v2/service/ssm"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
@@ -64,25 +65,39 @@ Identify, through CloudTrail's <code>StartSession</code> event, when a user is s
 func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	ssmClient := ssm.NewFromConfig(providers.AWS().GetConnection())
 	instanceIDs := strings.Split(params["instance_ids"], ",")
+	const maxRetries = 5 // Maximum number of retries
+	const retryDelay = 10 * time.Second // Delay between retries
 
 	for _, instanceID := range instanceIDs {
+		success := false
 		cleanInstanceID := strings.Trim(instanceID, " \"\n\r")
-		session, err := ssmClient.StartSession(context.Background(), &ssm.StartSessionInput{
-			Target: &cleanInstanceID,
-		})
-		if err != nil {
-			return fmt.Errorf("failed to start session with instance %s: %v", cleanInstanceID, err)
-		}
-		fmt.Printf("Session started with instance %s\n", cleanInstanceID)
 
-		// Terminate the session to not leave it hanging
-		_, err = ssmClient.TerminateSession(context.Background(), &ssm.TerminateSessionInput{
-			SessionId: session.SessionId,
-		})
-		if err != nil {
-			return fmt.Errorf("failed to terminate SSM session with instance %s: %v", cleanInstanceID, err)
+		for attempt := 0; attempt < maxRetries; attempt++ {
+			session, err := ssmClient.StartSession(context.Background(), &ssm.StartSessionInput{
+				Target: &cleanInstanceID,
+			})
+			if err != nil {
+				fmt.Printf("Attempt %d: StartSession failed for instance %s, retrying in %v...\n", attempt+1, cleanInstanceID, retryDelay)
+				time.Sleep(retryDelay)
+				continue
+			}
+
+			fmt.Printf("Session started with instance %s\n", cleanInstanceID)
+			success = true
+
+			// Attempt to terminate the session to not leave it hanging
+			_, err = ssmClient.TerminateSession(context.Background(), &ssm.TerminateSessionInput{
+				SessionId: session.SessionId,
+			})
+			if err != nil {
+				return fmt.Errorf("failed to terminate SSM session with instance %s: %v", cleanInstanceID, err)
+			}
+			break
+		}
+
+		if !success {
+			return fmt.Errorf("failed to start session with instance %s after %d retries", cleanInstanceID, maxRetries)
 		}
 	}
-
 	return nil
 }
