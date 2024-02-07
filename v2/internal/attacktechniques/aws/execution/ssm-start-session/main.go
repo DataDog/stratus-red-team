@@ -16,8 +16,8 @@ var tf []byte
 func init() {
 	const codeBlock = "```"
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
-		ID:           "aws.lateral-movement.ssm-start-session",
-		FriendlyName: "Usage of AWS Systems Manager console to start a session on multiple instances",
+		ID:           "aws.execution.ssm-start-session",
+		FriendlyName: "Usage of ssm:StartSession on multiple instances",
 		IsSlow:       true,
 		Description: `
 Simulates an attacker utilizing AWS Systems Manager (SSM) StartSession to gain unauthorized interactive access to multiple EC2 instances.
@@ -56,7 +56,7 @@ Identify, through CloudTrail's <code>StartSession</code> event, when a user is s
 		Platform:                   stratus.AWS,
 		PrerequisitesTerraformCode: tf,
 		IsIdempotent:               true,
-		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.LateralMovement},
+		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Execution},
 		Detonate:                   detonate,
 	})
 }

@@ -25,6 +25,7 @@ This page contains the list of all Stratus Attack Techniques.
 | [Download EC2 Instance User Data](./AWS/aws.discovery.ec2-download-user-data.md) | [AWS](./AWS/index.md) | Discovery |
 | [Launch Unusual EC2 instances](./AWS/aws.execution.ec2-launch-unusual-instances.md) | [AWS](./AWS/index.md) | Execution |
 | [Execute Commands on EC2 Instance via User Data](./AWS/aws.execution.ec2-user-data.md) | [AWS](./AWS/index.md) | Execution, Privilege Escalation |
+| [Usage of ssm:StartSession on multiple instances](./AWS/aws.execution.ssm-start-session.md) | [AWS](./AWS/index.md) | Lateral Movement |
 | [Open Ingress Port 22 on a Security Group](./AWS/aws.exfiltration.ec2-security-group-open-port-22-ingress.md) | [AWS](./AWS/index.md) | Exfiltration |
 | [Exfiltrate an AMI by Sharing It](./AWS/aws.exfiltration.ec2-share-ami.md) | [AWS](./AWS/index.md) | Exfiltration |
 | [Exfiltrate EBS Snapshot by Sharing It](./AWS/aws.exfiltration.ec2-share-ebs-snapshot.md) | [AWS](./AWS/index.md) | Exfiltration |
@@ -35,7 +36,6 @@ This page contains the list of all Stratus Attack Techniques.
 | [S3 Ransomware through individual file deletion](./AWS/aws.impact.s3-ransomware-individual-deletion.md) | [AWS](./AWS/index.md) | Impact |
 | [Console Login without MFA](./AWS/aws.initial-access.console-login-without-mfa.md) | [AWS](./AWS/index.md) | Initial Access |
 | [Usage of EC2 Instance Connect on multiple instances](./AWS/aws.lateral-movement.ec2-instance-connect.md) | [AWS](./AWS/index.md) | Lateral Movement |
-| [Usage of AWS Systems Manager console to start a session on multiple instances](./AWS/aws.lateral-movement.ssm-start-session.md) | [AWS](./AWS/index.md) | Lateral Movement |
 | [Backdoor an IAM Role](./AWS/aws.persistence.iam-backdoor-role.md) | [AWS](./AWS/index.md) | Persistence |
 | [Create an Access Key on an IAM User](./AWS/aws.persistence.iam-backdoor-user.md) | [AWS](./AWS/index.md) | Persistence, Privilege Escalation |
 | [Create an administrative IAM User](./AWS/aws.persistence.iam-create-admin-user.md) | [AWS](./AWS/index.md) | Persistence, Privilege Escalation |
