@@ -10,8 +10,8 @@ import (
 	"log"
 )
 
-//go:embed malicious_policy.json
-var maliciousIamPolicy string
+//go:embed malicious_trust_policy.json
+var maliciousTrustPolicy string
 
 var roleName string = "stratus-red-team-malicious-iam-role"
 var adminPolicyArn string = "arn:aws:iam::aws:policy/AdministratorAccess"
@@ -32,7 +32,7 @@ Detonation:
 - Create a new IAM role with the following trust policy:
 
 ` + codeBlock + `json
-` + maliciousIamPolicy + `
+` + maliciousTrustPolicy + `
 ` + codeBlock + `
 
 - Attach the 'AdministratorAccess' managed IAM policy to it. 
@@ -74,7 +74,7 @@ func detonate(_ map[string]string, providers stratus.CloudProviders) error {
 	log.Println("Creating a malicious IAM role")
 	input := &iam.CreateRoleInput{
 		RoleName:                 &roleName,
-		AssumeRolePolicyDocument: &maliciousIamPolicy,
+		AssumeRolePolicyDocument: &maliciousTrustPolicy,
 	}
 
 	_, err := iamClient.CreateRole(context.Background(), input)
