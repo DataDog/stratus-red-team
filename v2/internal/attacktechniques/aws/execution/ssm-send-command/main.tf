@@ -119,8 +119,8 @@ output "instance_ids" {
 
 output "display" {
   value = format("Instances ready: \n%s", join("\n", [
-  for i in aws_instance.instance :
-  format("  %s in %s", i.id, data.aws_availability_zones.available.names[0])
+    for i in aws_instance.instance :
+    format("  %s in %s", i.id, data.aws_availability_zones.available.names[0])
   ]))
 }
 
