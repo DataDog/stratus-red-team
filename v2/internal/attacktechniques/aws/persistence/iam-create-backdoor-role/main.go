@@ -4,6 +4,7 @@ import (
 	"context"
 	_ "embed"
 	"errors"
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
@@ -36,6 +37,8 @@ Detonation:
 ` + codeBlock + `
 
 - Attach the 'AdministratorAccess' managed IAM policy to it. 
+
+*Note: For safety reasons, the detonation code makes sure that this role has no real effective permissions, by attaching it an empty permissions boundary..*
 
 References:
 
@@ -75,6 +78,7 @@ func detonate(_ map[string]string, providers stratus.CloudProviders) error {
 	input := &iam.CreateRoleInput{
 		RoleName:                 &roleName,
 		AssumeRolePolicyDocument: &maliciousTrustPolicy,
+		PermissionsBoundary:      aws.String("arn:aws:iam::aws:policy/AWSDenyAll"),
 	}
 
 	_, err := iamClient.CreateRole(context.Background(), input)
@@ -82,7 +86,7 @@ func detonate(_ map[string]string, providers stratus.CloudProviders) error {
 		return errors.New("Unable to create IAM role: " + err.Error())
 	}
 
-	log.Println("IAM role created: " + roleName)
+	log.Println("Backdoor IAM role created: " + roleName)
 
 	attachPolicyInput := &iam.AttachRolePolicyInput{
 		RoleName:  &roleName,
