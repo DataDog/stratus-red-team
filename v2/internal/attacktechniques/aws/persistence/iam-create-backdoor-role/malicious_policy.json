@@ -4,13 +4,6 @@
     {
       "Effect": "Allow",
       "Principal": {
-        "Service": "ec2.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    },
-    {
-      "Effect": "Allow",
-      "Principal": {
         "AWS": "arn:aws:iam::193672423079:root"
       },
       "Action": "sts:AssumeRole"
