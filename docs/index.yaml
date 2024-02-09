@@ -221,6 +221,13 @@ AWS:
             - Privilege Escalation
           platform: AWS
           isIdempotent: false
+        - id: aws.persistence.iam-create-backdoor-role
+          name: Create a backdoored IAM Role
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+          platform: AWS
+          isIdempotent: false
         - id: aws.persistence.iam-create-user-login-profile
           name: Create a Login Profile on an IAM User
           isSlow: false
