@@ -47,6 +47,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 - [Execute Commands on EC2 Instance via User Data](./aws.execution.ec2-user-data.md)
 
+- [Usage of ssm:SendCommand on multiple instances](./aws.execution.ssm-send-command.md)
+
 - [Usage of ssm:StartSession on multiple instances](./aws.execution.ssm-start-session.md)
 
 

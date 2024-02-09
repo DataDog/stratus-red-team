@@ -116,6 +116,13 @@ AWS:
             - Privilege Escalation
           platform: AWS
           isIdempotent: true
+        - id: aws.execution.ssm-send-command
+          name: Usage of ssm:SendCommand on multiple instances
+          isSlow: true
+          mitreAttackTactics:
+            - Execution
+          platform: AWS
+          isIdempotent: true
         - id: aws.execution.ssm-start-session
           name: Usage of ssm:StartSession on multiple instances
           isSlow: true
