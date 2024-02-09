@@ -107,7 +107,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 		if err != nil {
 			return fmt.Errorf("failed to execute command on instance %s: %v", instanceID, err)
 		}
-		log.Print(fmt.Sprintf("Successfully executed on instance %s. Output: %s", instanceID, *result.StandardOutputContent))
+		log.Printf("Successfully executed on instance %s. Output: %s", instanceID, *result.StandardOutputContent)
 	}
 
 	return nil
