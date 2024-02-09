@@ -9,11 +9,15 @@ import (
 	"github.com/aws/aws-sdk-go-v2/credentials/stscreds"
 	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
-	"github.com/aws/aws-sdk-go-v2/service/s3/types"
+	s3types "github.com/aws/aws-sdk-go-v2/service/s3/types"
+	"github.com/aws/aws-sdk-go-v2/service/ssm"
+	ssmtypes "github.com/aws/aws-sdk-go-v2/service/ssm/types"
+
 	"github.com/aws/aws-sdk-go-v2/service/sts"
 	backoff "github.com/cenkalti/backoff/v4"
 	"io"
 	"log"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -83,15 +87,15 @@ func IsErrorDueToEBSEncryptionByDefault(err error) bool {
 
 // S3 utils
 
-func ListAllObjectVersions(s3Client *s3.Client, bucketName string) ([]types.ObjectIdentifier, error) {
+func ListAllObjectVersions(s3Client *s3.Client, bucketName string) ([]s3types.ObjectIdentifier, error) {
 	log.Println("Listing objects in bucket " + bucketName)
-	var result []types.ObjectIdentifier
+	var result []s3types.ObjectIdentifier
 	objectVersions, err := s3Client.ListObjectVersions(context.Background(), &s3.ListObjectVersionsInput{Bucket: &bucketName})
 	if err != nil {
 		return nil, fmt.Errorf("unable to list bucket objects: %w", err)
 	}
 	for _, objectVersion := range objectVersions.Versions {
-		result = append(result, types.ObjectIdentifier{Key: objectVersion.Key, VersionId: objectVersion.VersionId})
+		result = append(result, s3types.ObjectIdentifier{Key: objectVersion.Key, VersionId: objectVersion.VersionId})
 	}
 	return result, nil
 }
@@ -129,4 +133,56 @@ func UploadFile(s3Client *s3.Client, bucketName string, filename string, content
 		Body:   contents,
 	})
 	return err
+}
+
+// ec2 utils
+
+// WaitForInstancesToRegisterInSSM waits for a set of instances to be registered in SSM
+// may be slow (60+ seconds)
+func WaitForInstancesToRegisterInSSM(ssmClient *ssm.Client, instanceIds []string) error {
+	if len(instanceIds) == 1 {
+		log.Println("Waiting for instance" + instanceIds[0] + " to show up in AWS SSM")
+	} else {
+		log.Println("Waiting for " + strconv.Itoa(len(instanceIds)) + " instances to show up in AWS SSM. This can take a few minutes.")
+	}
+
+	for {
+		time.Sleep(1 * time.Second)
+		result, err := ssmClient.DescribeInstanceInformation(context.Background(), &ssm.DescribeInstanceInformationInput{
+			Filters: []ssmtypes.InstanceInformationStringFilter{
+				{Key: aws.String("InstanceIds"), Values: instanceIds},
+			},
+		})
+
+		if err != nil {
+			return err
+		}
+
+		instances := result.InstanceInformationList
+		if len(instances) < len(instanceIds) {
+			// Not enough instances registered yet, continue waiting
+			continue
+		}
+
+		// Checked that all instances are ready in SSM
+		allInstancesOnline := true
+		for _, instance := range instances {
+			if instance.PingStatus != ssmtypes.PingStatusOnline {
+				allInstancesOnline = false
+				break
+			}
+		}
+
+		if allInstancesOnline {
+			// If that's the case, great!
+			return nil
+		}
+
+		// Otherwise, keep waiting
+	}
+}
+
+// utility function for a single instance
+func WaitForInstanceToRegisterInSSM(ssmClient *ssm.Client, instanceId string) error {
+	return WaitForInstancesToRegisterInSSM(ssmClient, []string{instanceId})
 }
