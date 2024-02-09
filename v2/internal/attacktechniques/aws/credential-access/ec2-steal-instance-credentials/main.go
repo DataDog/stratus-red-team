@@ -8,7 +8,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/ssm"
-	"github.com/aws/aws-sdk-go-v2/service/ssm/types"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
@@ -61,7 +60,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	instanceId := params["instance_id"]
 	instanceRoleName := params["instance_role_name"]
 
-	if err := waitForInstanceToRegisterInSSM(ssmClient, instanceId); err != nil {
+	if err := utils.WaitForInstanceToRegisterInSSM(ssmClient, instanceId); err != nil {
 		return err
 	}
 
@@ -116,32 +115,4 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 		return errors.New("could not use stolen instance credentials to perform further AWS API calls: " + err.Error())
 	}
 	return nil
-}
-
-// waitForInstanceToRegisterInSSM waits for an instance to be registered in SSM
-// may be slow (60+ seconds)
-func waitForInstanceToRegisterInSSM(ssmClient *ssm.Client, instanceId string) error {
-	log.Println("Waiting for instance " + instanceId + " to show up in AWS SSM")
-	for {
-		result, err := ssmClient.DescribeInstanceInformation(context.Background(), &ssm.DescribeInstanceInformationInput{
-			Filters: []types.InstanceInformationStringFilter{
-				{Key: aws.String("InstanceIds"), Values: []string{instanceId}},
-			},
-		})
-
-		if err != nil {
-			return err
-		}
-
-		// When the instance isn't registered in SSM yet, it returns an empty array
-		// If the result we get back contains 1 instance and it has the right status,
-		// we're good to go!
-		instances := result.InstanceInformationList
-		if len(instances) == 1 && instances[0].PingStatus == types.PingStatusOnline {
-			log.Println("Instance " + instanceId + " is ready to go in SSM")
-			return nil
-		}
-
-		time.Sleep(1 * time.Second)
-	}
 }

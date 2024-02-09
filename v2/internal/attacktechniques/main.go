@@ -17,6 +17,7 @@ import (
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/discovery/ec2-get-user-data"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/execution/ec2-launch-unusual-instances"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/execution/ec2-user-data"
+	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/execution/ssm-start-session"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/exfiltration/ec2-security-group-open-port-22-ingress"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/exfiltration/ec2-share-ami"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/exfiltration/ec2-share-ebs-snapshot"
