@@ -81,7 +81,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 		if err != nil {
 			return fmt.Errorf("failed to start session with instance %s: %v", instanceID, err)
 		}
-		fmt.Printf("Session started on instance %s\n", instanceID)
+		fmt.Printf("\tSession started on instance %s\n", instanceID)
 
 		// Attempt to terminate the session to not leave it hanging
 		_, err = ssmClient.TerminateSession(context.Background(), &ssm.TerminateSessionInput{
