@@ -33,13 +33,6 @@ an external, fictitious attack AWS account.
     {
       "Effect": "Allow",
       "Principal": {
-        "Service": "ec2.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    },
-    {
-      "Effect": "Allow",
-      "Principal": {
         "AWS": "arn:aws:iam::193672423079:root"
       },
       "Action": "sts:AssumeRole"
@@ -49,6 +42,8 @@ an external, fictitious attack AWS account.
 ```
 
 - Attach the 'AdministratorAccess' managed IAM policy to it. 
+
+*Note: For safety reasons, the detonation code makes sure that this role has no real effective permissions, by attaching a permissions boundary denying all actions. This could also be achieved with an inline role policy, but using a permissions boundary allows us to use a single API call (CreateRole).*
 
 References:
 

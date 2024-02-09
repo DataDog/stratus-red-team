@@ -38,7 +38,7 @@ Detonation:
 
 - Attach the 'AdministratorAccess' managed IAM policy to it. 
 
-*Note: For safety reasons, the detonation code makes sure that this role has no real effective permissions, by attaching it an empty permissions boundary..*
+*Note: For safety reasons, the detonation code makes sure that this role has no real effective permissions, by attaching a permissions boundary denying all actions. This could also be achieved with an inline role policy, but using a permissions boundary allows us to use a single API call (CreateRole).*
 
 References:
 
