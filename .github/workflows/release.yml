@@ -44,7 +44,7 @@ jobs:
           go-version: 1.18
       - name: Run GoReleaser
         timeout-minutes: 60
-        uses: goreleaser/goreleaser-action@14707cd26fbb4b6c8abf03fb8ea4eb6c59711a62 # v5.0.0
+        uses: goreleaser/goreleaser-action@696b757ee8f3742e68b261173b9eeeb96306a57f # v5.0.0
         with:
           distribution: goreleaser
           version: v1.22.1
