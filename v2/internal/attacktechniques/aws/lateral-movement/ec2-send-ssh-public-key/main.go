@@ -39,6 +39,7 @@ References:
 
 - https://securitylabs.datadoghq.com/articles/tales-from-the-cloud-trenches-ecs-crypto-mining/#hands-on-keyboard-activity-begins
 - https://sysdig.com/blog/2023-global-cloud-threat-report/
+- https://unit42.paloaltonetworks.com/cloud-lateral-movement-techniques/
 `,
 		Detection: `
 Identify, through CloudTrail's <code>SendSSHPublicKey</code> event, when a user is adding an SSH key to multiple EC2 instances. Sample event:
