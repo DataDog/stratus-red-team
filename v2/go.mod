@@ -24,6 +24,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.47.2
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.25.2
 	github.com/aws/aws-sdk-go-v2/service/ses v1.22.4
+	github.com/aws/aws-sdk-go-v2/service/sesv2 v1.27.3
 	github.com/aws/aws-sdk-go-v2/service/ssm v1.44.2
 	github.com/aws/aws-sdk-go-v2/service/sts v1.26.2
 	github.com/aws/smithy-go v1.20.2

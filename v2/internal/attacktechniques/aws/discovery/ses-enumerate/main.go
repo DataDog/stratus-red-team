@@ -4,18 +4,13 @@ import (
 	"context"
 	_ "embed"
 	"fmt"
-	"log"
-	"strings"
-
-	"github.com/datadog/stratus-red-team/v2/internal/utils"
+	"github.com/aws/aws-sdk-go-v2/service/sesv2"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
+	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/ses"
 )
-
-//go:embed main.tf
-var tf []byte
 
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
@@ -24,15 +19,13 @@ func init() {
 		Description: `
 Simulates an attacker enumerating SES. Attackers frequently use this enumeration technique after having compromised an access key, to use it to launch phishing campaigns or further resell stolen credentials.
 
-Warm-up: 
-
-- Create an IAM role with the <code>AmazonSESReadOnlyAccess</code> policy attached. The role can be assumed by any user in the AWS account of the caller.
+Warm-up: None.
 
 Detonation: 
-
-- Assume the created IAM role
+TODO
 - Perform <code>ses:GetSendQuota</code> to discover the current [email sending quotas](https://docs.aws.amazon.com/ses/latest/APIReference/API_GetSendQuota.html).
-- Perform <code>ses:ListIdentities</code> to discover the list of [verified identities](https://docs.aws.amazon.com/ses/latest/APIReference/API_ListIdentities.html) in the account.
+- Perform <code>ses:ListIdentities</code> to discover the list of [identities](https://docs.aws.amazon.com/ses/latest/APIReference/API_ListIdentities.html) in the account.
+- When identities are found, use <code>ses:GetIdentityVerificationAttributes</code> to discover the [verification status](https://docs.aws.amazon.com/ses/latest/APIReference/API_GetIdentityVerificationAttributes.html) of each identity.
 
 References:
 - https://securitylabs.datadoghq.com/articles/following-attackers-trail-in-aws-methodology-findings-in-the-wild/#most-common-enumeration-techniques
@@ -44,21 +37,45 @@ References:
 		Detection: `
 Through CloudTrail's <code>GetSendQuota</code> and <code>ListIdentities</code> events.
 `,
-		Platform:                   stratus.AWS,
-		IsIdempotent:               true,
-		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Discovery},
-		PrerequisitesTerraformCode: tf,
-		Detonate:                   detonate,
+		Platform:           stratus.AWS,
+		IsIdempotent:       true,
+		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Discovery},
+		Detonate:           detonate,
 	})
 }
 
-func detonate(params map[string]string, providers stratus.CloudProviders) error {
-	roleArn := params["role_arn"]
+func detonate(_ map[string]string, providers stratus.CloudProviders) error {
 	awsConnection := providers.AWS().GetConnection()
-	if err := utils.WaitForAndAssumeAWSRole(&awsConnection, roleArn); err != nil {
-		return err
-	}
 	sesClient := ses.NewFromConfig(awsConnection)
+	sesV2Client := sesv2.NewFromConfig(awsConnection)
+
+	/*log.Println("Checking is SES e-mail sending is enabled in the current region")
+	result, err := sesClient.GetAccountSendingEnabled(context.Background(), &ses.GetAccountSendingEnabledInput{})
+	if err != nil {
+		return fmt.Errorf("unable to check if SES sending is enabled: %w", err)
+	}
+	if result.Enabled {
+		log.Println("SES e-mail sending is enabled")
+	} else {
+		log.Println("SES e-mail sending is disabled")
+	}*/
+
+	log.Println("Checking if SES e-mail sending is enabled in the current region, and quotas in place")
+	account, err := sesV2Client.GetAccount(context.Background(), &sesv2.GetAccountInput{})
+	if err != nil {
+		return fmt.Errorf("unable to get SES account details: %w", err)
+	}
+	if account.SendingEnabled {
+		log.Println("SES e-mail sending is enabled in the current region")
+	} else {
+		log.Println("SES e-mail sending is disabled in the current region")
+	}
+	if account.ProductionAccessEnabled {
+		log.Println("SES is in production mode!")
+	} else {
+		log.Println("SES is in sandbox mode")
+	}
+	log.Printf("SES quotas: max24hoursend: %d, maxsendrate: %d, sentlast24hours: %d\n", int(account.SendQuota.Max24HourSend), int(account.SendQuota.MaxSendRate), int(account.SendQuota.SentLast24Hours))
 
 	log.Println("Enumerating verified SES identities using ses:ListIdentities")
 	identities, err := sesClient.ListIdentities(context.Background(), &ses.ListIdentitiesInput{})
@@ -69,17 +86,25 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	if len(identities.Identities) == 0 {
 		log.Println("No verified SES identities found")
 	} else {
-		log.Printf("Found %d verified SES identities:", len(identities.Identities))
-		log.Println("\n- " + strings.Join(identities.Identities, "\n- "))
+		log.Printf("Found %d verified SES identities", len(identities.Identities))
+		verificationAttributes, err := sesClient.GetIdentityVerificationAttributes(context.Background(), &ses.GetIdentityVerificationAttributesInput{
+			Identities: identities.Identities,
+		})
+		if err != nil {
+			return fmt.Errorf("unable to get identity verification attributes: %w", err)
+		}
+		for identity := range verificationAttributes.VerificationAttributes {
+			log.Printf("- Identity %s has verification status '%s'", identity, verificationAttributes.VerificationAttributes[identity].VerificationStatus)
+		}
 	}
 
-	log.Println("Enumerating SES quotas")
+	/*log.Println("Enumerating SES quotas")
 	quotas, err := sesClient.GetSendQuota(context.Background(), &ses.GetSendQuotaInput{})
 	if err != nil {
 		return fmt.Errorf("unable to get SES quotas: %w", err)
 	}
 
-	log.Printf("Current quotas: max24hoursend: %d, maxsendrate: %d, sentlast24hours: %d\n", int(quotas.Max24HourSend), int(quotas.MaxSendRate), int(quotas.SentLast24Hours))
+	log.Printf("Current quotas: max24hoursend: %d, maxsendrate: %d, sentlast24hours: %d\n", int(quotas.Max24HourSend), int(quotas.MaxSendRate), int(quotas.SentLast24Hours))*/
 
 	return nil
 }
