@@ -3,7 +3,9 @@ package aws
 import (
 	"context"
 	_ "embed"
+	"fmt"
 	"log"
+	"strings"
 
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
@@ -18,27 +20,26 @@ var tf []byte
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
 		ID:           "aws.discovery.ses-enumerate",
-		FriendlyName: "Enumeration of SES service",
+		FriendlyName: "Enumerate SES",
 		Description: `
-Runs the following discovery commands on SES to enumerate email sending limits and identities, typically used for reconnaissance purposes before launching a phishing campaign:
-
-	- ses:GetSendQuota
-	- ses:ListIdentities
-
-See:
-
-- https://www.invictus-ir.com/news/the-curious-case-of-dangerdev-protonmail-me
-- https://docs.aws.amazon.com/ses/latest/APIReference/API_GetSendQuota.html
-- https://docs.aws.amazon.com/ses/latest/APIReference/API_ListIdentities.html
+Simulates an attacker enumerating SES. Attackers frequently use this enumeration technique after having compromised an access key, to use it to launch phishing campaigns or further resell stolen credentials.
 
 Warm-up: 
 
-- Create an IAM role with the AmazonSESReadOnlyAccess policy attached. The role can be assumed by any user in the AWS account of the caller.
+- Create an IAM role with the <code>AmazonSESReadOnlyAccess</code> policy attached. The role can be assumed by any user in the AWS account of the caller.
 
 Detonation: 
 
-- Run ses:GetSendQuota API call
-- Run ses:ListIdentities API call
+- Assume the created IAM role
+- Perform <code>ses:GetSendQuota</code> to discover the current [email sending quotas](https://docs.aws.amazon.com/ses/latest/APIReference/API_GetSendQuota.html).
+- Perform <code>ses:ListIdentities</code> to discover the list of [verified identities](https://docs.aws.amazon.com/ses/latest/APIReference/API_ListIdentities.html) in the account.
+
+References:
+- https://securitylabs.datadoghq.com/articles/following-attackers-trail-in-aws-methodology-findings-in-the-wild/#most-common-enumeration-techniques
+- https://www.invictus-ir.com/news/ransomware-in-the-cloud
+- https://unit42.paloaltonetworks.com/compromised-cloud-compute-credentials/#post-125981-_kdq0vw6banab
+- https://permiso.io/blog/s/aws-ses-pionage-detecting-ses-abuse/
+- https://www.invictus-ir.com/news/the-curious-case-of-dangerdev-protonmail-me
 `,
 		Detection: `
 Through CloudTrail's <code>GetSendQuota</code> and <code>ListIdentities</code> events.
@@ -58,26 +59,27 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 		return err
 	}
 	sesClient := ses.NewFromConfig(awsConnection)
-	var maxItems int32 = 10
-	listIdentitiesInput := ses.ListIdentitiesInput{
-		MaxItems:  &maxItems,
-		NextToken: nil,
-	}
 
-	identies, err := sesClient.ListIdentities(context.Background(), &listIdentitiesInput)
+	log.Println("Enumerating verified SES identities using ses:ListIdentities")
+	identities, err := sesClient.ListIdentities(context.Background(), &ses.ListIdentitiesInput{})
 	if err != nil {
-		return err
+		return fmt.Errorf("unable to list SES identities: %w", err)
 	}
 
-	log.Println("ListIdentities output: ", identies.Identities)
+	if len(identities.Identities) == 0 {
+		log.Println("No verified SES identities found")
+	} else {
+		log.Printf("Found %d verified SES identities:", len(identities.Identities))
+		log.Println("\n- " + strings.Join(identities.Identities, "\n- "))
+	}
 
+	log.Println("Enumerating SES quotas")
 	quotas, err := sesClient.GetSendQuota(context.Background(), &ses.GetSendQuotaInput{})
 	if err != nil {
-		return err
+		return fmt.Errorf("unable to get SES quotas: %w", err)
 	}
 
-	log.Printf("GetSendQuota output, max24hoursend: %d, maxsendrate: %d, sentlast24hours: %d\n",
-		int(quotas.Max24HourSend), int(quotas.MaxSendRate), int(quotas.SentLast24Hours))
+	log.Printf("Current quotas: max24hoursend: %d, maxsendrate: %d, sentlast24hours: %d\n", int(quotas.Max24HourSend), int(quotas.MaxSendRate), int(quotas.SentLast24Hours))
 
 	return nil
 }
