@@ -100,6 +100,13 @@ AWS:
             - Discovery
           platform: AWS
           isIdempotent: true
+        - id: aws.discovery.ses-enumerate
+          name: Enumerate SES
+          isSlow: false
+          mitreAttackTactics:
+            - Discovery
+          platform: AWS
+          isIdempotent: true
     Execution:
         - id: aws.execution.ec2-launch-unusual-instances
           name: Launch Unusual EC2 instances

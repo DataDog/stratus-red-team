@@ -21,12 +21,14 @@ Simulates an attacker enumerating SES. Attackers frequently use this enumeration
 Warm-up: None.
 
 Detonation: 
+
 - Perform <code>ses:GetAccountSendingEnabled</code> to check if SES sending is enabled.
 - Perform <code>ses:GetSendQuota</code> to discover the current [email sending quotas](https://docs.aws.amazon.com/ses/latest/APIReference/API_GetSendQuota.html).
 - Perform <code>ses:ListIdentities</code> to discover the list of [identities](https://docs.aws.amazon.com/ses/latest/APIReference/API_ListIdentities.html) in the account.
-- When identities are found, use <code>ses:GetIdentityVerificationAttributes</code> to discover the [verification status](https://docs.aws.amazon.com/ses/latest/APIReference/API_GetIdentityVerificationAttributes.html) of each identity.
+- If identities are found, use <code>ses:GetIdentityVerificationAttributes</code> (only once) to discover [verification status](https://docs.aws.amazon.com/ses/latest/APIReference/API_GetIdentityVerificationAttributes.html) of each identity.
 
 References:
+
 - https://securitylabs.datadoghq.com/articles/following-attackers-trail-in-aws-methodology-findings-in-the-wild/#most-common-enumeration-techniques
 - https://www.invictus-ir.com/news/ransomware-in-the-cloud
 - https://unit42.paloaltonetworks.com/compromised-cloud-compute-credentials/#post-125981-_kdq0vw6banab
