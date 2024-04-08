@@ -15,6 +15,7 @@ import (
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/defense-evasion/vpc-remove-flow-logs"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/discovery/ec2-enumerate-from-instance"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/discovery/ec2-get-user-data"
+	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/discovery/ses-enumerate"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/execution/ec2-launch-unusual-instances"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/execution/ec2-user-data"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/execution/ssm-send-command"

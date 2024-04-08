@@ -40,6 +40,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 - [Download EC2 Instance User Data](./aws.discovery.ec2-download-user-data.md)
 
+- [Enumerate SES](./aws.discovery.ses-enumerate.md)
+
 
 ## Execution
 
