@@ -10,6 +10,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"github.com/google/uuid"
 	"log"
+	"os"
 )
 
 type AWSProvider struct {
@@ -34,7 +35,17 @@ func (m *AWSProvider) IsAuthenticatedAgainstAWS() bool {
 	// instead of sts:GetCallerIdentity, to ensure an AWS region was properly set
 	ec2Client := ec2.NewFromConfig(m.GetConnection())
 	_, err := ec2Client.DescribeAccountAttributes(context.Background(), &ec2.DescribeAccountAttributesInput{})
-	return err == nil
+	if err != nil {
+		return false
+	}
+
+	// Note: Explicitly setting AWS_REGION/AWS_DEFAULT_REGION is not strictly required for the AWS SDK to work, but it is necessary for Terraform
+	// If it's not set, we get a user-unfriendly error such as the one describe at https://github.com/DataDog/stratus-red-team/issues/506
+	if os.Getenv("AWS_REGION") == "" && os.Getenv("AWS_DEFAULT_REGION") == "" {
+		return false
+	}
+
+	return true
 }
 
 // Functions below are related to customization of the user-agent header

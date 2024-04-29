@@ -57,9 +57,10 @@ func EnsureAuthenticated(platform Platform) error {
 	switch platform {
 	case AWS:
 		if !providerFactory.AWS().IsAuthenticatedAgainstAWS() {
-			return errors.New("you are not authenticated against AWS, or you have not set your region. " +
-				"Make sure you are authenticated against AWS, and you have a default region set in your AWS config " +
-				"or environment (export AWS_DEFAULT_REGION=us-east-1)")
+			return errors.New("you are not authenticated against AWS, *or* you have not set your region. \n\n" +
+				"Troubleshooting:\n" +
+				"1. Are you authenticated against AWS?\n" +
+				"2. Do you have a region or default region set (whether in your AWS configuration file or in your environment)? If not, run 'export AWS_REGION=xxx'")
 		}
 	case Azure:
 		if !providerFactory.Azure().IsAuthenticatedAgainstAzure() {
