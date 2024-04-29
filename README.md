@@ -59,10 +59,10 @@ alias stratus="docker run --rm -v $HOME/.stratus-red-team/:/root/.stratus-red-te
 
 ### asdf
 
-You can install specific versions (or latest) of stratus-red-team using [asdf](https://asdf-vm.com/) and this [stratus-red-team plugin](https://github.com/vthiery/asdf-stratus-red-team):
+You can install specific versions (or latest) of stratus-red-team using [asdf](https://asdf-vm.com/) and this [stratus-red-team plugin](https://github.com/asdf-community/asdf-stratus-red-team):
 
 ```bash
-asdf plugin add stratus-red-team https://github.com/vthiery/asdf-stratus-red-team.git
+asdf plugin add stratus-red-team https://github.com/asdf-community/asdf-stratus-red-team.git
 asdf install stratus-red-team latest
 ```
 
