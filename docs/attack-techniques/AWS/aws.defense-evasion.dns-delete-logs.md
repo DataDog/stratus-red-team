@@ -35,6 +35,6 @@ stratus detonate aws.defense-evasion.dns-delete-logs
 ## Detection
 
 
-Identify when a DNS logging configuration is deleted, through CloudTrail's <code>DeleteQueryLoggingConfig</code> event.
+Identify when a DNS logging configuration is deleted, through CloudTrail's <code>DeleteResolverQueryLogConfig</code> event.
 
 
