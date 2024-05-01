@@ -25,7 +25,7 @@ Deletes a Route53 DNS Resolver query logging configuration. Simulates an attacke
 
 <span style="font-variant: small-caps;">Detonation</span>:
 
-- Delete the DNS logging configuration using <code>route53:DeleteQueryLoggingConfig</code>.
+- Delete the DNS logging configuration using <code>route53:DeleteResolverQueryLogConfig</code>.
 
 ## Instructions
 
