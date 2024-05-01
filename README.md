@@ -31,26 +31,39 @@ See the documentation at **[stratus-red-team.cloud](https://stratus-red-team.clo
 
 ## Installation
 
-Direct install (requires Go 1.18+):
+### Direct install
+
+Requires Go 1.18+
 
 ```
 go install -v github.com/datadog/stratus-red-team/v2/cmd/stratus@latest
 ```
 
-- Homebrew:
+### Homebrew
 
 ```
 brew tap datadog/stratus-red-team https://github.com/DataDog/stratus-red-team
 brew install datadog/stratus-red-team/stratus-red-team
 ```
 
-- Linux / Windows / Mac OS: Download one of the [pre-built binaries](https://github.com/datadog/stratus-red-team/releases).
+### Pre-build binaries
 
-- Docker:
+For Linux / Windows / Mac OS: download one of the [pre-built binaries](https://github.com/datadog/stratus-red-team/releases).
+
+### Docker
 
 ```bash
 IMAGE="ghcr.io/datadog/stratus-red-team"
 alias stratus="docker run --rm -v $HOME/.stratus-red-team/:/root/.stratus-red-team/ -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN -e AWS_DEFAULT_REGION $IMAGE"
+```
+
+### asdf
+
+You can install specific versions (or latest) of stratus-red-team using [asdf](https://asdf-vm.com/) and this [stratus-red-team plugin](https://github.com/asdf-community/asdf-stratus-red-team):
+
+```bash
+asdf plugin add stratus-red-team https://github.com/asdf-community/asdf-stratus-red-team.git
+asdf install stratus-red-team latest
 ```
 
 ## Community
