@@ -29,9 +29,9 @@ Warm-up:
 
 Detonation:
 
-- Delete the DNS logging configuration using <code>route53:DeleteQueryLoggingConfig</code>.`,
+- Delete the DNS logging configuration using <code>route53:DeleteResolverQueryLogConfig</code>.`,
 		Detection: `
-Identify when a DNS logging configuration is deleted, through CloudTrail's <code>DeleteQueryLoggingConfig</code> event.
+Identify when a DNS logging configuration is deleted, through CloudTrail's <code>DeleteResolverQueryLogConfig</code> event.
 `,
 		IsIdempotent:               false, // can't delete a DNS logging configuration twice
 		PrerequisitesTerraformCode: tf,

@@ -25,7 +25,7 @@ Deletes a Route53 DNS Resolver query logging configuration. Simulates an attacke
 
 <span style="font-variant: small-caps;">Detonation</span>:
 
-- Delete the DNS logging configuration using <code>route53:DeleteQueryLoggingConfig</code>.
+- Delete the DNS logging configuration using <code>route53:DeleteResolverQueryLogConfig</code>.
 
 ## Instructions
 
@@ -35,6 +35,6 @@ stratus detonate aws.defense-evasion.dns-delete-logs
 ## Detection
 
 
-Identify when a DNS logging configuration is deleted, through CloudTrail's <code>DeleteQueryLoggingConfig</code> event.
+Identify when a DNS logging configuration is deleted, through CloudTrail's <code>DeleteResolverQueryLogConfig</code> event.
 
 
