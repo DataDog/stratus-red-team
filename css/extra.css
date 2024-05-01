@@ -1,0 +1,21 @@
+.smallcaps {
+    font-variant: small-caps;
+}
+
+.concept {
+    font-variant: small-caps;
+    font-weight: bold;
+}
+
+.md-tabs__link {
+    opacity: 1 !important;
+    font-variant: small-caps;
+    color: white;
+    font-size: 1.6em !important;
+}
+
+.md-tabs__link--active {
+    font-weight: bold;
+    opacity: 1;
+    color: white;
+}
