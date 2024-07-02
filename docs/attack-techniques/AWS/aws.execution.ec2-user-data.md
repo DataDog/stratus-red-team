@@ -24,6 +24,7 @@ References:
 
 - https://hackingthe.cloud/aws/exploitation/local-priv-esc-mod-instance-att/
 - https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html
+- https://unit42.paloaltonetworks.com/cloud-virtual-machine-attack-vectors/
 
 <span style="font-variant: small-caps;">Warm-up</span>:
 
