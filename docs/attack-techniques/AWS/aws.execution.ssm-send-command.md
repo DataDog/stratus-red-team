@@ -33,6 +33,7 @@ References:
 - https://www.chrisfarris.com/post/aws-ir/
 - https://www.invictus-ir.com/news/aws-cloudtrail-cheat-sheet
 - https://securitycafe.ro/2023/01/17/aws-post-explitation-with-ssm-sendcommand/
+- https://unit42.paloaltonetworks.com/cloud-virtual-machine-attack-vectors/
 
 
 ## Instructions
