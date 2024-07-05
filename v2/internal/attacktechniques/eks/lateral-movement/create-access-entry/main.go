@@ -93,7 +93,6 @@ You can use the following CloudTrail events to identify when someone grants acce
 }
 
 func detonate(params map[string]string, providers stratus.CloudProviders) error {
-	//ec2instanceconnectClient := ec2instanceconnect.NewFromConfig(providers.AWS().GetConnection())
 	eksProvider := providers.EKS()
 	eksClient := eks.NewFromConfig(eksProvider.GetAWSConnection())
 	roleArn := params["role_arn"]

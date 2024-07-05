@@ -338,6 +338,24 @@ EKS:
             - Lateral Movement
           platform: EKS
           isIdempotent: false
+    Persistence:
+        - id: eks.persistence.backdoor-aws-auth-configmap
+          name: Backdoor aws-auth EKS ConfigMap
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: EKS
+          isIdempotent: false
+    Privilege Escalation:
+        - id: eks.persistence.backdoor-aws-auth-configmap
+          name: Backdoor aws-auth EKS ConfigMap
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: EKS
+          isIdempotent: false
 GCP:
     Exfiltration:
         - id: gcp.exfiltration.share-compute-disk

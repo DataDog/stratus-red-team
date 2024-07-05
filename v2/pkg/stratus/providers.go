@@ -95,7 +95,7 @@ func EnsureAuthenticated(platform Platform) error {
 				"Troubleshooting:\n" +
 				"1. Are you authenticated against AWS?\n" +
 				"2. Do you have a region or default region set (whether in your AWS configuration file or in your environment)? If not, run 'export AWS_REGION=xxx'\n" +
-				"3. Are you authenticated against an EKS cluster? If not, run 'aws eks update-kubeconfig --name <cluster-name>'\n")
+				"3. Are you authenticated against an EKS cluster? If not, run 'aws eks update-kubeconfig --name <cluster-name>'")
 		}
 	default:
 		return errors.New("unhandled platform " + string(platform))

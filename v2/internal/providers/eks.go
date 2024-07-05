@@ -3,6 +3,7 @@ package providers
 import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/google/uuid"
+	"k8s.io/client-go/kubernetes"
 	"log"
 	"net/url"
 	"os"
@@ -13,20 +14,24 @@ const EnvVarSkipEKSHostnameCheck = "STRATUS_SKIP_EKS_HOSTNAME_CHECK"
 
 type EKSProvider struct {
 	awsProvider         *AWSProvider
-	K8sProvider         *K8sProvider
+	k8sProvider         *K8sProvider
 	UniqueCorrelationId uuid.UUID // unique value injected in the user-agent, to differentiate Stratus Red Team executions
 }
 
 func NewEKSProvider(uuid uuid.UUID) *EKSProvider {
 	return &EKSProvider{
 		awsProvider:         NewAWSProvider(uuid),
-		K8sProvider:         NewK8sProvider(uuid),
+		k8sProvider:         NewK8sProvider(uuid),
 		UniqueCorrelationId: uuid,
 	}
 }
 
 func (m *EKSProvider) GetAWSConnection() aws.Config {
 	return m.awsProvider.GetConnection()
+}
+
+func (m *EKSProvider) GetK8sClient() *kubernetes.Clientset {
+	return m.k8sProvider.GetClient()
 }
 
 func (m *EKSProvider) IsAuthenticatedAgainstEKS() bool {
@@ -39,7 +44,7 @@ func (m *EKSProvider) IsAuthenticatedAgainstEKS() bool {
 	if os.Getenv(EnvVarSkipEKSHostnameCheck) == "1" {
 		return true
 	}
-	apiServerUrl := m.K8sProvider.GetRestConfig().Host
+	apiServerUrl := m.k8sProvider.GetRestConfig().Host
 	parsedAPIServerUrl, err := url.Parse(apiServerUrl)
 	if err != nil {
 		log.Fatalf("unable to parse API server URL %s: %v", apiServerUrl, err)
@@ -54,7 +59,7 @@ func (m *EKSProvider) GetEKSClusterName() string {
 	// ExecProvider section that runs "aws eks get-token <...> --cluster-name foo"
 	// We parse it and extract the cluster name from there
 
-	execProvider := m.K8sProvider.GetRestConfig().ExecProvider
+	execProvider := m.k8sProvider.GetRestConfig().ExecProvider
 	if execProvider == nil || execProvider.Command != "aws" {
 		return ""
 	}
