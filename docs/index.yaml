@@ -329,6 +329,15 @@ AWS:
             - Privilege Escalation
           platform: AWS
           isIdempotent: false
+EKS:
+    Lateral Movement:
+        - id: eks.lateral-movement.create-access-entry
+          name: Create Admin EKS Access Entry
+          isSlow: false
+          mitreAttackTactics:
+            - Lateral Movement
+          platform: EKS
+          isIdempotent: false
 GCP:
     Exfiltration:
         - id: gcp.exfiltration.share-compute-disk

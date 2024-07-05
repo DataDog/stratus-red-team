@@ -11,6 +11,7 @@ type Platform string
 
 const (
 	AWS        = "AWS"
+	EKS        = "EKS"
 	Kubernetes = "kubernetes"
 	Azure      = "azure"
 	GCP        = "GCP"
@@ -26,6 +27,8 @@ func PlatformFromString(name string) (Platform, error) {
 		return Azure, nil
 	case strings.ToLower(GCP):
 		return GCP, nil
+	case strings.ToLower(EKS):
+		return EKS, nil
 	default:
 		return "", errors.New("unknown platform: " + name)
 	}
@@ -41,6 +44,8 @@ func (p Platform) FormatName() (string, error) {
 		return "GCP", nil
 	case Kubernetes:
 		return "Kubernetes", nil
+	case EKS:
+		return "EKS", nil
 	default:
 		return "", errors.New("platform name not formatted")
 	}

@@ -42,6 +42,7 @@ import (
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/azure/execution/vm-custom-script-extension"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/azure/execution/vm-run-command"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/azure/exfiltration/disk-export"
+	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/eks/lateral-movement/create-access-entry"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/exfiltration/share-compute-disk"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/exfiltration/share-compute-image"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/exfiltration/share-compute-snapshot"
