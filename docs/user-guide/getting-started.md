@@ -2,7 +2,7 @@
 
 ## Installation
 
-Direct install (required Go 1.18+):
+Direct install (required Go 1.19+):
 
 ```
 go install -v github.com/datadog/stratus-red-team/v2/cmd/stratus@latest
