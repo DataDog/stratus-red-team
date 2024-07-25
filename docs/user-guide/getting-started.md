@@ -2,7 +2,7 @@
 
 ## Installation
 
-Direct install (required Go 1.18+):
+Direct install (required Go 1.19+):
 
 ```
 go install -v github.com/datadog/stratus-red-team/v2/cmd/stratus@latest
@@ -94,7 +94,7 @@ For more information, see [Usage](./usage.md), [Examples](./examples.md) and the
 
 ## Connecting to your cloud account
 
-Stratus Red Team currently supports AWS and Kubernetes.
+Stratus Red Team currently supports AWS, Azure, Kubernetes, and Amazon EKS.
 
 !!! warning
 
@@ -107,6 +107,15 @@ In order to use Stratus attack techniques against AWS, you need to be authentica
 - Using [`aws-vault`](https://github.com/99designs/aws-vault)
 
 - Using static credentials in `~/.aws/config`, and setting your desired AWS profile using `export AWS_PROFILE=my-profile`
+
+### EKS
+
+Stratus Red Team does **not** create an EKS cluster for you. It assumes you're already authenticated to an EKS cluster.
+
+To use Stratus attack techniques against Amazon EKS, you need to be authenticated against AWS, as described above. Stratus Red Team will use the current AWS credentials and Kubernetes context to interact with the EKS cluster. It will check that the Kubernetes cluster you're connected to is an EKS cluster, and refuse to run otherwise.
+
+- Authenticate to AWS (for instance, using [`aws-vault`](https://github.com/99designs/aws-vault))
+- Run `aws eks update-kubeconfig --name your-cluster-name --region your-region` to update your `~/.kube/config` file with the EKS cluster configuration
 
 ### Azure
 

@@ -1,6 +1,6 @@
 module github.com/datadog/stratus-red-team/v2
 
-go 1.18
+go 1.19
 
 require (
 	cloud.google.com/go/compute v1.10.0
@@ -8,13 +8,14 @@ require (
 	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.1.0
 	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/compute/armcompute v1.0.0
 	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resources/armresources v1.0.0
-	github.com/aws/aws-sdk-go-v2 v1.26.1
+	github.com/aws/aws-sdk-go-v2 v1.30.3
 	github.com/aws/aws-sdk-go-v2/config v1.25.11
 	github.com/aws/aws-sdk-go-v2/credentials v1.16.9
 	github.com/aws/aws-sdk-go-v2/feature/s3/manager v1.15.4
 	github.com/aws/aws-sdk-go-v2/service/cloudtrail v1.35.2
 	github.com/aws/aws-sdk-go-v2/service/ec2 v1.138.2
 	github.com/aws/aws-sdk-go-v2/service/ec2instanceconnect v1.20.6
+	github.com/aws/aws-sdk-go-v2/service/eks v1.46.0
 	github.com/aws/aws-sdk-go-v2/service/iam v1.28.2
 	github.com/aws/aws-sdk-go-v2/service/lambda v1.49.2
 	github.com/aws/aws-sdk-go-v2/service/organizations v1.23.2
@@ -24,10 +25,9 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.47.2
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.25.2
 	github.com/aws/aws-sdk-go-v2/service/ses v1.22.4
-	github.com/aws/aws-sdk-go-v2/service/sesv2 v1.27.3
 	github.com/aws/aws-sdk-go-v2/service/ssm v1.44.2
 	github.com/aws/aws-sdk-go-v2/service/sts v1.26.2
-	github.com/aws/smithy-go v1.20.2
+	github.com/aws/smithy-go v1.20.3
 	github.com/cenkalti/backoff/v4 v4.2.1
 	github.com/fatih/color v1.13.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
@@ -51,8 +51,8 @@ require (
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.5.3 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.14.9 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/configsources v1.3.5 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.6.5 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/configsources v1.3.13 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.6.13 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/ini v1.7.1 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/v4a v1.2.8 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding v1.10.3 // indirect

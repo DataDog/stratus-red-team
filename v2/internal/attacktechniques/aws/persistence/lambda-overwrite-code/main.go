@@ -9,7 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/lambda"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
-	"io/ioutil"
+	"io"
 	"log"
 	"strings"
 )
@@ -57,7 +57,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 
 	log.Println("Updating the code of Lambda function " + functionName)
 
-	zipFile, err := ioutil.ReadAll(base64.NewDecoder(base64.StdEncoding, strings.NewReader(zip)))
+	zipFile, err := io.ReadAll(base64.NewDecoder(base64.StdEncoding, strings.NewReader(zip)))
 	if err != nil {
 		return errors.New("unable to decode the payload to overwrite the code with: " + err.Error())
 	}
