@@ -41,7 +41,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491
         with:
-          go-version: 1.18
+          go-version: 1.19
       - name: Run GoReleaser
         timeout-minutes: 60
         uses: goreleaser/goreleaser-action@c21f56a7bc891b5f73bec61233c4102ef8273150 # v5.0.0
