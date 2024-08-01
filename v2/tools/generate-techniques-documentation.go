@@ -126,8 +126,8 @@ func findDetonationLogs(technique *stratus.AttackTechnique) *DetonationLogs {
 
 	var logs []map[string]interface{}
 	if err := json.Unmarshal(data, &logs); err != nil {
-		println(err.Error())
-		log.Fatalf("unable to parse JSON detonation logs for technique %s: %v", technique.ID, err)
+		println("unable to parse JSON detonation logs for technique " + technique.ID + ": " + err.Error())
+		return nil
 	}
 
 	// Unique event names

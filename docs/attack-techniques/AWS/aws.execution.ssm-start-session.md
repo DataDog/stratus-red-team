@@ -66,11 +66,11 @@ Identify, through CloudTrail's <code>StartSession</code> event, when a user is s
 The following CloudTrail events are generated when this technique is detonated[^1]:
 
 
+- `ssm:StartSession`
+
 - `ssm:DescribeInstanceInformation`
 
 - `ssm:TerminateSession`
-
-- `ssm:StartSession`
 
 
 ??? "View raw detonation logs"
