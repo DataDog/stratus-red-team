@@ -1,6 +1,7 @@
 package runner
 
 import (
+	"context"
 	"errors"
 	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/internal/state"
@@ -23,9 +24,14 @@ type Runner struct {
 	StateManager        state.StateManager
 	ProviderFactory     stratus.CloudProviders
 	UniqueCorrelationID uuid.UUID
+	Context             context.Context
 }
 
 func NewRunner(technique *stratus.AttackTechnique, force bool) Runner {
+	return NewRunnerWithContext(context.Background(), technique, force)
+}
+
+func NewRunnerWithContext(ctx context.Context, technique *stratus.AttackTechnique, force bool) Runner {
 	stateManager := state.NewFileSystemStateManager(technique)
 	uuid := uuid.New()
 	runner := Runner{
@@ -33,9 +39,10 @@ func NewRunner(technique *stratus.AttackTechnique, force bool) Runner {
 		ShouldForce:         force,
 		StateManager:        stateManager,
 		UniqueCorrelationID: uuid,
-		TerraformManager: NewTerraformManager(
-			filepath.Join(stateManager.GetRootDirectory(), "terraform"), providers.GetStratusUserAgentForUUID(uuid),
+		TerraformManager: NewTerraformManagerWithContext(
+			ctx, filepath.Join(stateManager.GetRootDirectory(), "terraform"), providers.GetStratusUserAgentForUUID(uuid),
 		),
+		Context: ctx,
 	}
 	runner.initialize()
 
@@ -86,6 +93,9 @@ func (m *Runner) WarmUp() (map[string]string, error) {
 	if err != nil {
 		log.Println("Error during warm up. Cleaning up technique prerequisites with terraform destroy")
 		_ = m.TerraformManager.TerraformDestroy(m.TerraformDir)
+		if errors.Is(err, context.Canceled) {
+			return nil, err
+		}
 		return nil, errors.New("unable to run terraform apply on prerequisite: " + errorMessageFromTerraformError(err))
 	}
 
@@ -186,6 +196,9 @@ func (m *Runner) CleanUp() error {
 		log.Println("Cleaning up technique prerequisites with terraform destroy")
 		err := m.TerraformManager.TerraformDestroy(m.TerraformDir)
 		if err != nil {
+			if errors.Is(err, context.Canceled) {
+				return err
+			}
 			return errors.New("unable to cleanup TTP prerequisites: " + errorMessageFromTerraformError(err))
 		}
 	}

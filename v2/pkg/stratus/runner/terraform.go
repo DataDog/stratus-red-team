@@ -26,13 +26,19 @@ type TerraformManagerImpl struct {
 	terraformBinaryPath string
 	terraformVersion    string
 	terraformUserAgent  string
+	context             context.Context
 }
 
 func NewTerraformManager(terraformBinaryPath string, userAgent string) TerraformManager {
+	return NewTerraformManagerWithContext(context.Background(), terraformBinaryPath, userAgent)
+}
+
+func NewTerraformManagerWithContext(ctx context.Context, terraformBinaryPath string, userAgent string) TerraformManager {
 	manager := TerraformManagerImpl{
 		terraformVersion:    TerraformVersion,
 		terraformBinaryPath: terraformBinaryPath,
 		terraformUserAgent:  userAgent,
+		context:             ctx,
 	}
 	manager.Initialize()
 	return &manager
@@ -48,7 +54,7 @@ func (m *TerraformManagerImpl) Initialize() {
 			SkipChecksumVerification: false,
 		}
 		log.Println("Installing Terraform in " + m.terraformBinaryPath)
-		_, err := terraformInstaller.Install(context.Background())
+		_, err := terraformInstaller.Install(m.context)
 		if err != nil {
 			log.Fatalf("error installing Terraform: %s", err)
 		}
@@ -69,7 +75,7 @@ func (m *TerraformManagerImpl) TerraformInitAndApply(directory string) (map[stri
 	terraformInitializedFile := path.Join(directory, ".terraform-initialized")
 	if !utils.FileExists(terraformInitializedFile) {
 		log.Println("Initializing Terraform to spin up technique prerequisites")
-		err = terraform.Init(context.Background())
+		err = terraform.Init(m.context)
 		if err != nil {
 			return nil, errors.New("unable to Initialize Terraform: " + err.Error())
 		}
@@ -82,12 +88,12 @@ func (m *TerraformManagerImpl) TerraformInitAndApply(directory string) (map[stri
 	}
 
 	log.Println("Applying Terraform to spin up technique prerequisites")
-	err = terraform.Apply(context.Background(), tfexec.Refresh(false))
+	err = terraform.Apply(m.context, tfexec.Refresh(false))
 	if err != nil {
 		return nil, errors.New("unable to apply Terraform: " + err.Error())
 	}
 
-	rawOutputs, _ := terraform.Output(context.Background())
+	rawOutputs, _ := terraform.Output(m.context)
 	outputs := make(map[string]string, len(rawOutputs))
 	for outputName, outputRawValue := range rawOutputs {
 		outputValue := string(outputRawValue.Value)
@@ -104,5 +110,5 @@ func (m *TerraformManagerImpl) TerraformDestroy(directory string) error {
 		return err
 	}
 
-	return terraform.Destroy(context.Background())
+	return terraform.Destroy(m.context)
 }
