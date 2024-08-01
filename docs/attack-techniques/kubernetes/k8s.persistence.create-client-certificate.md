@@ -47,3 +47,5 @@ Using Kubernetes API server audit logs. In particular, look for creation and app
 not relate to standard cluster operation (e.g. Kubelet certificate issuance).
 
 
+
+

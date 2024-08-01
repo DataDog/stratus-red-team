@@ -48,3 +48,20 @@ The following may be use to tune the detection, or validate findings:
 - Attempts to call ssm:GetParameter(s) resulting in access denied errors
 
 
+
+
+
+## Detonation logs <span class="smallcaps w3-badge w3-pink w3-round w3-text-sand" title="TODO">new</span>
+
+The following CloudTrail events are generated when this technique is detonated[^1]:
+
+
+
+??? "View raw detonation logs"
+
+    ```json hl_lines=""
+
+    []
+    ```
+
+[^1]: These logs have been gathered from a real detonation of this technique in a test environment using [Grimoire](https://github.com/DataDog/grimoire), and anonymized using [LogLicker](https://github.com/Permiso-io-tools/LogLicker).

@@ -35,3 +35,4 @@ Creates a Service Account bound to a cluster administrator role.
 ```bash title="Detonate with Stratus Red Team"
 stratus detonate k8s.persistence.create-admin-clusterrole
 ```
+

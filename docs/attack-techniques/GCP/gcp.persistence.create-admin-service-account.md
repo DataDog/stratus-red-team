@@ -47,3 +47,5 @@ Using the following GCP Admin Activity audit logs events:
 - <code>SetIamPolicy</code> with <code>resource.type=project</code>
 
 
+
+

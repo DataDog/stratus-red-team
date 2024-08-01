@@ -26,6 +26,7 @@ theme:
   - navigation.top
   - navigation.tabs
   - navigation.tabs.sticky
+  - content.code.copy
   icon:
     admonition:
       note: octicons/tag-16

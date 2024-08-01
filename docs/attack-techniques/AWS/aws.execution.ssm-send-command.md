@@ -33,7 +33,6 @@ References:
 - https://www.chrisfarris.com/post/aws-ir/
 - https://www.invictus-ir.com/news/aws-cloudtrail-cheat-sheet
 - https://securitycafe.ro/2023/01/17/aws-post-explitation-with-ssm-sendcommand/
-- https://unit42.paloaltonetworks.com/cloud-virtual-machine-attack-vectors/
 
 
 ## Instructions
@@ -64,5 +63,7 @@ Identify, through CloudTrail's <code>SendCommand</code> event, especially when <
 ```
 
 While this technique uses a single call to <code>ssm:SendCommand</code> on several instances, an attacker may use one call per instance to execute commands on. In that case, the <code>SendCommand</code> event will be emitted for each call.
+
+
 
 

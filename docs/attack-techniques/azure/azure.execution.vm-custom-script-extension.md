@@ -23,7 +23,6 @@ References:
 
 - https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/custom-script-windows
 - https://microsoft.github.io/Azure-Threat-Research-Matrix/Execution/AZT301/AZT301-2/
-- https://unit42.paloaltonetworks.com/cloud-virtual-machine-attack-vectors/
 
 <span style="font-variant: small-caps;">Warm-up</span>: 
 
@@ -63,5 +62,7 @@ Identify Azure events of type <code>Microsoft.Compute/virtualMachines/extensions
   },
 }
 ```
+
+
 
 

@@ -81,3 +81,5 @@ Additionally, looking at the Kubelet API path that was proxied can help identify
 See [kubeletctl](https://github.com/cyberark/kubeletctl/blob/master/pkg/api/constants.go) for an unofficial list of Kubelet API endpoints.
 
 
+
+

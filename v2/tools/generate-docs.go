@@ -23,6 +23,7 @@ func main() {
 	index := NewIndex(techniques).Values()
 
 	if err := GenerateTechDocs(docsDirectory, techniques, index); err != nil {
+		fmt.Fprintln(os.Stderr, "Could not generate techniques documentation")
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		os.Exit(1)
 	}
@@ -30,6 +31,7 @@ func main() {
 	// Write a single index file with all techniques. File is enconded in YAML.
 	yamlIndex := filepath.Join(docsDirectory, "index.yaml")
 	if err := GenerateYAML(yamlIndex, index); err != nil {
+		fmt.Fprintln(os.Stderr, "Could not generate YAML index")
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		os.Exit(1)
 	}

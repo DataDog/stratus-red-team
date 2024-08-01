@@ -70,3 +70,5 @@ if the S3 bucket was made public (and not only shared with an attacker-controlle
 which generates a finding when an S3 bucket is made public or accessible from another account.
 
 
+
+
