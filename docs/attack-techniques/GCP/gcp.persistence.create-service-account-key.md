@@ -45,5 +45,3 @@ stratus detonate gcp.persistence.create-service-account-key
 Using GCP Admin Activity audit logs event <code>google.iam.admin.v1.CreateServiceAccountKey</code>.
 
 
-
-

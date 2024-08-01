@@ -64,5 +64,3 @@ Identify Azure events of type <code>Microsoft.Compute/virtualMachines/extensions
 ```
 
 
-
-

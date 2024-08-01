@@ -39,4 +39,3 @@ References:
 ```bash title="Detonate with Stratus Red Team"
 stratus detonate k8s.privilege-escalation.hostpath-volume
 ```
-

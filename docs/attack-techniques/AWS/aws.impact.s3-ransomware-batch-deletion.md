@@ -89,5 +89,3 @@ Sample <code>DeleteObjects</code> event, shortened for readability:
 Note that <code>DeleteObjects</code> does not indicate the list of files deleted, or how many files were removed (which can be up to 1'000 files per call).'
 
 
-
-

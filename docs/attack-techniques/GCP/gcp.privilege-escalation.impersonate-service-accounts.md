@@ -167,5 +167,3 @@ Some detection strategies may include:
 short amount of time (successfully or not)
 
 
-
-

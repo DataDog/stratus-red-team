@@ -84,5 +84,3 @@ Sample CloudTrail event <code>CopyObject</code>, when a file is encrypted with a
 ```
 
 
-
-

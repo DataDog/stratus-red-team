@@ -85,5 +85,3 @@ When someone impersonates a service account, the GCP Admin Audit Logs event <cod
 enabled <code>DATA_READ</code> events in the audit logs configuration of your project. For more information, see [Impersonate GCP Service Accounts](https://stratus-red-team.cloud/attack-techniques/GCP/gcp.privilege-escalation.impersonate-service-accounts/#detection).
 
 
-
-

@@ -65,5 +65,3 @@ Identify, through CloudTrail's <code>SendCommand</code> event, especially when <
 While this technique uses a single call to <code>ssm:SendCommand</code> on several instances, an attacker may use one call per instance to execute commands on. In that case, the <code>SendCommand</code> event will be emitted for each call.
 
 
-
-

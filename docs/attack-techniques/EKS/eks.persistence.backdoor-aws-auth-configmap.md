@@ -69,5 +69,3 @@ Through EKS API Server audit logs, by looking for changes to the aws-auth Config
 ```
 
 
-
-

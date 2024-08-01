@@ -86,5 +86,3 @@ Sample event (redacted for clarity):
 ```
 
 
-
-

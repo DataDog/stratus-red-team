@@ -80,5 +80,3 @@ Sample event (shortened):
 }
 ```
 
-
-

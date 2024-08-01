@@ -88,5 +88,3 @@ Sample CloudTrail event <code>DeleteObject</code>, shortened for readability:
 ```
 
 
-
-

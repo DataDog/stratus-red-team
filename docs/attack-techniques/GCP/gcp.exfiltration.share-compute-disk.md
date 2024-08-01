@@ -131,5 +131,3 @@ NOT protoPayload.authenticationInfo.principalEmail=~".+@your-domain.tld$"
 ```
 
 
-
-

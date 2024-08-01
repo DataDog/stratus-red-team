@@ -49,5 +49,3 @@ Through CloudTrail's <code>GetAccountSendingEnabled</code>, <code>GetSendQuota</
 These can be considered suspicious especially when performed by a long-lived access key, or when the calls span across multiple regions.
 
 
-
-

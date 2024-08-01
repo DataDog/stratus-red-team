@@ -51,16 +51,14 @@ See:
 * [Associated Sigma rule](https://github.com/SigmaHQ/sigma/blob/master/rules/cloud/aws/aws_ec2_download_userdata.yml)
 
 
-
-
-## Detonation logs <span class="smallcaps w3-badge w3-pink w3-round w3-text-sand" title="TODO">new</span>
+## Detonation logs <span class="smallcaps w3-badge w3-light-green w3-round w3-text-sand">new!</span>
 
 The following CloudTrail events are generated when this technique is detonated[^1]:
 
 
-- `sts:AssumeRole`
-
 - `ec2:DescribeInstanceAttribute`
+
+- `sts:AssumeRole`
 
 
 ??? "View raw detonation logs"

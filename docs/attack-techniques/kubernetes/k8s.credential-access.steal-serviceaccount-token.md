@@ -67,5 +67,3 @@ Sample event (shortened):
 ```
 
 
-
-

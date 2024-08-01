@@ -43,5 +43,3 @@ Any attempts from a child account to leave its AWS Organization should be consid
 
 Use the CloudTrail event <code>LeaveOrganization</code>.
 
-
-

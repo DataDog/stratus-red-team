@@ -42,9 +42,7 @@ Identify when event selectors of a CloudTrail trail are updated, through CloudTr
 
 
 
-
-
-## Detonation logs <span class="smallcaps w3-badge w3-pink w3-round w3-text-sand" title="TODO">new</span>
+## Detonation logs <span class="smallcaps w3-badge w3-light-green w3-round w3-text-sand">new!</span>
 
 The following CloudTrail events are generated when this technique is detonated[^1]:
 
