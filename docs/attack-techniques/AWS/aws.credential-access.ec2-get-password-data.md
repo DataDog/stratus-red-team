@@ -47,9 +47,9 @@ Identify principals making a large number of ec2:GetPasswordData calls, using Cl
 The following CloudTrail events are generated when this technique is detonated[^1]:
 
 
-- `ec2:GetPasswordData`
-
 - `sts:AssumeRole`
+
+- `ec2:GetPasswordData`
 
 
 ??? "View raw detonation logs"
