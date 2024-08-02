@@ -12,9 +12,13 @@ import (
 	s3types "github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/aws/aws-sdk-go-v2/service/ssm"
 	ssmtypes "github.com/aws/aws-sdk-go-v2/service/ssm/types"
+	"github.com/aws/smithy-go/middleware"
+	smithyhttp "github.com/aws/smithy-go/transport/http"
+	"github.com/cenkalti/backoff/v4"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/useragent"
+	"github.com/google/uuid"
 
 	"github.com/aws/aws-sdk-go-v2/service/sts"
-	backoff "github.com/cenkalti/backoff/v4"
 	"io"
 	"log"
 	"strconv"
@@ -31,16 +35,45 @@ func GetCurrentAccountId(cfg aws.Config) (string, error) {
 	return *result.Account, nil
 }
 
-func AwsConfigFromCredentials(accessKeyId string, secretAccessKey string, sessionToken string) aws.Config {
-	credentialsProvider := config.WithCredentialsProvider(
-		credentials.NewStaticCredentialsProvider(accessKeyId, secretAccessKey, sessionToken),
-	)
-	cfg, err := config.LoadDefaultConfig(context.Background(), credentialsProvider)
+func AwsConfigFromCredentials(accessKeyId string, secretAccessKey string, sessionToken string, detonationUid *uuid.UUID) aws.Config {
+	options := []func(*config.LoadOptions) error{
+		config.WithCredentialsProvider(
+			credentials.NewStaticCredentialsProvider(accessKeyId, secretAccessKey, sessionToken),
+		),
+	}
+	if detonationUid != nil {
+		// propagate the detonation UID to the new provider
+		options = append(options, CustomUserAgentApiOptions(*detonationUid))
+	}
+	cfg, err := config.LoadDefaultConfig(context.Background(), options...)
+
 	if err != nil {
 		log.Fatalf("unable to load SDK config, %v", err)
 	}
-
 	return cfg
+}
+
+func CustomUserAgentApiOptions(uniqueCorrelationId uuid.UUID) config.LoadOptionsFunc {
+	// Code mostly taken from https://github.com/aws/aws-sdk-go-v2/issues/1432
+	customUserAgentMiddleware := func(uniqueId uuid.UUID) middleware.BuildMiddleware {
+		return middleware.BuildMiddlewareFunc("CustomerUserAgent", func(
+			ctx context.Context, input middleware.BuildInput, next middleware.BuildHandler,
+		) (out middleware.BuildOutput, metadata middleware.Metadata, err error) {
+			request, ok := input.Request.(*smithyhttp.Request)
+			if !ok {
+				return out, metadata, fmt.Errorf("unknown transport type %T", input.Request)
+			}
+			request.Header.Set("User-Agent", useragent.GetStratusUserAgentForUUID(uniqueId))
+
+			return next.HandleBuild(ctx, input)
+		})
+	}
+	return config.WithAPIOptions(func() (v []func(stack *middleware.Stack) error) {
+		v = append(v, func(stack *middleware.Stack) error {
+			return stack.Build.Add(customUserAgentMiddleware(uniqueCorrelationId), middleware.After)
+		})
+		return v
+	}())
 }
 
 // WaitForAndAssumeAWSRole waits for an AWS role to be assumable (due to eventual consistency)

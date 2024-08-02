@@ -3,6 +3,7 @@ package providers
 import (
 	"context"
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/useragent"
 	"github.com/google/uuid"
 	authv1 "k8s.io/api/authorization/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -39,7 +40,7 @@ func NewK8sProvider(uuid uuid.UUID) *K8sProvider {
 		log.Fatalf("unable to build kube config: %v", err)
 	}
 	restConfig := config
-	restConfig.UserAgent = GetStratusUserAgentForUUID(uuid)
+	restConfig.UserAgent = useragent.GetStratusUserAgentForUUID(uuid)
 	k8sClient, err := kubernetes.NewForConfig(restConfig)
 	if err != nil {
 		log.Fatalf("unable to create kube client: %v", err)

@@ -8,6 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/ssm"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/useragent"
 	"log"
 	"strings"
 	"time"
@@ -63,9 +64,11 @@ arn:aws:sts::012345678901:assumed-role/my-instance-role/i-0adc17a5acb70d9ae
 }
 
 func detonate(params map[string]string, providers stratus.CloudProviders) error {
-	ssmClient := ssm.NewFromConfig(providers.AWS().GetConnection())
+	awsProvider := providers.AWS()
+	ssmClient := ssm.NewFromConfig(awsProvider.GetConnection())
 	instanceId := params["instance_id"]
 	commands := []string{
+		"export AWS_EXECUTION_ENV=" + useragent.GetStratusUserAgentForUUID(awsProvider.UniqueCorrelationId), // propagate detonation UID
 		"aws sts get-caller-identity || true", // Note: we need the || true to ensure the command exits with status 0, even if the instance role doesn't have the permission
 		"aws s3 ls || true",
 		"aws iam get-account-summary || true",

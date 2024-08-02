@@ -1,9 +1,11 @@
-package providers
+package useragent
 
 import (
 	"fmt"
 	"github.com/google/uuid"
 )
+
+// Has to be in a separate package to avoid circular dependencies
 
 const StratusUserAgentPrefix = "stratus-red-team"
 

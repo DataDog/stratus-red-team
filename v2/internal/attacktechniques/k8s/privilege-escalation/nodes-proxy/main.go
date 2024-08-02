@@ -9,6 +9,7 @@ import (
 	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/useragent"
 	"io"
 	authenticationv1 "k8s.io/api/authentication/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -157,7 +158,7 @@ func proxyKubeletRequest(k8s *providers.K8sProvider, kubeletApiPath string, toke
 	endpointUrl := fmt.Sprintf("%sapi/v1/nodes/%s/proxy%s", apiServerUrl, node, kubeletApiPath)
 	req, _ := http.NewRequest("GET", endpointUrl, nil)
 	req.Header.Set("Authorization", "Bearer "+token)
-	req.Header.Set("User-Agent", providers.GetStratusUserAgentForUUID(k8s.UniqueCorrelationId))
+	req.Header.Set("User-Agent", useragent.GetStratusUserAgentForUUID(k8s.UniqueCorrelationId))
 
 	log.Println("Performing request to " + endpointUrl)
 	response, err := httpClient.Do(req)

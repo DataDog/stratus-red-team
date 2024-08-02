@@ -2,12 +2,10 @@ package providers
 
 import (
 	"context"
-	"fmt"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
-	"github.com/aws/smithy-go/middleware"
-	smithyhttp "github.com/aws/smithy-go/transport/http"
+	"github.com/datadog/stratus-red-team/v2/internal/utils"
 	"github.com/google/uuid"
 	"log"
 	"os"
@@ -19,7 +17,7 @@ type AWSProvider struct {
 }
 
 func NewAWSProvider(uuid uuid.UUID) *AWSProvider {
-	cfg, err := config.LoadDefaultConfig(context.Background(), customUserAgentApiOptions(uuid))
+	cfg, err := config.LoadDefaultConfig(context.Background(), utils.CustomUserAgentApiOptions(uuid))
 	if err != nil {
 		log.Fatalf("unable to load AWS configuration, %v", err)
 	}
@@ -46,30 +44,4 @@ func (m *AWSProvider) IsAuthenticatedAgainstAWS() bool {
 	}
 
 	return true
-}
-
-// Functions below are related to customization of the user-agent header
-// Code mostly taken from https://github.com/aws/aws-sdk-go-v2/issues/1432
-
-func customUserAgentApiOptions(uniqueCorrelationId uuid.UUID) config.LoadOptionsFunc {
-	return config.WithAPIOptions(func() (v []func(stack *middleware.Stack) error) {
-		v = append(v, func(stack *middleware.Stack) error {
-			return stack.Build.Add(customUserAgentMiddleware(uniqueCorrelationId), middleware.After)
-		})
-		return v
-	}())
-}
-
-func customUserAgentMiddleware(uniqueId uuid.UUID) middleware.BuildMiddleware {
-	return middleware.BuildMiddlewareFunc("CustomerUserAgent", func(
-		ctx context.Context, input middleware.BuildInput, next middleware.BuildHandler,
-	) (out middleware.BuildOutput, metadata middleware.Metadata, err error) {
-		request, ok := input.Request.(*smithyhttp.Request)
-		if !ok {
-			return out, metadata, fmt.Errorf("unknown transport type %T", input.Request)
-		}
-		request.Header.Set("User-Agent", GetStratusUserAgentForUUID(uniqueId))
-
-		return next.HandleBuild(ctx, input)
-	})
 }
