@@ -15,7 +15,7 @@ import (
 const StratusRunnerForce = true
 const StratusRunnerNoForce = false
 
-type Runner struct {
+type runnerImpl struct {
 	Technique           *stratus.AttackTechnique
 	TechniqueState      stratus.AttackTechniqueState
 	TerraformDir        string
@@ -27,6 +27,17 @@ type Runner struct {
 	Context             context.Context
 }
 
+type Runner interface {
+	WarmUp() (map[string]string, error)
+	Detonate() error
+	Revert() error
+	CleanUp() error
+	GetState() stratus.AttackTechniqueState
+	GetUniqueExecutionId() string
+}
+
+var _ Runner = &runnerImpl{}
+
 func NewRunner(technique *stratus.AttackTechnique, force bool) Runner {
 	return NewRunnerWithContext(context.Background(), technique, force)
 }
@@ -34,7 +45,7 @@ func NewRunner(technique *stratus.AttackTechnique, force bool) Runner {
 func NewRunnerWithContext(ctx context.Context, technique *stratus.AttackTechnique, force bool) Runner {
 	stateManager := state.NewFileSystemStateManager(technique)
 	uuid := uuid.New()
-	runner := Runner{
+	runner := &runnerImpl{
 		Technique:           technique,
 		ShouldForce:         force,
 		StateManager:        stateManager,
@@ -49,7 +60,7 @@ func NewRunnerWithContext(ctx context.Context, technique *stratus.AttackTechniqu
 	return runner
 }
 
-func (m *Runner) initialize() {
+func (m *runnerImpl) initialize() {
 	m.TerraformDir = filepath.Join(m.StateManager.GetRootDirectory(), m.Technique.ID)
 	m.TechniqueState = m.StateManager.GetTechniqueState()
 	if m.TechniqueState == "" {
@@ -58,7 +69,7 @@ func (m *Runner) initialize() {
 	m.ProviderFactory = stratus.CloudProvidersImpl{UniqueCorrelationID: m.UniqueCorrelationID}
 }
 
-func (m *Runner) WarmUp() (map[string]string, error) {
+func (m *runnerImpl) WarmUp() (map[string]string, error) {
 	// No prerequisites to spin-up
 	if m.Technique.PrerequisitesTerraformCode == nil {
 		return map[string]string{}, nil
@@ -110,7 +121,7 @@ func (m *Runner) WarmUp() (map[string]string, error) {
 	return outputs, err
 }
 
-func (m *Runner) Detonate() error {
+func (m *runnerImpl) Detonate() error {
 	willWarmUp := true
 	var err error
 	var outputs map[string]string
@@ -147,7 +158,7 @@ func (m *Runner) Detonate() error {
 	return nil
 }
 
-func (m *Runner) Revert() error {
+func (m *runnerImpl) Revert() error {
 	if m.GetState() != stratus.AttackTechniqueStatusDetonated && !m.ShouldForce {
 		return errors.New(m.Technique.ID + " is not in DETONATED state and should not need to be reverted, use --force to force")
 	}
@@ -171,7 +182,7 @@ func (m *Runner) Revert() error {
 	return nil
 }
 
-func (m *Runner) CleanUp() error {
+func (m *runnerImpl) CleanUp() error {
 	// Has the technique already been cleaned up?
 	if m.TechniqueState == stratus.AttackTechniqueStatusCold && !m.ShouldForce {
 		return errors.New(m.Technique.ID + " is already COLD and should already be clean, use --force to force cleanup")
@@ -214,11 +225,11 @@ func (m *Runner) CleanUp() error {
 	return nil
 }
 
-func (m *Runner) GetState() stratus.AttackTechniqueState {
+func (m *runnerImpl) GetState() stratus.AttackTechniqueState {
 	return m.TechniqueState
 }
 
-func (m *Runner) setState(state stratus.AttackTechniqueState) {
+func (m *runnerImpl) setState(state stratus.AttackTechniqueState) {
 	err := m.StateManager.SetTechniqueState(state)
 	if err != nil {
 		log.Println("Warning: unable to set technique state: " + err.Error())
@@ -227,7 +238,7 @@ func (m *Runner) setState(state stratus.AttackTechniqueState) {
 }
 
 // GetUniqueExecutionId returns an unique execution ID, unique for each runner instance
-func (m *Runner) GetUniqueExecutionId() string {
+func (m *runnerImpl) GetUniqueExecutionId() string {
 	return m.UniqueCorrelationID.String()
 }
 

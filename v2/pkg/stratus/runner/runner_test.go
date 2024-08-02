@@ -119,7 +119,7 @@ func TestRunnerWarmUp(t *testing.T) {
 		state.On("WriteTerraformOutputs", mock.Anything).Return(nil)
 		state.On("SetTechniqueState", mock.Anything).Return(nil)
 
-		runner := Runner{
+		runner := runnerImpl{
 			Technique:        scenario[i].Technique,
 			ShouldForce:      scenario[i].ShouldForce,
 			TerraformManager: terraform,
@@ -211,7 +211,7 @@ func TestRunnerDetonate(t *testing.T) {
 			state.On("SetTechniqueState", mock.Anything).Return(nil)
 
 			var wasDetonated = false
-			runner := Runner{
+			runner := runnerImpl{
 				Technique: &stratus.AttackTechnique{
 					ID: "sample-technique",
 					Detonate: func(map[string]string, stratus.CloudProviders) error {
@@ -300,7 +300,7 @@ func TestRunnerRevert(t *testing.T) {
 			state.On("SetTechniqueState", mock.Anything).Return(nil)
 
 			var wasReverted = false
-			runner := Runner{
+			runner := runnerImpl{
 				Technique: &stratus.AttackTechnique{
 					ID:       "foo",
 					Detonate: func(map[string]string, stratus.CloudProviders) error { return nil },
@@ -446,7 +446,7 @@ func TestRunnerCleanup(t *testing.T) {
 				return errors.New("nope")
 			}
 		}
-		runner := Runner{
+		runner := runnerImpl{
 			Technique:        scenario[i].Technique,
 			ShouldForce:      scenario[i].ShouldForce,
 			TerraformManager: terraform,
