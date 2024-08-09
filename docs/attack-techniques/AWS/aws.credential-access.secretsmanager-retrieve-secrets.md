@@ -50,9 +50,9 @@ The following may be use to tune the detection, or validate findings:
 The following CloudTrail events are generated when this technique is detonated[^1]:
 
 
-- `secretsmanager:ListSecrets`
-
 - `secretsmanager:GetSecretValue`
+
+- `secretsmanager:ListSecrets`
 
 
 ??? "View raw detonation logs"

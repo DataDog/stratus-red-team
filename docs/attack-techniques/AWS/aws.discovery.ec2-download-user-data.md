@@ -56,9 +56,9 @@ See:
 The following CloudTrail events are generated when this technique is detonated[^1]:
 
 
-- `sts:AssumeRole`
-
 - `ec2:DescribeInstanceAttribute`
+
+- `sts:AssumeRole`
 
 
 ??? "View raw detonation logs"
