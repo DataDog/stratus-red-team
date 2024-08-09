@@ -2,6 +2,9 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
+	"errors"
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -12,6 +15,12 @@ import (
 	_ "github.com/datadog/stratus-red-team/v2/pkg/stratus/loader"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 )
+
+type DetonationLogs struct {
+	EventNames     []string
+	RawLogs        string
+	EventNameLines []int
+}
 
 func GenerateTechDocs(docsDirectory string, techniques []*stratus.AttackTechnique, index map[stratus.Platform]map[string][]*stratus.AttackTechnique) error {
 	techniqueTemplate, err := os.ReadFile("tools/doc.tpl")
@@ -45,7 +54,14 @@ func GenerateTechDocs(docsDirectory string, techniques []*stratus.AttackTechniqu
 		result := ""
 		buf := bytes.NewBufferString(result)
 		formatTechniqueDescription(technique)
-		err := tpl.Execute(buf, technique)
+		templateInput := struct {
+			Technique      *stratus.AttackTechnique
+			DetonationLogs *DetonationLogs
+		}{
+			Technique:      technique,
+			DetonationLogs: findDetonationLogs(technique),
+		}
+		err := tpl.Execute(buf, templateInput)
 		if err != nil {
 			return err
 		}
@@ -97,6 +113,50 @@ func GenerateTechDocs(docsDirectory string, techniques []*stratus.AttackTechniqu
 	}
 
 	return nil
+}
+
+func findDetonationLogs(technique *stratus.AttackTechnique) *DetonationLogs {
+	data, err := os.ReadFile("../docs/detonation-logs/" + technique.ID + ".json")
+	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			return nil // no detonation logs
+		}
+		log.Fatalf("unable to read detonation logs for technique %s: %v", technique.ID, err)
+	}
+
+	var logs []map[string]interface{}
+	if err := json.Unmarshal(data, &logs); err != nil {
+		println("unable to parse JSON detonation logs for technique " + technique.ID + ": " + err.Error())
+		return nil
+	}
+
+	// Unique event names
+	var eventNamesSet = make(map[string]bool)
+	for _, event := range logs {
+		eventName := fmt.Sprintf("%s:%s", strings.TrimSuffix(event["eventSource"].(string), ".amazonaws.com"), event["eventName"].(string))
+		if _, ok := eventNamesSet[eventName]; !ok {
+			eventNamesSet[eventName] = true
+		}
+	}
+
+	var eventNames []string
+	for k := range eventNamesSet {
+		eventNames = append(eventNames, k)
+	}
+
+	rawLogs := strings.ReplaceAll(string(data), "\n", "\n\t") // indent for markdown
+	var eventNameLines []int
+	for lineNo, line := range strings.Split(rawLogs, "\n") {
+		if strings.Contains(line, "\"eventName\":") {
+			eventNameLines = append(eventNameLines, lineNo+1)
+		}
+	}
+
+	return &DetonationLogs{
+		EventNames:     eventNames,
+		RawLogs:        rawLogs,
+		EventNameLines: eventNameLines,
+	}
 }
 
 func formatTechniqueDescription(technique *stratus.AttackTechnique) {

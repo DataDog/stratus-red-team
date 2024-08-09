@@ -3,9 +3,9 @@ package runner
 import (
 	"context"
 	"errors"
-	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/internal/state"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/useragent"
 	"github.com/google/uuid"
 	"log"
 	"path/filepath"
@@ -51,7 +51,7 @@ func NewRunnerWithContext(ctx context.Context, technique *stratus.AttackTechniqu
 		StateManager:        stateManager,
 		UniqueCorrelationID: uuid,
 		TerraformManager: NewTerraformManagerWithContext(
-			ctx, filepath.Join(stateManager.GetRootDirectory(), "terraform"), providers.GetStratusUserAgentForUUID(uuid),
+			ctx, filepath.Join(stateManager.GetRootDirectory(), "terraform"), useragent.GetStratusUserAgentForUUID(uuid),
 		),
 		Context: ctx,
 	}

@@ -97,6 +97,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 		metadataResponse["AccessKeyId"],
 		metadataResponse["SecretAccessKey"],
 		metadataResponse["Token"],
+		&providers.AWS().UniqueCorrelationId,
 	)
 	newStsClient := sts.NewFromConfig(newAwsConnection)
 	response, _ := newStsClient.GetCallerIdentity(context.Background(), &sts.GetCallerIdentityInput{})

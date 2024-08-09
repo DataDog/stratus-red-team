@@ -2,6 +2,7 @@ package providers
 
 import (
 	"context"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/useragent"
 	"os"
 
 	"github.com/google/uuid"
@@ -40,7 +41,7 @@ func NewGCPProvider(uuid uuid.UUID) *GCPProvider {
 }
 
 func (m *GCPProvider) Options() option.ClientOption {
-	return option.WithUserAgent(GetStratusUserAgentForUUID(m.UniqueCorrelationId))
+	return option.WithUserAgent(useragent.GetStratusUserAgentForUUID(m.UniqueCorrelationId))
 }
 
 func (m *GCPProvider) IsAuthenticated() bool {

@@ -19,3 +19,14 @@
     opacity: 1;
     color: white;
 }
+
+.beta-badge {
+    background-color: #ff9800;
+    color: white;
+    padding: 0.2em 0.5em;
+    font-size: 0.8em;
+    border-radius: 3px;
+    vertical-align: middle;
+    margin-left: 0.5em;
+    font-weight: bold;
+}

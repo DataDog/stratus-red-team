@@ -4,9 +4,9 @@ import (
 	_ "embed"
 	"encoding/json"
 	"errors"
-	providersInternal "github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/useragent"
 	"io"
 	"log"
 	"net/http"
@@ -136,7 +136,7 @@ func buildHttpRequest(params map[string]string, providers stratus.CloudProviders
 	// http.DefaultTransport = &http.Transport{Proxy: http.ProxyURL(proxyUrl), TLSClientConfig: &tls.Config{InsecureSkipVerify: true}}
 	req.Header.Add("Referer", "https://signin.aws.amazon.com")
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	req.Header.Set("User-Agent", providersInternal.GetStratusUserAgentForUUID(providers.AWS().UniqueCorrelationId))
+	req.Header.Set("User-Agent", useragent.GetStratusUserAgentForUUID(providers.AWS().UniqueCorrelationId))
 
 	return req
 }
