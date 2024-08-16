@@ -39,29 +39,17 @@ References:
 
 - https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/administrative-units
 - https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/admin-units-restricted-management
-- TODO: Add Datadog writeup
+
 `,
 Detection: `
 Identify the following <code>activityDisplayName</code> events in Entra ID Audit logs.
 
 For <code>Service: Core Directory</code>,<code>Category: AdministrativeUnit</code>:
 Add administrative unit
-Add member to administrative unit
 Add member to restricted management administrative unit
-Bulk add members to administrative unit
-Bulk remove members to administrative unit
-Remove member from administrative unit
-Remove member from restricted management administrative unit
-Update administrative unit
-Restore administrative unit
-Delete administrative unit
-Hard Delete administrative unit
 
-For <code>Service: Core Directory</code>,<code>Category: RoleManagement</code>:
-Add scoped member to role
-Remove scoped member from role
-Add member to role scoped over Restricted Management Administrative Unit
-Remove member from role scoped over Restricted Management Administrative Unit
+Consider detection of additional Administrative Unit activities and scoped role assignments in the following Microsoft article:
+- https://learn.microsoft.com/en-us/entra/identity/monitoring-health/reference-audit-activities
 ` + codeBlock + `
 `,
 		Platform:                   stratus.Azure,
