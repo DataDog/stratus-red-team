@@ -41,7 +41,7 @@ resource "azuread_user" "backdoor" {
     "stratus-red-team-hidden-au-backdoor-${random_string.suffix.result}",
     local.domain_name
   )
-  password = random_password.password.result
+  password     = random_password.password.result
   display_name = "Stratus Backdoor User - ${random_string.suffix.result}"
 }
 

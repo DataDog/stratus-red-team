@@ -16,7 +16,7 @@ data "azuread_domains" "default" {
 
 locals {
   resource_prefix = "srt-ehau" # stratus red team entra hidden au
-  domain_name = data.azuread_domains.default.domains.0.domain_name
+  domain_name     = data.azuread_domains.default.domains.0.domain_name
 }
 
 resource "random_string" "suffix" {
@@ -40,7 +40,7 @@ resource "azuread_user" "backdoor" {
     "stratus-red-team-hidden-au-backdoor-${random_string.suffix.result}",
     local.domain_name
   )
-  password = random_password.password.result
+  password     = random_password.password.result
   display_name = "Stratus Backdoor User - ${random_string.suffix.result}"
 }
 
@@ -50,7 +50,7 @@ resource "azuread_user" "target" {
     "stratus-red-team-hidden-au-target-${random_string.suffix.result}",
     local.domain_name
   )
-  password = random_password.password.result
+  password     = random_password.password.result
   display_name = "Stratus Target User - ${random_string.suffix.result}"
 }
 
@@ -69,7 +69,7 @@ resource "azuread_directory_role" "paa" {
 
 # Assign privileges to target user
 resource "azuread_directory_role_assignment" "target" {
-  role_id = azuread_directory_role.ga.id
+  role_id             = azuread_directory_role.ga.id
   principal_object_id = azuread_user.target.id
 }
 
