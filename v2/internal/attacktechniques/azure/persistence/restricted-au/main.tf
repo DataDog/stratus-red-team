@@ -38,7 +38,7 @@ resource "random_password" "password" {
 resource "azuread_user" "backdoor" {
   user_principal_name = format(
     "%s@%s",
-    "stratus-red-team-hidden-au-backdoor-${random_string.suffix.result}",
+    "stratus-red-team-restricted-au-backdoor-${random_string.suffix.result}",
     local.domain_name
   )
   password     = random_password.password.result
