@@ -39,6 +39,8 @@ References:
 - [Ransomware in the cloud](https://invictus-ir.medium.com/ransomware-in-the-cloud-7f14805bbe82)
 - https://www.firemon.com/what-you-need-to-know-about-ransomware-in-aws/
 - https://rhinosecuritylabs.com/aws/s3-ransomware-part-1-attack-vector/
+- https://unit42.paloaltonetworks.com/large-scale-cloud-extortion-operation/
+- https://unit42.paloaltonetworks.com/shinyhunters-ransomware-extortion/
 
 
 ## Instructions
