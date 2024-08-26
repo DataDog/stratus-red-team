@@ -71,11 +71,11 @@ While this technique uses a single call to <code>ssm:SendCommand</code> on sever
 The following CloudTrail events are generated when this technique is detonated[^1]:
 
 
+- `ssm:DescribeInstanceInformation`
+
 - `ssm:GetCommandInvocation`
 
 - `ssm:SendCommand`
-
-- `ssm:DescribeInstanceInformation`
 
 
 ??? "View raw detonation logs"

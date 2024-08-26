@@ -43,6 +43,7 @@ Detonation:
 References:
 
 - https://www.invictus-ir.com/news/the-curious-case-of-dangerdev-protonmail-me
+- https://unit42.paloaltonetworks.com/large-scale-cloud-extortion-operation/
 `,
 		Detection: `
 - Through [IAM Access Analyzer](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-resources.html#access-analyzer-iam-role), 

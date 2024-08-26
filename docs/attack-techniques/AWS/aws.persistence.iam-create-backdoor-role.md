@@ -48,6 +48,7 @@ an external, fictitious attack AWS account.
 References:
 
 - https://www.invictus-ir.com/news/the-curious-case-of-dangerdev-protonmail-me
+- https://unit42.paloaltonetworks.com/large-scale-cloud-extortion-operation/
 
 
 ## Instructions

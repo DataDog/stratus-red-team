@@ -54,6 +54,8 @@ See also: [Known detection bypasses](https://hackingthe.cloud/aws/avoiding-detec
 The following CloudTrail events are generated when this technique is detonated[^1]:
 
 
+- `ssm:SendCommand`
+
 - `ssm:DescribeInstanceInformation`
 
 - `sts:GetCallerIdentity`
@@ -61,8 +63,6 @@ The following CloudTrail events are generated when this technique is detonated[^
 - `ec2:DescribeInstances`
 
 - `ssm:GetCommandInvocation`
-
-- `ssm:SendCommand`
 
 
 ??? "View raw detonation logs"
