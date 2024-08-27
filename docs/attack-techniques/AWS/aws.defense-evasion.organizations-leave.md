@@ -49,9 +49,9 @@ Use the CloudTrail event <code>LeaveOrganization</code>.
 The following CloudTrail events are generated when this technique is detonated[^1]:
 
 
-- `organizations:LeaveOrganization`
-
 - `sts:AssumeRole`
+
+- `organizations:LeaveOrganization`
 
 
 ??? "View raw detonation logs"

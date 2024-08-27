@@ -84,9 +84,9 @@ which generates a finding when a role can be assumed from a new AWS account or p
 The following CloudTrail events are generated when this technique is detonated[^1]:
 
 
-- `iam:AttachRolePolicy`
-
 - `iam:CreateRole`
+
+- `iam:AttachRolePolicy`
 
 
 ??? "View raw detonation logs"

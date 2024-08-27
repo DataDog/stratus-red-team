@@ -43,6 +43,8 @@ Detonation:
 
 References:
 
+- https://permiso.io/blog/lucr-3-scattered-spider-getting-saas-y-in-the-cloud
+- https://unit42.paloaltonetworks.com/muddled-libra-evolution-to-cloud/
 - https://aws.amazon.com/blogs/security/how-to-use-the-batchgetsecretsvalue-api-to-improve-your-client-side-applications-with-aws-secrets-manager/
 `,
 		Detection: `

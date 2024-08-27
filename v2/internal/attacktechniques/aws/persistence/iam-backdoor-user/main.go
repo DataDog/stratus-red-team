@@ -30,13 +30,14 @@ Detonation:
 References:
 
 - https://sysdig.com/blog/scarleteel-2-0/
+- https://permiso.io/blog/lucr-3-scattered-spider-getting-saas-y-in-the-cloud
 `,
 		Detection: `
 Through CloudTrail's <code>CreateAccessKey</code> event. This event can hardly be considered suspicious by itself, unless
 correlated with other indicators.
 '`,
-		Platform:                   stratus.AWS,
-		
+		Platform: stratus.AWS,
+
 		IsIdempotent:               false, // iam:CreateAccessKey can only be called twice (limit of 2 access keys per user)
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence, mitreattack.PrivilegeEscalation},
 		PrerequisitesTerraformCode: tf,
