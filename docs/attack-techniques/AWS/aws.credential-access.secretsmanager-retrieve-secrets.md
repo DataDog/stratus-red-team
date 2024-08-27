@@ -28,6 +28,11 @@ Retrieves a high number of Secrets Manager secrets, through secretsmanager:GetSe
 - Enumerate the secrets through secretsmanager:ListSecrets
 - Retrieve each secret value, one by one through secretsmanager:GetSecretValue
 
+References:
+
+- https://permiso.io/blog/lucr-3-scattered-spider-getting-saas-y-in-the-cloud
+- https://unit42.paloaltonetworks.com/muddled-libra-evolution-to-cloud/
+
 
 ## Instructions
 

@@ -34,6 +34,9 @@ References:
 - https://permiso.io/blog/s/unmasking-guivil-new-cloud-threat-actor/
 - https://blog.darklab.hk/2021/07/06/trouble-in-paradise/
 - https://expel.com/blog/incident-report-from-cli-to-console-chasing-an-attacker-in-aws/
+- https://permiso.io/blog/lucr-3-scattered-spider-getting-saas-y-in-the-cloud
+- https://permiso.io/blog/s/anatomy-of-attack-exposed-keys-to-crypto-mining/
+- https://www.invictus-ir.com/news/the-curious-case-of-dangerdev-protonmail-me
 `,
 		Detection: `
 Through CloudTrail's <code>CreateUser</code>, <code>AttachUserPolicy</code> and <code>CreateAccessKey</code> events.

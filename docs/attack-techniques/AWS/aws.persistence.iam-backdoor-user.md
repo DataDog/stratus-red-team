@@ -31,6 +31,7 @@ Establishes persistence by creating an access key on an existing IAM user.
 References:
 
 - https://sysdig.com/blog/scarleteel-2-0/
+- https://permiso.io/blog/lucr-3-scattered-spider-getting-saas-y-in-the-cloud
 
 
 ## Instructions
