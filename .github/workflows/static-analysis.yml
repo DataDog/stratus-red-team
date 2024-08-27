@@ -37,7 +37,7 @@ jobs:
         uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491
         with:
           go-version: 1.19
-      - uses: dominikh/staticcheck-action@ba605356b4b29a60e87ab9404b712f3461e566dc
+      - uses: dominikh/staticcheck-action@fe1dd0c3658873b46f8c9bb3291096a617310ca6
         with:
           version: "2022.1"
           install-go: false
