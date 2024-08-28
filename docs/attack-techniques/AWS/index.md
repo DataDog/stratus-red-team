@@ -121,3 +121,5 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 - [Create an IAM Roles Anywhere trust anchor](./aws.persistence.rolesanywhere-create-trust-anchor.md)
 
+- [Change IAM user password](./aws.privilege-escalation.iam-update-user-login-profile.md)
+
