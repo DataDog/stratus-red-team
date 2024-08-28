@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 	"text/template"
 
@@ -143,6 +144,7 @@ func findDetonationLogs(technique *stratus.AttackTechnique) *DetonationLogs {
 	for k := range eventNamesSet {
 		eventNames = append(eventNames, k)
 	}
+	sort.Strings(eventNames)
 
 	rawLogs := strings.ReplaceAll(string(data), "\n", "\n\t") // indent for markdown
 	var eventNameLines []int

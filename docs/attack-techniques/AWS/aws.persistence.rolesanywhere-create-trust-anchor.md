@@ -58,9 +58,9 @@ Identify when a trust anchor is created, through CloudTrail's <code>CreateTrustA
 The following CloudTrail events are generated when this technique is detonated[^1]:
 
 
-- `rolesanywhere:CreateTrustAnchor`
-
 - `rolesanywhere:CreateProfile`
+
+- `rolesanywhere:CreateTrustAnchor`
 
 
 ??? "View raw detonation logs"
