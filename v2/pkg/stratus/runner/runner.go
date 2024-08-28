@@ -8,12 +8,15 @@ import (
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/useragent"
 	"github.com/google/uuid"
 	"log"
+	"os"
 	"path/filepath"
 	"strings"
 )
 
 const StratusRunnerForce = true
 const StratusRunnerNoForce = false
+
+const EnvVarStratusRedTeamDetonationId = "STRATUS_RED_TEAM_DETONATION_ID"
 
 type runnerImpl struct {
 	Technique           *stratus.AttackTechnique
@@ -44,14 +47,25 @@ func NewRunner(technique *stratus.AttackTechnique, force bool) Runner {
 
 func NewRunnerWithContext(ctx context.Context, technique *stratus.AttackTechnique, force bool) Runner {
 	stateManager := state.NewFileSystemStateManager(technique)
-	uuid := uuid.New()
+
+	var correlationId = uuid.New()
+	var err error
+	if grimoireDetonationId := os.Getenv("STRATUS_RED_TEAM_DETONATION_ID"); grimoireDetonationId != "" {
+		log.Println("STRATUS_RED_TEAM_DETONATION_ID is set, using it as the correlation ID")
+		correlationId, err = uuid.Parse(grimoireDetonationId)
+		if err != nil {
+			log.Println("STRATUS_RED_TEAM_DETONATION_ID is not a valid UUID, falling back to a randomly-generated one: " + err.Error())
+			correlationId = uuid.New()
+		}
+	}
+
 	runner := &runnerImpl{
 		Technique:           technique,
 		ShouldForce:         force,
 		StateManager:        stateManager,
-		UniqueCorrelationID: uuid,
+		UniqueCorrelationID: correlationId,
 		TerraformManager: NewTerraformManagerWithContext(
-			ctx, filepath.Join(stateManager.GetRootDirectory(), "terraform"), useragent.GetStratusUserAgentForUUID(uuid),
+			ctx, filepath.Join(stateManager.GetRootDirectory(), "terraform"), useragent.GetStratusUserAgentForUUID(correlationId),
 		),
 		Context: ctx,
 	}
