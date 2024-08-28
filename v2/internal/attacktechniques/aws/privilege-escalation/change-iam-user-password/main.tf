@@ -27,10 +27,10 @@ resource "aws_iam_user" "legit-user" {
 }
 
 resource "aws_iam_user_login_profile" "example" {
-  user    = aws_iam_user.legit-user.name
-  password_length = 20
+  user                    = aws_iam_user.legit-user.name
+  password_length         = 20
   password_reset_required = false
-  pgp_key = "keybase:christophetd" // NOTE: this field is required, but we don't even output/use the password
+  pgp_key                 = "keybase:christophetd" // NOTE: this field is required, but we don't even output/use the password
 }
 
 
