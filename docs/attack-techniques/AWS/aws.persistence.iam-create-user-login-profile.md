@@ -58,11 +58,11 @@ In particular, it's suspicious when these events occur on IAM users intended to 
 The following CloudTrail events are generated when this technique is detonated[^1]:
 
 
-- `sts:GetCallerIdentity`
+- `iam:CreateLoginProfile`
 
 - `iam:DeleteLoginProfile`
 
-- `iam:CreateLoginProfile`
+- `sts:GetCallerIdentity`
 
 
 ??? "View raw detonation logs"

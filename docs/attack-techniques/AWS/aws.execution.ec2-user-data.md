@@ -61,13 +61,13 @@ provisioned before instantiation.
 The following CloudTrail events are generated when this technique is detonated[^1]:
 
 
-- `ec2:ModifyInstanceAttribute`
-
-- `ec2:StopInstances`
-
 - `ec2:DescribeInstances`
 
+- `ec2:ModifyInstanceAttribute`
+
 - `ec2:StartInstances`
+
+- `ec2:StopInstances`
 
 
 ??? "View raw detonation logs"

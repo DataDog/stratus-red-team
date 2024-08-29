@@ -329,6 +329,13 @@ AWS:
             - Privilege Escalation
           platform: AWS
           isIdempotent: false
+        - id: aws.privilege-escalation.iam-update-user-login-profile
+          name: Change IAM user password
+          isSlow: false
+          mitreAttackTactics:
+            - Privilege Escalation
+          platform: AWS
+          isIdempotent: true
 EKS:
     Lateral Movement:
         - id: eks.lateral-movement.create-access-entry
