@@ -68,8 +68,14 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	suffix := params["suffix"]
 
 	//graphClient setup
-	betaGraphClient, _ := betagraph.NewGraphServiceClientWithCredentials(providers.Azure().GetCredentials(), nil)
-	graphClient, _ := graph.NewGraphServiceClientWithCredentials(providers.Azure().GetCredentials(), nil)
+	betaGraphClient, err := betagraph.NewGraphServiceClientWithCredentials(providers.Azure().GetCredentials(), nil)
+	if err != nil {
+		return errors.New("could initialize betaGraph client: " + err.Error())
+	}
+	graphClient, err := graph.NewGraphServiceClientWithCredentials(providers.Azure().GetCredentials(), nil)
+	if err != nil {
+		return errors.New("could initialize Graph client: " + err.Error())
+	}
 
 	// 1. Create Restricted AU
 	requestBodyAU := betagraphmodels.NewAdministrativeUnit()
@@ -109,7 +115,10 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 	suffix := fmt.Sprintf(" - %s", params["suffix"])
 
 	//graphClient setup
-	graphClient, _ := graph.NewGraphServiceClientWithCredentials(providers.Azure().GetCredentials(), nil)
+	graphClient, err := graph.NewGraphServiceClientWithCredentials(providers.Azure().GetCredentials(), nil)
+	if err != nil {
+		return errors.New("could initialize Graph client: " + err.Error())
+	}
 
 	// 1. Get ID of Stratus created AU
 	auResult, err := graphClient.Directory().AdministrativeUnits().Get(context.Background(), nil)
