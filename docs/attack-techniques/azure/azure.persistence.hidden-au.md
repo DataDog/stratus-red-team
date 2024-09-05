@@ -16,12 +16,13 @@ Create a HiddenMembership [Administrative Unit (AU)](https://learn.microsoft.com
 
 Warm-up:
 
-- Create two Entra ID users (Backdoor, Target)
+- Create Target Entra ID user
 - Initialize Privileged Administration Administrator role
 
 Detonation:
 
 - Create HiddenMembership AU
+- Create Backdoor Entra ID user
 - Add Target user to AU
 - Assign Backdoor user Privileged Administration Administrator over AU
 

