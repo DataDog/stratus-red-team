@@ -17,10 +17,9 @@ import (
 var tf []byte
 
 func init() {
-	const codeBlock = "```"
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
 		ID:           "azure.persistence.hidden-au",
-		FriendlyName: "Scoped Role Assignment Through HiddenMembership AU",
+		FriendlyName: "Create Hidden Scoped Role Assignment Through HiddenMembership AU",
 		Description: `
 Create a HiddenMembership [Administrative Unit (AU)](https://learn.microsoft.com/en-us/graph/api/resources/administrativeunit?view=graph-rest-1.0), and a scoped role assignment over this AU to simulate hidden assigned permissions.
 
