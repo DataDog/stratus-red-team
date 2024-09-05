@@ -14,6 +14,7 @@ const (
 	EKS        = "EKS"
 	Kubernetes = "kubernetes"
 	Azure      = "azure"
+	EntraID    = "entra-id"
 	GCP        = "GCP"
 )
 
@@ -40,6 +41,8 @@ func (p Platform) FormatName() (string, error) {
 		return "AWS", nil
 	case Azure:
 		return "Azure", nil
+	case EntraID:
+		return "Entra ID", nil
 	case GCP:
 		return "GCP", nil
 	case Kubernetes:

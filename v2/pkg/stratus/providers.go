@@ -12,6 +12,7 @@ type CloudProviders interface {
 	AWS() *providers.AWSProvider
 	K8s() *providers.K8sProvider
 	Azure() *providers.AzureProvider
+	EntraId() *providers.EntraIdProvider
 	GCP() *providers.GCPProvider
 	EKS() *providers.EKSProvider
 }
@@ -23,6 +24,7 @@ type CloudProvidersImpl struct {
 	AzureProvider       *providers.AzureProvider
 	GCPProvider         *providers.GCPProvider
 	EKSProvider         *providers.EKSProvider
+	EntraIdProvider     *providers.EntraIdProvider
 }
 
 func (m CloudProvidersImpl) AWS() *providers.AWSProvider {
@@ -60,6 +62,13 @@ func (m CloudProvidersImpl) EKS() *providers.EKSProvider {
 	return m.EKSProvider
 }
 
+func (m CloudProvidersImpl) EntraId() *providers.EntraIdProvider {
+	if m.EntraIdProvider == nil {
+		m.EntraIdProvider = providers.NewEntraIdProvider(m.UniqueCorrelationID)
+	}
+	return m.EntraIdProvider
+}
+
 // EnsureAuthenticated ensures that the current user is properly authenticated against a specific platform
 func EnsureAuthenticated(platform Platform) error {
 	providerFactory := CloudProvidersImpl{UniqueCorrelationID: uuid.New()}
@@ -76,6 +85,11 @@ func EnsureAuthenticated(platform Platform) error {
 			return errors.New("you are not authenticated against Azure, or you have not set your subscription. " +
 				"Make sure you are authenticated against Azure and you have your Azure subscription ID set in your environment" +
 				" (export AZURE_SUBSCRIPTION_ID=xxx)")
+		}
+	case EntraID:
+		if !providerFactory.EntraId().IsAuthenticatedAgainstEntraId() {
+			return errors.New("you are not authenticated against Entra ID. " +
+				"Make sure you have run 'az login --allow-no-subscriptions'")
 		}
 	case Kubernetes:
 		if !providerFactory.K8s().IsAuthenticated() {

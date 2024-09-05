@@ -159,6 +159,14 @@ export AZURE_SUBSCRIPTION_ID=45e0ad3f-ff94-499a-a2f0-bbb884e9c4a3
     fixed to `West US` (California). See why [here](https://github.com/DataDog/stratus-red-team/discussions/125).
 
 
+### Microsoft Entra ID
+
+- Use the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) to authenticate against your Azure tenant:
+
+```
+az login
+```
+
 ### GCP
 
 - Use the [gcloud CLI](https://cloud.google.com/sdk/gcloud) to authenticate against GCP:

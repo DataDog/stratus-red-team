@@ -5,12 +5,10 @@ import (
 	_ "embed"
 	"errors"
 	"fmt"
-	graph "github.com/microsoftgraph/msgraph-sdk-go"
-	graphmodels "github.com/microsoftgraph/msgraph-sdk-go/models"
-	betagraph "github.com/microsoftgraph/msgraph-beta-sdk-go"
-	betagraphmodels "github.com/microsoftgraph/msgraph-beta-sdk-go/models"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
+	betagraphmodels "github.com/microsoftgraph/msgraph-beta-sdk-go/models"
+	graphmodels "github.com/microsoftgraph/msgraph-sdk-go/models"
 	"log"
 	"strings"
 )
@@ -20,7 +18,7 @@ var tf []byte
 
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
-		ID:           "azure.persistence.restricted-au",
+		ID:           "entra-id.persistence.restricted-au",
 		FriendlyName: "Create Sticky Backdoor Account Through Restricted Management AU",
 		Description: `
 Create a [restricted management Administrative Unit (AU)](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/admin-units-restricted-management), and place a backdoor account in it to simulate a protected attacker-controlled user.
@@ -40,7 +38,7 @@ References:
 - https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/admin-units-restricted-management
 
 `,
-Detection: `
+		Detection: `
 Identify the following <code>activityDisplayName</code> events in Entra ID Audit logs.
 
 For <code>Service: Core Directory</code>,<code>Category: AdministrativeUnit</code>:
@@ -50,7 +48,7 @@ Add member to restricted management administrative unit
 Consider detection of additional Administrative Unit activities and scoped role assignments in the following Microsoft article:
 - https://learn.microsoft.com/en-us/entra/identity/monitoring-health/reference-audit-activities
 `,
-		Platform:                   stratus.Azure,
+		Platform:                   stratus.EntraID,
 		IsIdempotent:               false,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence},
 		PrerequisitesTerraformCode: tf,
@@ -65,22 +63,15 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	backdoorUserName := params["backdoor_user_name"]
 	suffix := params["suffix"]
 
-	//graphClient setup
-	betaGraphClient, err := betagraph.NewGraphServiceClientWithCredentials(providers.Azure().GetCredentials(), nil)
-	if err != nil {
-		return errors.New("could initialize betaGraph client: " + err.Error())
-	}
-	graphClient, err := graph.NewGraphServiceClientWithCredentials(providers.Azure().GetCredentials(), nil)
-	if err != nil {
-		return errors.New("could initialize Graph client: " + err.Error())
-	}
+	betaGraphClient := providers.EntraId().GetBetaGraphClient()
+	graphClient := providers.EntraId().GetGraphClient()
 
 	// 1. Create Restricted AU
 	requestBodyAU := betagraphmodels.NewAdministrativeUnit()
 	displayName := fmt.Sprintf("Stratus Restricted AU - %s", suffix)
-	requestBodyAU.SetDisplayName(&displayName) 
+	requestBodyAU.SetDisplayName(&displayName)
 	description := "Restricted management AU created from Stratus"
-	requestBodyAU.SetDescription(&description) 
+	requestBodyAU.SetDescription(&description)
 	restricted := true
 	requestBodyAU.SetIsMemberManagementRestricted(&restricted)
 
@@ -104,7 +95,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 		return errors.New("could not add member to AU: " + err.Error())
 	}
 	log.Println("Added backdoor user " + backdoorUserName + " to AU")
-	
+
 	return nil
 }
 
@@ -112,11 +103,7 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 	// AU ID from detonate
 	suffix := fmt.Sprintf(" - %s", params["suffix"])
 
-	//graphClient setup
-	graphClient, err := graph.NewGraphServiceClientWithCredentials(providers.Azure().GetCredentials(), nil)
-	if err != nil {
-		return errors.New("could initialize Graph client: " + err.Error())
-	}
+	graphClient := providers.EntraId().GetGraphClient()
 
 	// 1. Get ID of Stratus created AU
 	auResult, err := graphClient.Directory().AdministrativeUnits().Get(context.Background(), nil)
@@ -127,7 +114,7 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 	var auId string
 	for _, au := range auResult.GetValue() {
 		auName := *au.GetDisplayName()
-		if strings.HasSuffix(auName, suffix){
+		if strings.HasSuffix(auName, suffix) {
 			auId = *au.GetId()
 			break
 		}

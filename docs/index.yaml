@@ -465,6 +465,22 @@ Azure:
             - Exfiltration
           platform: Azure
           isIdempotent: true
+Entra ID:
+    Persistence:
+        - id: entra-id.persistence.hidden-au
+          name: Create Hidden Scoped Role Assignment Through HiddenMembership AU
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+          platform: Entra ID
+          isIdempotent: false
+        - id: entra-id.persistence.restricted-au
+          name: Create Sticky Backdoor Account Through Restricted Management AU
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+          platform: Entra ID
+          isIdempotent: false
 Kubernetes:
     Credential Access:
         - id: k8s.credential-access.dump-secrets

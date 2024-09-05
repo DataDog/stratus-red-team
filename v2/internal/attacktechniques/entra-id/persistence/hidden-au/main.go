@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
-	graph "github.com/microsoftgraph/msgraph-sdk-go"
 	graphmodels "github.com/microsoftgraph/msgraph-sdk-go/models"
 	"log"
 	"strings"
@@ -18,7 +17,7 @@ var tf []byte
 
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
-		ID:           "azure.persistence.hidden-au",
+		ID:           "entra-id.persistence.hidden-au",
 		FriendlyName: "Create Hidden Scoped Role Assignment Through HiddenMembership AU",
 		Description: `
 Create a HiddenMembership [Administrative Unit (AU)](https://learn.microsoft.com/en-us/graph/api/resources/administrativeunit?view=graph-rest-1.0), and a scoped role assignment over this AU to simulate hidden assigned permissions.
@@ -53,7 +52,7 @@ Add scoped member to role
 Consider detection of additional Administrative Unit activities and scoped role assignments in the following Microsoft article:
 - https://learn.microsoft.com/en-us/entra/identity/monitoring-health/reference-audit-activities
 `,
-		Platform:                   stratus.Azure,
+		Platform:                   stratus.EntraID,
 		IsIdempotent:               false,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence},
 		PrerequisitesTerraformCode: tf,
@@ -72,10 +71,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	password := params["random_password"]
 
 	//graphClient setup
-	graphClient, err := graph.NewGraphServiceClientWithCredentials(providers.Azure().GetCredentials(), nil)
-	if err != nil {
-		return errors.New("could initialize Graph client: " + err.Error())
-	}
+	graphClient := providers.EntraId().GetGraphClient()
 
 	// 0. Create Backdoor User
 	requestBodyUser := graphmodels.NewUser()
@@ -158,11 +154,7 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 	// AU ID from detonate
 	suffix := fmt.Sprintf(" - %s", params["suffix"])
 
-	//graphClient setup
-	graphClient, err := graph.NewGraphServiceClientWithCredentials(providers.Azure().GetCredentials(), nil)
-	if err != nil {
-		return errors.New("could initialize Graph client: " + err.Error())
-	}
+	graphClient := providers.EntraId().GetGraphClient()
 
 	// 1. Get ID of Stratus created AU
 	auResult, err := graphClient.Directory().AdministrativeUnits().Get(context.Background(), nil)
@@ -190,7 +182,7 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 	if err != nil {
 		return errors.New("could not retrieve users: " + err.Error())
 	}
-	
+
 	var userId string
 	for _, user := range userResult.GetValue() {
 		userName := *user.GetDisplayName()
