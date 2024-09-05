@@ -39,6 +39,7 @@ import (
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/persistence/lambda-layer-extension"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/persistence/lambda-overwrite-code"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/persistence/rolesanywhere-create-trust-anchor"
+	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/privilege-escalation/change-iam-user-password"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/azure/execution/vm-custom-script-extension"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/azure/execution/vm-run-command"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/azure/exfiltration/disk-export"

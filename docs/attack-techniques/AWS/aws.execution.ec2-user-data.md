@@ -63,9 +63,9 @@ The following CloudTrail events are generated when this technique is detonated[^
 
 - `ec2:DescribeInstances`
 
-- `ec2:StartInstances`
-
 - `ec2:ModifyInstanceAttribute`
+
+- `ec2:StartInstances`
 
 - `ec2:StopInstances`
 

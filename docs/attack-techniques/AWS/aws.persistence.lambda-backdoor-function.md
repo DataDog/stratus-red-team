@@ -27,6 +27,10 @@ Establishes persistence by backdooring a lambda function to allow its invocation
 
 - Modify the Lambda function resource-base policy to allow lambda:InvokeFunction from an external, fictitious AWS account.
 
+References:
+
+- https://unit42.paloaltonetworks.com/large-scale-cloud-extortion-operation/
+
 
 ## Instructions
 

@@ -30,6 +30,11 @@ Detonation:
 
 - Enumerate the secrets through secretsmanager:ListSecrets
 - Retrieve each secret value, one by one through secretsmanager:GetSecretValue
+
+References:
+
+- https://permiso.io/blog/lucr-3-scattered-spider-getting-saas-y-in-the-cloud
+- https://unit42.paloaltonetworks.com/muddled-libra-evolution-to-cloud/
 `,
 		Detection: `
 Identify principals retrieving a high number of secrets, through CloudTrail's GetSecretValue event.

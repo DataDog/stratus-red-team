@@ -31,10 +31,12 @@ user intended to be used programmatically through the AWS console usual login pr
 
 References:
 
+- https://securitylabs.datadoghq.com/articles/tales-from-the-cloud-trenches-ecs-crypto-mining/
 - https://permiso.io/blog/s/approach-to-detection-androxgh0st-greenbot-persistence/
 - https://permiso.io/blog/s/unmasking-guivil-new-cloud-threat-actor/
 - https://blog.darklab.hk/2021/07/06/trouble-in-paradise/
 - https://expel.com/blog/incident-report-from-cli-to-console-chasing-an-attacker-in-aws/
+- https://permiso.io/blog/lucr-3-scattered-spider-getting-saas-y-in-the-cloud
 
 
 ## Instructions
@@ -56,11 +58,11 @@ In particular, it's suspicious when these events occur on IAM users intended to 
 The following CloudTrail events are generated when this technique is detonated[^1]:
 
 
-- `sts:GetCallerIdentity`
+- `iam:CreateLoginProfile`
 
 - `iam:DeleteLoginProfile`
 
-- `iam:CreateLoginProfile`
+- `sts:GetCallerIdentity`
 
 
 ??? "View raw detonation logs"

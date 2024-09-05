@@ -28,6 +28,10 @@ Warm-up:
 Detonation: 
 
 - Modify the Lambda function resource-base policy to allow lambda:InvokeFunction from an external, fictitious AWS account.
+
+References:
+
+- https://unit42.paloaltonetworks.com/large-scale-cloud-extortion-operation/
 `,
 		Detection: `
 - Using CloudTrail's <code>AddPermission20150331</code> and <code>AddPermission20150331v2</code> events.

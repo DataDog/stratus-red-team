@@ -51,6 +51,8 @@ References:
 - https://rhinosecuritylabs.com/aws/s3-ransomware-part-1-attack-vector/
 - https://www.invictus-ir.com/news/ransomware-in-the-cloud
 - https://dfir.ch/posts/aws_ransomware/
+- https://unit42.paloaltonetworks.com/large-scale-cloud-extortion-operation/
+- https://unit42.paloaltonetworks.com/shinyhunters-ransomware-extortion/
 `,
 		Detection: `
 You can detect ransomware activity by identifying abnormal patterns of objects being downloaded or deleted in the bucket. 

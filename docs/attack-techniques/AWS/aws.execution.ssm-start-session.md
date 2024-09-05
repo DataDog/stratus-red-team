@@ -68,9 +68,9 @@ The following CloudTrail events are generated when this technique is detonated[^
 
 - `ssm:DescribeInstanceInformation`
 
-- `ssm:TerminateSession`
-
 - `ssm:StartSession`
+
+- `ssm:TerminateSession`
 
 
 ??? "View raw detonation logs"
