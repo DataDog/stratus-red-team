@@ -195,6 +195,9 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 			break
 		}
     }
+	if err != nil {
+		return errors.New("could not fetch backdoor user: " + err.Error())
+	}
 
 	// 4. Delete backdoor user
 	err = graphClient.Users().ByUserId(userId).Delete(context.Background(), nil)
