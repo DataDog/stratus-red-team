@@ -19,10 +19,10 @@ Create a [restricted management Administrative Unit (AU)](https://learn.microsof
 Warm-up:
 
 - Create Entra ID user (Backdoor)
-- Create restricted management AU
 
 Detonation:
 
+- Create restricted management AU
 - Add Backdoor user to AU
 
 References:
