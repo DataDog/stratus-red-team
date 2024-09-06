@@ -99,7 +99,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	// 0.a. Save User ID from creation activity
 	backdoorUserId := *userResult.GetId()
 	backdoorPrincipalName := *userResult.GetUserPrincipalName()
-	log.Println("Created Backdoor User " + backdoorPrincipalName)
+	log.Println("Created backdoor user " + backdoorPrincipalName)
 
 	// 1. Create Hidden AU
 	requestBodyAU := graphmodels.NewAdministrativeUnit()

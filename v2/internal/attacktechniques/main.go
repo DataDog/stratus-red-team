@@ -47,6 +47,7 @@ import (
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/eks/persistence/backdoor-aws-auth-configmap"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/entra-id/persistence/hidden-au"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/entra-id/persistence/restricted-au"
+	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/entra-id/persistence/guest-user"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/exfiltration/share-compute-disk"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/exfiltration/share-compute-image"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/exfiltration/share-compute-snapshot"
