@@ -141,7 +141,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 		return errors.New("could not invite user: " + err.Error())
 	}
 
-	log.Println(fmt.Sprintf("Invited %s as guest user", attackerPrincipal))
+	log.Printf("Invited %s as guest user", attackerPrincipal)
 
 	return nil
 }
@@ -173,7 +173,7 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 		return errors.New("could not delete guest user: " + err.Error())
 	}
 
-	log.Println(fmt.Sprintf("Deleted guest user %s", attackerPrincipal))
+	log.Printf("Deleted guest user %s", attackerPrincipal)
 
 	return nil
 }
