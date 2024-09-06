@@ -26,6 +26,8 @@ func PlatformFromString(name string) (Platform, error) {
 		return Kubernetes, nil
 	case strings.ToLower(Azure):
 		return Azure, nil
+	case strings.ToLower(EntraID):
+		return EntraID, nil
 	case strings.ToLower(GCP):
 		return GCP, nil
 	case strings.ToLower(EKS):
