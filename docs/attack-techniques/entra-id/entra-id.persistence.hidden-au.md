@@ -17,7 +17,8 @@ Platform: Entra ID
 ## Description
 
 
-Create a HiddenMembership [Administrative Unit (AU)](https://learn.microsoft.com/en-us/graph/api/resources/administrativeunit?view=graph-rest-1.0), and a scoped role assignment over this AU to simulate hidden assigned permissions.
+Creates an [Administrative Unit (AU)](https://learn.microsoft.com/en-us/graph/api/resources/administrativeunit?view=graph-rest-1.0) with hidden membership, and a scoped role assignment over this AU.
+This simulates an attacker that TODO.
 
 <span style="font-variant: small-caps;">Warm-up</span>:
 
@@ -45,16 +46,13 @@ stratus detonate entra-id.persistence.hidden-au
 ## Detection
 
 
-Identify the following <code>activityDisplayName</code> events in Entra ID Audit logs.
+Using [Entra ID audit logs](https://learn.microsoft.com/en-us/entra/identity/monitoring-health/concept-audit-logs) with the specific activity types:
 
-For <code>Service: Core Directory</code>,<code>Category: AdministrativeUnit</code>:
-Add administrative unit
-Add member to administrative unit
+For <code>Service: Core Directory</code> and <code>Category: AdministrativeUnit</code>:
+- <code>Add administrative unit</code>
+- <code>Add member to administrative unit</code>
 
-For <code>Service: Core Directory</code>,<code>Category: RoleManagement</code>:
-Add scoped member to role
-
-Consider detection of additional Administrative Unit activities and scoped role assignments in the following Microsoft article:
-- https://learn.microsoft.com/en-us/entra/identity/monitoring-health/reference-audit-activities
+For <code>Service: Core Directory</code> and <code>Category: RoleManagement</code>:
+- <code>Add scoped member to role</code>
 
 

