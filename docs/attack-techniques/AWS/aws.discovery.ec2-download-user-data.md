@@ -48,7 +48,7 @@ Through CloudTrail's <code>DescribeInstanceAttribute</code> event.
 
 See:
 
-* [Associated Sigma rule](https://github.com/SigmaHQ/sigma/blob/master/unsupported/cloud/aws_ec2_download_userdata.yml)
+* [Associated Sigma rule](https://github.com/SigmaHQ/sigma/blob/master/rules/cloud/aws/aws_ec2_download_userdata.yml)
 
 
 ## Detonation logs <span class="smallcaps w3-badge w3-light-green w3-round w3-text-sand">new!</span>
