@@ -2,9 +2,11 @@ package runner
 
 import (
 	"errors"
-	statemocks "github.com/datadog/stratus-red-team/v2/internal/state/mocks"
+	"github.com/datadog/stratus-red-team/v2/internal/state/datastore"
+	statemanager "github.com/datadog/stratus-red-team/v2/internal/state/manager"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/runner/mocks"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"testing"
@@ -21,7 +23,7 @@ func TestRunnerWarmUp(t *testing.T) {
 		PersistedOutputs      map[string]string
 		Error                 error
 		// results
-		CheckExpectations func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, outputs map[string]string, err error)
+		CheckExpectations func(t *testing.T, terraform *mocks.TerraformManager, state *statemanager.StateManagerMock, outputs map[string]string, err error)
 	}
 
 	var scenario = []RunnerWarmupTestScenario{
@@ -30,7 +32,7 @@ func TestRunnerWarmUp(t *testing.T) {
 			Technique:             &stratus.AttackTechnique{ID: "foo"},
 			InitialTechniqueState: stratus.AttackTechniqueStatusCold,
 			PersistedOutputs:      map[string]string{"myoutput": "foo"},
-			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, outputs map[string]string, err error) {
+			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemanager.StateManagerMock, outputs map[string]string, err error) {
 				terraform.AssertNotCalled(t, "TerraformInitAndApply")
 				state.AssertNotCalled(t, "ExtractTechnique")
 				assert.Nil(t, err)
@@ -44,7 +46,7 @@ func TestRunnerWarmUp(t *testing.T) {
 			Technique:             &stratus.AttackTechnique{ID: "foo", PrerequisitesTerraformCode: []byte("foo")},
 			InitialTechniqueState: stratus.AttackTechniqueStatusCold,
 			TerraformOutputs:      map[string]string{"myoutput": "new"},
-			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, outputs map[string]string, err error) {
+			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemanager.StateManagerMock, outputs map[string]string, err error) {
 				state.AssertCalled(t, "ExtractTechnique")
 				terraform.AssertCalled(t, "TerraformInitAndApply", "/root/foo")
 				state.AssertCalled(t, "WriteTerraformOutputs", map[string]string{"myoutput": "new"})
@@ -60,7 +62,7 @@ func TestRunnerWarmUp(t *testing.T) {
 			Technique:             &stratus.AttackTechnique{ID: "foo", PrerequisitesTerraformCode: []byte("bar")},
 			InitialTechniqueState: stratus.AttackTechniqueStatusWarm,
 			PersistedOutputs:      map[string]string{"myoutput": "new"},
-			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, outputs map[string]string, err error) {
+			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemanager.StateManagerMock, outputs map[string]string, err error) {
 				terraform.AssertNotCalled(t, "TerraformInitAndApply")
 				assert.Nil(t, err)
 				assert.Len(t, outputs, 1)
@@ -73,7 +75,7 @@ func TestRunnerWarmUp(t *testing.T) {
 			ShouldForce:           true,
 			InitialTechniqueState: stratus.AttackTechniqueStatusWarm,
 			TerraformOutputs:      map[string]string{"myoutput": "old"},
-			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, outputs map[string]string, err error) {
+			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemanager.StateManagerMock, outputs map[string]string, err error) {
 				terraform.AssertCalled(t, "TerraformInitAndApply", "/root/foo")
 				assert.Nil(t, err)
 				assert.Len(t, outputs, 1)
@@ -85,7 +87,7 @@ func TestRunnerWarmUp(t *testing.T) {
 			Technique:             &stratus.AttackTechnique{ID: "foo", PrerequisitesTerraformCode: []byte("bar")},
 			InitialTechniqueState: stratus.AttackTechniqueStatusDetonated,
 			PersistedOutputs:      map[string]string{"myoutput": "old"},
-			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, outputs map[string]string, err error) {
+			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemanager.StateManagerMock, outputs map[string]string, err error) {
 				terraform.AssertNotCalled(t, "TerraformInitAndApply")
 				assert.Nil(t, err)
 				assert.Len(t, outputs, 1)
@@ -97,7 +99,7 @@ func TestRunnerWarmUp(t *testing.T) {
 			Technique:             &stratus.AttackTechnique{ID: "foo", PrerequisitesTerraformCode: []byte("bar")},
 			InitialTechniqueState: stratus.AttackTechniqueStatusCold,
 			Error:                 errors.New("error during init and apply"),
-			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, outputs map[string]string, err error) {
+			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemanager.StateManagerMock, outputs map[string]string, err error) {
 				terraform.AssertCalled(t, "TerraformInitAndApply", "/root/foo")
 				terraform.AssertCalled(t, "TerraformDestroy", "/root/foo")
 				assert.NotNil(t, err)
@@ -107,8 +109,9 @@ func TestRunnerWarmUp(t *testing.T) {
 	}
 
 	for i := range scenario {
-		state := new(statemocks.StateManager)
+		state := new(statemanager.StateManagerMock)
 		terraform := new(mocks.TerraformManager)
+		datastoreMock := new(datastore.DataStoreMock)
 
 		state.On("GetRootDirectory").Return("/root")
 		state.On("ExtractTechnique").Return(nil)
@@ -118,6 +121,10 @@ func TestRunnerWarmUp(t *testing.T) {
 		terraform.On("TerraformDestroy", mock.Anything).Return(nil)
 		state.On("WriteTerraformOutputs", mock.Anything).Return(nil)
 		state.On("SetTechniqueState", mock.Anything).Return(nil)
+
+		datastoreMock.On("Has", mock.Anything).Return(true)
+		datastoreMock.On("Get", ParameterCorrelationId).Return(uuid.New().String(), nil)
+		state.On("GetDataStore").Return(datastoreMock)
 
 		runner := runnerImpl{
 			Technique:        scenario[i].Technique,
@@ -199,8 +206,9 @@ func TestRunnerDetonate(t *testing.T) {
 
 	for i := range scenario {
 		t.Run(scenario[i].Name, func(t *testing.T) {
-			state := new(statemocks.StateManager)
+			state := new(statemanager.StateManagerMock)
 			terraform := new(mocks.TerraformManager)
+			datastoreMock := new(datastore.DataStoreMock)
 
 			state.On("GetRootDirectory").Return("/root")
 			state.On("ExtractTechnique").Return(nil)
@@ -209,6 +217,10 @@ func TestRunnerDetonate(t *testing.T) {
 			state.On("WriteTerraformOutputs", mock.Anything).Return(nil)
 			state.On("GetTerraformOutputs").Return(map[string]string{}, nil)
 			state.On("SetTechniqueState", mock.Anything).Return(nil)
+
+			datastoreMock.On("Has", mock.Anything).Return(true)
+			datastoreMock.On("Get", ParameterCorrelationId).Return(uuid.New().String(), nil)
+			state.On("GetDataStore").Return(datastoreMock)
 
 			var wasDetonated = false
 			runner := runnerImpl{
@@ -292,12 +304,18 @@ func TestRunnerRevert(t *testing.T) {
 
 	for i := range scenario {
 		t.Run(scenario[i].Name, func(t *testing.T) {
-			state := new(statemocks.StateManager)
+			state := new(statemanager.StateManagerMock)
+			datastoreMock := new(datastore.DataStoreMock)
+
 			state.On("GetRootDirectory").Return("/root")
 			state.On("ExtractTechnique").Return(nil)
 			state.On("GetTerraformOutputs").Return(map[string]string{"foo": "bar"}, nil)
 			state.On("GetTechniqueState", mock.Anything).Return(scenario[i].TechniqueState)
 			state.On("SetTechniqueState", mock.Anything).Return(nil)
+
+			datastoreMock.On("Has", mock.Anything).Return(true)
+			datastoreMock.On("Get", ParameterCorrelationId).Return(uuid.New().String(), nil)
+			state.On("GetDataStore").Return(datastoreMock)
 
 			var wasReverted = false
 			runner := runnerImpl{
@@ -347,7 +365,7 @@ func TestRunnerCleanup(t *testing.T) {
 		TerraformDestroyFails bool
 		RevertFails           bool
 		// results
-		CheckExpectations func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, err error)
+		CheckExpectations func(t *testing.T, terraform *mocks.TerraformManager, state *statemanager.StateManagerMock, datastoreMock *datastore.DataStoreMock, err error)
 	}
 
 	var scenario = []RunnerCleanupTestScenario{
@@ -355,7 +373,7 @@ func TestRunnerCleanup(t *testing.T) {
 			Name:                  "Cleaning up an already cold technique without force flag",
 			Technique:             &stratus.AttackTechnique{ID: "foo", PrerequisitesTerraformCode: []byte("foo)")},
 			InitialTechniqueState: stratus.AttackTechniqueStatusCold,
-			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, err error) {
+			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemanager.StateManagerMock, datastoreMock *datastore.DataStoreMock, err error) {
 				assert.NotNil(t, err)
 				terraform.AssertNotCalled(t, "TerraformDestroy")
 				state.AssertNotCalled(t, "CleanupTechnique")
@@ -367,7 +385,7 @@ func TestRunnerCleanup(t *testing.T) {
 			Technique:             &stratus.AttackTechnique{ID: "foo", PrerequisitesTerraformCode: []byte("foo)")},
 			InitialTechniqueState: stratus.AttackTechniqueStatusCold,
 			ShouldForce:           true,
-			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, err error) {
+			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemanager.StateManagerMock, datastoreMock *datastore.DataStoreMock, err error) {
 				assert.Nil(t, err)
 				terraform.AssertCalled(t, "TerraformDestroy", mock.Anything)
 				state.AssertCalled(t, "CleanupTechnique")
@@ -377,11 +395,12 @@ func TestRunnerCleanup(t *testing.T) {
 			Name:                  "Cleaning up a WARM technique",
 			Technique:             &stratus.AttackTechnique{ID: "foo", PrerequisitesTerraformCode: []byte("foo)")},
 			InitialTechniqueState: stratus.AttackTechniqueStatusWarm,
-			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, err error) {
+			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemanager.StateManagerMock, datastoreMock *datastore.DataStoreMock, err error) {
 				assert.Nil(t, err)
 				terraform.AssertCalled(t, "TerraformDestroy", mock.Anything)
 				state.AssertCalled(t, "CleanupTechnique")
 				state.AssertCalled(t, "SetTechniqueState", stratus.AttackTechniqueState(stratus.AttackTechniqueStatusCold))
+				datastoreMock.AssertCalled(t, "ClearAll")
 			},
 		},
 		{
@@ -389,7 +408,7 @@ func TestRunnerCleanup(t *testing.T) {
 			Technique:             &stratus.AttackTechnique{ID: "foo", PrerequisitesTerraformCode: []byte("foo)")},
 			InitialTechniqueState: stratus.AttackTechniqueStatusDetonated,
 			TerraformDestroyFails: true,
-			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, err error) {
+			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemanager.StateManagerMock, datastoreMock *datastore.DataStoreMock, err error) {
 				assert.NotNil(t, err, "terraform destroy error should be propagated")
 
 				// The technique should not have been marked as properly cleaned up
@@ -401,11 +420,12 @@ func TestRunnerCleanup(t *testing.T) {
 			Technique:             &stratus.AttackTechnique{ID: "foo"},
 			InitialTechniqueState: stratus.AttackTechniqueStatusDetonated,
 			RevertFails:           true,
-			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, err error) {
+			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemanager.StateManagerMock, datastoreMock *datastore.DataStoreMock, err error) {
 				assert.NotNil(t, err, "revert error should be propagated")
 
 				// The technique should not have been marked as properly cleaned up
 				state.AssertNotCalled(t, "SetTechniqueState", stratus.AttackTechniqueState(stratus.AttackTechniqueStatusCold))
+				datastoreMock.AssertNotCalled(t, "ClearAll")
 			},
 		},
 		{
@@ -415,20 +435,22 @@ func TestRunnerCleanup(t *testing.T) {
 			ShouldForce:           true,
 			RevertFails:           true,
 			TerraformDestroyFails: false,
-			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, err error) {
+			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemanager.StateManagerMock, datastoreMock *datastore.DataStoreMock, err error) {
 				assert.Nil(t, err, "revert error should not be propagated")
 
 				// The technique should have been marked as properly cleaned up
 				// We assume that the cleanup operation will anyway be a superset of revert, i.e. anything reverted / cleaned up in revert
 				// should also be in cleanup
 				state.AssertCalled(t, "SetTechniqueState", stratus.AttackTechniqueState(stratus.AttackTechniqueStatusCold))
+				datastoreMock.AssertCalled(t, "ClearAll")
 			},
 		},
 	}
 
 	for i := range scenario {
-		state := new(statemocks.StateManager)
+		state := new(statemanager.StateManagerMock)
 		terraform := new(mocks.TerraformManager)
+		datastoreMock := new(datastore.DataStoreMock)
 
 		state.On("GetRootDirectory").Return("/root")
 		state.On("ExtractTechnique").Return(nil)
@@ -436,6 +458,12 @@ func TestRunnerCleanup(t *testing.T) {
 		state.On("SetTechniqueState", mock.Anything).Return(nil)
 		state.On("CleanupTechnique").Return(nil)
 		state.On("GetTerraformOutputs").Return(map[string]string{}, nil)
+
+		datastoreMock.On("Has", mock.Anything).Return(true)
+		datastoreMock.On("Get", ParameterCorrelationId).Return(uuid.New().String(), nil)
+		datastoreMock.On("ClearAll").Return(nil)
+		state.On("GetDataStore").Return(datastoreMock)
+
 		if scenario[i].TerraformDestroyFails {
 			terraform.On("TerraformDestroy", mock.Anything).Return(errors.New("nope"))
 		} else {
@@ -454,6 +482,6 @@ func TestRunnerCleanup(t *testing.T) {
 		}
 		runner.initialize()
 		err := runner.CleanUp()
-		t.Run(scenario[i].Name, func(t *testing.T) { scenario[i].CheckExpectations(t, terraform, state, err) })
+		t.Run(scenario[i].Name, func(t *testing.T) { scenario[i].CheckExpectations(t, terraform, state, datastoreMock, err) })
 	}
 }

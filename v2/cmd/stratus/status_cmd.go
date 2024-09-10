@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/datadog/stratus-red-team/v2/internal/state"
+	"github.com/datadog/stratus-red-team/v2/internal/state/manager"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/fatih/color"
 	"github.com/jedib0t/go-pretty/v6/table"
@@ -35,7 +35,7 @@ func doStatusCmd(techniques []*stratus.AttackTechnique) {
 	t := GetDisplayTable()
 	t.AppendHeader(table.Row{"ID", "Name", "Status"})
 	for i := range techniques {
-		stateManager := state.NewFileSystemStateManager(techniques[i])
+		stateManager := manager.NewFileSystemStateManager(techniques[i])
 		techniqueState := stateManager.GetTechniqueState()
 		if techniqueState == "" {
 			techniqueState = stratus.AttackTechniqueStatusCold

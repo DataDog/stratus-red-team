@@ -1,7 +1,7 @@
-package state
+package manager
 
 import (
-	"github.com/datadog/stratus-red-team/v2/internal/state/mocks"
+	statefs "github.com/datadog/stratus-red-team/v2/internal/state/filesystem"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -13,7 +13,7 @@ func noop(map[string]string, stratus.CloudProviders) error {
 }
 
 func TestStateManagerCreatesRootDirectoryIfNotExists(t *testing.T) {
-	fsMock := new(mocks.FileSystemMock)
+	fsMock := new(statefs.FileSystemMock)
 
 	fsMock.On("FileExists", mock.Anything).Return(false)
 	fsMock.On("CreateDirectory", mock.Anything, mock.Anything).Return(nil)
@@ -30,7 +30,7 @@ func TestStateManagerCreatesRootDirectoryIfNotExists(t *testing.T) {
 }
 
 func TestStateManagerDoesNotTryToCreateRootDirectoryIfExists(t *testing.T) {
-	fsMock := new(mocks.FileSystemMock)
+	fsMock := new(statefs.FileSystemMock)
 
 	fsMock.On("FileExists", mock.MatchedBy(func(file string) bool {
 		return file == "/root/.stratus-red-team" || file == "/root/.stratus-red-team/foo"
@@ -47,7 +47,7 @@ func TestStateManagerDoesNotTryToCreateRootDirectoryIfExists(t *testing.T) {
 }
 
 func TestStateManagerExtractsTechniqueTerraformFile(t *testing.T) {
-	fsMock := new(mocks.FileSystemMock)
+	fsMock := new(statefs.FileSystemMock)
 	fsMock.On("FileExists", mock.MatchedBy(func(file string) bool {
 		return file == "/root/.stratus-red-team"
 	})).Return(true)
@@ -80,7 +80,7 @@ func TestStateManagerExtractsTechniqueTerraformFile(t *testing.T) {
 }
 
 func TestStateManagerRetrievesTechniqueOutputs(t *testing.T) {
-	fsMock := new(mocks.FileSystemMock)
+	fsMock := new(statefs.FileSystemMock)
 	fileMatcher := mock.MatchedBy(func(file string) bool {
 		return file == "/root/.stratus-red-team/my-technique/.terraform-outputs"
 	})
@@ -103,7 +103,7 @@ func TestStateManagerRetrievesTechniqueOutputs(t *testing.T) {
 }
 
 func TestStateManagerWritesTechniqueOutputs(t *testing.T) {
-	fsMock := new(mocks.FileSystemMock)
+	fsMock := new(statefs.FileSystemMock)
 	outputFile := "/root/.stratus-red-team/my-technique/.terraform-outputs"
 	fsMock.On("FileExists", mock.Anything).Return(false)
 	fsMock.On("CreateDirectory", mock.Anything, mock.Anything).Return(nil)
@@ -122,7 +122,7 @@ func TestStateManagerWritesTechniqueOutputs(t *testing.T) {
 }
 
 func TestStateManagerReadsTechniqueState(t *testing.T) {
-	fsMock := new(mocks.FileSystemMock)
+	fsMock := new(statefs.FileSystemMock)
 	fsMock.On("FileExists", mock.Anything).Return(true)
 	fsMock.On("ReadFile", "/root/.stratus-red-team/my-technique/.state").Return([]byte(stratus.AttackTechniqueStatusCold), nil)
 
@@ -139,7 +139,7 @@ func TestStateManagerReadsTechniqueState(t *testing.T) {
 }
 
 func TestStateManagerSetsTechniqueState(t *testing.T) {
-	fsMock := new(mocks.FileSystemMock)
+	fsMock := new(statefs.FileSystemMock)
 	fsMock.On("FileExists", mock.Anything).Return(true)
 	fsMock.On("WriteFile", mock.Anything, mock.Anything, mock.Anything).Return(nil)
 
@@ -161,7 +161,7 @@ func TestStateManagerSetsTechniqueState(t *testing.T) {
 }
 
 func TestStateManagerSetsTechniqueStateWhenTechniqueDirDoesNotExist(t *testing.T) {
-	fsMock := new(mocks.FileSystemMock)
+	fsMock := new(statefs.FileSystemMock)
 	fsMock.On("FileExists", mock.MatchedBy(func(path string) bool {
 		return path == "/root/.stratus-red-team"
 	})).Return(true)
@@ -193,7 +193,7 @@ func TestStateManagerSetsTechniqueStateWhenTechniqueDirDoesNotExist(t *testing.T
 }
 
 func TestStateManagerCleanupTechnique(t *testing.T) {
-	fsMock := new(mocks.FileSystemMock)
+	fsMock := new(statefs.FileSystemMock)
 	fsMock.On("FileExists", mock.Anything).Return(true)
 	fsMock.On("WriteFile", mock.Anything, mock.Anything, mock.Anything).Return(nil)
 	fsMock.On("RemoveDirectory", mock.Anything).Return(nil)

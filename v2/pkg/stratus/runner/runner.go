@@ -3,7 +3,7 @@ package runner
 import (
 	"context"
 	"errors"
-	"github.com/datadog/stratus-red-team/v2/internal/state"
+	"github.com/datadog/stratus-red-team/v2/internal/state/manager"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/useragent"
 	"github.com/google/uuid"
@@ -17,6 +17,7 @@ const StratusRunnerForce = true
 const StratusRunnerNoForce = false
 
 const EnvVarStratusRedTeamDetonationId = "STRATUS_RED_TEAM_DETONATION_ID"
+const ParameterCorrelationId = "correlation_id"
 
 type runnerImpl struct {
 	Technique           *stratus.AttackTechnique
@@ -24,9 +25,10 @@ type runnerImpl struct {
 	TerraformDir        string
 	ShouldForce         bool
 	TerraformManager    TerraformManager
-	StateManager        state.StateManager
+	StateManager        manager.StateManager
 	ProviderFactory     stratus.CloudProviders
-	UniqueCorrelationID uuid.UUID
+	UniqueExecutionID   uuid.UUID
+	StickyCorrelationID uuid.UUID
 	Context             context.Context
 }
 
@@ -46,7 +48,7 @@ func NewRunner(technique *stratus.AttackTechnique, force bool) Runner {
 }
 
 func NewRunnerWithContext(ctx context.Context, technique *stratus.AttackTechnique, force bool) Runner {
-	stateManager := state.NewFileSystemStateManager(technique)
+	stateManager := manager.NewFileSystemStateManager(technique)
 
 	var correlationId = uuid.New()
 	var err error
@@ -60,10 +62,10 @@ func NewRunnerWithContext(ctx context.Context, technique *stratus.AttackTechniqu
 	}
 
 	runner := &runnerImpl{
-		Technique:           technique,
-		ShouldForce:         force,
-		StateManager:        stateManager,
-		UniqueCorrelationID: correlationId,
+		Technique:         technique,
+		ShouldForce:       force,
+		StateManager:      stateManager,
+		UniqueExecutionID: correlationId,
 		TerraformManager: NewTerraformManagerWithContext(
 			ctx, filepath.Join(stateManager.GetRootDirectory(), "terraform"), useragent.GetStratusUserAgentForUUID(correlationId),
 		),
@@ -80,7 +82,21 @@ func (m *runnerImpl) initialize() {
 	if m.TechniqueState == "" {
 		m.TechniqueState = stratus.AttackTechniqueStatusCold
 	}
-	m.ProviderFactory = stratus.CloudProvidersImpl{UniqueCorrelationID: m.UniqueCorrelationID}
+	m.ProviderFactory = stratus.CloudProvidersImpl{UniqueCorrelationID: m.UniqueExecutionID}
+
+	if m.StateManager.GetDataStore().Has(ParameterCorrelationId) {
+		stickyCorrelationId, err := m.StateManager.GetDataStore().Get(ParameterCorrelationId)
+		if err != nil {
+			log.Println("Unable to retrieve sticky correlation ID: " + err.Error())
+		}
+		m.StickyCorrelationID = uuid.MustParse(stickyCorrelationId)
+	} else {
+		err := m.StateManager.GetDataStore().Set(ParameterCorrelationId, uuid.New().String())
+		if err != nil {
+			panic("Unable to set sticky correlation ID: " + err.Error())
+		}
+	}
+
 }
 
 func (m *runnerImpl) WarmUp() (map[string]string, error) {
@@ -164,6 +180,7 @@ func (m *runnerImpl) Detonate() error {
 	}
 
 	// Detonate
+	outputs[ParameterCorrelationId] = m.StickyCorrelationID.String()
 	err = m.Technique.Detonate(outputs, m.ProviderFactory)
 	if err != nil {
 		return errors.New("Error while detonating attack technique " + m.Technique.ID + ": " + err.Error())
@@ -185,6 +202,7 @@ func (m *runnerImpl) Revert() error {
 	log.Println("Reverting detonation of technique " + m.Technique.ID)
 
 	if m.Technique.Revert != nil {
+		outputs[ParameterCorrelationId] = m.StickyCorrelationID.String()
 		err = m.Technique.Revert(outputs, m.ProviderFactory)
 		if err != nil {
 			return errors.New("unable to revert detonation of " + m.Technique.ID + ": " + err.Error())
@@ -236,6 +254,11 @@ func (m *runnerImpl) CleanUp() error {
 		return errors.New("unable to remove technique directory " + m.TerraformDir + ": " + err.Error())
 	}
 
+	err = m.StateManager.GetDataStore().ClearAll()
+	if err != nil {
+		return errors.New("unable to clear data store: " + err.Error())
+	}
+
 	return nil
 }
 
@@ -253,7 +276,7 @@ func (m *runnerImpl) setState(state stratus.AttackTechniqueState) {
 
 // GetUniqueExecutionId returns an unique execution ID, unique for each runner instance
 func (m *runnerImpl) GetUniqueExecutionId() string {
-	return m.UniqueCorrelationID.String()
+	return m.UniqueExecutionID.String()
 }
 
 // Utility function to display better error messages than the Terraform ones

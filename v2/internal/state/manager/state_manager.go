@@ -1,8 +1,9 @@
-package state
+package manager
 
 import (
 	"encoding/json"
-	"github.com/datadog/stratus-red-team/v2/internal/utils"
+	"github.com/datadog/stratus-red-team/v2/internal/state/datastore"
+	"github.com/datadog/stratus-red-team/v2/internal/state/filesystem"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"log"
 	"os"
@@ -14,61 +15,47 @@ const StratusStateTerraformOutputsFileName = ".terraform-outputs"
 const StratusStateTechniqueStateFileName = ".state"
 const StratusStateTerraformFileName = "main.tf"
 
-type FileSystemStateManager struct {
-	RootDirectory string
-	Technique     *stratus.AttackTechnique
-	FileSystem    FileSystem
-}
-
-type FileSystem interface {
-	FileExists(string) bool
-	CreateDirectory(string, os.FileMode) error
-	RemoveDirectory(string) error
-	WriteFile(string, []byte, os.FileMode) error
-	ReadFile(string) ([]byte, error)
-}
-
-type LocalFileSystem struct{}
-
-func (m *LocalFileSystem) FileExists(fileName string) bool {
-	return utils.FileExists(fileName)
-}
-
-func (m *LocalFileSystem) CreateDirectory(dir string, mode os.FileMode) error {
-	return os.Mkdir(dir, mode)
-}
-
-func (m *LocalFileSystem) RemoveDirectory(dir string) error {
-	return os.RemoveAll(dir)
-}
-
-func (m *LocalFileSystem) WriteFile(file string, content []byte, mode os.FileMode) error {
-	return os.WriteFile(file, content, mode)
-}
-
-func (m *LocalFileSystem) ReadFile(file string) ([]byte, error) {
-	return os.ReadFile(file)
-}
-
 type StateManager interface {
 	Initialize()
 	GetRootDirectory() string
 	ExtractTechnique() error
 	CleanupTechnique() error
 	GetTerraformOutputs() (map[string]string, error)
+	GetDataStore() datastore.DataStore
 	WriteTerraformOutputs(outputs map[string]string) error
 	GetTechniqueState() stratus.AttackTechniqueState
 	SetTechniqueState(state stratus.AttackTechniqueState) error
 }
 
+type FileSystemStateManager struct {
+	RootDirectory string
+	Technique     *stratus.AttackTechnique
+	FileSystem    filesystem.FileSystem
+	DataStore     datastore.FileSystemDataStore
+}
+
 func NewFileSystemStateManager(technique *stratus.AttackTechnique) *FileSystemStateManager {
 	homeDirectory, _ := os.UserHomeDir()
+	localFileSystem := filesystem.LocalFileSystem{}
+	stratusStateDirectory := filepath.Join(homeDirectory, StratusStateDirectoryName)
+
 	stateManager := FileSystemStateManager{
-		RootDirectory: filepath.Join(homeDirectory, StratusStateDirectoryName),
+		RootDirectory: stratusStateDirectory,
 		Technique:     technique,
-		FileSystem:    &LocalFileSystem{},
+		FileSystem:    &localFileSystem,
 	}
+
 	stateManager.Initialize()
+
+	stateManager.DataStore = datastore.FileSystemDataStore{
+		FileSystem:              &localFileSystem,
+		TechniqueStateDirectory: stateManager.getTechniqueStateDirectory(),
+	}
+	err := stateManager.DataStore.Load()
+	if err != nil {
+		panic("unable to load data store: " + err.Error())
+	}
+
 	return &stateManager
 }
 
@@ -117,6 +104,10 @@ func (m *FileSystemStateManager) GetTerraformOutputs() (map[string]string, error
 		}
 	}
 	return outputs, nil
+}
+
+func (m *FileSystemStateManager) GetDataStore() datastore.DataStore {
+	return &m.DataStore
 }
 
 func (m *FileSystemStateManager) WriteTerraformOutputs(outputs map[string]string) error {

@@ -41,7 +41,9 @@ thirdparty-licenses:
 
 mocks:
 	@echo "Generating mocks..."
-	@cd v2 && mockery --name=StateManager --dir internal/state --output internal/state/mocks
+	@cd v2 && mockery --name=StateManager --structname StateManagerMock --filename state_manager_mock.go --dir internal/state/manager --output internal/state/manager/ --outpkg manager
+	@cd v2 && mockery --name=FileSystem --structname FileSystemMock --filename file_system_mock.go --dir internal/state/filesystem --output internal/state/filesystem --outpkg filesystem
+	@cd v2 && mockery --name=DataStore --structname DataStoreMock --filename data_store_mock.go --dir internal/state/datastore --output internal/state/datastore/ --outpkg datastore
+
 	@cd v2 && mockery --name=TerraformManager --dir pkg/stratus/runner --output pkg/stratus/runner/mocks
-	@cd v2 && mockery --name=FileSystem --structname FileSystemMock --dir internal/state --output internal/state/mocks
 	@echo "Mocks generated successfully."
