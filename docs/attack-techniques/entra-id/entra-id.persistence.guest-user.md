@@ -1,8 +1,8 @@
 ---
-title: Create Guest User for Persistent Access
+title: Create Guest User
 ---
 
-# Create Guest User for Persistent Access
+# Create Guest User
 
 
 
@@ -17,15 +17,13 @@ Platform: Entra ID
 ## Description
 
 
-An attacker can abuse the Guest User invite process to gain persistent access to an environment, as they can invite themselves as a guest.
+Invites an external guest user in the tenant.
 
-<span style="font-variant: small-caps;">Warm-up</span>:
-
-- N/A, this technique does not have a warm-up stage
+<span style="font-variant: small-caps;">Warm-up</span>: None
 
 <span style="font-variant: small-caps;">Detonation</span>:
 
-- Invite Guest User
+- Invite guest user (without generating an invitation email)
 
 References:
 
@@ -53,11 +51,11 @@ stratus detonate entra-id.persistence.guest-user
 ## Detection
 
 
-When someone invites a guest user in Entra ID, several events are logged in the Entra ID Activity logs:
+Using [Entra ID audit logs](https://learn.microsoft.com/en-us/entra/identity/monitoring-health/concept-audit-logs) with the specific activity types:
 
-<code>Add user</code>
-<code>Invite external user</code>
-<code>Add user sponsor</code>
+- <code>Add user</code>
+- <code>Invite external user</code>
+- <code>Add user sponsor</code>
 
 When the invited user accepts the invite, an additional event <code>Redeem external user invite</code> is logged. 
 

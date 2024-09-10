@@ -8,7 +8,7 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 - [Backdoor Entra ID application](./entra-id.persistence.backdoor-application.md)
 
-- [Create Guest User for Persistent Access](./entra-id.persistence.guest-user.md)
+- [Create Guest User](./entra-id.persistence.guest-user.md)
 
 - [Create Hidden Scoped Role Assignment Through HiddenMembership AU](./entra-id.persistence.hidden-au.md)
 

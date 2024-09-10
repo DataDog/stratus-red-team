@@ -476,7 +476,7 @@ Entra ID:
           platform: Entra ID
           isIdempotent: false
         - id: entra-id.persistence.guest-user
-          name: Create Guest User for Persistent Access
+          name: Create Guest User
           isSlow: false
           mitreAttackTactics:
             - Persistence
