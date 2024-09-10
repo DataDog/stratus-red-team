@@ -1,4 +1,4 @@
-package azure
+package entra_id
 
 import (
 	"context"

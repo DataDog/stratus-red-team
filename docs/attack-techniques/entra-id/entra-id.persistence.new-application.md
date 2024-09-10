@@ -13,6 +13,7 @@ Platform: Entra ID
 
 
 - Persistence
+- Privilege Escalation
 
 ## Description
 

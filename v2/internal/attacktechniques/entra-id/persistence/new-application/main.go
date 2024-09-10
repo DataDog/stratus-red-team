@@ -1,4 +1,4 @@
-package azure
+package entra_id
 
 import (
 	"context"
@@ -44,7 +44,7 @@ Using [Entra ID audit logs](https://learn.microsoft.com/en-us/entra/identity/mon
 `,
 		Platform:           stratus.EntraID,
 		IsIdempotent:       false,
-		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Persistence},
+		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Persistence, mitreattack.PrivilegeEscalation},
 		Detonate:           detonate,
 		Revert:             revert,
 	})
@@ -101,16 +101,14 @@ curl -X POST https://login.microsoftonline.com/$TENANT_ID/oauth2/v2.0/token  \
    --data-urlencode 'client_id=` + *response.GetAppId() + `' \
    --data-urlencode 'scope=https://graph.microsoft.com/.default' \
    --data-urlencode 'client_secret=` + *newCredentialsResponse.GetSecretText() + `'  \
-  --data-urlencode 'grant_type=client_credentials'
+   --data-urlencode 'grant_type=client_credentials'
 
 Or using the Azure CLI:
 
 az login --service-principal --allow-no-subscriptions \
 	--tenant ` + tenantId + ` \
 	--username ` + *response.GetAppId() + ` \
-	--password ` + *newCredentialsResponse.GetSecretText() + ` \
-	--tenant ` + tenantId + `
-
+	--password ` + *newCredentialsResponse.GetSecretText() + `
 `)
 	return nil
 }
