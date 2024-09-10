@@ -467,6 +467,14 @@ Azure:
           isIdempotent: true
 Entra ID:
     Persistence:
+        - id: entra-id.persistence.backdoor-application
+          name: Backdoor Entra ID application
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: Entra ID
+          isIdempotent: false
         - id: entra-id.persistence.guest-user
           name: Create Guest User for Persistent Access
           isSlow: false
@@ -486,6 +494,7 @@ Entra ID:
           isSlow: false
           mitreAttackTactics:
             - Persistence
+            - Privilege Escalation
           platform: Entra ID
           isIdempotent: false
         - id: entra-id.persistence.restricted-au
@@ -493,6 +502,23 @@ Entra ID:
           isSlow: false
           mitreAttackTactics:
             - Persistence
+          platform: Entra ID
+          isIdempotent: false
+    Privilege Escalation:
+        - id: entra-id.persistence.backdoor-application
+          name: Backdoor Entra ID application
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: Entra ID
+          isIdempotent: false
+        - id: entra-id.persistence.new-application
+          name: Create Application
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
           platform: Entra ID
           isIdempotent: false
 Kubernetes:

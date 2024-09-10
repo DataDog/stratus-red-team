@@ -53,9 +53,10 @@ This page contains the list of all Stratus Attack Techniques.
 | [Export Disk Through SAS URL](./azure/azure.exfiltration.disk-export.md) | [Azure](./azure/index.md) | Exfiltration |
 | [Create Admin EKS Access Entry](./EKS/eks.lateral-movement.create-access-entry.md) | [EKS](./EKS/index.md) | Lateral Movement |
 | [Backdoor aws-auth EKS ConfigMap](./EKS/eks.persistence.backdoor-aws-auth-configmap.md) | [EKS](./EKS/index.md) | Persistence, Privilege Escalation |
+| [Backdoor Entra ID application](./entra-id/entra-id.persistence.backdoor-application.md) | [Entra ID](./entra-id/index.md) | Persistence, Privilege Escalation |
 | [Create Guest User for Persistent Access](./entra-id/entra-id.persistence.guest-user.md) | [Entra ID](./entra-id/index.md) | Persistence |
 | [Create Hidden Scoped Role Assignment Through HiddenMembership AU](./entra-id/entra-id.persistence.hidden-au.md) | [Entra ID](./entra-id/index.md) | Persistence |
-| [Create Application](./entra-id/entra-id.persistence.new-application.md) | [Entra ID](./entra-id/index.md) | Persistence |
+| [Create Application](./entra-id/entra-id.persistence.new-application.md) | [Entra ID](./entra-id/index.md) | Persistence, Privilege Escalation |
 | [Create Sticky Backdoor Account Through Restricted Management AU](./entra-id/entra-id.persistence.restricted-au.md) | [Entra ID](./entra-id/index.md) | Persistence |
 | [Exfiltrate Compute Disk by sharing it](./GCP/gcp.exfiltration.share-compute-disk.md) | [GCP](./GCP/index.md) | Exfiltration |
 | [Exfiltrate Compute Image by sharing it](./GCP/gcp.exfiltration.share-compute-image.md) | [GCP](./GCP/index.md) | Exfiltration |
