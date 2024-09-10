@@ -14,7 +14,7 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 - [Create Application](./entra-id.persistence.new-application.md)
 
-- [Create Sticky Backdoor Account Through Restricted Management AU](./entra-id.persistence.restricted-au.md)
+- [Create Sticky Backdoor User Through Restricted Management AU](./entra-id.persistence.restricted-au.md)
 
 
 ## Privilege Escalation

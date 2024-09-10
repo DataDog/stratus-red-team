@@ -1,8 +1,8 @@
 ---
-title: Create Sticky Backdoor Account Through Restricted Management AU
+title: Create Sticky Backdoor User Through Restricted Management AU
 ---
 
-# Create Sticky Backdoor Account Through Restricted Management AU
+# Create Sticky Backdoor User Through Restricted Management AU
 
 
 
@@ -17,22 +17,23 @@ Platform: Entra ID
 ## Description
 
 
-Create a [restricted management Administrative Unit (AU)](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/admin-units-restricted-management), and place a backdoor account in it to simulate a protected attacker-controlled user.
+Creates a [restricted management Administrative Unit (AU)](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/admin-units-restricted-management), and place a backdoor account in it to simulate a protected attacker-controlled user.
 
 <span style="font-variant: small-caps;">Warm-up</span>:
 
-- Create Entra ID user (Backdoor)
+- Create an Entra ID backdoor user
 
 <span style="font-variant: small-caps;">Detonation</span>:
 
-- Create restricted management AU
-- Add Backdoor user to AU
+- Create restricted management Administrative Unit
+- Add the backdoor user to the Administrative Unit
 
 References:
 
 - https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/administrative-units
 - https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/admin-units-restricted-management
 
+Note: When cleaning up the technique, you might have to wait a few minutes for the user status to update before retrying the cleanup. This is a limitation of Entra ID.
 
 
 ## Instructions
@@ -43,13 +44,9 @@ stratus detonate entra-id.persistence.restricted-au
 ## Detection
 
 
-Identify the following <code>activityDisplayName</code> events in Entra ID Audit logs.
+Using [Entra ID audit logs](https://learn.microsoft.com/en-us/entra/identity/monitoring-health/concept-audit-logs) with the specific activity types:
 
-For <code>Service: Core Directory</code>,<code>Category: AdministrativeUnit</code>:
-Add administrative unit
-Add member to restricted management administrative unit
-
-Consider detection of additional Administrative Unit activities and scoped role assignments in the following Microsoft article:
-- https://learn.microsoft.com/en-us/entra/identity/monitoring-health/reference-audit-activities
+- <code>Add administrative unit</code>
+- <code>Add member to restricted management administrative unit</code>
 
 

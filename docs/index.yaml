@@ -498,7 +498,7 @@ Entra ID:
           platform: Entra ID
           isIdempotent: false
         - id: entra-id.persistence.restricted-au
-          name: Create Sticky Backdoor Account Through Restricted Management AU
+          name: Create Sticky Backdoor User Through Restricted Management AU
           isSlow: false
           mitreAttackTactics:
             - Persistence

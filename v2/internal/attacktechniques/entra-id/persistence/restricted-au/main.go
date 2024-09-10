@@ -19,34 +19,31 @@ var tf []byte
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
 		ID:           "entra-id.persistence.restricted-au",
-		FriendlyName: "Create Sticky Backdoor Account Through Restricted Management AU",
+		FriendlyName: "Create Sticky Backdoor User Through Restricted Management AU",
 		Description: `
-Create a [restricted management Administrative Unit (AU)](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/admin-units-restricted-management), and place a backdoor account in it to simulate a protected attacker-controlled user.
+Creates a [restricted management Administrative Unit (AU)](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/admin-units-restricted-management), and place a backdoor account in it to simulate a protected attacker-controlled user.
 
 Warm-up:
 
-- Create Entra ID user (Backdoor)
+- Create an Entra ID backdoor user
 
 Detonation:
 
-- Create restricted management AU
-- Add Backdoor user to AU
+- Create restricted management Administrative Unit
+- Add the backdoor user to the Administrative Unit
 
 References:
 
 - https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/administrative-units
 - https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/admin-units-restricted-management
 
+Note: When cleaning up the technique, you might have to wait a few minutes for the user status to update before retrying the cleanup. This is a limitation of Entra ID.
 `,
 		Detection: `
-Identify the following <code>activityDisplayName</code> events in Entra ID Audit logs.
+Using [Entra ID audit logs](https://learn.microsoft.com/en-us/entra/identity/monitoring-health/concept-audit-logs) with the specific activity types:
 
-For <code>Service: Core Directory</code>,<code>Category: AdministrativeUnit</code>:
-Add administrative unit
-Add member to restricted management administrative unit
-
-Consider detection of additional Administrative Unit activities and scoped role assignments in the following Microsoft article:
-- https://learn.microsoft.com/en-us/entra/identity/monitoring-health/reference-audit-activities
+- <code>Add administrative unit</code>
+- <code>Add member to restricted management administrative unit</code>
 `,
 		Platform:                   stratus.EntraID,
 		IsIdempotent:               false,
@@ -68,9 +65,9 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 
 	// 1. Create Restricted AU
 	requestBodyAU := betagraphmodels.NewAdministrativeUnit()
-	displayName := fmt.Sprintf("Stratus Restricted AU - %s", suffix)
+	displayName := fmt.Sprintf("Stratus Red Team Restricted AU - %s", suffix)
 	requestBodyAU.SetDisplayName(&displayName)
-	description := "Restricted management AU created from Stratus"
+	description := "Restricted management AU created from Stratus Red Team"
 	requestBodyAU.SetDescription(&description)
 	restricted := true
 	requestBodyAU.SetIsMemberManagementRestricted(&restricted)
@@ -95,6 +92,10 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 		return errors.New("could not add member to AU: " + err.Error())
 	}
 	log.Println("Added backdoor user " + backdoorUserName + " to AU")
+
+	portalUrl := "https://portal.azure.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/" + backdoorUserId + "/hidePreviewBanner~/true"
+	log.Println("If you visit the following Azure portal URL, you can see the backdoor user and notice that even as a global administrator, you cannot directly remove or disable it:")
+	log.Println(portalUrl)
 
 	return nil
 }
@@ -121,16 +122,17 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 	}
 
 	// 4. Delete Restricted AU
+	log.Println("Deleting restricted Administrative Unit")
 	err = graphClient.Directory().AdministrativeUnits().ByAdministrativeUnitId(auId).Delete(context.Background(), nil)
 
 	if err != nil {
 		return errors.New("could not delete AU: " + err.Error())
 	}
 
-	log.Println("AU deleted")
-
 	// Alert user to long wait time for cleanup. Have not found a way around this wait time.
-	log.Println("[!] WARNING: User's restricted management property can take approx. 5 minutes to update. If 'stratus cleanup' fails, please wait 5 minutes for user status to update and try again.")
+	log.Println("[!] WARNING: The user's restricted management property usually takes 5 minutes to update.")
+	log.Println("If 'stratus cleanup' fails (which is likely), please wait for 5 minutes for the user status to update and try again.")
+	log.Println("This is a limitation of Entra ID.")
 
 	return nil
 }
