@@ -57,6 +57,15 @@ func (m *EntraIdProvider) GetBetaGraphClient() *betagraph.GraphServiceClient {
 	return m.BetaGraphClient
 }
 
+func (m *EntraIdProvider) GetTenantId() (string, error) {
+	organization, err := m.GetGraphClient().Organization().Get(context.Background(), nil)
+	if err != nil {
+		return "", err
+	}
+
+	return *organization.GetValue()[0].GetId(), nil
+}
+
 func (m *EntraIdProvider) IsAuthenticatedAgainstEntraId() bool {
 	_, err := m.Credentials.GetToken(context.Background(), policy.TokenRequestOptions{
 		Scopes: []string{"https://management.azure.com/.default"},

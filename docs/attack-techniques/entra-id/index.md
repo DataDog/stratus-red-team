@@ -6,7 +6,11 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 ## Persistence
 
+- [Create Guest User for Persistent Access](./entra-id.persistence.guest-user.md)
+
 - [Create Hidden Scoped Role Assignment Through HiddenMembership AU](./entra-id.persistence.hidden-au.md)
+
+- [Create Application](./entra-id.persistence.new-application.md)
 
 - [Create Sticky Backdoor Account Through Restricted Management AU](./entra-id.persistence.restricted-au.md)
 

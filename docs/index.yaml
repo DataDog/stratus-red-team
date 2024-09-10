@@ -467,8 +467,22 @@ Azure:
           isIdempotent: true
 Entra ID:
     Persistence:
+        - id: entra-id.persistence.guest-user
+          name: Create Guest User for Persistent Access
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+          platform: Entra ID
+          isIdempotent: false
         - id: entra-id.persistence.hidden-au
           name: Create Hidden Scoped Role Assignment Through HiddenMembership AU
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+          platform: Entra ID
+          isIdempotent: false
+        - id: entra-id.persistence.new-application
+          name: Create Application
           isSlow: false
           mitreAttackTactics:
             - Persistence

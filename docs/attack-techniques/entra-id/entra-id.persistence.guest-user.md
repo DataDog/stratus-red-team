@@ -11,9 +11,12 @@ Platform: Entra ID
 
 ## MITRE ATT&CK Tactics
 
+
 - Persistence
 
 ## Description
+
+
 An attacker can abuse the Guest User invite process to gain persistent access to an environment, as they can invite themselves as a guest.
 
 <span style="font-variant: small-caps;">Warm-up</span>:
@@ -39,24 +42,24 @@ References:
 	stratus detonate entra-id.persistence.guest-user
 	```
 
+
 ## Instructions
 
 ```bash title="Detonate with Stratus Red Team"
 stratus detonate entra-id.persistence.guest-user
 ```
-
 ## Detection
 
-When someone invites a guest user in Azure AD, several events are logged in the Azure AD Activity logs:
+
+When someone invites a guest user in Entra ID, several events are logged in the Entra ID Activity logs:
 
 <code>Add user</code>
 <code>Invite external user</code>
 <code>Add user sponsor</code>
 
-When the invited user accepts the invite, an additional event <code>Redeem external user invite</code> is logged.
+When the invited user accepts the invite, an additional event <code>Redeem external user invite</code> is logged. 
 
-Sample events, shortened for clarity:
-```json 
+Sample events, shortened for clarity:```
 {
   "category": "UserManagement",
   "result": "success",
@@ -106,3 +109,5 @@ Sample events, shortened for clarity:
   ]
 }
 ```
+
+
