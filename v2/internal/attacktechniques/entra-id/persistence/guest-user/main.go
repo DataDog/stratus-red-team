@@ -34,15 +34,17 @@ Detonation:
 References:
 
 - https://securitylabs.datadoghq.com/cloud-security-atlas/attacks/inviting-external-users/
+- https://derkvanderwoude.medium.com/azure-subscription-hijacking-and-cryptomining-86c2ac018983
+- https://dirkjanm.io/assets/raw/US-22-Mollema-Backdooring-and-hijacking-Azure-AD-accounts_final.pdf
 
 !!! note
 
-	Since the target e-mail must exist for this attack simulation to work, Stratus Red Team grants the role to ` + entra_id_utils.DefaultFictitiousAttackerEmail + ` by default.
-	This is a real Google account, owned by Stratus Red Team maintainers and that is not used for any other purpose than this attack simulation. However, you can override
+	Since the target e-mail must exist for this attack simulation to work, Stratus Red Team creates a guest user with the e-mail ` + entra_id_utils.DefaultFictitiousAttackerEmail + ` by default.
+	This is a real Google account, owned by Stratus Red Team maintainers and that is not used for any other purpose than this attack simulation. However, you can (and should) override
 	this behavior by setting the environment variable <code>` + entra_id_utils.AttackerEmailEnvVarKey + `</code>, for instance:
 
 	` + codeBlock + `bash
-	export ` + entra_id_utils.AttackerEmailEnvVarKey + `="your-own-gmail-account@gmail.com"
+	export ` + entra_id_utils.AttackerEmailEnvVarKey + `="you@domain.tld"
 	stratus detonate ` + AttackTechniqueId + `
 	` + codeBlock + `
 `,
@@ -109,7 +111,6 @@ Sample events, shortened for clarity:` + codeBlock + `
 		Platform:                   stratus.EntraID,
 		IsIdempotent:               false,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence},
-		PrerequisitesTerraformCode: nil,
 		Detonate:                   detonate,
 		Revert:                     revert,
 	})
