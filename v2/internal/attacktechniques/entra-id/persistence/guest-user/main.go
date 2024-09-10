@@ -5,12 +5,12 @@ import (
 	_ "embed"
 	"errors"
 	"fmt"
+	entra_id_utils "github.com/datadog/stratus-red-team/v2/internal/utils/entra_id"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	graphmodels "github.com/microsoftgraph/msgraph-sdk-go/models"
 	"log"
 	"strings"
-	entra_id_utils "github.com/datadog/stratus-red-team/v2/internal/utils/entra_id"
 )
 
 const codeBlock = "```"
@@ -108,11 +108,11 @@ Sample events, shortened for clarity:` + codeBlock + `
 }
 ` + codeBlock + `
 `,
-		Platform:                   stratus.EntraID,
-		IsIdempotent:               false,
-		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence},
-		Detonate:                   detonate,
-		Revert:                     revert,
+		Platform:           stratus.EntraID,
+		IsIdempotent:       false,
+		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Persistence},
+		Detonate:           detonate,
+		Revert:             revert,
 	})
 }
 
@@ -132,10 +132,10 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	// Invite Guest User
 	requestBody := graphmodels.NewInvitation()
 	invitedUserEmailAddress := attackerPrincipal
-	requestBody.SetInvitedUserEmailAddress(&invitedUserEmailAddress) 
-	inviteRedirectUrl := fmt.Sprintf("https://myapplications.microsoft.com/?tenantid=%s", tenantId)
+	requestBody.SetInvitedUserEmailAddress(&invitedUserEmailAddress)
+	inviteRedirectUrl := fmt.Sprintf("https://myapplications.microsoft.com/?tenantid=%s", *tenantId)
 	requestBody.SetInviteRedirectUrl(&inviteRedirectUrl)
-	
+
 	_, err = graphClient.Invitations().Post(context.Background(), requestBody, nil)
 
 	if err != nil {
