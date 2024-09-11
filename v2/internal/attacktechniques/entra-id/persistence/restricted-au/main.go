@@ -82,7 +82,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	auId := *auResult.GetId()
 	log.Println("Created restricted management AU " + auId)
 
-	// 2. Add Target member to Hidden AU
+	// 2. Add Target member to restricted AU
 	requestBodyMember := graphmodels.NewReferenceCreate()
 	odataId := fmt.Sprintf("https://graph.microsoft.com/v1.0/users/%s", backdoorUserId)
 	requestBodyMember.SetOdataId(&odataId)

@@ -26,15 +26,17 @@ This simulates an attacker that TODO.
 
 Warm-up:
 
-- Create Target Entra ID user
-- Initialize Privileged Administration Administrator role
+- Create the target (victim) Entra ID user
 
 Detonation:
 
-- Create HiddenMembership AU
-- Create Backdoor Entra ID user
-- Add Target user to AU
-- Assign Backdoor user Privileged Administration Administrator over AU
+- Create an administrative unit with hidden membership
+- Create a backdoor Entra ID user
+- Add the target (victim) user to the administrative unit
+- Assign the backdoor user with Privileged Administration Administrator rights over the administrative unit
+
+This simulates an attacker that indirectly persists their access. 
+The backdoor user can now perform privileged operations over any user in the administrative unit, which can be used to escalate privileges or maintain access, for instance by resetting the target user's password.
 
 References:
 
@@ -45,10 +47,12 @@ References:
 Using [Entra ID audit logs](https://learn.microsoft.com/en-us/entra/identity/monitoring-health/concept-audit-logs) with the specific activity types:
 
 For <code>Service: Core Directory</code> and <code>Category: AdministrativeUnit</code>:
+
 - <code>Add administrative unit</code>
 - <code>Add member to administrative unit</code>
 
 For <code>Service: Core Directory</code> and <code>Category: RoleManagement</code>:
+
 - <code>Add scoped member to role</code>
 `,
 		Platform:                   stratus.EntraID,
