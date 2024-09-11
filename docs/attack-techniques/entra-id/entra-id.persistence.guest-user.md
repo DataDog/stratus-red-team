@@ -33,8 +33,7 @@ References:
 
 !!! note
 
-	Since the target e-mail must exist for this attack simulation to work, Stratus Red Team creates a guest user with the e-mail stratusredteam@gmail.com by default.
-	This is a real Google account, owned by Stratus Red Team maintainers and that is not used for any other purpose than this attack simulation. However, you can (and should) override
+	By default, Stratus Red Team invites the e-mail <code>stratus-red-team@example.com</code>. However, you can override
 	this behavior by setting the environment variable <code>STRATUS_RED_TEAM_ATTACKER_EMAIL</code>, for instance:
 
 	```bash
@@ -59,7 +58,9 @@ Using [Entra ID audit logs](https://learn.microsoft.com/en-us/entra/identity/mon
 
 When the invited user accepts the invite, an additional event <code>Redeem external user invite</code> is logged. 
 
-Sample events, shortened for clarity:```
+Sample events, shortened for clarity:
+
+```json
 {
   "category": "UserManagement",
   "result": "success",

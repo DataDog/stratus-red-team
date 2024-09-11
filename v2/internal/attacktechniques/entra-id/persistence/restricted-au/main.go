@@ -94,8 +94,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	log.Println("Added backdoor user " + backdoorUserName + " to AU")
 
 	portalUrl := "https://portal.azure.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/" + backdoorUserId + "/hidePreviewBanner~/true"
-	log.Println("If you visit the following Azure portal URL, you can see the backdoor user and notice that even as a global administrator, you cannot directly remove or disable it:")
-	log.Println(portalUrl)
+	log.Println("If you visit the following Azure portal URL, you can see the backdoor user and notice that even as a global administrator, you cannot directly remove or disable it:\n\n  " + portalUrl)
 
 	return nil
 }

@@ -116,7 +116,7 @@ az login --service-principal --allow-no-subscriptions \
 func revert(_ map[string]string, providers stratus.CloudProviders) error {
 	graphClient := providers.EntraId().GetGraphClient()
 
-	log.Println("Listing applications to find malicious Entra ID application")
+	log.Println("Listing applications to find the malicious Entra ID application")
 	response, err := graphClient.Applications().Get(context.Background(), nil)
 	if err != nil {
 		return errors.New("could not retrieve applications: " + err.Error())

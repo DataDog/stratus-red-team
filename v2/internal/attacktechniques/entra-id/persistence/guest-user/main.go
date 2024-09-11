@@ -6,18 +6,20 @@ import (
 	"errors"
 	"fmt"
 	"github.com/aws/smithy-go/ptr"
-	entra_id_utils "github.com/datadog/stratus-red-team/v2/internal/utils/entra_id"
+	"github.com/datadog/stratus-red-team/v2/internal/utils"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"github.com/microsoftgraph/msgraph-beta-sdk-go/models"
 	graphcore "github.com/microsoftgraph/msgraph-sdk-go-core"
 	graphmodels "github.com/microsoftgraph/msgraph-sdk-go/models"
 	"log"
+	"os"
 	"strings"
 )
 
 const codeBlock = "```"
 const AttackTechniqueId = "entra-id.persistence.guest-user"
+const DefaultAttackerEmail = `stratus-red-team@example.com`
 
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
@@ -40,12 +42,11 @@ References:
 
 !!! note
 
-	Since the target e-mail must exist for this attack simulation to work, Stratus Red Team creates a guest user with the e-mail ` + entra_id_utils.DefaultFictitiousAttackerEmail + ` by default.
-	This is a real Google account, owned by Stratus Red Team maintainers and that is not used for any other purpose than this attack simulation. However, you can (and should) override
-	this behavior by setting the environment variable <code>` + entra_id_utils.AttackerEmailEnvVarKey + `</code>, for instance:
+	By default, Stratus Red Team invites the e-mail <code>` + DefaultAttackerEmail + `</code>. However, you can override
+	this behavior by setting the environment variable <code>` + utils.AttackerEmailEnvVarKey + `</code>, for instance:
 
 	` + codeBlock + `bash
-	export ` + entra_id_utils.AttackerEmailEnvVarKey + `="you@domain.tld"
+	export ` + utils.AttackerEmailEnvVarKey + `="you@domain.tld"
 	stratus detonate ` + AttackTechniqueId + `
 	` + codeBlock + `
 `,
@@ -58,7 +59,9 @@ Using [Entra ID audit logs](https://learn.microsoft.com/en-us/entra/identity/mon
 
 When the invited user accepts the invite, an additional event <code>Redeem external user invite</code> is logged. 
 
-Sample events, shortened for clarity:` + codeBlock + `
+Sample events, shortened for clarity:
+
+` + codeBlock + `json
 {
   "category": "UserManagement",
   "result": "success",
@@ -119,7 +122,7 @@ Sample events, shortened for clarity:` + codeBlock + `
 
 func detonate(_ map[string]string, providers stratus.CloudProviders) error {
 	graphClient := providers.EntraId().GetGraphClient()
-	attackerPrincipal := entra_id_utils.GetAttackerPrincipal()
+	attackerPrincipal := getAttackerPrincipal()
 
 	// Retrieve tenant ID
 	tenantId, err := providers.EntraId().GetTenantId()
@@ -151,7 +154,7 @@ func detonate(_ map[string]string, providers stratus.CloudProviders) error {
 func revert(_ map[string]string, providers stratus.CloudProviders) error {
 	// Initialize Graph client
 	graphClient := providers.EntraId().GetGraphClient()
-	attackerPrincipal := entra_id_utils.GetAttackerPrincipal()
+	attackerPrincipal := getAttackerPrincipal()
 	attackerPrefix := strings.Split(attackerPrincipal, "@")
 
 	// 1. Get ID of invited Guest User
@@ -194,4 +197,11 @@ func revert(_ map[string]string, providers stratus.CloudProviders) error {
 	log.Println("Deleted guest user " + attackerPrincipal)
 
 	return nil
+}
+
+func getAttackerPrincipal() string {
+	if attackerPrincipal := os.Getenv(utils.AttackerEmailEnvVarKey); attackerPrincipal != "" {
+		return attackerPrincipal
+	}
+	return DefaultAttackerEmail
 }

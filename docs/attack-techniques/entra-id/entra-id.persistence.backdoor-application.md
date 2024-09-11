@@ -23,7 +23,7 @@ Backdoors an existing Entra ID application by creating a new password credential
 <span style="font-variant: small-caps;">Warm-up</span>:
 
 - Create an Entra ID application
-- Assign it the <code>User.Read.All</code> permission at the tenant level (for illustration purposes)
+- Assign it the <code>Directory Readers</code> role at the tenant level (for illustration purposes)
 
 <span style="font-variant: small-caps;">Detonation</span>:
 

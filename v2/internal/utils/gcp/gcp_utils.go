@@ -1,15 +1,15 @@
 package gcp_utils
 
 import (
-	"os"
-	"strings"
 	"context"
 	"errors"
 	"fmt"
 	"github.com/datadog/stratus-red-team/v2/internal/providers"
-	"github.com/datadog/stratus-red-team/v2/internal/utils"
+	utils "github.com/datadog/stratus-red-team/v2/internal/utils"
 	"google.golang.org/api/cloudresourcemanager/v1"
 	"log"
+	"os"
+	"strings"
 )
 
 // GCPAssignProjectRole grants a project-wide role to a specific service account
@@ -95,11 +95,10 @@ func GCPUnassignProjectRole(gcp *providers.GCPProvider, principal string, roleTo
 }
 
 const DefaultFictitiousAttackerEmail = "stratusredteam@gmail.com"
-const AttackerEmailEnvVarKey = "STRATUS_RED_TEAM_ATTACKER_EMAIL"
 
 func GetAttackerPrincipal() string {
 	const UserPrefix = "user:"
-	if attackerEmail := os.Getenv(AttackerEmailEnvVarKey); attackerEmail != "" {
+	if attackerEmail := os.Getenv(utils.AttackerEmailEnvVarKey); attackerEmail != "" {
 		return UserPrefix + strings.ToLower(attackerEmail)
 	} else {
 		return UserPrefix + DefaultFictitiousAttackerEmail

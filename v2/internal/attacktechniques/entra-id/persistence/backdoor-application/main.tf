@@ -15,14 +15,6 @@ resource "random_string" "suffix" {
 
 resource "azuread_application" "app" {
   display_name = "Stratus Red Team sample application ${random_string.suffix.result}"
-
-  required_resource_access {
-    resource_app_id = "00000003-0000-0000-c000-000000000000" # MS Graph
-    resource_access {
-      id   = "df021288-bdef-4463-88db-98f22de89214" # User.Read.All
-      type = "Role"
-    }
-  }
 }
 
 resource "azuread_service_principal" "sp" {
