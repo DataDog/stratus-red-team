@@ -6,6 +6,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 ## Persistence
 
+- [Backdoor Entra ID application through service principal](./entra-id.persistence.backdoor-application-sp.md)
+
 - [Backdoor Entra ID application](./entra-id.persistence.backdoor-application.md)
 
 - [Create Guest User](./entra-id.persistence.guest-user.md)
@@ -18,6 +20,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 
 ## Privilege Escalation
+
+- [Backdoor Entra ID application through service principal](./entra-id.persistence.backdoor-application-sp.md)
 
 - [Backdoor Entra ID application](./entra-id.persistence.backdoor-application.md)
 

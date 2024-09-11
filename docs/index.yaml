@@ -467,6 +467,14 @@ Azure:
           isIdempotent: true
 Entra ID:
     Persistence:
+        - id: entra-id.persistence.backdoor-application-sp
+          name: Backdoor Entra ID application through service principal
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: Entra ID
+          isIdempotent: false
         - id: entra-id.persistence.backdoor-application
           name: Backdoor Entra ID application
           isSlow: false
@@ -505,6 +513,14 @@ Entra ID:
           platform: Entra ID
           isIdempotent: false
     Privilege Escalation:
+        - id: entra-id.persistence.backdoor-application-sp
+          name: Backdoor Entra ID application through service principal
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: Entra ID
+          isIdempotent: false
         - id: entra-id.persistence.backdoor-application
           name: Backdoor Entra ID application
           isSlow: false

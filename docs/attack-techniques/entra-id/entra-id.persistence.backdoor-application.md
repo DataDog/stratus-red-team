@@ -18,16 +18,20 @@ Platform: Entra ID
 ## Description
 
 
-Backdoors an existing Entra ID application by creating a new password credential on the app registration.
+Backdoors an existing Entra ID application by creating a new password credential.
 
 <span style="font-variant: small-caps;">Warm-up</span>:
 
-- Create an Entra ID application
+- Create an Entra ID application and associated service principal
 - Assign it the <code>Directory Readers</code> role at the tenant level (for illustration purposes)
 
 <span style="font-variant: small-caps;">Detonation</span>:
 
 - Backdoor the Entra ID application by creating a new password credential
+
+Notes: The warm-up mimics what happens when you create an App Registration through the Azure portal. 
+When you use the Azure portal, creating an App Registration automatically creates an associated service principal. 
+When using the Microsoft Graph API, the service principal needs to be created separately. 
 
 References:
 

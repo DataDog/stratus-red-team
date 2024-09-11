@@ -31,12 +31,16 @@ resource "azuread_directory_role_assignment" "role" {
   principal_object_id = azuread_service_principal.sp.object_id
 }
 
-output "object_id" {
+output "app_object_id" {
   value = azuread_application.app.object_id
 }
 
-output "app_id" {
-  value = azuread_application.app.application_id
+output "sp_app_id" {
+  value = azuread_service_principal.sp.application_id
+}
+
+output "sp_object_id" {
+  value = azuread_service_principal.sp.object_id
 }
 
 output "display" {

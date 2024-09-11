@@ -46,6 +46,7 @@ import (
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/eks/lateral-movement/create-access-entry"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/eks/persistence/backdoor-aws-auth-configmap"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/entra-id/persistence/backdoor-application"
+	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/entra-id/persistence/backdoor-application-sp"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/entra-id/persistence/guest-user"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/entra-id/persistence/hidden-au"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/entra-id/persistence/new-application"
