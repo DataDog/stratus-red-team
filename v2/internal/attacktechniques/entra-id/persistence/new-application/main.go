@@ -6,7 +6,6 @@ import (
 	"github.com/aws/smithy-go/ptr"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
-	"github.com/microsoftgraph/msgraph-beta-sdk-go/models"
 	graphcore "github.com/microsoftgraph/msgraph-sdk-go-core"
 	graphmodels "github.com/microsoftgraph/msgraph-sdk-go/models"
 	"log"
@@ -123,7 +122,7 @@ func revert(_ map[string]string, providers stratus.CloudProviders) error {
 	}
 
 	// Paginate the results and search for our application
-	iterator, err := graphcore.NewPageIterator[*graphmodels.Application](response, graphClient.GetAdapter(), models.CreateApplicationCollectionResponseFromDiscriminatorValue)
+	iterator, err := graphcore.NewPageIterator[*graphmodels.Application](response, graphClient.GetAdapter(), graphmodels.CreateApplicationCollectionResponseFromDiscriminatorValue)
 	if err != nil {
 		return errors.New("could not create Applications iterator: " + err.Error())
 	}
