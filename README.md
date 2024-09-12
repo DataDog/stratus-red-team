@@ -78,6 +78,7 @@ Open-source projects:
 Videos:
 - [Reproducing common attacks in the cloud with Stratus Red Team](https://www.youtube.com/watch?v=M5DGXWF2ld0)
 - [Stratus Red Team: AWS EC2 Instance Credential Theft | Threat SnapShot](https://www.youtube.com/watch?v=TVS-M6DrSPw)
+- [Automated Attack Simulation in AWS for Red Teaming](https://www.youtube.com/watch?v=O_vNAKLnSc0)
 
 Blog posts:
 - [AWS threat emulation and detection validation with Stratus Red Team and Datadog Cloud SIEM](https://www.datadoghq.com/blog/aws-threat-emulation-detection-validation-datadog/)
