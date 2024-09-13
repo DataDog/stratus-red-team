@@ -465,6 +465,78 @@ Azure:
             - Exfiltration
           platform: Azure
           isIdempotent: true
+Entra ID:
+    Persistence:
+        - id: entra-id.persistence.backdoor-application-sp
+          name: Backdoor Entra ID application through service principal
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: Entra ID
+          isIdempotent: false
+        - id: entra-id.persistence.backdoor-application
+          name: Backdoor Entra ID application
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: Entra ID
+          isIdempotent: false
+        - id: entra-id.persistence.guest-user
+          name: Create Guest User
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+          platform: Entra ID
+          isIdempotent: false
+        - id: entra-id.persistence.hidden-au
+          name: Create Hidden Scoped Role Assignment Through HiddenMembership AU
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+          platform: Entra ID
+          isIdempotent: false
+        - id: entra-id.persistence.new-application
+          name: Create Application
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: Entra ID
+          isIdempotent: false
+        - id: entra-id.persistence.restricted-au
+          name: Create Sticky Backdoor User Through Restricted Management AU
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+          platform: Entra ID
+          isIdempotent: false
+    Privilege Escalation:
+        - id: entra-id.persistence.backdoor-application-sp
+          name: Backdoor Entra ID application through service principal
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: Entra ID
+          isIdempotent: false
+        - id: entra-id.persistence.backdoor-application
+          name: Backdoor Entra ID application
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: Entra ID
+          isIdempotent: false
+        - id: entra-id.persistence.new-application
+          name: Create Application
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: Entra ID
+          isIdempotent: false
 Kubernetes:
     Credential Access:
         - id: k8s.credential-access.dump-secrets

@@ -3,13 +3,14 @@ package gcp
 import (
 	compute "cloud.google.com/go/compute/apiv1"
 	"context"
+	"github.com/datadog/stratus-red-team/v2/internal/utils"
 	computepb "google.golang.org/genproto/googleapis/cloud/compute/v1"
 	"log"
 
 	_ "embed"
 	"fmt"
-	gcp_utils "github.com/datadog/stratus-red-team/v2/internal/utils/gcp"
 	"github.com/datadog/stratus-red-team/v2/internal/providers"
+	gcp_utils "github.com/datadog/stratus-red-team/v2/internal/utils/gcp"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 )
@@ -39,10 +40,10 @@ Detonation:
 
 	Since the target e-mail must exist for this attack simulation to work, Stratus Red Team grants the role to ` + gcp_utils.DefaultFictitiousAttackerEmail + ` by default.
 	This is a real Google account, owned by Stratus Red Team maintainers and that is not used for any other purpose than this attack simulation. However, you can override
-	this behavior by setting the environment variable <code>` + gcp_utils.AttackerEmailEnvVarKey + `</code>, for instance:
+	this behavior by setting the environment variable <code>` + utils.AttackerEmailEnvVarKey + `</code>, for instance:
 
 	` + codeBlock + `bash
-	export ` + gcp_utils.AttackerEmailEnvVarKey + `="your-own-gmail-account@gmail.com"
+	export ` + utils.AttackerEmailEnvVarKey + `="your-own-gmail-account@gmail.com"
 	stratus detonate ` + AttackTechniqueId + `
 	` + codeBlock + `
 `,
@@ -218,4 +219,3 @@ func unshareDisk(gcp *providers.GCPProvider, diskName string, zone string) error
 	}
 	return nil
 }
-

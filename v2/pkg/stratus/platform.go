@@ -14,6 +14,7 @@ const (
 	EKS        = "EKS"
 	Kubernetes = "kubernetes"
 	Azure      = "azure"
+	EntraID    = "entra-id"
 	GCP        = "GCP"
 )
 
@@ -25,6 +26,8 @@ func PlatformFromString(name string) (Platform, error) {
 		return Kubernetes, nil
 	case strings.ToLower(Azure):
 		return Azure, nil
+	case strings.ToLower(EntraID):
+		return EntraID, nil
 	case strings.ToLower(GCP):
 		return GCP, nil
 	case strings.ToLower(EKS):
@@ -40,6 +43,8 @@ func (p Platform) FormatName() (string, error) {
 		return "AWS", nil
 	case Azure:
 		return "Azure", nil
+	case EntraID:
+		return "Entra ID", nil
 	case GCP:
 		return "GCP", nil
 	case Kubernetes:
