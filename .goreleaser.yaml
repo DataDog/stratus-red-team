@@ -1,3 +1,4 @@
+version: 2
 before:
   hooks:
     - go mod tidy
@@ -25,7 +26,7 @@ brews:
         owner: datadog
         name: stratus-red-team
         branch: main
-  folder: Formula
+  directory: Formula
   url_template: "https://github.com/DataDog/stratus-red-team/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
   license: Apache-2.0
   homepage: "https://stratus-red-team.cloud"
