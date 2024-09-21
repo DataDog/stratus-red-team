@@ -2,19 +2,19 @@ package main
 
 import (
 	"errors"
-	"github.com/datadog/stratus-red-team/v2/internal/utils"
-	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
-	"github.com/datadog/stratus-red-team/v2/pkg/stratus/runner"
 	"os"
 	"strings"
 
+	"github.com/datadog/stratus-red-team/v2/internal/utils"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/runner"
 	"github.com/spf13/cobra"
 )
 
-var detonateForce bool
-var detonateCleanup bool
-
 func buildDetonateCmd() *cobra.Command {
+	var detonateForce bool
+	var detonateCleanup bool
+
 	detonateCmd := &cobra.Command{
 		Use:   "detonate attack-technique-id [attack-technique-id]...",
 		Short: "Detonate one or multiple attack techniques",
@@ -42,16 +42,16 @@ func buildDetonateCmd() *cobra.Command {
 		},
 		Run: func(cmd *cobra.Command, args []string) {
 			techniques, _ := resolveTechniques(args)
-			doDetonateCmd(techniques, detonateCleanup)
+			doDetonateCmd(techniques, detonateCleanup, detonateForce)
 		},
 	}
 	detonateCmd.Flags().BoolVarP(&detonateCleanup, "cleanup", "", false, "Clean up the infrastructure that was spun up as part of the technique prerequisites")
-	//detonateCmd.Flags().BoolVarP(&detonateNoWarmup, "no-warmup", "", false, "Do not spin up prerequisite infrastructure or configuration. Requires that 'warmup' was used before.")
 	detonateCmd.Flags().BoolVarP(&detonateForce, "force", "f", false, "Force detonation in cases where the technique is not idempotent and has already been detonated")
 
 	return detonateCmd
 }
-func doDetonateCmd(techniques []*stratus.AttackTechnique, cleanup bool) {
+
+func doDetonateCmd(techniques []*stratus.AttackTechnique, cleanup bool, force bool) {
 	VerifyPlatformRequirements(techniques)
 	workerCount := len(techniques)
 	techniquesChan := make(chan *stratus.AttackTechnique, workerCount)
@@ -59,12 +59,12 @@ func doDetonateCmd(techniques []*stratus.AttackTechnique, cleanup bool) {
 
 	// Create workers
 	for i := 0; i < workerCount; i++ {
-		go detonateCmdWorker(techniquesChan, errorsChan)
+		go detonateCmdWorker(techniquesChan, errorsChan, cleanup, force)
 	}
 
 	// Send attack techniques to detonate
-	for i := range techniques {
-		techniquesChan <- techniques[i]
+	for _, technique := range techniques {
+		techniquesChan <- technique
 	}
 	close(techniquesChan)
 
@@ -73,11 +73,11 @@ func doDetonateCmd(techniques []*stratus.AttackTechnique, cleanup bool) {
 	}
 }
 
-func detonateCmdWorker(techniques <-chan *stratus.AttackTechnique, errors chan<- error) {
+func detonateCmdWorker(techniques <-chan *stratus.AttackTechnique, errors chan<- error, cleanup bool, force bool) {
 	for technique := range techniques {
-		stratusRunner := runner.NewRunner(technique, detonateForce)
+		stratusRunner := runner.NewRunner(technique, force)
 		detonateErr := stratusRunner.Detonate()
-		if detonateCleanup {
+		if cleanup {
 			cleanupErr := stratusRunner.CleanUp()
 			errors <- utils.CoalesceErr(detonateErr, cleanupErr)
 		} else {
