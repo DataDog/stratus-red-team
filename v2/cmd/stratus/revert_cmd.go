@@ -2,18 +2,18 @@ package main
 
 import (
 	"errors"
-	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
-	"github.com/datadog/stratus-red-team/v2/pkg/stratus/runner"
 	"log"
 	"os"
 
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/runner"
 	"github.com/spf13/cobra"
 )
 
-var revertForce bool
-
 func buildRevertCmd() *cobra.Command {
-	detonateCmd := &cobra.Command{
+	var revertForce bool
+
+	revertCmd := &cobra.Command{
 		Use:                   "revert attack-technique-id [attack-technique-id]...",
 		Short:                 "Revert the detonation of an attack technique",
 		Example:               "stratus revert aws.defense-evasion.cloudtrail-stop",
@@ -37,14 +37,15 @@ func buildRevertCmd() *cobra.Command {
 		},
 		Run: func(cmd *cobra.Command, args []string) {
 			techniques, _ := resolveTechniques(args)
-			doRevertCmd(techniques)
+			doRevertCmd(techniques, revertForce)
 		},
 	}
-	detonateCmd.Flags().BoolVarP(&revertForce, "force", "f", false, "Force attempt to reverting even if the technique is not in the DETONATED state")
-	return detonateCmd
+
+	revertCmd.Flags().BoolVarP(&revertForce, "force", "f", false, "Force attempt to revert even if the technique is not in the DETONATED state")
+	return revertCmd
 }
 
-func doRevertCmd(techniques []*stratus.AttackTechnique) {
+func doRevertCmd(techniques []*stratus.AttackTechnique, force bool) {
 	VerifyPlatformRequirements(techniques)
 	workerCount := len(techniques)
 	techniquesChan := make(chan *stratus.AttackTechnique, workerCount)
@@ -52,7 +53,7 @@ func doRevertCmd(techniques []*stratus.AttackTechnique) {
 
 	// Create workers
 	for i := 0; i < workerCount; i++ {
-		go revertCmdWorker(techniquesChan, errorsChan)
+		go revertCmdWorker(techniquesChan, errorsChan, force)
 	}
 
 	// Send attack techniques to revert
@@ -68,14 +69,14 @@ func doRevertCmd(techniques []*stratus.AttackTechnique) {
 	}
 }
 
-func revertCmdWorker(techniques <-chan *stratus.AttackTechnique, errors chan<- error) {
+func revertCmdWorker(techniques <-chan *stratus.AttackTechnique, errors chan<- error, force bool) {
 	for technique := range techniques {
 		if technique.Revert == nil {
 			log.Println("Warning: " + technique.ID + " has no revert function and cannot be reverted.")
 			errors <- nil
 			continue
 		}
-		stratusRunner := runner.NewRunner(technique, revertForce)
+		stratusRunner := runner.NewRunner(technique, force)
 		err := stratusRunner.Revert()
 		errors <- err
 	}

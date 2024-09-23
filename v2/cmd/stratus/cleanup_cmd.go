@@ -2,17 +2,18 @@ package main
 
 import (
 	"errors"
+	"log"
+	"os"
+
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/runner"
 	"github.com/spf13/cobra"
-	"log"
-	"os"
 )
 
-var flagForceCleanup bool
-var flagCleanupAll bool
-
 func buildCleanupCmd() *cobra.Command {
+	var flagForceCleanup bool
+	var flagCleanupAll bool
+
 	cleanupCmd := &cobra.Command{
 		Use:                   "cleanup [attack-technique-id]... | --all",
 		Aliases:               []string{"clean"},
@@ -20,17 +21,17 @@ func buildCleanupCmd() *cobra.Command {
 		Example:               "stratus cleanup aws.defense-evasion.cloudtrail-stop\nstratus cleanup --all",
 		DisableFlagsInUseLine: true,
 		Args: func(cmd *cobra.Command, args []string) error {
-			if len(args) == 0 && flagCleanupAll {
-				if !flagCleanupAll {
-					return errors.New("pass the ID of the technique to clean up, or --all")
-				}
-				return nil
+			if len(args) == 0 && !flagCleanupAll {
+				return errors.New("pass the ID of the technique to clean up, or --all")
 			}
 
-			// Ensure the technique IDs are valid
-			_, err := resolveTechniques(args)
+			if len(args) > 0 {
+				// Ensure the technique IDs are valid
+				_, err := resolveTechniques(args)
+				return err
+			}
 
-			return err
+			return nil
 		},
 		ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 			return getTechniquesCompletion(toComplete), cobra.ShellCompDirectiveNoFileComp
@@ -38,31 +39,33 @@ func buildCleanupCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) > 0 {
 				techniques, _ := resolveTechniques(args)
-				doCleanupCmd(techniques)
+				doCleanupCmd(techniques, flagForceCleanup)
 				return nil
 			} else if flagCleanupAll {
-				// clean up all techniques that are not in the COLD state
-				doCleanupAllCmd()
+				doCleanupAllCmd(flagForceCleanup)
 				return nil
-			} else {
-				return errors.New("pass the ID of the technique to clean up, or --all")
 			}
+			return errors.New("pass the ID of the technique to clean up, or --all")
 		},
 	}
+
 	cleanupCmd.Flags().BoolVarP(&flagForceCleanup, "force", "f", false, "Force cleanup even if the technique is already COLD")
 	cleanupCmd.Flags().BoolVarP(&flagCleanupAll, "all", "", false, "Clean up all techniques that are not in COLD state")
+
 	return cleanupCmd
 }
 
-func doCleanupCmd(techniques []*stratus.AttackTechnique) {
+func doCleanupCmd(techniques []*stratus.AttackTechnique, forceCleanup bool) {
 	workerCount := len(techniques)
 	techniquesChan := make(chan *stratus.AttackTechnique, workerCount)
 	errorsChan := make(chan error, workerCount)
+
 	for i := 0; i < workerCount; i++ {
-		go cleanupCmdWorker(techniquesChan, errorsChan)
+		go cleanupCmdWorker(techniquesChan, errorsChan, forceCleanup)
 	}
-	for i := range techniques {
-		techniquesChan <- techniques[i]
+
+	for _, technique := range techniques {
+		techniquesChan <- technique
 	}
 	close(techniquesChan)
 
@@ -73,16 +76,16 @@ func doCleanupCmd(techniques []*stratus.AttackTechnique) {
 	}
 }
 
-func cleanupCmdWorker(techniques <-chan *stratus.AttackTechnique, errors chan<- error) {
+func cleanupCmdWorker(techniques <-chan *stratus.AttackTechnique, errors chan<- error, forceCleanup bool) {
 	for technique := range techniques {
-		stratusRunner := runner.NewRunner(technique, flagForceCleanup)
+		stratusRunner := runner.NewRunner(technique, forceCleanup)
 		err := stratusRunner.CleanUp()
 		errors <- err
 	}
 }
 
-func doCleanupAllCmd() {
+func doCleanupAllCmd(forceCleanup bool) {
 	log.Println("Cleaning up all techniques that have been warmed-up or detonated")
 	availableTechniques := stratus.GetRegistry().ListAttackTechniques()
-	doCleanupCmd(availableTechniques)
+	doCleanupCmd(availableTechniques, forceCleanup)
 }
