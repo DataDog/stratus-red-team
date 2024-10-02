@@ -57,26 +57,22 @@ func detonate(_ map[string]string, providers stratus.CloudProviders) error {
 	result, err := bedrockClient.ListFoundationModels(context.Background(), &bedrock.ListFoundationModelsInput{})
 
 	if err != nil {
-		log.Printf("Couldn't list foundation models. Here's why: %v\n", err)
-	} else {
-		models = result.ModelSummaries
-		log.Println("The following foundation models can be used:")
-		for _, modelSummary := range models {
-			log.Println(*modelSummary.ModelId)
-		}
+		return fmt.Errorf("couldn't list foundation models: %w", err)
+	}
+	models = result.ModelSummaries
+	log.Println("The following foundation models can be used:")
+	for _, modelSummary := range models {
+		log.Println(*modelSummary.ModelId)
 	}
 
 	log.Println("Invoking Anthropic Claude 2")
 	wrapper := InvokeModelWrapper{BedrockRuntimeClient: bedrockruntime.NewFromConfig(awsConnection)}
 	prompt := "Are you Turing complete?"
-	completion, err := wrapper.InvokeModel(prompt)
+	_, err = wrapper.InvokeModel(prompt)
 	if err != nil {
-		log.Fatal("failed to invoke model", err)
-	} else {
-		log.Println("Prompt:", prompt)
-		log.Println("Response:", completion)
+		return fmt.Errorf("unable to invoke Bedrock model: %w", err)
 	}
-
+	log.Println("Successfully invoked Bedrock model")
 	return nil
 }
 
