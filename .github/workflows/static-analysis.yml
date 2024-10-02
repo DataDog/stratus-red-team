@@ -30,7 +30,7 @@ jobs:
             *.actions.githubusercontent.com:443
             objects.githubusercontent.com:443
             go.dev:443
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+      - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938
         with:
           fetch-depth: 1
       - name: Set up Go
