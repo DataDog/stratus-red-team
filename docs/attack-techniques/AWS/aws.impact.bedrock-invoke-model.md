@@ -17,7 +17,7 @@ Platform: AWS
 ## Description
 
 
-Simulates an attacker enumerating Bedrock models and then invoking Anthropic Claude 2 to run inference using the provided prompt. Attackers frequently use this enumeration technique after having compromised an access key, to use it to launch phishing campaigns or further resell stolen credentials.
+Simulates an attacker enumerating Bedrock models and then invoking Anthropic Claude 2 to run inference using the provided prompt. LLMjacking is an attack vector where attackers use stolen cloud credentials to run large language models, leading to unauthorized inference. This technique demonstrates how attackers can use Bedrock to run inference on Anthropic Claude 2 to generate responses to prompts.
 
 <span style="font-variant: small-caps;">Warm-up</span>: None.
 
