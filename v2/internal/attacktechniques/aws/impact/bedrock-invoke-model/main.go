@@ -54,7 +54,7 @@ func detonate(_ map[string]string, providers stratus.CloudProviders) error {
 
 	log.Println("Listing foundation models available in the current region")
 	var models []types.FoundationModelSummary
-	result, err := bedrockClient.ListFoundationModels(context.TODO(), &bedrock.ListFoundationModelsInput{})
+	result, err := bedrockClient.ListFoundationModels(context.Background(), &bedrock.ListFoundationModelsInput{})
 
 	if err != nil {
 		log.Printf("Couldn't list foundation models. Here's why: %v\n", err)
