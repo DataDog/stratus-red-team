@@ -66,7 +66,7 @@ func detonate(_ map[string]string, providers stratus.CloudProviders) error {
 	}
 
 	log.Println("Invoking Anthropic Claude 2")
-	wrapper := InvokeModelWrapper{BedrockRuntimeClient: bedrockruntime.NewFromConfig(awsConnection)}
+	wrapper := invokeModelWrapper{BedrockRuntimeClient: bedrockruntime.NewFromConfig(awsConnection)}
 	prompt := "Are you Turing complete?"
 	_, err = wrapper.InvokeModel(prompt)
 	if err != nil {
@@ -76,7 +76,7 @@ func detonate(_ map[string]string, providers stratus.CloudProviders) error {
 	return nil
 }
 
-type InvokeModelWrapper struct {
+type invokeModelWrapper struct {
 	BedrockRuntimeClient *bedrockruntime.Client
 }
 
@@ -90,7 +90,7 @@ type ClaudeResponse struct {
 	Completion string `json:"completion"`
 }
 
-func (wrapper InvokeModelWrapper) InvokeModel(prompt string) (string, error) {
+func (wrapper invokeModelWrapper) InvokeModel(prompt string) (string, error) {
 	modelId := "anthropic.claude-v2"
 
 	// Anthropic Claude requires enclosing the prompt as follows:
