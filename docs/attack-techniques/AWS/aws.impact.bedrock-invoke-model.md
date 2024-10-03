@@ -44,6 +44,6 @@ stratus detonate aws.impact.bedrock-invoke-model
 
 Through CloudTrail's <code>ListFoundationModels</code> and <code>InvokeModel</code> events. 
 If model invocation logging is enabled, invocations requests are logged on CloudWatch and/or S3 buckets with additional details, including prompt content and response. This greatly helps in detecting malicious invocations.
-It is not recommended to alert on every model invokation, thus you can consider the following options for a reasonable detection:
+It is not recommended to alert on every model invokation, thus you can consider the following options for a more reasonable detection:
 - detecting <code>InvokeModel</code> with ValidationException, raised when using an invalid request parameter. This is a technique used by some attackers to verify if they have the proper permissions;
 - adding other APIs in your detection pattern, such as <code>PutFoundationModelEntitlement</code> and <code>PutUseCaseForModelAccess</code>, used for enabling models before invoking them.
