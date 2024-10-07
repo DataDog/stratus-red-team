@@ -4,16 +4,22 @@ import (
 	"context"
 	_ "embed"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
 	"log"
+	"net/http"
+	"strings"
+	"time"
 
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
+	v4 "github.com/aws/aws-sdk-go-v2/aws/signer/v4"
 	"github.com/aws/aws-sdk-go-v2/service/bedrock"
 	"github.com/aws/aws-sdk-go-v2/service/bedrock/types"
 	"github.com/aws/aws-sdk-go-v2/service/bedrockruntime"
-	"github.com/aws/aws-sdk-go/aws"
 )
 
 func init() {
@@ -65,6 +71,13 @@ func detonate(_ map[string]string, providers stratus.CloudProviders) error {
 		log.Println(*modelSummary.ModelId)
 	}
 
+	log.Println("Retrieving the availability information of Anthropic Claude 2")
+	response, err := GetFoundationModelAvailability(awsConnection, "anthropic.claude-v2")
+	if err != nil {
+		fmt.Println("Error making API request:", err)
+	}
+	fmt.Println("Model availability info:", response)
+
 	log.Println("Invoking Anthropic Claude 2")
 	wrapper := invokeModelWrapper{BedrockRuntimeClient: bedrockruntime.NewFromConfig(awsConnection)}
 	prompt := "Are you Turing complete?"
@@ -74,6 +87,49 @@ func detonate(_ map[string]string, providers stratus.CloudProviders) error {
 	}
 	log.Println("Successfully invoked Bedrock model")
 	return nil
+}
+
+func GetFoundationModelAvailability(cfg aws.Config, model string) (string, error) {
+	region := cfg.Region
+
+	model = replaceColon(model)
+	host := fmt.Sprintf("bedrock.%s.amazonaws.com", region)
+	endpoint := fmt.Sprintf("https://%s/foundation-model-availability/%s", host, model)
+
+	credentials, err := cfg.Credentials.Retrieve(context.TODO())
+	if err != nil {
+		return "", errors.New("Error retrieving credentials: " + err.Error())
+	}
+
+	req, err := http.NewRequest("GET", endpoint, nil)
+	if err != nil {
+		return "", errors.New("Error creating request: " + err.Error())
+	}
+
+	payloadHash := "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" // For GET requests, the payload is always an empty string
+	req.Host = host
+	signer := v4.NewSigner()
+	if err = signer.SignHTTP(context.TODO(), credentials, req, payloadHash, "bedrock", region, time.Now()); err != nil {
+		return "", errors.New("Error signing request: " + err.Error())
+	}
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return "", errors.New("Error making request: " + err.Error())
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(io.Reader(resp.Body))
+	if err != nil {
+		return "", errors.New("Error reading response body: " + err.Error())
+	}
+
+	return string(body), nil
+}
+
+func replaceColon(input string) string {
+	return strings.ReplaceAll(input, ":", "%3A")
 }
 
 type invokeModelWrapper struct {
