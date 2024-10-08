@@ -75,9 +75,9 @@ func detonate(_ map[string]string, providers stratus.CloudProviders) error {
 	log.Println("Retrieving the availability information of Anthropic Claude 2")
 	response, err := GetFoundationModelAvailability(awsConnection, "anthropic.claude-v2")
 	if err != nil {
-		fmt.Println("Error making API request:", err)
+		return fmt.Errorf("unable to get model availability info: %w", err)
 	}
-	fmt.Println("Model availability info:", response)
+	log.Println("Model availability information: ", response)
 
 	log.Println("Invoking Anthropic Claude 2")
 	wrapper := invokeModelWrapper{BedrockRuntimeClient: bedrockruntime.NewFromConfig(awsConnection)}
@@ -90,6 +90,8 @@ func detonate(_ map[string]string, providers stratus.CloudProviders) error {
 	return nil
 }
 
+// GetFoundationModelAvailability retrieves model availability information.
+// Note: At the time of writing, this function is not available in the AWS SDK for Go v2
 func GetFoundationModelAvailability(cfg aws.Config, model string) (string, error) {
 	region := cfg.Region
 
@@ -97,7 +99,7 @@ func GetFoundationModelAvailability(cfg aws.Config, model string) (string, error
 	host := fmt.Sprintf("bedrock.%s.amazonaws.com", region)
 	endpoint := fmt.Sprintf("https://%s/foundation-model-availability/%s", host, model)
 
-	credentials, err := cfg.Credentials.Retrieve(context.TODO())
+	credentials, err := cfg.Credentials.Retrieve(context.Background())
 	if err != nil {
 		return "", errors.New("Error retrieving credentials: " + err.Error())
 	}
@@ -110,7 +112,7 @@ func GetFoundationModelAvailability(cfg aws.Config, model string) (string, error
 	payloadHash := "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" // For GET requests, the payload is always an empty string
 	req.Host = host
 	signer := v4.NewSigner()
-	if err = signer.SignHTTP(context.TODO(), credentials, req, payloadHash, "bedrock", region, time.Now()); err != nil {
+	if err = signer.SignHTTP(context.Background(), credentials, req, payloadHash, "bedrock", region, time.Now()); err != nil {
 		return "", errors.New("Error signing request: " + err.Error())
 	}
 
@@ -159,22 +161,22 @@ func (wrapper invokeModelWrapper) InvokeModel(prompt string) (string, error) {
 	})
 
 	if err != nil {
-		log.Fatal("failed to marshal", err)
+		return "", fmt.Errorf("couldn't marshal request: %w", err)
 	}
 
-	output, err := wrapper.BedrockRuntimeClient.InvokeModel(context.TODO(), &bedrockruntime.InvokeModelInput{
+	output, err := wrapper.BedrockRuntimeClient.InvokeModel(context.Background(), &bedrockruntime.InvokeModelInput{
 		ModelId:     aws.String(modelId),
 		ContentType: aws.String("application/json"),
 		Body:        body,
 	})
 
 	if err != nil {
-		fmt.Printf("Error: Couldn't invoke Anthropic Claude. Here's why: %v\n", err)
+		return "", fmt.Errorf("couldn't invoke Anthropic Claude: %w", err)
 	}
 
 	var response ClaudeResponse
 	if err := json.Unmarshal(output.Body, &response); err != nil {
-		log.Fatal("failed to unmarshal", err)
+		return "", fmt.Errorf("couldn't unmarshal response: %w", err)
 	}
 
 	return response.Completion, nil
