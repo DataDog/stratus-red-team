@@ -38,6 +38,7 @@ Detonation:
 
 References:
 
+- https://permiso.io/blog/exploiting-hosted-models
 - https://sysdig.com/blog/llmjacking-stolen-cloud-credentials-used-in-new-ai-attack/
 - https://sysdig.com/blog/growing-dangers-of-llmjacking/
 - https://www.lacework.com/blog/detecting-ai-resource-hijacking-with-composite-alerts
