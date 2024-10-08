@@ -24,16 +24,15 @@ Simulates an attacker enumerating Bedrock models and then invoking Anthropic Cla
 <span style="font-variant: small-caps;">Detonation</span>: 
 
 - Perform <code>bedrock:ListFoundationModels</code> to enumerate foundation models that can be used in the current region.
-- Perform <code>bedrock:GetFoundationModelAvailability</code> to retrieve the availability information of Anthropic Claude 2.
 - Perform <code>bedrock:InvokeModel</code> to invoke Claude 2.
 
 References:
 
+- https://permiso.io/blog/exploiting-hosted-models
 - https://sysdig.com/blog/llmjacking-stolen-cloud-credentials-used-in-new-ai-attack/
 - https://sysdig.com/blog/growing-dangers-of-llmjacking/
 - https://www.lacework.com/blog/detecting-ai-resource-hijacking-with-composite-alerts
 - https://reinforce.awsevents.com/content/dam/reinforce/2024/slides/TDR432_New-tactics-and-techniques-for-proactive-threat-detection.pdf
-- https://permiso.io/blog/exploiting-hosted-models
 
 
 ## Instructions
