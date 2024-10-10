@@ -17,7 +17,7 @@ var tf []byte
 func init() {
 	const codeBlock = "```"
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
-		ID:           "azure.execution.bastion-shareable-link",
+		ID:           "azure.persistence.bastion-shareable-link",
 		FriendlyName: "Access Virtual Machine using Bastion shareable link",
 		Description: `
 By utilizing the 'shareable link' feature on Bastions where it is enabled, an attacker can create a link to allow access to a virtual machine (VM) from untrusted networks. Public links generated for an Azure Bastion can allow VM network access to anyone with the generated URL.
@@ -83,14 +83,12 @@ Identify Azure events of type <code>Microsoft.Network/bastionHosts/createshareab
 		Platform:                   stratus.Azure,
 		IsSlow:                     true,
 		IsIdempotent:               false,
-		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Execution},
+		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence},
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,
 		Revert:                     revert,
 	})
 }
-
-const ExtensionName = "CustomScriptExtension-StratusRedTeam-Example"
 
 func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	bastionName := params["bastion_name"]

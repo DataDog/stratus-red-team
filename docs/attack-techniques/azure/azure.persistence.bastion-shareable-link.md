@@ -12,7 +12,7 @@ Platform: Azure
 ## MITRE ATT&CK Tactics
 
 
-- Execution
+- Persistence
 
 ## Description
 
@@ -39,7 +39,7 @@ NOTE: Warm-up and cleanup can each take 10-15 minutes to create and destroy the 
 ## Instructions
 
 ```bash title="Detonate with Stratus Red Team"
-stratus detonate azure.execution.bastion-shareable-link
+stratus detonate azure.persistence.bastion-shareable-link
 ```
 ## Detection
 
