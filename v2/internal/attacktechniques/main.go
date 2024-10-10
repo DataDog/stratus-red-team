@@ -43,6 +43,7 @@ import (
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/privilege-escalation/change-iam-user-password"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/azure/execution/vm-custom-script-extension"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/azure/execution/vm-run-command"
+	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/azure/execution/bastion-shareable-link"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/azure/exfiltration/disk-export"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/eks/lateral-movement/create-access-entry"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/eks/persistence/backdoor-aws-auth-configmap"
