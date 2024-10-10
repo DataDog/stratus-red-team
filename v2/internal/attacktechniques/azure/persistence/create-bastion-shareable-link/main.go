@@ -6,7 +6,6 @@ import (
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
-	"github.com/Azure/azure-sdk-for-go/sdk/azcore/to"
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/network/armnetwork/v6"
 	"fmt"
 )
@@ -17,7 +16,7 @@ var tf []byte
 func init() {
 	const codeBlock = "```"
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
-		ID:           "azure.persistence.bastion-shareable-link",
+		ID:           "azure.persistence.create-bastion-shareable-link",
 		FriendlyName: "Access Virtual Machine using Bastion shareable link",
 		Description: `
 By utilizing the 'shareable link' feature on Bastions where it is enabled, an attacker can create a link to allow access to a virtual machine (VM) from untrusted networks. Public links generated for an Azure Bastion can allow VM network access to anyone with the generated URL.
@@ -115,24 +114,24 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 		VMs: []*armnetwork.BastionShareableLink{
 			{
 				VM: &armnetwork.VM{
-					ID: to.Ptr(vmId),
+					ID: &vmId,
 				},
 			},
 		},
 	}, nil)
 	if err != nil {
-		log.Fatalf("failed to create shareable link: %v", err)
+		return fmt.Errorf("failed to create shareable link: %v", err)
 	}
 
 	_, err = poller.PollUntilDone(ctx, nil)
 	if err != nil {
-		log.Fatalf("failed to poll results: %v", err)
+		return fmt.Errorf("failed to poll results of shareable link request: %v", err)
 	}
 	log.Println("Shareable link created")
 
 	// Provide URL to access Bastion shareable link
 	// NOTE: Response via Go SDK methods does not return any page contents, so we'll supply a Portal URL to fetch the link for now. (The example cited in reference link above is not clear on how to resolve this.)
-	url := fmt.Sprintln("https://portal.azure.com/#@" + tenantId + "/resource/subscriptions/" + subscriptionID + "/resourceGroups/" + resourceGroup + "/providers/Microsoft.Network/bastionHosts/" + bastionName + "/shareablelinks")
+	url := fmt.Sprintf("https://portal.azure.com/#@%s/resource/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/bastionHosts/%s/shareablelinks", tenantId, subscriptionID, resourceGroup, bastionName)
 
 	log.Println("You can view and fetch the shareable link URL here: " + url)
 
@@ -163,17 +162,17 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 		VMs: []*armnetwork.BastionShareableLink{
 			{
 				VM: &armnetwork.VM{
-					ID: to.Ptr(vmId),
+					ID: &vmId,
 				},
 			},
 		},
 	}, nil)
 	if err != nil {
-		log.Fatalf("failed to finish the request: %v", err)
+		return fmt.Errorf("failed to delete shareable bastion link: %v", err)
 	}
 	_, err = poller.PollUntilDone(ctx, nil)
 	if err != nil {
-		log.Fatalf("failed to pull the result: %v", err)
+		return fmt.Errorf("failed to poll results of deleting shareable bastion link: %v", err)
 	}
 
 	log.Println("Shareable link deleted")

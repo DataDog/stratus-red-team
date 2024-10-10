@@ -129,7 +129,7 @@ resource "azurerm_bastion_host" "bastion" {
   resource_group_name = azurerm_resource_group.lab_environment.name
   # Required for shareable link feature
   sku                    = "Standard"
-  shareable_link_enabled = "true"
+  shareable_link_enabled = true
 
   ip_configuration {
     name                 = "${local.resource_prefix}-ipconfig-${random_string.lab_name.result}"
