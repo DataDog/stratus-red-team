@@ -124,12 +124,12 @@ resource "azurerm_windows_virtual_machine" "lab_windows_vm" {
 
 # Note: Creation/destruction of a Bastion can take 10 minutes each, see https://learn.microsoft.com/en-us/azure/bastion/tutorial-create-host-portal
 resource "azurerm_bastion_host" "bastion" {
-  name                    = "${local.resource_prefix}-bastion-${random_string.lab_name.result}"
-  location                = azurerm_resource_group.lab_environment.location
-  resource_group_name     = azurerm_resource_group.lab_environment.name
+  name                = "${local.resource_prefix}-bastion-${random_string.lab_name.result}"
+  location            = azurerm_resource_group.lab_environment.location
+  resource_group_name = azurerm_resource_group.lab_environment.name
   # Required for shareable link feature
-  sku                     = "Standard"
-  shareable_link_enabled  = "true"
+  sku                    = "Standard"
+  shareable_link_enabled = "true"
 
   ip_configuration {
     name                 = "${local.resource_prefix}-ipconfig-${random_string.lab_name.result}"
@@ -149,15 +149,15 @@ output "bastion_name" {
   value = azurerm_bastion_host.bastion.name
 }
 
-output "vm_id"{
+output "vm_id" {
   value = azurerm_windows_virtual_machine.lab_windows_vm.id
 }
 
-output "vm_name"{
+output "vm_name" {
   value = azurerm_windows_virtual_machine.lab_windows_vm.name
 }
 
-output tenant_id{
+output "tenant_id" {
   value = data.azurerm_client_config.current.tenant_id
 }
 
