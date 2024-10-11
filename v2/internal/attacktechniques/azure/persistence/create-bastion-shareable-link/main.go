@@ -152,7 +152,7 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 
 	client, err := armnetwork.NewClientFactory(subscriptionID, cred, clientOptions)
 	if err != nil {
-		log.Fatalf("failed to create client: %v", err)
+		return fmt.Errorf("failed to instantiate ARM Network client: %v", err)
 	}
 
 	// Delete shareable link that was previously created
