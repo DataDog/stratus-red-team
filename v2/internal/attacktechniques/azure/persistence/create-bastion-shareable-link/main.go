@@ -103,7 +103,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 
 	client, err := armnetwork.NewClientFactory(subscriptionID, cred, clientOptions)
 	if err != nil {
-		log.Fatalf("failed to create client: %v", err)
+		return fmt.Errorf("failed to create client: %v", err)
 	}
 
 	// Create Bastion shareable link
