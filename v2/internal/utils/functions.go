@@ -2,7 +2,9 @@ package utils
 
 import (
 	"crypto/md5"
+	"crypto/sha256"
 	"encoding/base64"
+	"encoding/hex"
 	"math/rand"
 	"time"
 )
@@ -64,4 +66,10 @@ func IndexOf[T comparable](slice []T, searchValue T) int {
 func MD5HashBase64(text string) string {
 	hash := md5.Sum([]byte(text))
 	return base64.StdEncoding.EncodeToString(hash[:])
+}
+
+func SHA256Hash(input string) string {
+	hash := sha256.New()
+	hash.Write([]byte(input))
+	return hex.EncodeToString(hash.Sum(nil))
 }
