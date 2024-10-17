@@ -180,7 +180,7 @@ AWS:
           mitreAttackTactics:
             - Impact
           platform: AWS
-          isIdempotent: true
+          isIdempotent: false
         - id: aws.impact.s3-ransomware-batch-deletion
           name: S3 Ransomware through batch file deletion
           isSlow: false
