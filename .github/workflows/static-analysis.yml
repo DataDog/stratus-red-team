@@ -40,6 +40,6 @@ jobs:
           go-version: 1.21
       - uses: dominikh/staticcheck-action@fe1dd0c3658873b46f8c9bb3291096a617310ca6
         with:
-          version: "2022.1"
+          version: "2024.1"
           install-go: false
           working-directory: "./v2"
