@@ -7,12 +7,14 @@ We welcome pull requests, contributions and feedback! For any bug report or feed
 Stratus Red Team is opinionated in the attack techniques it packages - see [Philosophy](./attack-techniques/philosophy.md). Feel free to open an issue to discuss ideas about new attack techniques. You can see the current backlog using the GitHub issue label [`new-technique`](https://github.com/DataDog/stratus-red-team/issues?q=is%3Aissue+is%3Aopen+label%3Anew-technique).
 
 To create a new attack technique:
+
 1. Create a new folder under `v2/internal/attacktechniques/your-cloud/your-mitre-attack-tactic/your-attack-name`
 2. Create a `main.go` file that contains the detonation (and optionally, the revert) behavior. See for example [cloudtrail-stop/main.go](https://github.com/DataDog/stratus-red-team/blob/main/v2/internal/attacktechniques/aws/defense-evasion/cloudtrail-stop/main.go)
 3. If your attack technique contains pre-requisites, create a `main.tf` file
 4. Add your attack technique to the imports of `v2/internal/attacktechniques/main.go`
 
 To generate the logs dataset using [Grimoire](https://github.com/DataDog/grimoire):
+
 1. Install Grimoire
 2. Run the following to detonate the attack and retrieve CloudTrail logs:
 
