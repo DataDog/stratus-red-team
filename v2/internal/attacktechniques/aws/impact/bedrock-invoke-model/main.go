@@ -78,7 +78,6 @@ References:
 	- <code>anthropic.claude-3-sonnet-20240229-v1:0</code> (default)
 	- <code>anthropic.claude-3-5-sonnet-20240620-v1:0</code>
 	- <code>anthropic.claude-3-haiku-20240307-v1:0</code>
-	- <code>anthropic.claude-3-opus-20240229-v1:0</code>
 	- <code>anthropic.claude-instant-v1</code>
 
 
@@ -175,31 +174,28 @@ func enableModel(awsConnection aws.Config, modelId string, availability *Bedrock
 type BedrockModelAvailability struct {
 	RegionAvailability    string `json:"regionAvailability"`
 	AgreementAvailability struct {
-		Status string `json:"status"`
+		Status       string `json:"status"`
+		ErrorMessage string `json:"errorMessage"`
 	} `json:"agreementAvailability"`
 	EntitlementAvailability string `json:"entitlementAvailability"`
 }
 
-// GetFoundationModelAvailability retrieves model availability information.
-// Note: At the time of writing, this function is not available in the AWS SDK for Go v2
-func GetFoundationModelAvailability(cfg aws.Config, model string) (*BedrockModelAvailability, error) {
+// Helper function to execute signed HTTP requests to AWS
+func executeRequest(cfg aws.Config, method, endpoint string, payload []byte, payloadHash string) ([]byte, error) {
 	region := cfg.Region
-
 	host := fmt.Sprintf("bedrock.%s.amazonaws.com", region)
-	endpoint := fmt.Sprintf("https://%s/foundation-model-availability/%s", host, model)
 
 	credentials, err := cfg.Credentials.Retrieve(context.Background())
 	if err != nil {
 		return nil, errors.New("Error retrieving credentials: " + err.Error())
 	}
 
-	req, err := http.NewRequest("GET", endpoint, nil)
+	req, err := http.NewRequest(method, endpoint, bytes.NewReader(payload))
 	if err != nil {
 		return nil, errors.New("Error creating request: " + err.Error())
 	}
-
-	payloadHash := "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" // For GET requests, the payload is always an empty string
 	req.Host = host
+
 	signer := v4.NewSigner()
 	if err = signer.SignHTTP(context.Background(), credentials, req, payloadHash, "bedrock", region, time.Now()); err != nil {
 		return nil, errors.New("Error signing request: " + err.Error())
@@ -211,16 +207,30 @@ func GetFoundationModelAvailability(cfg aws.Config, model string) (*BedrockModel
 		return nil, errors.New("Error making request: " + err.Error())
 	}
 	defer resp.Body.Close()
+
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		return nil, errors.New("Response error: " + resp.Status)
 	}
 
-	body, err := io.ReadAll(io.Reader(resp.Body))
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, errors.New("Error reading response body: " + err.Error())
 	}
 
-	fmt.Println(string(body))
+	return body, nil
+}
+
+// GetFoundationModelAvailability retrieves model availability information.
+// Note: At the time of writing, this function is not available in the AWS SDK for Go v2
+func GetFoundationModelAvailability(cfg aws.Config, model string) (*BedrockModelAvailability, error) {
+	endpoint := fmt.Sprintf("https://bedrock.%s.amazonaws.com/foundation-model-availability/%s", cfg.Region, model)
+	payloadHash := "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" // Empty payload hash for GET
+
+	body, err := executeRequest(cfg, "GET", endpoint, nil, payloadHash)
+	if err != nil {
+		return nil, err
+	}
+
 	var result BedrockModelAvailability
 	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, errors.New("Error unmarshalling response body: " + err.Error())
@@ -231,41 +241,12 @@ func GetFoundationModelAvailability(cfg aws.Config, model string) (*BedrockModel
 // ListFoundationModelAgreementOffers retrieves information about the agreement offers for the provided model.
 // Note: At the time of writing, this function is not available in the AWS SDK for Go v2
 func ListFoundationModelAgreementOffers(cfg aws.Config, model string) (string, error) {
-	region := cfg.Region
-	payloadHash := "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" // For GET requests, the payload is always an empty string
+	endpoint := fmt.Sprintf("https://bedrock.%s.amazonaws.com/list-foundation-model-agreement-offers/%s", cfg.Region, model)
+	payloadHash := "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" // Empty payload hash for GET
 
-	host := fmt.Sprintf("bedrock.%s.amazonaws.com", region)
-	endpoint := fmt.Sprintf("https://%s/list-foundation-model-agreement-offers/%s", host, model)
-
-	credentials, err := cfg.Credentials.Retrieve(context.Background())
+	body, err := executeRequest(cfg, "GET", endpoint, nil, payloadHash)
 	if err != nil {
-		return "", errors.New("Error retrieving credentials: " + err.Error())
-	}
-
-	req, err := http.NewRequest("GET", endpoint, nil)
-	if err != nil {
-		return "", errors.New("Error creating request: " + err.Error())
-	}
-
-	req.Host = host
-	signer := v4.NewSigner()
-	if err = signer.SignHTTP(context.Background(), credentials, req, payloadHash, "bedrock", region, time.Now()); err != nil {
-		return "", errors.New("Error signing request: " + err.Error())
-	}
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return "", errors.New("Error making request: " + err.Error())
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return "", errors.New("Response error: " + resp.Status)
-	}
-
-	body, err := io.ReadAll(io.Reader(resp.Body))
-	if err != nil {
-		return "", errors.New("Error reading response body: " + err.Error())
+		return "", err
 	}
 
 	var offers struct {
@@ -273,136 +254,62 @@ func ListFoundationModelAgreementOffers(cfg aws.Config, model string) (string, e
 			OfferToken string `json:"offerToken"`
 		} `json:"offers"`
 	}
-
 	if err := json.Unmarshal(body, &offers); err != nil {
 		return "", errors.New("Error unmarshalling response body: " + err.Error())
 	}
-
 	if len(offers.Offers) == 0 {
-		return "", errors.New("no offers found")
+		return "", errors.New("No offers found")
 	}
 
-	offerToken := offers.Offers[0].OfferToken
-
-	return offerToken, nil
+	return offers.Offers[0].OfferToken, nil
 }
 
-// CreateUseCaseForModelAccess TODO
+// PutUseCaseForModelAccess submits a use case for model access.
 // Note: At the time of writing, this function is not available in the AWS SDK for Go v2
-type BedrockUseCaseRequest struct {
-	CompanyName         string `json:"companyName"`
-	CompanyWebsite      string `json:"companyWebsite"`
-	IntendedUsers       string `json:"intendedUsers"`
-	IndustryOption      string `json:"industryOption"`
-	OtherIndustryOption string `json:"otherIndustryOption"`
-	UseCases            string `json:"useCases"`
-}
-
 func PutUseCaseForModelAccess(cfg aws.Config, bedrockUseCase *BedrockUseCaseRequest) (string, error) {
-	region := cfg.Region
-
 	bedrockUseCasePayload, err := json.Marshal(bedrockUseCase)
 	if err != nil {
 		return "", errors.New("Error marshalling JSON: " + err.Error())
 	}
 
-	payload := map[string]string{
+	payloadBytes, err := json.Marshal(map[string]string{
 		"formData": base64.StdEncoding.EncodeToString(bedrockUseCasePayload),
-	}
-	jsonPayload, _ := json.Marshal(payload)
-	payloadHash := utils.SHA256Hash(string(jsonPayload))
-
-	host := fmt.Sprintf("bedrock.%s.amazonaws.com", region)
-	endpoint := fmt.Sprintf("https://%s/use-case-for-model-access", host)
-
-	credentials, err := cfg.Credentials.Retrieve(context.Background())
+	})
 	if err != nil {
-		fmt.Printf("Error retrieving credentials: %v", err)
-		return "", err
+		return "", errors.New("Error marshalling JSON: " + err.Error())
 	}
 
-	req, err := http.NewRequest("POST", endpoint, bytes.NewReader(jsonPayload))
+	payloadHash := utils.SHA256Hash(string(payloadBytes))
+	endpoint := fmt.Sprintf("https://bedrock.%s.amazonaws.com/use-case-for-model-access", cfg.Region)
+
+	body, err := executeRequest(cfg, "POST", endpoint, payloadBytes, payloadHash)
 	if err != nil {
-		fmt.Printf("Error creating request: %v", err)
 		return "", err
 	}
-
-	req.Host = host
-	signer := v4.NewSigner()
-	if err = signer.SignHTTP(context.Background(), credentials, req, payloadHash, "bedrock", region, time.Now()); err != nil {
-		fmt.Printf("Error signing request: %v", err)
-		return "", err
+	if string(body) == "201" {
+		return "", fmt.Errorf("unexpected HTTP response code %s", body)
 	}
 
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		fmt.Printf("Error making request: %v", err)
-		return "", err
-	}
-	defer resp.Body.Close()
-	body, err := io.ReadAll(io.Reader(resp.Body))
-	if err != nil {
-		fmt.Printf("Error reading response body: %v", err)
-		return "", err
-	}
-
-	bodyString := string(body)
-	if resp.StatusCode != 201 {
-		return "", fmt.Errorf("unexpected HTTP response code %d when creating use-case for model access. Response: %s", bodyString, resp.Status)
-	}
-
-	return bodyString, nil
+	return string(body), nil
 }
 
 // CreateFoundationModelAgreement requests access to the model by defining a subscription agreement in AWS Marketplace.
 // Note: At the time of writing, this function is not available in the AWS SDK for Go v2
 func CreateFoundationModelAgreement(cfg aws.Config, model string, offerToken string) (string, error) {
-	region := cfg.Region
-
-	payload := map[string]string{
+	payloadBytes, err := json.Marshal(map[string]string{
 		"modelId":    model,
 		"offerToken": offerToken,
-	}
-	jsonPayload, err := json.Marshal(payload)
+	})
 	if err != nil {
-		return "", errors.New("Error unmarshalling JSON: " + err.Error())
+		return "", errors.New("Error marshalling JSON: " + err.Error())
 	}
 
-	payloadHash := utils.SHA256Hash(string(jsonPayload))
+	payloadHash := utils.SHA256Hash(string(payloadBytes))
+	endpoint := fmt.Sprintf("https://bedrock.%s.amazonaws.com/create-foundation-model-agreement", cfg.Region)
 
-	host := fmt.Sprintf("bedrock.%s.amazonaws.com", region)
-	endpoint := fmt.Sprintf("https://%s/create-foundation-model-agreement", host)
-
-	credentials, err := cfg.Credentials.Retrieve(context.Background())
+	body, err := executeRequest(cfg, "POST", endpoint, payloadBytes, payloadHash)
 	if err != nil {
-		return "", errors.New("Error retrieving credentials: " + err.Error())
-	}
-
-	req, err := http.NewRequest("POST", endpoint, bytes.NewReader(jsonPayload))
-	if err != nil {
-		return "", errors.New("Error creating request: " + err.Error())
-	}
-
-	req.Host = host
-	signer := v4.NewSigner()
-	if err = signer.SignHTTP(context.Background(), credentials, req, payloadHash, "bedrock", region, time.Now()); err != nil {
-		return "", errors.New("Error signing request: " + err.Error())
-	}
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return "", errors.New("Error making request: " + err.Error())
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return "", errors.New("Response error: " + resp.Status)
-	}
-
-	body, err := io.ReadAll(io.Reader(resp.Body))
-	if err != nil {
-		return "", errors.New("Error reading response body: " + err.Error())
+		return "", err
 	}
 
 	return string(body), nil
@@ -411,50 +318,19 @@ func CreateFoundationModelAgreement(cfg aws.Config, model string, offerToken str
 // PutFoundationModelEntitlement enables the entitlement for the model.
 // Note: At the time of writing, this function is not available in the AWS SDK for Go v2
 func PutFoundationModelEntitlement(cfg aws.Config, model string) (string, error) {
-	region := cfg.Region
-
-	payload := map[string]string{
+	payloadBytes, err := json.Marshal(map[string]string{
 		"modelId": model,
-	}
-	jsonPayload, err := json.Marshal(payload)
+	})
 	if err != nil {
-		return "", errors.New("Error unmarshalling JSON: " + err.Error())
+		return "", errors.New("Error marshalling JSON: " + err.Error())
 	}
 
-	payloadHash := utils.SHA256Hash(string(jsonPayload))
+	payloadHash := utils.SHA256Hash(string(payloadBytes))
+	endpoint := fmt.Sprintf("https://bedrock.%s.amazonaws.com/foundation-model-entitlement", cfg.Region)
 
-	host := fmt.Sprintf("bedrock.%s.amazonaws.com", region)
-	endpoint := fmt.Sprintf("https://%s/foundation-model-entitlement", host)
-
-	credentials, err := cfg.Credentials.Retrieve(context.Background())
+	body, err := executeRequest(cfg, "POST", endpoint, payloadBytes, payloadHash)
 	if err != nil {
-		return "", errors.New("Error retrieving credentials: " + err.Error())
-	}
-
-	req, err := http.NewRequest("POST", endpoint, bytes.NewReader(jsonPayload))
-	if err != nil {
-		return "", errors.New("Error creating request: " + err.Error())
-	}
-
-	req.Host = host
-	signer := v4.NewSigner()
-	if err = signer.SignHTTP(context.Background(), credentials, req, payloadHash, "bedrock", region, time.Now()); err != nil {
-		return "", errors.New("Error signing request: " + err.Error())
-	}
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return "", errors.New("Error making request: " + err.Error())
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return "", errors.New("Response error: " + resp.Status)
-	}
-
-	body, err := io.ReadAll(io.Reader(resp.Body))
-	if err != nil {
-		return "", errors.New("Error reading response body: " + err.Error())
+		return "", err
 	}
 
 	return string(body), nil
@@ -475,6 +351,8 @@ func WaitForModelToBecomeAvailable(ctx context.Context, sdkConfig aws.Config, mo
 			if availabilityResponse.AgreementAvailability.Status == "AVAILABLE" {
 				log.Println("The model is now ready to use!")
 				return nil
+			} else if availabilityResponse.AgreementAvailability.ErrorMessage != "" {
+				return fmt.Errorf("error enabling model: %s", availabilityResponse.AgreementAvailability.ErrorMessage)
 			} else {
 				log.Println("The agreement is not available yet, retrying in " + RetryInterval.String())
 			}
@@ -483,6 +361,15 @@ func WaitForModelToBecomeAvailable(ctx context.Context, sdkConfig aws.Config, mo
 		}
 
 	}
+}
+
+type BedrockUseCaseRequest struct {
+	CompanyName         string `json:"companyName"`
+	CompanyWebsite      string `json:"companyWebsite"`
+	IntendedUsers       string `json:"intendedUsers"`
+	IndustryOption      string `json:"industryOption"`
+	OtherIndustryOption string `json:"otherIndustryOption"`
+	UseCases            string `json:"useCases"`
 }
 
 type BedrockInvoker struct {
