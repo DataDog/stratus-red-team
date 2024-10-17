@@ -27,6 +27,7 @@ jobs:
             storage.googleapis.com:443
             sum.golang.org:443
             golang.org:443
+            sum.golang.org:443
             *.actions.githubusercontent.com:443
             objects.githubusercontent.com:443
             go.dev:443
