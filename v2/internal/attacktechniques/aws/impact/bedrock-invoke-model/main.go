@@ -108,7 +108,7 @@ func findAndEnableModelToUse(awsConnection aws.Config) (string, error) {
 		return "", errors.New("Bedrock model " + modelToUse + " is not available in the current region. Try setting AWS_REGION=us-east-1 instead")
 	}
 	if availability.EntitlementAvailability != "AVAILABLE" {
-		err := enableModel(awsConnection, modelToUse)
+		err := enableModel(awsConnection, modelToUse, availability)
 		if err != nil {
 			return "", fmt.Errorf("unable to enable model: %w", err)
 		}
@@ -116,35 +116,38 @@ func findAndEnableModelToUse(awsConnection aws.Config) (string, error) {
 	return modelToUse, nil
 }
 
-func enableModel(awsConnection aws.Config, modelId string) error {
+func enableModel(awsConnection aws.Config, modelId string, availability *BedrockModelAvailability) error {
 	log.Println("Enabling model " + modelId)
 
-	// Need to create a use-case request for Anthropic models, c.f.
-	if strings.HasPrefix(modelId, "anthropic.") {
-		_, err := PutUseCaseForModelAccess(awsConnection, &BedrockUseCaseRequest{
-			CompanyName:         "test",
-			CompanyWebsite:      "https://test.com",
-			IntendedUsers:       "0",
-			IndustryOption:      "Government",
-			OtherIndustryOption: "",
-			UseCases:            "None of the Above. test",
-		})
+	// Need to create a use-case request for Anthropic models
+	// AgreementAvailability is account-wide (not region-specific). If a use-case was put for the model once in the account, it will be available in all regions, and we'll only need to call PutFoundationModelEntitlement in further region
+	if availability.AgreementAvailability.Status != "AVAILABLE" {
+		if strings.HasPrefix(modelId, "anthropic.") && availability.AgreementAvailability.Status != "AVAILABLE" {
+			_, err := PutUseCaseForModelAccess(awsConnection, &BedrockUseCaseRequest{
+				CompanyName:         "test",
+				CompanyWebsite:      "https://test.com",
+				IntendedUsers:       "0",
+				IndustryOption:      "Government",
+				OtherIndustryOption: "",
+				UseCases:            "None of the Above. test",
+			})
+			if err != nil {
+				return fmt.Errorf("unable to put use case for model access: %w", err)
+			}
+		}
+
+		offerToken, err := ListFoundationModelAgreementOffers(awsConnection, modelId)
 		if err != nil {
-			return fmt.Errorf("unable to put use case for model access: %w", err)
+			return fmt.Errorf("unable to list agreement offers: %w", err)
+		}
+
+		_, err = CreateFoundationModelAgreement(awsConnection, modelId, offerToken)
+		if err != nil {
+			return fmt.Errorf("unable to create model agreement: %w", err)
 		}
 	}
 
-	offerToken, err := ListFoundationModelAgreementOffers(awsConnection, modelId)
-	if err != nil {
-		return fmt.Errorf("unable to list agreement offers: %w", err)
-	}
-
-	_, err = CreateFoundationModelAgreement(awsConnection, modelId, offerToken)
-	if err != nil {
-		return fmt.Errorf("unable to create model agreement: %w", err)
-	}
-
-	_, err = PutFoundationModelEntitlement(awsConnection, modelId)
+	_, err := PutFoundationModelEntitlement(awsConnection, modelId)
 	if err != nil {
 		return fmt.Errorf("unable to put model entitlement: %w", err)
 	}
@@ -156,7 +159,7 @@ func enableModel(awsConnection aws.Config, modelId string) error {
 
 }
 
-type BedrockModelAvailabilityResponse struct {
+type BedrockModelAvailability struct {
 	RegionAvailability    string `json:"regionAvailability"`
 	AgreementAvailability struct {
 		Status string `json:"status"`
@@ -166,7 +169,7 @@ type BedrockModelAvailabilityResponse struct {
 
 // GetFoundationModelAvailability retrieves model availability information.
 // Note: At the time of writing, this function is not available in the AWS SDK for Go v2
-func GetFoundationModelAvailability(cfg aws.Config, model string) (*BedrockModelAvailabilityResponse, error) {
+func GetFoundationModelAvailability(cfg aws.Config, model string) (*BedrockModelAvailability, error) {
 	region := cfg.Region
 
 	host := fmt.Sprintf("bedrock.%s.amazonaws.com", region)
@@ -205,7 +208,7 @@ func GetFoundationModelAvailability(cfg aws.Config, model string) (*BedrockModel
 	}
 
 	fmt.Println(string(body))
-	var result BedrockModelAvailabilityResponse
+	var result BedrockModelAvailability
 	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, errors.New("Error unmarshalling response body: " + err.Error())
 	}
