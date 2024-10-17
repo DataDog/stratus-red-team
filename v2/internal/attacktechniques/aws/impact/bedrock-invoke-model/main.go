@@ -28,19 +28,28 @@ const BedrockModelID = "anthropic.claude-3-sonnet-20240229-v1:0"
 const BedrockModelFullName = "Anthropic Claude 3 Sonnet"
 const EnvVarCustomModel = "STRATUS_RED_TEAM_BEDROCK_MODEL"
 
+var bedrockUseCaseRequest = BedrockUseCaseRequest{
+	CompanyName:         "test",
+	CompanyWebsite:      "https://test.com",
+	IntendedUsers:       "0",
+	IndustryOption:      "Government",
+	OtherIndustryOption: "",
+	UseCases:            "None of the Above. test",
+}
+
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
 		ID:           "aws.impact.bedrock-invoke-model",
 		FriendlyName: "Invoke Bedrock Model",
 		Description: `
-Simulates an attacker enumerating Bedrock models and then invoking the ` + BedrockModelFullName + ` model to run inference using an arbitrary prompt. LLMjacking is an attack vector where attackers use stolen cloud credentials to run large language models, leading to unauthorized inference.
+Simulates an attacker enumerating Bedrock models and then invoking the ` + BedrockModelFullName + ` (` + BedrockModelID + `) model to run inference using an arbitrary prompt. LLMjacking is an attack vector where attackers use stolen cloud credentials to run large language models, leading to unauthorized inference.
 
 Warm-up: None.
 
 Detonation: 
 
-- Enumerate foundation models that can be used in the current region using <code>bedrock:ListFoundationModels</code>.
-- If ` + BedrockModelFullName + ` (` + BedrockModelID + `) is not enabled, attempt to enable it using <code>bedrock:PutUseCaseForModelAccess</code>, <code>bedrock:ListFoundationModelAgreementOffers</code>, <code>bedrock:CreateFoundationModelAgreement</code>, <code>bedrock:PutFoundationModelEntitlement</code>
+- Enumerate foundation models that can be used in the current region using <code>ListFoundationModels</code>.
+- If ` + BedrockModelFullName + ` is not enabled, attempt to enable it using <code>PutUseCaseForModelAccess</code>, <code>ListFoundationModelAgreementOffers</code>, <code>CreateFoundationModelAgreement</code>, <code>PutFoundationModelEntitlement</code>
 - Call <code>bedrock:InvokeModel</code> to run inference using the model.
 
 References:
@@ -53,18 +62,29 @@ References:
 
 !!! note
 
-	This technique attempts to enable and invoke the Bedrock model ` + BedrockModelID + `. To do this, it creates a Bedrock use case request for Anthropic models with a fictitious company nam, website and use-case:
+	This technique attempts to enable and invoke the Bedrock model ` + BedrockModelID + `. To do this, it creates a Bedrock use case request for Anthropic models with a fictitious company name, website and use-case:
 
-	` + "a" + `
+	- Company Name: <code>` + bedrockUseCaseRequest.CompanyName + `</code>
+	- Company Website: <code>` + bedrockUseCaseRequest.CompanyWebsite + `</code>
+	- Intended Users: <code>` + bedrockUseCaseRequest.IntendedUsers + `</code>
+	- Industry Option: <code>` + bedrockUseCaseRequest.IndustryOption + `</code>
+	- Use Cases: <code>` + bedrockUseCaseRequest.UseCases + `</code>
 
-	It is expected that this will cause AWS to automatically send you an email entitled <code>You accepted an AWS Marketplace offer</code>. 
-	Only Anthropic models require this. 
-	If you want to use a different model, you can set the ` + EnvVarCustomModel + ` environment variable to the model ID you want to use (see the list [here](https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html)), and make sure it's available in your current region.
+
+	It is expected that this will cause AWS to automatically send you an email entitled <code>You accepted an AWS Marketplace offer</code>. If you want to use a different Anthropic model, you can set the <code>` + EnvVarCustomModel + `</code> environment variable to the model ID you want to use (see the list [here](https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html)). Since the inputs to <code>InvokeModel</code> are model-specific, you can only specify an Anthropic model:
+
+	- <code>anthropic.claude-v2</code>
+	- <code>anthropic.claude-v2:1</code>
+	- <code>anthropic.claude-3-sonnet-20240229-v1:0</code> (default)
+	- <code>anthropic.claude-3-5-sonnet-20240620-v1:0</code>
+	- <code>anthropic.claude-3-haiku-20240307-v1:0</code>
+	- <code>anthropic.claude-3-opus-20240229-v1:0</code>
+	- <code>anthropic.claude-instant-v1</code>
+
 
 !!! note
 
-	After enabling it, Stratus Red Team will not disable the Bedrock model ` + BedrockModelID + `.
-	While this should not incur any additional costs, you can disable the model by going to the [Model Access](https://us-east-1.console.aws.amazon.com/bedrock/home?region=us-east-1#/modelaccess) page in the AWS Management Console.
+	After enabling it, Stratus Red Team will not disable the Bedrock model.	While this should not incur any additional costs, you can disable the model by going to the [Model Access](https://us-east-1.console.aws.amazon.com/bedrock/home?region=us-east-1#/modelaccess) page in the AWS Management Console.
 `,
 		Platform:           stratus.AWS,
 		IsIdempotent:       true,
@@ -123,14 +143,7 @@ func enableModel(awsConnection aws.Config, modelId string, availability *Bedrock
 	// AgreementAvailability is account-wide (not region-specific). If a use-case was put for the model once in the account, it will be available in all regions, and we'll only need to call PutFoundationModelEntitlement in further region
 	if availability.AgreementAvailability.Status != "AVAILABLE" {
 		if strings.HasPrefix(modelId, "anthropic.") && availability.AgreementAvailability.Status != "AVAILABLE" {
-			_, err := PutUseCaseForModelAccess(awsConnection, &BedrockUseCaseRequest{
-				CompanyName:         "test",
-				CompanyWebsite:      "https://test.com",
-				IntendedUsers:       "0",
-				IndustryOption:      "Government",
-				OtherIndustryOption: "",
-				UseCases:            "None of the Above. test",
-			})
+			_, err := PutUseCaseForModelAccess(awsConnection, &bedrockUseCaseRequest)
 			if err != nil {
 				return fmt.Errorf("unable to put use case for model access: %w", err)
 			}
@@ -151,7 +164,7 @@ func enableModel(awsConnection aws.Config, modelId string, availability *Bedrock
 	if err != nil {
 		return fmt.Errorf("unable to put model entitlement: %w", err)
 	}
-	log.Println("Successfully enabled model, waiting for it to become available")
+	log.Println("Successfully enabled model, waiting for it to become available. This can take a few minutes.")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Minute)
 	defer cancel()
