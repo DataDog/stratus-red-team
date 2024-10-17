@@ -55,7 +55,7 @@ Through CloudTrail's <code>ListFoundationModels</code>, <code>bedrock:GetFoundat
 If model invocation logging is enabled, invocations requests are logged on CloudWatch and/or S3 buckets with additional details, including prompt content and response. This greatly helps in detecting malicious invocations.
 `,
 		Platform:           stratus.AWS,
-		IsIdempotent:       true,
+		IsIdempotent:       false, // can't call CreateFoundationModelAgreement twice
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Impact},
 		Detonate:           detonate,
 	})
