@@ -10,12 +10,10 @@ require (
 	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.7.0
 	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/compute/armcompute v1.0.0
 	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resources/armresources v1.0.0
-	github.com/aws/aws-sdk-go v1.55.5
 	github.com/aws/aws-sdk-go-v2 v1.31.0
 	github.com/aws/aws-sdk-go-v2/config v1.25.11
 	github.com/aws/aws-sdk-go-v2/credentials v1.16.9
 	github.com/aws/aws-sdk-go-v2/feature/s3/manager v1.15.4
-	github.com/aws/aws-sdk-go-v2/service/bedrock v1.18.0
 	github.com/aws/aws-sdk-go-v2/service/bedrockruntime v1.17.0
 	github.com/aws/aws-sdk-go-v2/service/cloudtrail v1.35.2
 	github.com/aws/aws-sdk-go-v2/service/ec2 v1.138.2
