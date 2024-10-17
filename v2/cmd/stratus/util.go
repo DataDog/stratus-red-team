@@ -51,7 +51,7 @@ func VerifyPlatformRequirements(attackTechniques []*stratus.AttackTechnique) {
 			log.Println("Checking your authentication against " + string(currentPlatform))
 			err := stratus.EnsureAuthenticated(currentPlatform)
 			if err != nil {
-				log.Fatalf(err.Error())
+				log.Fatal(err.Error())
 			}
 			platforms[currentPlatform] = true
 		}

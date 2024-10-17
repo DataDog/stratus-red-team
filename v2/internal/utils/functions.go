@@ -2,9 +2,10 @@ package utils
 
 import (
 	"crypto/md5"
+	"crypto/sha256"
 	"encoding/base64"
+	"encoding/hex"
 	"math/rand"
-	"time"
 )
 
 func CoalesceErr(args ...error) error {
@@ -18,7 +19,6 @@ func CoalesceErr(args ...error) error {
 }
 
 func RandomString(length int) string {
-	rand.Seed(time.Now().UnixNano())
 	const letterBytes = "abcdefghijklmnopqrstuvwxyz0123456789"
 	b := make([]byte, length)
 	for i := range b {
@@ -28,7 +28,6 @@ func RandomString(length int) string {
 }
 
 func RandomHexString(length int) string {
-	rand.Seed(time.Now().UnixNano())
 	const letterBytes = "abcdef0123456789"
 	b := make([]byte, length)
 	for i := range b {
@@ -64,4 +63,10 @@ func IndexOf[T comparable](slice []T, searchValue T) int {
 func MD5HashBase64(text string) string {
 	hash := md5.Sum([]byte(text))
 	return base64.StdEncoding.EncodeToString(hash[:])
+}
+
+func SHA256Hash(input string) string {
+	hash := sha256.New()
+	hash.Write([]byte(input))
+	return hex.EncodeToString(hash.Sum(nil))
 }

@@ -10,7 +10,7 @@ export GO111MODULE=on
 BIN_DIR := $(ROOT_DIR)/bin
 
 # Define go flags
-GOFLAGS := -ldflags="-X main.BuildVersion=$(BUILD_VERSION)"
+GOFLAGS := -ldflags="-X main.BuildVersion=$(BUILD_VERSION) -w"
 
 .PHONY: build docs test thirdparty-licenses mocks
 

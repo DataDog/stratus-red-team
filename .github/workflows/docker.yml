@@ -32,6 +32,7 @@ jobs:
             pkg-containers.githubusercontent.com:443
             production.cloudflare.docker.com:443
             proxy.golang.org:443
+            sum.golang.org:443            
             registry-1.docker.io:443
             storage.googleapis.com:443
             *.actions.githubusercontent.com:443
