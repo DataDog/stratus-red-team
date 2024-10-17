@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@17d0e2bd7d51742c71671bd19fa12bdc9d40a3d6
+        uses: step-security/harden-runner@91182cccc01eb5e619899d80e4e971d6181294a7
         with:
           egress-policy: block
           allowed-endpoints: >
@@ -31,7 +31,7 @@ jobs:
             *.actions.githubusercontent.com:443
             objects.githubusercontent.com:443
             go.dev:443
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+      - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938
         with:
           fetch-depth: 1
       - uses: dominikh/staticcheck-action@fe1dd0c3658873b46f8c9bb3291096a617310ca6
