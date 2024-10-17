@@ -233,7 +233,7 @@ func GetFoundationModelAvailability(cfg aws.Config, model string) (*BedrockModel
 
 	var result BedrockModelAvailability
 	if err := json.Unmarshal(body, &result); err != nil {
-		return nil, errors.New("Error unmarshalling response body: " + err.Error())
+		return nil, fmt.Errorf("GetFoundationModelAvailability failed: %w", err)
 	}
 	return &result, nil
 }
@@ -258,7 +258,7 @@ func ListFoundationModelAgreementOffers(cfg aws.Config, model string) (string, e
 		return "", errors.New("Error unmarshalling response body: " + err.Error())
 	}
 	if len(offers.Offers) == 0 {
-		return "", errors.New("No offers found")
+		return "", errors.New("no offers found")
 	}
 
 	return offers.Offers[0].OfferToken, nil
@@ -284,10 +284,7 @@ func PutUseCaseForModelAccess(cfg aws.Config, bedrockUseCase *BedrockUseCaseRequ
 
 	body, err := executeRequest(cfg, "POST", endpoint, payloadBytes, payloadHash)
 	if err != nil {
-		return "", err
-	}
-	if string(body) == "201" {
-		return "", fmt.Errorf("unexpected HTTP response code %s", body)
+		return "", fmt.Errorf("PutUseCaseForModelAccess failed: %w", err)
 	}
 
 	return string(body), nil
@@ -309,7 +306,7 @@ func CreateFoundationModelAgreement(cfg aws.Config, model string, offerToken str
 
 	body, err := executeRequest(cfg, "POST", endpoint, payloadBytes, payloadHash)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("CreateFoundationModelAgreement failed: %w", err)
 	}
 
 	return string(body), nil
@@ -330,7 +327,7 @@ func PutFoundationModelEntitlement(cfg aws.Config, model string) (string, error)
 
 	body, err := executeRequest(cfg, "POST", endpoint, payloadBytes, payloadHash)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("PutFoundationModelEntitlement failed: %w", err)
 	}
 
 	return string(body), nil
