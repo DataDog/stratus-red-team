@@ -43,13 +43,12 @@ func init() {
 		ID:           "aws.impact.bedrock-invoke-model",
 		FriendlyName: "Invoke Bedrock Model",
 		Description: `
-Simulates an attacker enumerating Bedrock models and then invoking the ` + BedrockModelFullName + ` (` + BedrockModelID + `) model to run inference using an arbitrary prompt. LLMjacking is an attack vector where attackers use stolen cloud credentials to run large language models, leading to unauthorized inference.
+Simulates an attacker enumerating Bedrock models and then invoking the ` + BedrockModelFullName + ` (<code>` + BedrockModelID + `</code>) model to run inference using an arbitrary prompt. LLMjacking is an attack vector where attackers use stolen cloud credentials to run large language models, leading to unauthorized inference.
 
 Warm-up: None.
 
 Detonation: 
 
-- Enumerate foundation models that can be used in the current region using <code>ListFoundationModels</code>.
 - If ` + BedrockModelFullName + ` is not enabled, attempt to enable it using <code>PutUseCaseForModelAccess</code>, <code>ListFoundationModelAgreementOffers</code>, <code>CreateFoundationModelAgreement</code>, <code>PutFoundationModelEntitlement</code>
 - Call <code>bedrock:InvokeModel</code> to run inference using the model.
 

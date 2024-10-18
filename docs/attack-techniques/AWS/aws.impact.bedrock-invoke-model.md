@@ -17,13 +17,12 @@ Platform: AWS
 ## Description
 
 
-Simulates an attacker enumerating Bedrock models and then invoking the Anthropic Claude 3 Sonnet (anthropic.claude-3-sonnet-20240229-v1:0) model to run inference using an arbitrary prompt. LLMjacking is an attack vector where attackers use stolen cloud credentials to run large language models, leading to unauthorized inference.
+Simulates an attacker enumerating Bedrock models and then invoking the Anthropic Claude 3 Sonnet (<code>anthropic.claude-3-sonnet-20240229-v1:0</code>) model to run inference using an arbitrary prompt. LLMjacking is an attack vector where attackers use stolen cloud credentials to run large language models, leading to unauthorized inference.
 
 <span style="font-variant: small-caps;">Warm-up</span>: None.
 
 <span style="font-variant: small-caps;">Detonation</span>: 
 
-- Enumerate foundation models that can be used in the current region using <code>ListFoundationModels</code>.
 - If Anthropic Claude 3 Sonnet is not enabled, attempt to enable it using <code>PutUseCaseForModelAccess</code>, <code>ListFoundationModelAgreementOffers</code>, <code>CreateFoundationModelAgreement</code>, <code>PutFoundationModelEntitlement</code>
 - Call <code>bedrock:InvokeModel</code> to run inference using the model.
 
