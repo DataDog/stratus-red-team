@@ -4,6 +4,7 @@ import (
 	"context"
 	_ "embed"
 	"fmt"
+	"encoding/json"
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/network/armnetwork/v6"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
@@ -95,7 +96,9 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	resourceGroup := params["resource_group_name"]
 	vmId := params["vm_id"]
 	vmName := params["vm_name"]
-	tenantId := params["tenant_id"]
+	adminUsername := params["admin_username"]
+	// String requires extra quotations for unmarshaling, see below for more on this
+	adminPassword := fmt.Sprintf(`"%s"`, params["admin_password"])
 
 	ctx := context.Background()
 	cred := providers.Azure().GetCredentials()
@@ -124,11 +127,38 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	}
 	log.Println("Shareable link created")
 
-	// Provide URL to access Bastion shareable link
-	// NOTE: Response via Go SDK methods does not return any page contents, so we'll supply a Portal URL to fetch the link for now. (The example cited in reference link above is not clear on how to resolve this.)
-	url := fmt.Sprintf("https://portal.azure.com/#@%s/resource/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/bastionHosts/%s/shareablelinks", tenantId, subscriptionID, resourceGroup, bastionName)
+	// Get Bastion shareable link
+	// Reference method: https://learn.microsoft.com/en-us/rest/api/virtualnetwork/get-bastion-shareable-link/get-bastion-shareable-link
+	// No error is returned by this method
+	pager := client.NewManagementClient().NewGetBastionShareableLinkPager(resourceGroup, bastionName, armnetwork.BastionShareableLinkListRequest{
+		VMs: []*armnetwork.BastionShareableLink{
+			{
+				VM: &armnetwork.VM{
+					ID: &vmId,
+				},
+			},
+		},
+	}, nil)
 
-	log.Println("You can view and fetch the shareable link URL here: " + url)
+	for pager.More() {
+		page, err := pager.NextPage(ctx)
+		if err != nil {
+			fmt.Errorf("failed to get results page: %v", err)
+		}
+		for _, result := range page.Value {
+			log.Println("Bastion shareable link URL: " + *result.Bsl)
+		}
+	}
+
+	log.Println("Bastion username: " + adminUsername)
+
+	// Password needs to be unmarshaled, as the resulting string from Terraform has json.HTMLEscape applied. Unmarshal is the correct operation, but string needs to be correctly formatted to work (see above).
+	var adminPasswordDecoded string
+	err = json.Unmarshal([]byte(adminPassword), &adminPasswordDecoded)
+	if err != nil{
+		fmt.Errorf("failed to unmarshal password string: %v", err)
+	}
+	log.Println("Bastion password: " + adminPasswordDecoded)
 
 	return nil
 }

@@ -157,6 +157,15 @@ output "vm_name" {
   value = azurerm_windows_virtual_machine.lab_windows_vm.name
 }
 
+output "admin_username" {
+  value = azurerm_windows_virtual_machine.lab_windows_vm.admin_username
+}
+
+output "admin_password" {
+  sensitive = true
+  value     = random_password.password.result
+}
+
 output "tenant_id" {
   value = data.azurerm_client_config.current.tenant_id
 }
