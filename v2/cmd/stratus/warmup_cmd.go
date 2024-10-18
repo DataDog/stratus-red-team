@@ -2,15 +2,16 @@ package main
 
 import (
 	"errors"
+	"os"
+
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/runner"
 	"github.com/spf13/cobra"
-	"os"
 )
 
-var forceWarmup bool
-
 func buildWarmupCmd() *cobra.Command {
+	var forceWarmup bool
+
 	warmupCmd := &cobra.Command{
 		Use:                   "warmup attack-technique-id [attack-technique-id]...",
 		Short:                 "\"Warm up\" an attack technique by spinning up the prerequisite infrastructure or configuration, without detonating it",
@@ -35,21 +36,24 @@ func buildWarmupCmd() *cobra.Command {
 		},
 		Run: func(cmd *cobra.Command, args []string) {
 			techniques, _ := resolveTechniques(args)
-			doWarmupCmd(techniques)
+			doWarmupCmd(techniques, forceWarmup)
 		},
 	}
+
 	warmupCmd.Flags().BoolVarP(&forceWarmup, "force", "f", false, "Force re-ensuring the prerequisite infrastructure or configuration is up to date")
 	return warmupCmd
 }
 
-func doWarmupCmd(techniques []*stratus.AttackTechnique) {
+func doWarmupCmd(techniques []*stratus.AttackTechnique, forceWarmup bool) {
 	VerifyPlatformRequirements(techniques)
 	workerCount := len(techniques)
 	techniquesChan := make(chan *stratus.AttackTechnique, workerCount)
 	errorsChan := make(chan error, workerCount)
+
 	for i := 0; i < workerCount; i++ {
-		go warmupCmdWorker(techniquesChan, errorsChan)
+		go warmupCmdWorker(techniquesChan, errorsChan, forceWarmup)
 	}
+
 	for i := range techniques {
 		techniquesChan <- techniques[i]
 	}
@@ -60,7 +64,7 @@ func doWarmupCmd(techniques []*stratus.AttackTechnique) {
 	}
 }
 
-func warmupCmdWorker(techniques <-chan *stratus.AttackTechnique, errors chan<- error) {
+func warmupCmdWorker(techniques <-chan *stratus.AttackTechnique, errors chan<- error, forceWarmup bool) {
 	for technique := range techniques {
 		stratusRunner := runner.NewRunner(technique, forceWarmup)
 		_, err := stratusRunner.WarmUp()
