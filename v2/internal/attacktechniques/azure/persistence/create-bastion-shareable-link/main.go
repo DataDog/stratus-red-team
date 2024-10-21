@@ -143,7 +143,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	for pager.More() {
 		page, err := pager.NextPage(ctx)
 		if err != nil {
-			fmt.Errorf("failed to get results page: %v", err)
+			return fmt.Errorf("failed to get results page: %v", err)
 		}
 		for _, result := range page.Value {
 			log.Println("Bastion shareable link URL: " + *result.Bsl)
@@ -156,7 +156,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	var adminPasswordDecoded string
 	err = json.Unmarshal([]byte(adminPassword), &adminPasswordDecoded)
 	if err != nil{
-		fmt.Errorf("failed to unmarshal password string: %v", err)
+		return fmt.Errorf("failed to unmarshal password string: %v", err)
 	}
 	log.Println("Bastion password: " + adminPasswordDecoded)
 
