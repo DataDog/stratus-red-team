@@ -472,6 +472,14 @@ Azure:
             - Exfiltration
           platform: Azure
           isIdempotent: true
+    Persistence:
+        - id: azure.persistence.create-bastion-shareable-link
+          name: Create Azure VM Bastion shareable link
+          isSlow: true
+          mitreAttackTactics:
+            - Persistence
+          platform: Azure
+          isIdempotent: false
 Entra ID:
     Persistence:
         - id: entra-id.persistence.backdoor-application-sp

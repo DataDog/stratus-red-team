@@ -15,3 +15,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 - [Export Disk Through SAS URL](./azure.exfiltration.disk-export.md)
 
+
+## Persistence
+
+- [Create Azure VM Bastion shareable link](./azure.persistence.create-bastion-shareable-link.md)
+
