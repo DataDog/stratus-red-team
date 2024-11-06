@@ -16,7 +16,9 @@ permissions:
 jobs:
   goreleaser:
     timeout-minutes: 60
-    runs-on: ubuntu-latest
+    runs-on:
+      group: Large Runner Shared Public
+      labels: ubuntu-8-core-latest
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@91182cccc01eb5e619899d80e4e971d6181294a7
