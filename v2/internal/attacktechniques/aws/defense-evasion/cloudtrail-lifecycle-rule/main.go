@@ -4,12 +4,13 @@ import (
 	"context"
 	_ "embed"
 	"errors"
+	"log"
+
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
-	"log"
 )
 
 //go:embed main.tf
@@ -60,8 +61,8 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 					ID:         aws.String("nuke-cloudtrail-logs-after-1-day"),
 					Status:     types.ExpirationStatusEnabled,
 					Expiration: &types.LifecycleExpiration{Days: aws.Int32(1)},
-					Filter: &types.LifecycleRuleFilterMemberPrefix{
-						Value: "*",
+					Filter: &types.LifecycleRuleFilter{
+						Prefix: aws.String("*"),
 					},
 				},
 			},
