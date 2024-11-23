@@ -73,20 +73,32 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	ec2instanceconnectClient := ec2instanceconnect.NewFromConfig(providers.AWS().GetConnection())
 	instanceIDs := strings.Split(params["instance_ids"], ",")
 
-	// Enable EC2 Serial Console access for the account
-	_, err := ec2Client.EnableSerialConsoleAccess(context.Background(), &ec2.EnableSerialConsoleAccessInput{})
+	// Check the current state of EC2 Serial Console access
+	output, err := ec2Client.GetSerialConsoleAccessStatus(context.Background(), &ec2.GetSerialConsoleAccessStatusInput{})
 	if err != nil {
-		return fmt.Errorf("failed to enable EC2 Serial Console access: %v", err)
+		return fmt.Errorf("failed to get EC2 Serial Console access status: %v", err)
 	}
-	log.Println("EC2 Serial Console access enabled for the account")
+	serialConsolePreviouslyEnabled := output.SerialConsoleAccessEnabled
+	log.Printf("EC2 Serial Console access is currently %v", *serialConsolePreviouslyEnabled)
 
-	// Ensure that Serial Console access is disabled at the end
-	defer func() {
-		_, err := ec2Client.DisableSerialConsoleAccess(context.Background(), &ec2.DisableSerialConsoleAccessInput{})
+	// Enable EC2 Serial Console access if it was not already enabled
+	if serialConsolePreviouslyEnabled != nil && !*serialConsolePreviouslyEnabled {
+		_, err := ec2Client.EnableSerialConsoleAccess(context.Background(), &ec2.EnableSerialConsoleAccessInput{})
 		if err != nil {
-			log.Printf("Failed to disable EC2 Serial Console access: %v", err)
-		} else {
-			log.Println("EC2 Serial Console access disabled for the account")
+			return fmt.Errorf("failed to enable EC2 Serial Console access: %v", err)
+		}
+		log.Println("EC2 Serial Console access enabled for the account")
+	}
+
+	// Ensure that Serial Console access is restored to its original state at the end
+	defer func() {
+		if serialConsolePreviouslyEnabled != nil && !*serialConsolePreviouslyEnabled {
+			_, err := ec2Client.DisableSerialConsoleAccess(context.Background(), &ec2.DisableSerialConsoleAccessInput{})
+			if err != nil {
+				log.Printf("Failed to disable EC2 Serial Console access: %v", err)
+			} else {
+				log.Println("EC2 Serial Console access disabled for the account")
+			}
 		}
 	}()
 
