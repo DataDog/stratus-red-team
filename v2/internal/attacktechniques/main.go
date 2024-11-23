@@ -31,6 +31,7 @@ import (
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/impact/s3-ransomware-individual-deletion"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/initial-access/console-login-without-mfa"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/lateral-movement/ec2-send-ssh-public-key"
+	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/lateral-movement/ec2-send-serial-console-ssh-public-key"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/persistence/iam-backdoor-role"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/persistence/iam-backdoor-user"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/persistence/iam-create-admin-user"
