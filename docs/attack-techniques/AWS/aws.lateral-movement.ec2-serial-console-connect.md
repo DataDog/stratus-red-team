@@ -52,8 +52,9 @@ Identify, through CloudTrail's <code>SendSerialConsoleSSHPublicKey</code> event,
   "eventName": "SendSerialConsoleSSHPublicKey",
   "requestParameters": {
     "instanceId": "i-123456",
-    "serialConsoleOSUser": "ec2-user",
+    "serialPort": 0,
     "sSHPublicKey": "ssh-ed25519 ..."
+	"monitorMode": false
   }
 }
 ```
