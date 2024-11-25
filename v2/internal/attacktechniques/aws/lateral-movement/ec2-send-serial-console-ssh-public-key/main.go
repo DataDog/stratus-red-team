@@ -78,11 +78,14 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	if err != nil {
 		return fmt.Errorf("failed to get EC2 Serial Console access status: %v", err)
 	}
-	serialConsolePreviouslyEnabled := output.SerialConsoleAccessEnabled
-	log.Printf("EC2 Serial Console access is currently %v", *serialConsolePreviouslyEnabled)
-
-	// Enable EC2 Serial Console access if it was not already enabled
-	if serialConsolePreviouslyEnabled != nil && !*serialConsolePreviouslyEnabled {
+	var serialConsolePreviouslyEnabled = false
+	if output.SerialConsoleAccessEnabled != nil && *output.SerialConsoleAccessEnabled {
+		serialConsolePreviouslyEnabled = true
+	}
+	if serialConsolePreviouslyEnabled {
+		log.Println("EC2 Serial Console access is currently enabled")
+	} else {
+		log.Println("EC2 Serial Console access is currently disabled, enabling it")
 		_, err := ec2Client.EnableSerialConsoleAccess(context.Background(), &ec2.EnableSerialConsoleAccessInput{})
 		if err != nil {
 			return fmt.Errorf("failed to enable EC2 Serial Console access: %v", err)
@@ -92,7 +95,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 
 	// Ensure that Serial Console access is restored to its original state at the end
 	defer func() {
-		if serialConsolePreviouslyEnabled != nil && !*serialConsolePreviouslyEnabled {
+		if !serialConsolePreviouslyEnabled {
 			_, err := ec2Client.DisableSerialConsoleAccess(context.Background(), &ec2.DisableSerialConsoleAccessInput{})
 			if err != nil {
 				log.Printf("Failed to disable EC2 Serial Console access: %v", err)
