@@ -9,8 +9,8 @@ import (
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
-	"time"
 	"strings"
+	"time"
 )
 
 //go:embed my_key.pub
