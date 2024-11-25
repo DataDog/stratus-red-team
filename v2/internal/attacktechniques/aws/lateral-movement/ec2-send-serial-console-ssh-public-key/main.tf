@@ -30,6 +30,11 @@ data "aws_availability_zones" "available" {
   state = "available"
 }
 
+# Ensures that serial console access is enabled in the current region
+resource "aws_ec2_serial_console_access" "serial_console_access" {
+  enabled = true
+}
+
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 3.0"

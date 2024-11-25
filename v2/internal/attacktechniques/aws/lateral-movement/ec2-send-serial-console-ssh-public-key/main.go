@@ -4,7 +4,6 @@ import (
 	"context"
 	_ "embed"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/ec2instanceconnect"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
@@ -69,41 +68,8 @@ Identify, through CloudTrail's <code>SendSerialConsoleSSHPublicKey</code> event,
 }
 
 func detonate(params map[string]string, providers stratus.CloudProviders) error {
-	ec2Client := ec2.NewFromConfig(providers.AWS().GetConnection())
 	ec2instanceconnectClient := ec2instanceconnect.NewFromConfig(providers.AWS().GetConnection())
 	instanceIDs := strings.Split(params["instance_ids"], ",")
-
-	// Check the current state of EC2 Serial Console access
-	output, err := ec2Client.GetSerialConsoleAccessStatus(context.Background(), &ec2.GetSerialConsoleAccessStatusInput{})
-	if err != nil {
-		return fmt.Errorf("failed to get EC2 Serial Console access status: %v", err)
-	}
-	var serialConsolePreviouslyEnabled = false
-	if output.SerialConsoleAccessEnabled != nil && *output.SerialConsoleAccessEnabled {
-		serialConsolePreviouslyEnabled = true
-	}
-	if serialConsolePreviouslyEnabled {
-		log.Println("EC2 Serial Console access is currently enabled")
-	} else {
-		log.Println("EC2 Serial Console access is currently disabled, enabling it")
-		_, err := ec2Client.EnableSerialConsoleAccess(context.Background(), &ec2.EnableSerialConsoleAccessInput{})
-		if err != nil {
-			return fmt.Errorf("failed to enable EC2 Serial Console access: %v", err)
-		}
-		log.Println("EC2 Serial Console access enabled for the account")
-	}
-
-	// Ensure that Serial Console access is restored to its original state at the end
-	defer func() {
-		if !serialConsolePreviouslyEnabled {
-			_, err := ec2Client.DisableSerialConsoleAccess(context.Background(), &ec2.DisableSerialConsoleAccessInput{})
-			if err != nil {
-				log.Printf("Failed to disable EC2 Serial Console access: %v", err)
-			} else {
-				log.Println("EC2 Serial Console access disabled for the account")
-			}
-		}
-	}()
 
 	for _, instanceID := range instanceIDs {
 		cleanInstanceID := strings.Trim(instanceID, " \"\n\r")
