@@ -4,10 +4,12 @@ import (
 	"context"
 	_ "embed"
 	"fmt"
+	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/ec2instanceconnect"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -52,13 +54,22 @@ Identify, through CloudTrail's <code>SendSerialConsoleSSHPublicKey</code> event,
 		IsIdempotent:               true,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.LateralMovement},
 		Detonate:                   detonate,
+		Revert:                     revert,
 	})
 }
 
 func detonate(params map[string]string, providers stratus.CloudProviders) error {
+	ec2Client := ec2.NewFromConfig(providers.AWS().GetConnection())
 	ec2instanceconnectClient := ec2instanceconnect.NewFromConfig(providers.AWS().GetConnection())
 	instanceIDs := strings.Split(params["instance_ids"], ",")
 
+	// Enable serial console access
+	log.Println("Enabling serial console access at the region level")
+	if err := setSerialConsoleEnabled(ec2Client, true); err != nil {
+		return fmt.Errorf("failed to disable serial console access: %v", err)
+	}
+
+	log.Println("Sending SSH public key to " + strconv.Itoa(len(instanceIDs)) + " EC2 instances via serial console")
 	for _, instanceID := range instanceIDs {
 		cleanInstanceID := strings.Trim(instanceID, " \"\n\r")
 		err := sendSerialConsoleSSHPublicKey(ec2instanceconnectClient, cleanInstanceID, publicSSHKey)
@@ -79,6 +90,25 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	return nil
 }
 
+func revert(params map[string]string, providers stratus.CloudProviders) error {
+	// Serial console access was already enabled before running Stratus Red Team. Nothing to do
+	if params["serial_console_access_initial_value"] == "true" {
+		log.Println("Serial console access was already enabled before running Stratus Red Team. Keeping it enabled")
+		return nil
+	}
+
+	// Serial console access was disabled before running Stratus Red Team. Since the detonation enabled it,
+	// and it's a region-wide setting, we now need to revert it back to its original value (false)
+	ec2Client := ec2.NewFromConfig(providers.AWS().GetConnection())
+	log.Println("Serial console access was disabled before running Stratus Red Team. Disabling it again.")
+	if err := setSerialConsoleEnabled(ec2Client, false); err != nil {
+		return fmt.Errorf("failed to disable serial console access: %v", err)
+	}
+
+	return nil
+}
+
+// Utility functions
 func sendSerialConsoleSSHPublicKey(ec2instanceconnectClient *ec2instanceconnect.Client, instanceId string, sshPublicKey string) error {
 	_, err := ec2instanceconnectClient.SendSerialConsoleSSHPublicKey(context.Background(), &ec2instanceconnect.SendSerialConsoleSSHPublicKeyInput{
 		InstanceId:   &instanceId,
@@ -86,4 +116,14 @@ func sendSerialConsoleSSHPublicKey(ec2instanceconnectClient *ec2instanceconnect.
 	})
 
 	return err
+}
+
+func setSerialConsoleEnabled(ec2Client *ec2.Client, enabled bool) error {
+	if enabled {
+		_, err := ec2Client.EnableSerialConsoleAccess(context.Background(), &ec2.EnableSerialConsoleAccessInput{})
+		return err
+	} else {
+		_, err := ec2Client.DisableSerialConsoleAccess(context.Background(), &ec2.DisableSerialConsoleAccessInput{})
+		return err
+	}
 }

@@ -30,10 +30,7 @@ data "aws_availability_zones" "available" {
   state = "available"
 }
 
-# Ensures that serial console access is enabled in the current region
-resource "aws_ec2_serial_console_access" "serial_console_access" {
-  enabled = true
-}
+data "aws_ec2_serial_console_access" "current" {}
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
@@ -131,4 +128,8 @@ output "display" {
 
 output "instance_role_name" {
   value = aws_iam_role.instance-role.name
+}
+
+output "serial_console_access_initial_value" {
+  value = data.aws_ec2_serial_console_access.current.enabled
 }
