@@ -21,12 +21,12 @@ var tf []byte
 func init() {
 	const codeBlock = "```"
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
-		ID:           "aws.lateral-movement.ec2-serial-console-connect",
+		ID:           "aws.lateral-movement.ec2-serial-console-send-ssh-public-key",
 		FriendlyName: "Usage of EC2 Serial Console to push SSH public key",
 		IsSlow:       true,
 		Description: `
-Simulates an attacker pushing an SSH public key to multiple EC2 instances through the EC2 Serial Console API. This allows anyone 
-with the corresponding private key to connect directly to the systems via SSH.
+Simulates an attacker using EC2 Instance Connect to push an SSH public key to multiple EC2 instances, using <code>SendSerialConsoleSSHPublicKey</code>. This allows anyone 
+with the corresponding private key to connect directly to the systems via SSH, assuming they have appropriate network connectivity.
 
 Warm-up:
 
@@ -34,30 +34,18 @@ Warm-up:
 
 Detonation:
 
-- Adds a public SSH key to the EC2 instances using the Serial Console API for 60 seconds.
+- Adds a public SSH key to the EC2 instances using <code>SendSerialConsoleSSHPublicKey</code>.
 
 References:
 
+- https://docs.aws.amazon.com/ec2-instance-connect/latest/APIReference/API_SendSerialConsoleSSHPublicKey.html
 - https://permiso.io/blog/lucr-3-scattered-spider-getting-saas-y-in-the-cloud
 - https://fwdcloudsec.org/assets/presentations/2024/europe/sebastian-walla-cloud-conscious-tactics-techniques-and-procedures-an-overview.pdf
 - https://unit42.paloaltonetworks.com/cloud-lateral-movement-techniques/
 - https://unit42.paloaltonetworks.com/cloud-virtual-machine-attack-vectors/
 `,
 		Detection: `
-Identify, through CloudTrail's <code>SendSerialConsoleSSHPublicKey</code> event, when a user is adding an SSH key to EC2 instances. Sample event:
-
-` + codeBlock + `
-{
-  "eventSource": "ec2-instance-connect.amazonaws.com",
-  "eventName": "SendSerialConsoleSSHPublicKey",
-  "requestParameters": {
-    "instanceId": "i-123456",
-    "serialPort": 0,
-    "sSHPublicKey": "ssh-ed25519 ..."
-	"monitorMode": false
-  }
-}
-` + codeBlock + `
+Identify, through CloudTrail's <code>SendSerialConsoleSSHPublicKey</code> event, when a user is adding an SSH key to EC2 instances.
 `,
 		Platform:                   stratus.AWS,
 		PrerequisitesTerraformCode: tf,
@@ -91,7 +79,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	return nil
 }
 
-func sendSerialConsoleSSHPublicKey(ec2instanceconnectClient *ec2instanceconnect.Client, instanceId, sshPublicKey string) error {
+func sendSerialConsoleSSHPublicKey(ec2instanceconnectClient *ec2instanceconnect.Client, instanceId string, sshPublicKey string) error {
 	_, err := ec2instanceconnectClient.SendSerialConsoleSSHPublicKey(context.Background(), &ec2instanceconnect.SendSerialConsoleSSHPublicKeyInput{
 		InstanceId:   &instanceId,
 		SSHPublicKey: &sshPublicKey,

@@ -1,0 +1,158 @@
+[
+   {
+      "awsRegion": "me-northnorth-1r",
+      "eventCategory": "Management",
+      "eventID": "361b1533-7e1f-4e45-a34f-3e7958253c08",
+      "eventName": "SendSerialConsoleSSHPublicKey",
+      "eventSource": "ec2-instance-connect.amazonaws.com",
+      "eventTime": "2024-11-26T10:51:12Z",
+      "eventType": "AwsApiCall",
+      "eventVersion": "1.08",
+      "managementEvent": true,
+      "readOnly": false,
+      "recipientAccountId": "673637476045",
+      "requestID": "e96ac1bf-51f0-4560-be1f-bb94bf4dc177",
+      "requestParameters": {
+         "instanceId": "i-7C5CBC1114349DB57",
+         "monitorMode": false,
+         "sSHPublicKey": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOtAlK45MAEWZ7MUY2QEmi3M6W+peGL3VCrc0qH54xRu",
+         "serialPort": 0
+      },
+      "responseElements": {
+         "requestId": "e96ac1bf-51f0-4560-be1f-bb94bf4dc177",
+         "success": true
+      },
+      "sourceIPAddress": "218.215.244.17",
+      "tlsDetails": {
+         "cipherSuite": "TLS_AES_128_GCM_SHA256",
+         "clientProvidedHostHeader": "ec2-instance-connect.me-northnorth-1r.amazonaws.com",
+         "tlsVersion": "TLSv1.3"
+      },
+      "userAgent": "stratus-red-team_f0e522d8-53af-4063-aa42-e5601970f482",
+      "userIdentity": {
+         "accessKeyId": "ASIA7J3OZH03T5QLALG3",
+         "accountId": "673637476045",
+         "arn": "arn:aws:sts::673637476045:assumed-role/AWSReservedSSOrandomkOMjLGj7NVc3@gmail.com",
+         "principalId": "AROARI36U4FA2S9L0G6R4:randomjci5H04kojgi@gmail.com",
+         "sessionContext": {
+            "attributes": {
+               "creationDate": "2024-11-26T10:42:10Z",
+               "mfaAuthenticated": "false"
+            },
+            "sessionIssuer": {
+               "accountId": "673637476045",
+               "arn": "arn:aws:iam::673637476045:role/sample-role",
+               "principalId": "AROARI36U4FA2S9L0G6R4",
+               "type": "Role",
+               "userName": "sample-role"
+            },
+            "webIdFederationData": {}
+         },
+         "type": "AssumedRole"
+      }
+   },
+   {
+      "awsRegion": "me-northnorth-1r",
+      "eventCategory": "Management",
+      "eventID": "3c56f906-ae4c-428b-8840-87f96ad2fb53",
+      "eventName": "SendSerialConsoleSSHPublicKey",
+      "eventSource": "ec2-instance-connect.amazonaws.com",
+      "eventTime": "2024-11-26T10:51:12Z",
+      "eventType": "AwsApiCall",
+      "eventVersion": "1.08",
+      "managementEvent": true,
+      "readOnly": false,
+      "recipientAccountId": "673637476045",
+      "requestID": "034be9c3-8ce9-4bc4-b174-96270e9cb784",
+      "requestParameters": {
+         "instanceId": "i-1150EdC0D493fbb5c",
+         "monitorMode": false,
+         "sSHPublicKey": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOtAlK45MAEWZ7MUY2QEmi3M6W+peGL3VCrc0qH54xRu",
+         "serialPort": 0
+      },
+      "responseElements": {
+         "requestId": "034be9c3-8ce9-4bc4-b174-96270e9cb784",
+         "success": true
+      },
+      "sourceIPAddress": "218.215.244.17",
+      "tlsDetails": {
+         "cipherSuite": "TLS_AES_128_GCM_SHA256",
+         "clientProvidedHostHeader": "ec2-instance-connect.me-northnorth-1r.amazonaws.com",
+         "tlsVersion": "TLSv1.3"
+      },
+      "userAgent": "stratus-red-team_f0e522d8-53af-4063-aa42-e5601970f482",
+      "userIdentity": {
+         "accessKeyId": "ASIA7J3OZH03T5QLALG3",
+         "accountId": "673637476045",
+         "arn": "arn:aws:sts::673637476045:assumed-role/AWSReservedSSOrandomkOMjLGj7NVc3@gmail.com",
+         "principalId": "AROARI36U4FA2S9L0G6R4:randomjci5H04kojgi@gmail.com",
+         "sessionContext": {
+            "attributes": {
+               "creationDate": "2024-11-26T10:42:10Z",
+               "mfaAuthenticated": "false"
+            },
+            "sessionIssuer": {
+               "accountId": "673637476045",
+               "arn": "arn:aws:iam::673637476045:role/sample-role",
+               "principalId": "AROARI36U4FA2S9L0G6R4",
+               "type": "Role",
+               "userName": "sample-role"
+            },
+            "webIdFederationData": {}
+         },
+         "type": "AssumedRole"
+      }
+   },
+   {
+      "awsRegion": "me-northnorth-1r",
+      "eventCategory": "Management",
+      "eventID": "40bff50c-9205-406c-b47e-b928e668cbb9",
+      "eventName": "SendSerialConsoleSSHPublicKey",
+      "eventSource": "ec2-instance-connect.amazonaws.com",
+      "eventTime": "2024-11-26T10:51:12Z",
+      "eventType": "AwsApiCall",
+      "eventVersion": "1.08",
+      "managementEvent": true,
+      "readOnly": false,
+      "recipientAccountId": "673637476045",
+      "requestID": "b441ad3b-66d5-4497-a364-ed7b047a2ebe",
+      "requestParameters": {
+         "instanceId": "i-DEbfB3Feb0e927a6c",
+         "monitorMode": false,
+         "sSHPublicKey": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOtAlK45MAEWZ7MUY2QEmi3M6W+peGL3VCrc0qH54xRu",
+         "serialPort": 0
+      },
+      "responseElements": {
+         "requestId": "b441ad3b-66d5-4497-a364-ed7b047a2ebe",
+         "success": true
+      },
+      "sourceIPAddress": "218.215.244.17",
+      "tlsDetails": {
+         "cipherSuite": "TLS_AES_128_GCM_SHA256",
+         "clientProvidedHostHeader": "ec2-instance-connect.me-northnorth-1r.amazonaws.com",
+         "tlsVersion": "TLSv1.3"
+      },
+      "userAgent": "stratus-red-team_f0e522d8-53af-4063-aa42-e5601970f482",
+      "userIdentity": {
+         "accessKeyId": "ASIA7J3OZH03T5QLALG3",
+         "accountId": "673637476045",
+         "arn": "arn:aws:sts::673637476045:assumed-role/AWSReservedSSOrandomkOMjLGj7NVc3@gmail.com",
+         "principalId": "AROARI36U4FA2S9L0G6R4:randomjci5H04kojgi@gmail.com",
+         "sessionContext": {
+            "attributes": {
+               "creationDate": "2024-11-26T10:42:10Z",
+               "mfaAuthenticated": "false"
+            },
+            "sessionIssuer": {
+               "accountId": "673637476045",
+               "arn": "arn:aws:iam::673637476045:role/sample-role",
+               "principalId": "AROARI36U4FA2S9L0G6R4",
+               "type": "Role",
+               "userName": "sample-role"
+            },
+            "webIdFederationData": {}
+         },
+         "type": "AssumedRole"
+      }
+   }
+]

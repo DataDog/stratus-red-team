@@ -211,7 +211,7 @@ AWS:
           platform: AWS
           isIdempotent: true
     Lateral Movement:
-        - id: aws.lateral-movement.ec2-serial-console-connect
+        - id: aws.lateral-movement.ec2-serial-console-send-ssh-public-key
           name: Usage of EC2 Serial Console to push SSH public key
           isSlow: true
           mitreAttackTactics:
