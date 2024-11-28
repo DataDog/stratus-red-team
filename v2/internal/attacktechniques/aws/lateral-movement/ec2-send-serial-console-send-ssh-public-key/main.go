@@ -21,7 +21,6 @@ var publicSSHKey string
 var tf []byte
 
 func init() {
-	const codeBlock = "```"
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
 		ID:           "aws.lateral-movement.ec2-serial-console-send-ssh-public-key",
 		FriendlyName: "Usage of EC2 Serial Console to push SSH public key",
