@@ -85,6 +85,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 ## Lateral Movement
 
+- [Usage of EC2 Serial Console to push SSH public key](./aws.lateral-movement.ec2-serial-console-send-ssh-public-key.md)
+
 - [Usage of EC2 Instance Connect on multiple instances](./aws.lateral-movement.ec2-instance-connect.md)
 
 
