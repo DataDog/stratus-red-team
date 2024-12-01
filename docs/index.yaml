@@ -294,6 +294,13 @@ AWS:
             - Privilege Escalation
           platform: AWS
           isIdempotent: false
+        - id: aws.persistence.sts-federation-token
+          name: Generation of AWS temporary keys from IAM credentials
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+          platform: AWS
+          isIdempotent: true
     Privilege Escalation:
         - id: aws.execution.ec2-user-data
           name: Execute Commands on EC2 Instance via User Data
