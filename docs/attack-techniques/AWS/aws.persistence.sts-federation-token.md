@@ -1,8 +1,8 @@
 ---
-title: Generation of AWS temporary keys from IAM credentials
+title: Generate temporary AWS credentials using GetFederationToken
 ---
 
-# Generation of AWS temporary keys from IAM credentials
+# Generate temporary AWS credentials using GetFederationToken
 
 
  <span class="smallcaps w3-badge w3-blue w3-round w3-text-white" title="This attack technique can be detonated multiple times">idempotent</span> 
@@ -17,7 +17,7 @@ Platform: AWS
 ## Description
 
 
-Establishes persistence by generating new AWS temporary keys that remain functional even if the original IAM user is blocked.
+Establishes persistence by generating new AWS temporary credentials through <code>sts:GetFederationToken</code>. The resulting credentials remain functional even if the original access keys are disabled.
 
 <span style="font-variant: small-caps;">Warm-up</span>: 
 
@@ -25,11 +25,12 @@ Establishes persistence by generating new AWS temporary keys that remain functio
 
 <span style="font-variant: small-caps;">Detonation</span>: 
 
-- Use the access keys from the IAM user to request temporary security credentials via AWS STS.
-- Call the sts:GetCallerIdentity API to validate the usage of the new temporary credentials and ensure they are functional.
+- Use the access keys from the IAM user to request temporary security credentials via <code>sts:GetFederationToken</code>.
+- Call <code>sts:GetCallerIdentity</code> using these new credentials.
 
 References:
 
+- https://docs.aws.amazon.com/STS/latest/APIReference/API_GetFederationToken.html
 - https://www.crowdstrike.com/en-us/blog/how-adversaries-persist-with-aws-user-federation/
 - https://reinforce.awsevents.com/content/dam/reinforce/2024/slides/TDR432_New-tactics-and-techniques-for-proactive-threat-detection.pdf
 - https://fwdcloudsec.org/assets/presentations/2024/europe/sebastian-walla-cloud-conscious-tactics-techniques-and-procedures-an-overview.pdf
@@ -44,7 +45,7 @@ stratus detonate aws.persistence.sts-federation-token
 
 
 Through CloudTrail's <code>GetFederationToken</code> event.
-'
+
 
 
 ## Detonation logs <span class="smallcaps w3-badge w3-light-green w3-round w3-text-sand">new!</span>
@@ -59,53 +60,9 @@ The following CloudTrail events are generated when this technique is detonated[^
 
 ??? "View raw detonation logs"
 
-    ```json hl_lines="6 50"
+    ```json hl_lines="6 51"
 
     [
-	   {
-	      "awsRegion": "ap-isob-east-1r",
-	      "eventCategory": "Management",
-	      "eventID": "91529247-c4c4-4793-afc8-d70bbcfe9d19",
-	      "eventName": "GetCallerIdentity",
-	      "eventSource": "sts.amazonaws.com",
-	      "eventTime": "2024-11-30T08:43:18Z",
-	      "eventType": "AwsApiCall",
-	      "eventVersion": "1.08",
-	      "managementEvent": true,
-	      "readOnly": true,
-	      "recipientAccountId": "742491224508",
-	      "requestID": "037be419-9e9f-42e0-a38f-2a5d2ae1ce65",
-	      "requestParameters": null,
-	      "responseElements": null,
-	      "sourceIPAddress": "255.090.254.5",
-	      "tlsDetails": {
-	         "cipherSuite": "TLS_AES_128_GCM_SHA256",
-	         "clientProvidedHostHeader": "sts.ap-isob-east-1r.amazonaws.com",
-	         "tlsVersion": "TLSv1.3"
-	      },
-	      "userAgent": "aws-sdk-go-v2/1.32.3 os/linux lang/go#1.23.1 md/GOOS#linux md/GOARCH#amd64 exec-env/grimoire_095724e3-1fa0-4e3e-b68a-e8581d194380 api/sts#1.26.2",
-	      "userIdentity": {
-	         "accessKeyId": "ASIASTJKC5GCM7ZE6LUP",
-	         "accountId": "742491224508",
-	         "arn": "arn:aws:sts::742491224508:federated-user/stratus_red_team",
-	         "principalId": "742491224508:stratus_red_team",
-	         "sessionContext": {
-	            "attributes": {
-	               "creationDate": "2024-11-30T08:43:17Z",
-	               "mfaAuthenticated": "false"
-	            },
-	            "sessionIssuer": {
-	               "accountId": "742491224508",
-	               "arn": "arn:aws:iam::742491224508:user/stratus-red-team-user-federation-user",
-	               "principalId": "AIDAN7SEM6PEVTNQR8M4",
-	               "type": "IAMUser",
-	               "userName": "stratus-red-team-user-federation-user"
-	            },
-	            "webIdFederationData": {}
-	         },
-	         "type": "FederatedUser"
-	      }
-	   },
 	   {
 	      "awsRegion": "ap-isob-east-1r",
 	      "eventCategory": "Management",
@@ -149,6 +106,50 @@ The following CloudTrail events are generated when this technique is detonated[^
 	         "principalId": "AIDAN7SEM6PEVTNQR8M4",
 	         "type": "IAMUser",
 	         "userName": "stratus-red-team-user-federation-user"
+	      }
+	   },
+	   {
+	      "awsRegion": "ap-isob-east-1r",
+	      "eventCategory": "Management",
+	      "eventID": "91529247-c4c4-4793-afc8-d70bbcfe9d19",
+	      "eventName": "GetCallerIdentity",
+	      "eventSource": "sts.amazonaws.com",
+	      "eventTime": "2024-11-30T08:43:18Z",
+	      "eventType": "AwsApiCall",
+	      "eventVersion": "1.08",
+	      "managementEvent": true,
+	      "readOnly": true,
+	      "recipientAccountId": "742491224508",
+	      "requestID": "037be419-9e9f-42e0-a38f-2a5d2ae1ce65",
+	      "requestParameters": null,
+	      "responseElements": null,
+	      "sourceIPAddress": "255.090.254.5",
+	      "tlsDetails": {
+	         "cipherSuite": "TLS_AES_128_GCM_SHA256",
+	         "clientProvidedHostHeader": "sts.ap-isob-east-1r.amazonaws.com",
+	         "tlsVersion": "TLSv1.3"
+	      },
+	      "userAgent": "aws-sdk-go-v2/1.32.3 os/linux lang/go#1.23.1 md/GOOS#linux md/GOARCH#amd64 exec-env/grimoire_095724e3-1fa0-4e3e-b68a-e8581d194380 api/sts#1.26.2",
+	      "userIdentity": {
+	         "accessKeyId": "ASIASTJKC5GCM7ZE6LUP",
+	         "accountId": "742491224508",
+	         "arn": "arn:aws:sts::742491224508:federated-user/stratus_red_team",
+	         "principalId": "742491224508:stratus_red_team",
+	         "sessionContext": {
+	            "attributes": {
+	               "creationDate": "2024-11-30T08:43:17Z",
+	               "mfaAuthenticated": "false"
+	            },
+	            "sessionIssuer": {
+	               "accountId": "742491224508",
+	               "arn": "arn:aws:iam::742491224508:user/stratus-red-team-user-federation-user",
+	               "principalId": "AIDAN7SEM6PEVTNQR8M4",
+	               "type": "IAMUser",
+	               "userName": "stratus-red-team-user-federation-user"
+	            },
+	            "webIdFederationData": {}
+	         },
+	         "type": "FederatedUser"
 	      }
 	   }
 	]

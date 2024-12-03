@@ -110,7 +110,7 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 - [Create an IAM Roles Anywhere trust anchor](./aws.persistence.rolesanywhere-create-trust-anchor.md)
 
-- [Generation of AWS temporary keys from IAM credentials](./aws.persistence.sts-federation-token.md)
+- [Generate temporary AWS credentials using GetFederationToken](./aws.persistence.sts-federation-token.md)
 
 
 ## Privilege Escalation

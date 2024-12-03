@@ -295,7 +295,7 @@ AWS:
           platform: AWS
           isIdempotent: false
         - id: aws.persistence.sts-federation-token
-          name: Generation of AWS temporary keys from IAM credentials
+          name: Generate temporary AWS credentials using GetFederationToken
           isSlow: false
           mitreAttackTactics:
             - Persistence
