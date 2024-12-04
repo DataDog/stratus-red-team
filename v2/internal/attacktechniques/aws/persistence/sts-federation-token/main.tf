@@ -28,12 +28,12 @@ resource "aws_iam_user" "legit-user" {
 
 data "aws_iam_policy_document" "legit-user-policy-document" {
   statement {
-    effect    = "Allow"
-    actions   = [
+    effect = "Allow"
+    actions = [
       "sts:GetFederationToken",
       "iam:UpdateAccessKey",
       "iam:ListAccessKeys"
-      ]
+    ]
     resources = ["*"]
   }
 }
@@ -45,13 +45,13 @@ resource "aws_iam_user_policy" "legit-user-policy" {
 }
 
 resource "aws_iam_access_key" "inactive-credentials" {
-  user    = aws_iam_user.legit-user.name
-  status  = "Inactive"
+  user   = aws_iam_user.legit-user.name
+  status = "Inactive"
 }
 
 resource "aws_iam_access_key" "active-credentials" {
-  user    = aws_iam_user.legit-user.name
-  status  = "Active"
+  user   = aws_iam_user.legit-user.name
+  status = "Active"
 }
 
 output "user_name" {
@@ -63,7 +63,7 @@ output "access_key_id" {
 }
 
 output "secret_access_key" {
-  value = aws_iam_access_key.active-credentials.secret
+  value     = aws_iam_access_key.active-credentials.secret
   sensitive = true
 }
 
@@ -72,5 +72,5 @@ output "display" {
 }
 
 output "access_key_create_date" {
-    value = aws_iam_access_key.active-credentials.create_date
+  value = aws_iam_access_key.active-credentials.create_date
 }
