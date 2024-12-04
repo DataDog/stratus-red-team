@@ -10,6 +10,8 @@ import (
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
+	"math"
+	"time"
 )
 
 //go:embed main.tf
@@ -60,14 +62,17 @@ const SessionPolicyAllowAll = `{
 		]
 	}`
 
+const MinDelayBeforeCallingGetFederationToken = 10 * time.Second
+
 func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	username := params["user_name"]
 	accessKeyID := params["access_key_id"]
 	secretAccessKey := params["secret_access_key"]
 
+	ensureEventualConsistency(params)
+
 	awsConfig := utils.AwsConfigFromCredentials(accessKeyID, secretAccessKey, "", &providers.AWS().UniqueCorrelationId)
 	stsClient := sts.NewFromConfig(awsConfig)
-
 	log.Println("Calling sts:GetFederationToken to generate temporary credentials")
 	federationTokenResult, err := stsClient.GetFederationToken(context.Background(), &sts.GetFederationTokenInput{
 		Name:   aws.String("stratus-red-team"), // Note: This can be anything and is unrelated to the underlying IAM username
@@ -100,4 +105,17 @@ export AWS_SECRET_ACCESS_KEY="` + *tempCredentials.SecretAccessKey + `"
 export AWS_SESSION_TOKEN="` + *tempCredentials.SessionToken + `"
 `)
 	return nil
+}
+
+func ensureEventualConsistency(params map[string]string) {
+	// Due to eventual consistency, we need to make sure at least a few seconds passed between when the access key is
+	// created and when we call GetFederationToken
+	createDate, _ := time.Parse(time.RFC3339, params["access_key_create_date"])
+	createdSecondsAgo := time.Since(createDate)
+	if createdSecondsAgo < MinDelayBeforeCallingGetFederationToken {
+		sleepTime := MinDelayBeforeCallingGetFederationToken - createdSecondsAgo
+		// print sleep time with 2 digits of precision
+		log.Printf("Waiting for %f seconds before calling GetFederationToken due to eventual consistency", math.Round(sleepTime.Seconds()*100)/100)
+		time.Sleep(sleepTime)
+	}
 }

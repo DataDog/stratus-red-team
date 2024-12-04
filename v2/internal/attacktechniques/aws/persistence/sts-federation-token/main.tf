@@ -70,3 +70,7 @@ output "secret_access_key" {
 output "display" {
   value = format("IAM user %s ready", aws_iam_user.legit-user.name)
 }
+
+output "access_key_create_date" {
+    value = aws_iam_access_key.active-credentials.create_date
+}
