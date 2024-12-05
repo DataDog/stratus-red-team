@@ -174,7 +174,7 @@ func UploadFile(s3Client *s3.Client, bucketName string, filename string, content
 // may be slow (60+ seconds)
 func WaitForInstancesToRegisterInSSM(ssmClient *ssm.Client, instanceIds []string) error {
 	if len(instanceIds) == 1 {
-		log.Println("Waiting for instance" + instanceIds[0] + " to show up in AWS SSM")
+		log.Println("Waiting for instance " + instanceIds[0] + " to show up in AWS SSM")
 	} else {
 		log.Println("Waiting for " + strconv.Itoa(len(instanceIds)) + " instances to show up in AWS SSM. This can take a few minutes.")
 	}
