@@ -28,6 +28,13 @@ func main() {
 		os.Exit(1)
 	}
 
+	// Generate HTML files for each platform
+	if err := GenerateCoverageMatrices(index, docsDirectory); err != nil {
+		fmt.Fprintln(os.Stderr, "Could not generate coverage matrices")
+		fmt.Fprintf(os.Stderr, "%v\n", err)
+		os.Exit(1)
+	}
+
 	// Write a single index file with all techniques. File is enconded in YAML.
 	yamlIndex := filepath.Join(docsDirectory, "index.yaml")
 	if err := GenerateYAML(yamlIndex, index); err != nil {
