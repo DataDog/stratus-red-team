@@ -1,128 +1,139 @@
-github.com/Azure/azure-sdk-for-go/sdk/azcore,https://github.com/Azure/azure-sdk-for-go/blob/sdk/azcore/v1.0.0/sdk/azcore/LICENSE.txt,MIT
-github.com/Azure/azure-sdk-for-go/sdk/azidentity,https://github.com/Azure/azure-sdk-for-go/blob/sdk/azidentity/v1.0.0/sdk/azidentity/LICENSE.txt,MIT
-github.com/Azure/azure-sdk-for-go/sdk/internal,https://github.com/Azure/azure-sdk-for-go/blob/sdk/internal/v1.0.0/sdk/internal/LICENSE.txt,MIT
-github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/compute/armcompute,https://github.com/Azure/azure-sdk-for-go/blob/sdk/resourcemanager/compute/armcompute/v1.0.0/sdk/resourcemanager/compute/armcompute/LICENSE.txt,MIT
-github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resources/armresources,https://github.com/Azure/azure-sdk-for-go/blob/sdk/resourcemanager/resources/armresources/v1.0.0/sdk/resourcemanager/resources/armresources/LICENSE.txt,MIT
-github.com/AzureAD/microsoft-authentication-library-for-go/apps,https://github.com/AzureAD/microsoft-authentication-library-for-go/blob/v0.4.0/LICENSE,MIT
-github.com/aws/aws-sdk-go-v2,https://github.com/aws/aws-sdk-go-v2/blob/v1.16.7/LICENSE.txt,Apache-2.0
-github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream,https://github.com/aws/aws-sdk-go-v2/blob/aws/protocol/eventstream/v1.1.0/aws/protocol/eventstream/LICENSE.txt,Apache-2.0
-github.com/aws/aws-sdk-go-v2/config,https://github.com/aws/aws-sdk-go-v2/blob/config/v1.13.0/config/LICENSE.txt,Apache-2.0
-github.com/aws/aws-sdk-go-v2/credentials,https://github.com/aws/aws-sdk-go-v2/blob/credentials/v1.8.0/credentials/LICENSE.txt,Apache-2.0
-github.com/aws/aws-sdk-go-v2/feature/ec2/imds,https://github.com/aws/aws-sdk-go-v2/blob/feature/ec2/imds/v1.10.0/feature/ec2/imds/LICENSE.txt,Apache-2.0
-github.com/aws/aws-sdk-go-v2/internal/configsources,https://github.com/aws/aws-sdk-go-v2/blob/internal/configsources/v1.1.14/internal/configsources/LICENSE.txt,Apache-2.0
-github.com/aws/aws-sdk-go-v2/internal/endpoints/v2,https://github.com/aws/aws-sdk-go-v2/blob/internal/endpoints/v2.4.8/internal/endpoints/v2/LICENSE.txt,Apache-2.0
-github.com/aws/aws-sdk-go-v2/internal/ini,https://github.com/aws/aws-sdk-go-v2/blob/internal/ini/v1.3.4/internal/ini/LICENSE.txt,Apache-2.0
-github.com/aws/aws-sdk-go-v2/internal/sync/singleflight,https://github.com/aws/aws-sdk-go-v2/blob/v1.16.7/internal/sync/singleflight/LICENSE,BSD-3-Clause
-github.com/aws/aws-sdk-go-v2/service/cloudtrail,https://github.com/aws/aws-sdk-go-v2/blob/service/cloudtrail/v1.13.0/service/cloudtrail/LICENSE.txt,Apache-2.0
-github.com/aws/aws-sdk-go-v2/service/ec2,https://github.com/aws/aws-sdk-go-v2/blob/service/ec2/v1.26.0/service/ec2/LICENSE.txt,Apache-2.0
-github.com/aws/aws-sdk-go-v2/service/iam,https://github.com/aws/aws-sdk-go-v2/blob/service/iam/v1.14.0/service/iam/LICENSE.txt,Apache-2.0
-github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding,https://github.com/aws/aws-sdk-go-v2/blob/service/internal/accept-encoding/v1.6.0/service/internal/accept-encoding/LICENSE.txt,Apache-2.0
-github.com/aws/aws-sdk-go-v2/service/internal/presigned-url,https://github.com/aws/aws-sdk-go-v2/blob/service/internal/presigned-url/v1.7.0/service/internal/presigned-url/LICENSE.txt,Apache-2.0
-github.com/aws/aws-sdk-go-v2/service/internal/s3shared,https://github.com/aws/aws-sdk-go-v2/blob/service/internal/s3shared/v1.10.0/service/internal/s3shared/LICENSE.txt,Apache-2.0
-github.com/aws/aws-sdk-go-v2/service/lambda,https://github.com/aws/aws-sdk-go-v2/blob/service/lambda/v1.17.0/service/lambda/LICENSE.txt,Apache-2.0
-github.com/aws/aws-sdk-go-v2/service/organizations,https://github.com/aws/aws-sdk-go-v2/blob/service/organizations/v1.12.0/service/organizations/LICENSE.txt,Apache-2.0
-github.com/aws/aws-sdk-go-v2/service/rds,https://github.com/aws/aws-sdk-go-v2/blob/service/rds/v1.16.0/service/rds/LICENSE.txt,Apache-2.0
-github.com/aws/aws-sdk-go-v2/service/rolesanywhere,https://github.com/aws/aws-sdk-go-v2/blob/service/rolesanywhere/v1.0.0/service/rolesanywhere/LICENSE.txt,Apache-2.0
-github.com/aws/aws-sdk-go-v2/service/s3,https://github.com/aws/aws-sdk-go-v2/blob/service/s3/v1.23.0/service/s3/LICENSE.txt,Apache-2.0
-github.com/aws/aws-sdk-go-v2/service/secretsmanager,https://github.com/aws/aws-sdk-go-v2/blob/service/secretsmanager/v1.13.0/service/secretsmanager/LICENSE.txt,Apache-2.0
-github.com/aws/aws-sdk-go-v2/service/ssm,https://github.com/aws/aws-sdk-go-v2/blob/service/ssm/v1.20.0/service/ssm/LICENSE.txt,Apache-2.0
-github.com/aws/aws-sdk-go-v2/service/sso,https://github.com/aws/aws-sdk-go-v2/blob/service/sso/v1.9.0/service/sso/LICENSE.txt,Apache-2.0
-github.com/aws/aws-sdk-go-v2/service/sts,https://github.com/aws/aws-sdk-go-v2/blob/service/sts/v1.14.0/service/sts/LICENSE.txt,Apache-2.0
-github.com/aws/smithy-go,https://github.com/aws/smithy-go/blob/v1.12.0/LICENSE,Apache-2.0
-github.com/datadog/stratus-red-team/v2/cmd/stratus,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/credential-access/ec2-get-password-data,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/credential-access/ec2-steal-instance-credentials,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/credential-access/secretsmanager-retrieve-secrets,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/credential-access/ssm-retrieve-securestring-parameters,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/defense-evasion/cloudtrail-delete,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/defense-evasion/cloudtrail-event-selectors,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/defense-evasion/cloudtrail-lifecycle-rule,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/defense-evasion/cloudtrail-stop,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/defense-evasion/organizations-leave,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/defense-evasion/vpc-remove-flow-logs,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/discovery/ec2-enumerate-from-instance,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/discovery/ec2-get-user-data,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/execution/ec2-launch-unusual-instances,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/execution/ec2-user-data,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/exfiltration/ec2-security-group-open-port-22-ingress,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/exfiltration/ec2-share-ami,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/exfiltration/ec2-share-ebs-snapshot,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/exfiltration/rds-share-snapshot,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/exfiltration/s3-backdoor-bucket-policy,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/initial-access/console-login-without-mfa,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/persistence/iam-backdoor-role,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/persistence/iam-backdoor-user,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/persistence/iam-create-admin-user,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/persistence/iam-create-user-login-profile,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/persistence/lambda-backdoor-function,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/persistence/lambda-overwrite-code,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/persistence/rolesanywhere-create-trust-anchor,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/azure/execution/vm-custom-script-extension,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/azure/execution/vm-run-command,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/azure/exfiltration/disk-export,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/k8s/credential-access/dump-secrets,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/k8s/credential-access/steal-serviceaccount-token,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/k8s/persistence/create-admin-clusterrole,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/k8s/persistence/create-token,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/k8s/privilege-escalation/hostpath-volume,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/k8s/privilege-escalation/nodes-proxy,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/attacktechniques/k8s/privilege-escalation/privileged-pod,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/providers,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/state,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/internal/utils,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/pkg/stratus,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack,Unknown,Unknown
-github.com/datadog/stratus-red-team/v2/pkg/stratus/runner,Unknown,Unknown
-github.com/davecgh/go-spew/spew,https://github.com/davecgh/go-spew/blob/v1.1.1/LICENSE,ISC
-github.com/fatih/color,https://github.com/fatih/color/blob/v1.13.0/LICENSE.md,MIT
-github.com/go-logr/logr,https://github.com/go-logr/logr/blob/v1.2.0/LICENSE,Apache-2.0
-github.com/gogo/protobuf,https://github.com/gogo/protobuf/blob/v1.3.2/LICENSE,BSD-3-Clause
-github.com/golang-jwt/jwt,https://github.com/golang-jwt/jwt/blob/v3.2.2/LICENSE,MIT
-github.com/golang/protobuf,https://github.com/golang/protobuf/blob/v1.5.2/LICENSE,BSD-3-Clause
-github.com/google/go-cmp/cmp,https://github.com/google/go-cmp/blob/v0.5.8/LICENSE,BSD-3-Clause
-github.com/google/gofuzz,https://github.com/google/gofuzz/blob/v1.1.0/LICENSE,Apache-2.0
-github.com/google/uuid,https://github.com/google/uuid/blob/v1.3.0/LICENSE,BSD-3-Clause
-github.com/googleapis/gnostic,https://github.com/googleapis/gnostic/blob/v0.5.5/LICENSE,Apache-2.0
-github.com/hashicorp/go-cleanhttp,https://github.com/hashicorp/go-cleanhttp/blob/v0.5.2/LICENSE,MPL-2.0
-github.com/hashicorp/go-version,https://github.com/hashicorp/go-version/blob/v1.4.0/LICENSE,MPL-2.0
-github.com/hashicorp/hc-install,https://github.com/hashicorp/hc-install/blob/v0.3.2/LICENSE,MPL-2.0
-github.com/hashicorp/terraform-exec,https://github.com/hashicorp/terraform-exec/blob/v0.15.0/LICENSE,MPL-2.0
-github.com/hashicorp/terraform-json,https://github.com/hashicorp/terraform-json/blob/v0.13.0/LICENSE,MPL-2.0
-github.com/imdario/mergo,https://github.com/imdario/mergo/blob/v0.3.12/LICENSE,BSD-3-Clause
-github.com/jedib0t/go-pretty/v6,https://github.com/jedib0t/go-pretty/blob/v6.2.4/LICENSE,MIT
-github.com/jmespath/go-jmespath,https://github.com/jmespath/go-jmespath/blob/v0.4.0/LICENSE,Apache-2.0
-github.com/json-iterator/go,https://github.com/json-iterator/go/blob/v1.1.12/LICENSE,MIT
-github.com/kylelemons/godebug,https://github.com/kylelemons/godebug/blob/v1.1.0/LICENSE,Apache-2.0
-github.com/mattn/go-colorable,https://github.com/mattn/go-colorable/blob/v0.1.12/LICENSE,MIT
-github.com/mattn/go-isatty,https://github.com/mattn/go-isatty/blob/v0.0.14/LICENSE,MIT
-github.com/mattn/go-runewidth,https://github.com/mattn/go-runewidth/blob/v0.0.9/LICENSE,MIT
-github.com/moby/spdystream,https://github.com/moby/spdystream/blob/v0.2.0/LICENSE,Apache-2.0
-github.com/modern-go/concurrent,https://github.com/modern-go/concurrent/blob/bacd9c7ef1dd/LICENSE,Apache-2.0
-github.com/modern-go/reflect2,https://github.com/modern-go/reflect2/blob/v1.0.2/LICENSE,Apache-2.0
-github.com/pkg/browser,https://github.com/pkg/browser/blob/ce105d075bb4/LICENSE,BSD-2-Clause
-github.com/spf13/cobra,https://github.com/spf13/cobra/blob/v1.3.0/LICENSE.txt,Apache-2.0
-github.com/spf13/pflag,https://github.com/spf13/pflag/blob/v1.0.5/LICENSE,BSD-3-Clause
-github.com/zclconf/go-cty/cty,https://github.com/zclconf/go-cty/blob/v1.9.1/LICENSE,MIT
-golang.org/x/crypto,https://cs.opensource.google/go/x/crypto/+/c6db032c:LICENSE,BSD-3-Clause
-golang.org/x/net,https://cs.opensource.google/go/x/net/+/2871e0cb:LICENSE,BSD-3-Clause
-golang.org/x/oauth2,https://cs.opensource.google/go/x/oauth2/+/d3ed0bb2:LICENSE,BSD-3-Clause
-golang.org/x/sys,https://cs.opensource.google/go/x/sys/+/5e4e11fc:LICENSE,BSD-3-Clause
-golang.org/x/term,https://cs.opensource.google/go/x/term/+/03fcf44c:LICENSE,BSD-3-Clause
-golang.org/x/text,https://cs.opensource.google/go/x/text/+/v0.3.7:LICENSE,BSD-3-Clause
-golang.org/x/time/rate,https://cs.opensource.google/go/x/time/+/1f47c861:LICENSE,BSD-3-Clause
-google.golang.org/protobuf,https://github.com/protocolbuffers/protobuf-go/blob/v1.27.1/LICENSE,BSD-3-Clause
-gopkg.in/inf.v0,https://github.com/go-inf/inf/blob/v0.9.1/LICENSE,BSD-3-Clause
-gopkg.in/yaml.v2,https://github.com/go-yaml/yaml/blob/v2.4.0/LICENSE,Apache-2.0
-gopkg.in/yaml.v3,https://github.com/go-yaml/yaml/blob/496545a6307b/LICENSE,MIT
-k8s.io/api,https://github.com/kubernetes/api/blob/v0.23.3/LICENSE,Apache-2.0
-k8s.io/apimachinery/pkg,https://github.com/kubernetes/apimachinery/blob/v0.23.3/LICENSE,Apache-2.0
-k8s.io/apimachinery/third_party/forked/golang,https://github.com/kubernetes/apimachinery/blob/v0.23.3/third_party/forked/golang/LICENSE,BSD-3-Clause
-k8s.io/client-go,https://github.com/kubernetes/client-go/blob/v0.23.3/LICENSE,Apache-2.0
-k8s.io/klog/v2,https://github.com/kubernetes/klog/blob/v2.30.0/LICENSE,Apache-2.0
-k8s.io/kube-openapi/pkg,https://github.com/kubernetes/kube-openapi/blob/e816edb12b65/LICENSE,Apache-2.0
-k8s.io/utils,https://github.com/kubernetes/utils/blob/6203023598ed/LICENSE,Apache-2.0
-k8s.io/utils/internal/third_party/forked/golang/net,https://github.com/kubernetes/utils/blob/6203023598ed/internal/third_party/forked/golang/LICENSE,BSD-3-Clause
-sigs.k8s.io/json,https://github.com/kubernetes-sigs/json/blob/c049b76a60c6/LICENSE,Apache-2.0
-sigs.k8s.io/structured-merge-diff/v4,https://github.com/kubernetes-sigs/structured-merge-diff/blob/v4.2.1/LICENSE,Apache-2.0
-sigs.k8s.io/yaml,https://github.com/kubernetes-sigs/yaml/blob/v1.2.0/LICENSE,MIT
+"component","origin","license","copyright"
+"cloud.google.com/go/compute","https://cloud.google.com/go/compute","[]","[]"
+"com.github.DataDog/stratus-red-team","git+https://github.com/DataDog/stratus-red-team","['Apache-2.0']","['Datadog, Inc.']"
+"github.com/Azure/azure-sdk-for-go/sdk/azcore","https://github.com/Azure/azure-sdk-for-go/sdk/azcore","[]","[]"
+"github.com/Azure/azure-sdk-for-go/sdk/azidentity","https://github.com/Azure/azure-sdk-for-go/sdk/azidentity","[]","[]"
+"github.com/Azure/azure-sdk-for-go/sdk/internal","https://github.com/Azure/azure-sdk-for-go/sdk/internal","[]","[]"
+"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/compute/armcompute","https://github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/compute/armcompute","[]","[]"
+"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/network/armnetwork/v6","https://github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/network/armnetwork/v6","[]","[]"
+"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resources/armresources","https://github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resources/armresources","[]","[]"
+"github.com/AzureAD/microsoft-authentication-library-for-go","https://github.com/AzureAD/microsoft-authentication-library-for-go","['MIT']","['Microsoft Corporation']"
+"github.com/DataDog/datadog-api-client-go","https://github.com/DataDog/datadog-api-client-go","['Apache-2.0']","['Datadog, Inc.']"
+"github.com/DataDog/zstd","https://github.com/DataDog/zstd","['BSD-2-Clause', 'BSD-3-Clause']","['Datadog']"
+"github.com/Microsoft/go-winio","https://github.com/Microsoft/go-winio","['MIT']","['Microsoft']"
+"github.com/PuerkitoBio/purell","https://github.com/PuerkitoBio/purell","['BSD-3-Clause']","['Martin Angers, Yuki Okushi & Contributors', 'The Go Authors']"
+"github.com/PuerkitoBio/urlesc","https://github.com/PuerkitoBio/urlesc","['BSD-3-Clause']","['The Go Authors']"
+"github.com/aws/aws-sdk-go-v2","https://github.com/aws/aws-sdk-go-v2","['Apache-2.0']","['Amazon.com, Inc. or its affiliates', 'Stripe, Inc.', 'The Go Authors']"
+"github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream","https://github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream","[]","[]"
+"github.com/aws/aws-sdk-go-v2/config","https://github.com/aws/aws-sdk-go-v2/config","[]","[]"
+"github.com/aws/aws-sdk-go-v2/credentials","https://github.com/aws/aws-sdk-go-v2/credentials","[]","[]"
+"github.com/aws/aws-sdk-go-v2/feature/ec2/imds","https://github.com/aws/aws-sdk-go-v2/feature/ec2/imds","[]","[]"
+"github.com/aws/aws-sdk-go-v2/feature/s3/manager","https://github.com/aws/aws-sdk-go-v2/feature/s3/manager","[]","[]"
+"github.com/aws/aws-sdk-go-v2/internal/configsources","https://github.com/aws/aws-sdk-go-v2/internal/configsources","[]","[]"
+"github.com/aws/aws-sdk-go-v2/internal/endpoints/v2","https://github.com/aws/aws-sdk-go-v2/internal/endpoints/v2","[]","[]"
+"github.com/aws/aws-sdk-go-v2/internal/ini","https://github.com/aws/aws-sdk-go-v2/internal/ini","[]","[]"
+"github.com/aws/aws-sdk-go-v2/internal/v4a","https://github.com/aws/aws-sdk-go-v2/internal/v4a","[]","[]"
+"github.com/aws/aws-sdk-go-v2/service/bedrockruntime","https://github.com/aws/aws-sdk-go-v2/service/bedrockruntime","[]","[]"
+"github.com/aws/aws-sdk-go-v2/service/cloudtrail","https://github.com/aws/aws-sdk-go-v2/service/cloudtrail","[]","[]"
+"github.com/aws/aws-sdk-go-v2/service/ec2","https://github.com/aws/aws-sdk-go-v2/service/ec2","[]","[]"
+"github.com/aws/aws-sdk-go-v2/service/ec2instanceconnect","https://github.com/aws/aws-sdk-go-v2/service/ec2instanceconnect","[]","[]"
+"github.com/aws/aws-sdk-go-v2/service/eks","https://github.com/aws/aws-sdk-go-v2/service/eks","[]","[]"
+"github.com/aws/aws-sdk-go-v2/service/iam","https://github.com/aws/aws-sdk-go-v2/service/iam","[]","[]"
+"github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding","https://github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding","[]","[]"
+"github.com/aws/aws-sdk-go-v2/service/internal/checksum","https://github.com/aws/aws-sdk-go-v2/service/internal/checksum","[]","[]"
+"github.com/aws/aws-sdk-go-v2/service/internal/presigned-url","https://github.com/aws/aws-sdk-go-v2/service/internal/presigned-url","[]","[]"
+"github.com/aws/aws-sdk-go-v2/service/internal/s3shared","https://github.com/aws/aws-sdk-go-v2/service/internal/s3shared","[]","[]"
+"github.com/aws/aws-sdk-go-v2/service/lambda","https://github.com/aws/aws-sdk-go-v2/service/lambda","[]","[]"
+"github.com/aws/aws-sdk-go-v2/service/organizations","https://github.com/aws/aws-sdk-go-v2/service/organizations","[]","[]"
+"github.com/aws/aws-sdk-go-v2/service/rds","https://github.com/aws/aws-sdk-go-v2/service/rds","[]","[]"
+"github.com/aws/aws-sdk-go-v2/service/rolesanywhere","https://github.com/aws/aws-sdk-go-v2/service/rolesanywhere","[]","[]"
+"github.com/aws/aws-sdk-go-v2/service/route53resolver","https://github.com/aws/aws-sdk-go-v2/service/route53resolver","[]","[]"
+"github.com/aws/aws-sdk-go-v2/service/s3","https://github.com/aws/aws-sdk-go-v2/service/s3","[]","[]"
+"github.com/aws/aws-sdk-go-v2/service/secretsmanager","https://github.com/aws/aws-sdk-go-v2/service/secretsmanager","[]","[]"
+"github.com/aws/aws-sdk-go-v2/service/ses","https://github.com/aws/aws-sdk-go-v2/service/ses","[]","[]"
+"github.com/aws/aws-sdk-go-v2/service/ssm","https://github.com/aws/aws-sdk-go-v2/service/ssm","[]","[]"
+"github.com/aws/aws-sdk-go-v2/service/sso","https://github.com/aws/aws-sdk-go-v2/service/sso","[]","[]"
+"github.com/aws/aws-sdk-go-v2/service/ssooidc","https://github.com/aws/aws-sdk-go-v2/service/ssooidc","[]","[]"
+"github.com/aws/aws-sdk-go-v2/service/sts","https://github.com/aws/aws-sdk-go-v2/service/sts","[]","[]"
+"github.com/aws/smithy-go","https://github.com/aws/smithy-go","['Apache-2.0']","['Amazon.com, Inc. or its affiliates', 'The Go Authors']"
+"github.com/cenkalti/backoff/v4","https://github.com/cenkalti/backoff/v4","[]","[]"
+"github.com/cjlapao/common-go","https://github.com/cjlapao/common-go","['MIT']","['Carlos Lapao']"
+"github.com/datadog/stratus-red-team/v2","https://github.com/datadog/stratus-red-team/v2","[]","[]"
+"github.com/davecgh/go-spew","https://github.com/davecgh/go-spew","['ISC']","['Dave Collins']"
+"github.com/emicklei/go-restful/v3","https://github.com/emicklei/go-restful/v3","[]","[]"
+"github.com/fatih/color","https://github.com/fatih/color","['MIT']","['Fatih Arslan']"
+"github.com/go-logr/logr","https://github.com/go-logr/logr","['Apache-2.0']","['go-logr']"
+"github.com/go-logr/stdr","https://github.com/go-logr/stdr","['Apache-2.0']","['go-logr']"
+"github.com/go-openapi/jsonpointer","https://github.com/go-openapi/jsonpointer","['Apache-2.0']","['go-openapi']"
+"github.com/go-openapi/jsonreference","https://github.com/go-openapi/jsonreference","['Apache-2.0']","['go-openapi']"
+"github.com/go-openapi/swag","https://github.com/go-openapi/swag","['Apache-2.0']","['go-openapi']"
+"github.com/gogo/protobuf","https://github.com/gogo/protobuf","['BSD-3-Clause']","['The Go Authors', 'The GoGo Authors']"
+"github.com/golang-jwt/jwt","https://github.com/golang-jwt/jwt","['MIT']","['Dave Grijalva', 'golang-jwt']"
+"github.com/golang-jwt/jwt/v5","https://github.com/golang-jwt/jwt/v5","[]","[]"
+"github.com/golang/groupcache","https://github.com/golang/groupcache","['Apache-2.0']","['golang']"
+"github.com/golang/protobuf","https://github.com/golang/protobuf","['BSD-3-Clause']","['The Go Authors']"
+"github.com/golang/snappy","https://github.com/golang/snappy","['BSD-3-Clause']","['The Snappy-Go Authors']"
+"github.com/google/gnostic","https://github.com/google/gnostic","['Apache-2.0']","['google']"
+"github.com/google/go-cmp","https://github.com/google/go-cmp","['BSD-3-Clause']","['The Go Authors']"
+"github.com/google/gofuzz","https://github.com/google/gofuzz","['Apache-2.0']","['google']"
+"github.com/google/uuid","https://github.com/google/uuid","['BSD-3-Clause']","['Google Inc.']"
+"github.com/googleapis/enterprise-certificate-proxy","https://github.com/googleapis/enterprise-certificate-proxy","['Apache-2.0']","['googleapis']"
+"github.com/googleapis/gax-go/v2","https://github.com/googleapis/gax-go/v2","[]","[]"
+"github.com/hashicorp/go-cleanhttp","https://github.com/hashicorp/go-cleanhttp","['MPL-2.0']","['HashiCorp, Inc.']"
+"github.com/hashicorp/go-version","https://github.com/hashicorp/go-version","['MPL-2.0']","['HashiCorp, Inc.']"
+"github.com/hashicorp/hc-install","https://github.com/hashicorp/hc-install","['MPL-2.0']","['HashiCorp, Inc.']"
+"github.com/hashicorp/terraform-exec","https://github.com/hashicorp/terraform-exec","['MPL-2.0']","['HashiCorp, Inc.']"
+"github.com/hashicorp/terraform-json","https://github.com/hashicorp/terraform-json","['MPL-2.0']","['HashiCorp, Inc.']"
+"github.com/imdario/mergo","https://github.com/imdario/mergo","['BSD-3-Clause']","['Dario Castane', 'The Go Authors']"
+"github.com/inconshreveable/mousetrap","https://github.com/inconshreveable/mousetrap","['Apache-2.0']","['Alan Shreve']"
+"github.com/jedib0t/go-pretty/v6","https://github.com/jedib0t/go-pretty/v6","[]","[]"
+"github.com/jmespath/go-jmespath","https://github.com/jmespath/go-jmespath","['Apache-2.0']","['James Saryerwinnie', 'Mat Ryer and Tyler Bunnell']"
+"github.com/josharian/intern","https://github.com/josharian/intern","['MIT']","['Josh Bleecher Snyder']"
+"github.com/json-iterator/go","https://github.com/json-iterator/go","['MIT']","['json-iterator']"
+"github.com/kylelemons/godebug","https://github.com/kylelemons/godebug","['Apache-2.0']","['kylelemons']"
+"github.com/mailru/easyjson","https://github.com/mailru/easyjson","['MIT']","['Mail.Ru Group']"
+"github.com/mattn/go-colorable","https://github.com/mattn/go-colorable","['MIT']","['Yasuhiro Matsumoto']"
+"github.com/mattn/go-isatty","https://github.com/mattn/go-isatty","['MIT']","['Yasuhiro MATSUMOTO']"
+"github.com/mattn/go-runewidth","https://github.com/mattn/go-runewidth","['MIT']","['Yasuhiro Matsumoto']"
+"github.com/microsoft/kiota-abstractions-go","https://github.com/microsoft/kiota-abstractions-go","['MIT']","['Microsoft Corporation']"
+"github.com/microsoft/kiota-authentication-azure-go","https://github.com/microsoft/kiota-authentication-azure-go","['MIT']","['Microsoft Corporation']"
+"github.com/microsoft/kiota-http-go","https://github.com/microsoft/kiota-http-go","['MIT']","['Microsoft Corporation']"
+"github.com/microsoft/kiota-serialization-form-go","https://github.com/microsoft/kiota-serialization-form-go","['MIT']","['Microsoft Corporation']"
+"github.com/microsoft/kiota-serialization-json-go","https://github.com/microsoft/kiota-serialization-json-go","['MIT']","['Microsoft Corporation']"
+"github.com/microsoft/kiota-serialization-multipart-go","https://github.com/microsoft/kiota-serialization-multipart-go","['MIT']","['Microsoft Corporation']"
+"github.com/microsoft/kiota-serialization-text-go","https://github.com/microsoft/kiota-serialization-text-go","['MIT']","['Microsoft Corporation']"
+"github.com/microsoftgraph/msgraph-beta-sdk-go","https://github.com/microsoftgraph/msgraph-beta-sdk-go","['MIT']","['Microsoft Graph']"
+"github.com/microsoftgraph/msgraph-sdk-go","https://github.com/microsoftgraph/msgraph-sdk-go","['MIT']","['Microsoft Graph']"
+"github.com/microsoftgraph/msgraph-sdk-go-core","https://github.com/microsoftgraph/msgraph-sdk-go-core","['MIT']","['Microsoft Graph']"
+"github.com/moby/spdystream","https://github.com/moby/spdystream","['Apache-2.0']","['Docker Inc.']"
+"github.com/modern-go/concurrent","https://github.com/modern-go/concurrent","['Apache-2.0']","['modern-go']"
+"github.com/modern-go/reflect2","https://github.com/modern-go/reflect2","['Apache-2.0']","['modern-go']"
+"github.com/munnerz/goautoneg","https://github.com/munnerz/goautoneg","['BSD-3-Clause']","['Open Knowledge Foundation Ltd.']"
+"github.com/pkg/browser","https://github.com/pkg/browser","['BSD-2-Clause']","['Dave Cheney']"
+"github.com/pmezard/go-difflib","https://github.com/pmezard/go-difflib","['BSD-3-Clause']","['Patrick Mezard']"
+"github.com/rivo/uniseg","https://github.com/rivo/uniseg","['MIT']","['Oliver Kuederle']"
+"github.com/spf13/cobra","https://github.com/spf13/cobra","['Apache-2.0']","['spf13']"
+"github.com/spf13/pflag","https://github.com/spf13/pflag","['BSD-3-Clause']","['Alex Ogier', 'The Go Authors']"
+"github.com/std-uritemplate/std-uritemplate/go","https://github.com/std-uritemplate/std-uritemplate/go","[]","[]"
+"github.com/stretchr/objx","https://github.com/stretchr/objx","['MIT']","['Stretchr, Inc.', 'objx contributors']"
+"github.com/stretchr/testify","https://github.com/stretchr/testify","['MIT']","['Mat Ryer, Tyler Bunnell and contributors']"
+"github.com/zclconf/go-cty","https://github.com/zclconf/go-cty","['MIT']","['Martin Atkins']"
+"go.opencensus.io","https://go.opencensus.io","[]","[]"
+"go.opentelemetry.io/otel","https://go.opentelemetry.io/otel","[]","[]"
+"go.opentelemetry.io/otel/metric","https://go.opentelemetry.io/otel/metric","[]","[]"
+"go.opentelemetry.io/otel/trace","https://go.opentelemetry.io/otel/trace","[]","[]"
+"golang.org/x/crypto","https://golang.org/x/crypto","[]","[]"
+"golang.org/x/net","https://golang.org/x/net","[]","[]"
+"golang.org/x/oauth2","https://golang.org/x/oauth2","[]","[]"
+"golang.org/x/sys","https://golang.org/x/sys","[]","[]"
+"golang.org/x/term","https://golang.org/x/term","[]","[]"
+"golang.org/x/text","https://golang.org/x/text","[]","[]"
+"golang.org/x/time","https://golang.org/x/time","[]","[]"
+"google.golang.org/api","https://google.golang.org/api","[]","[]"
+"google.golang.org/appengine","https://google.golang.org/appengine","[]","[]"
+"google.golang.org/genproto","https://google.golang.org/genproto","[]","[]"
+"google.golang.org/grpc","https://google.golang.org/grpc","[]","[]"
+"google.golang.org/protobuf","https://google.golang.org/protobuf","[]","[]"
+"gopkg.in/inf.v0","https://gopkg.in/inf.v0","[]","[]"
+"gopkg.in/yaml.v2","https://gopkg.in/yaml.v2","[]","[]"
+"gopkg.in/yaml.v3","https://gopkg.in/yaml.v3","[]","[]"
+"k8s.io/api","https://k8s.io/api","[]","[]"
+"k8s.io/apimachinery","https://k8s.io/apimachinery","[]","[]"
+"k8s.io/client-go","https://k8s.io/client-go","[]","[]"
+"k8s.io/klog/v2","https://k8s.io/klog/v2","[]","[]"
+"k8s.io/kube-openapi","https://k8s.io/kube-openapi","[]","[]"
+"k8s.io/utils","https://k8s.io/utils","[]","[]"
+"sigs.k8s.io/json","https://sigs.k8s.io/json","[]","[]"
+"sigs.k8s.io/structured-merge-diff/v4","https://sigs.k8s.io/structured-merge-diff/v4","[]","[]"
+"sigs.k8s.io/yaml","https://sigs.k8s.io/yaml","[]","[]"
+
