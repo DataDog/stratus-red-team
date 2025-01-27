@@ -4,7 +4,7 @@ We welcome pull requests, contributions and feedback! For any bug report or feed
 
 ## Contributing to a new attack technique
 
-Stratus Red Team is opinionated in the attack techniques it packages - see [Philosophy](./attack-techniques/philosophy.md). Feel free to open an issue to discuss ideas about new attack techniques. You can see the current backlog using the GitHub issue label [`new-technique`](https://github.com/DataDog/stratus-red-team/issues?q=is%3Aissue%20is%3Aopen%20label%3Akind%2Fnew-technique%20).
+Stratus Red Team is opinionated in the attack techniques it packages - see [Philosophy](./attack-techniques/philosophy.md). Feel free to open an issue to discuss ideas about new attack techniques. You can see the current backlog using the GitHub issue label [`kind/new-technique`](https://github.com/DataDog/stratus-red-team/issues?q=is%3Aissue%20is%3Aopen%20label%3Akind%2Fnew-technique%20).
 
 To create a new attack technique:
 
