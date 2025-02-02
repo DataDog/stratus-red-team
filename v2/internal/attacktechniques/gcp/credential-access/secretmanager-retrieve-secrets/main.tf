@@ -24,16 +24,16 @@ resource "random_string" "secrets" {
 }
 
 resource "google_secret_manager_secret" "secrets" {
-  count = local.num_secrets
-  secret_id  = "${local.resource_prefix}-${count.index}"
+  count     = local.num_secrets
+  secret_id = "${local.resource_prefix}-${count.index}"
   replication {
     auto {}
   }
 }
 
 resource "google_secret_manager_secret_version" "secrets" {
-  count = local.num_secrets
-  secret = google_secret_manager_secret.secrets[count.index].name
+  count       = local.num_secrets
+  secret      = google_secret_manager_secret.secrets[count.index].name
   secret_data = random_string.secrets[count.index].result
 }
 

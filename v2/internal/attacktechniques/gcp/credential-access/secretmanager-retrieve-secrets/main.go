@@ -126,14 +126,13 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 		}
 
 		log.Println("Retrieving value of secret " + secret.Name)
-		// Get latest version
 		result, err := secretClient.AccessSecretVersion(ctx, &secretmanagerpb.AccessSecretVersionRequest{
 			Name: secret.Name + "/versions/latest",
 		})
 		if err != nil {
 			return fmt.Errorf("failed to access secret version: %w", err)
 		}
-		_ = result // Discard the secret value
+		_ = result
 	}
 
 	return nil
