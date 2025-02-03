@@ -96,7 +96,6 @@ References:
 		IsIdempotent:               true,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.CredentialAccess},
 		Detonate:                   detonate,
-		Revert:                     revert,
 		PrerequisitesTerraformCode: tf,
 	})
 }
@@ -135,10 +134,5 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 		_ = result
 	}
 
-	return nil
-}
-
-func revert(params map[string]string, providers stratus.CloudProviders) error {
-	// No cleanup needed for this technique
 	return nil
 }
