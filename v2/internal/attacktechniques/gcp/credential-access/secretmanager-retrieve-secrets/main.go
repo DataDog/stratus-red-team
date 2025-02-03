@@ -108,7 +108,6 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	if err != nil {
 		return fmt.Errorf("failed to create secretmanager client: %w", err)
 	}
-	defer secretClient.Close()
 
 	secretsIterator := secretClient.ListSecrets(ctx, &secretmanagerpb.ListSecretsRequest{
 		Parent: fmt.Sprintf("projects/%s", gcp.GetProjectId()),
