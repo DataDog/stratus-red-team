@@ -134,7 +134,6 @@ require (
 	github.com/hashicorp/go-version v1.6.0
 	github.com/hashicorp/hc-install v0.4.0
 	github.com/hashicorp/terraform-json v0.14.0 // indirect
-	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/microsoftgraph/msgraph-sdk-go v1.47.0
 	github.com/zclconf/go-cty v1.11.0 // indirect
 	golang.org/x/crypto v0.25.0 // indirect
