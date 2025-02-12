@@ -18,7 +18,7 @@ jobs:
     timeout-minutes: 60
     runs-on:
       group: Large Runner Shared Public
-      labels: ubuntu-8-core-latest
+      labels: ubuntu-16-core-latest
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@cb605e52c26070c328afc4562f0b4ada7618a84e
