@@ -3,6 +3,7 @@ package gcp
 import (
 	"context"
 	_ "embed"
+	"errors"
 	"fmt"
 	"log"
 
@@ -116,7 +117,7 @@ func detonate(_ map[string]string, providers stratus.CloudProviders) error {
 
 	for {
 		secret, err := secretsIterator.Next()
-		if err == iterator.Done {
+		if errors.Is(err, iterator.Done) {
 			break
 		}
 		if err != nil {
