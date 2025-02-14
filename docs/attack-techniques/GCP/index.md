@@ -4,6 +4,11 @@ This page contains the Stratus attack techniques for GCP, grouped by MITRE ATT&C
 Note that some Stratus attack techniques may correspond to more than a single ATT&CK Tactic.
 
 
+## Credential Access
+
+- [Retrieve a High Number of Secret Manager secrets](./gcp.credential-access.secretmanager-retrieve-secrets.md)
+
+
 ## Exfiltration
 
 - [Exfiltrate Compute Disk by sharing it](./gcp.exfiltration.share-compute-disk.md)

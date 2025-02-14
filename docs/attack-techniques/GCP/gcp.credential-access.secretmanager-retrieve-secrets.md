@@ -1,48 +1,47 @@
-package gcp
+---
+title: Retrieve a High Number of Secret Manager secrets
+---
 
-import (
-	"context"
-	_ "embed"
-	"errors"
-	"fmt"
-	"log"
+# Retrieve a High Number of Secret Manager secrets
 
-	secretmanager "cloud.google.com/go/secretmanager/apiv1"
-	secretmanagerpb "cloud.google.com/go/secretmanager/apiv1/secretmanagerpb"
 
-	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
-	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
-	"google.golang.org/api/iterator"
-)
+ <span class="smallcaps w3-badge w3-blue w3-round w3-text-white" title="This attack technique can be detonated multiple times">idempotent</span> 
 
-//go:embed main.tf
-var tf []byte
+Platform: GCP
 
-const codeBlock = "```"
-const AttackTechniqueId = "gcp.credential-access.secretmanager-retrieve-secrets"
+## MITRE ATT&CK Tactics
 
-func init() {
-	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
-		ID:           AttackTechniqueId,
-		FriendlyName: "Retrieve a High Number of Secret Manager secrets",
-		Description: `
+
+- Credential Access
+
+## Description
+
+
 Retrieves a high number of Secret Manager secrets in a short timeframe, through the AccessSecretVersion API.
 
-Warm-up: 
+<span style="font-variant: small-caps;">Warm-up</span>: 
 
 - Create multiple secrets in Secret Manager.
 
-Detonation: 
+<span style="font-variant: small-caps;">Detonation</span>: 
 
 - Enumerate the secrets through the ListSecrets API
 - Retrieve each secret value, one by one through the AccessSecretVersion API
-`,
-		Detection: `Cloud Audit Logs event corresponding to accessing a secret's value is <code>AccessSecretVersion</code>. 
+
+
+## Instructions
+
+```bash title="Detonate with Stratus Red Team"
+stratus detonate gcp.credential-access.secretmanager-retrieve-secrets
+```
+## Detection
+
+Cloud Audit Logs event corresponding to accessing a secret's value is <code>AccessSecretVersion</code>. 
 It is considered [data access event](https://cloud.google.com/secret-manager/docs/audit-logging), and needs to be explicitly enabled for the Secret Manager API. 
 
 Sample event:
 
-` + codeBlock + `json hl_lines="18 20 25"
+```json hl_lines="18 20 25"
 {
   "protoPayload": {
     "@type": "type.googleapis.com/google.cloud.audit.AuditLog",
@@ -84,52 +83,11 @@ Sample event:
     }
   }
 }
-` + codeBlock + `
+```
 
 References:
 
 - https://cloud.hacktricks.wiki/en/pentesting-cloud/gcp-security/gcp-services/gcp-secrets-manager-enum.html
 
-`,
-		Platform:                   stratus.GCP,
-		IsIdempotent:               true,
-		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.CredentialAccess},
-		Detonate:                   detonate,
-		PrerequisitesTerraformCode: tf,
-	})
-}
 
-func detonate(_ map[string]string, providers stratus.CloudProviders) error {
-	gcp := providers.GCP()
-	ctx := context.Background()
 
-	secretClient, err := secretmanager.NewClient(ctx, gcp.Options())
-	if err != nil {
-		return fmt.Errorf("failed to create secretmanager client: %w", err)
-	}
-
-	secretsIterator := secretClient.ListSecrets(ctx, &secretmanagerpb.ListSecretsRequest{
-		Parent: fmt.Sprintf("projects/%s", gcp.GetProjectId()),
-		Filter: "labels.stratus-red-team:*",
-	})
-
-	for {
-		secret, err := secretsIterator.Next()
-		if errors.Is(err, iterator.Done) {
-			break
-		}
-		if err != nil {
-			return fmt.Errorf("failed to list secrets: %w", err)
-		}
-
-		log.Println("Retrieving value of secret " + secret.Name)
-		_, err = secretClient.AccessSecretVersion(ctx, &secretmanagerpb.AccessSecretVersionRequest{
-			Name: secret.Name + "/versions/latest",
-		})
-		if err != nil {
-			return fmt.Errorf("failed to access secret version: %w", err)
-		}
-	}
-
-	return nil
-}
