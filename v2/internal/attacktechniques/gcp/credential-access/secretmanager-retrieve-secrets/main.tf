@@ -37,3 +37,6 @@ resource "google_secret_manager_secret_version" "secrets" {
   secret_data = random_string.secrets[count.index].result
 }
 
+output "display" {
+  value = "${local.num_secrets} secrets created (${local.resource_prefix}-*)"
+}
