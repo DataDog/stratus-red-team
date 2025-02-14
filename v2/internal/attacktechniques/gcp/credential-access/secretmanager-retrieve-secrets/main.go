@@ -100,7 +100,7 @@ References:
 	})
 }
 
-func detonate(params map[string]string, providers stratus.CloudProviders) error {
+func detonate(_ map[string]string, providers stratus.CloudProviders) error {
 	gcp := providers.GCP()
 	ctx := context.Background()
 
