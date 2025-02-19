@@ -17,8 +17,7 @@ Platform: Entra ID
 ## Description
 
 
-Creates an [Administrative Unit (AU)](https://learn.microsoft.com/en-us/graph/api/resources/administrativeunit?view=graph-rest-1.0) with hidden membership, and a scoped role assignment over this AU.
-This simulates an attacker that TODO.
+Creates an [Administrative Unit (AU)](https://learn.microsoft.com/en-us/graph/api/resources/administrativeunit?view=graph-rest-1.0) with hidden membership, and a scoped role assignment over this AU. This simulates an attacker attempting to conceal the scope of a scoped role assignment using hidden AU membership.
 
 <span style="font-variant: small-caps;">Warm-up</span>:
 

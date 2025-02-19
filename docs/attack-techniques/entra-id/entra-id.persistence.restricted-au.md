@@ -17,7 +17,7 @@ Platform: Entra ID
 ## Description
 
 
-Creates a [restricted management Administrative Unit (AU)](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/admin-units-restricted-management), and place a backdoor account in it to simulate a protected attacker-controlled user.
+Creates a [restricted management Administrative Unit (AU)](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/admin-units-restricted-management), and places a backdoor account in it to simulate a protected attacker-controlled user.
 
 <span style="font-variant: small-caps;">Warm-up</span>:
 
