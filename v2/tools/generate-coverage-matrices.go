@@ -4,62 +4,106 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"sort"
 
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 )
 
+// Define MITRE ATT&CK tactic order from MITRE website
+var mitreTacticOrder = []string{
+	"Reconnaissance",
+	"Resource Development",
+    "Initial Access",
+    "Execution",
+    "Persistence",
+    "Privilege Escalation",
+    "Defense Evasion",
+    "Credential Access",
+    "Discovery",
+    "Lateral Movement",
+    "Collection",
+	"Command and Control",
+    "Exfiltration",
+    "Impact",
+}
+
+// GenerateCoverageMatrics generates a single static .md file containing MITRE ATT&CK coverage tables split by platform
 func GenerateCoverageMatrices(index map[stratus.Platform]map[string][]*stratus.AttackTechnique, docsDirectory string) error {
-	// Process each platform in the index
-	for platform, tacticsMap := range index {
-		// Initialize the HTML content
-		htmlContent := fmt.Sprintf(`
+	outputFilePath := filepath.Join(docsDirectory, "attack-techniques", "mitre-attack-coverage-matrices.md")
+
+	if err := os.MkdirAll(filepath.Dir(outputFilePath), 0755); err != nil {
+		return fmt.Errorf("failed to create docs directory: %w", err)
+	}
+
+	if _, err := os.Stat(outputFilePath); err == nil {
+		if err := os.Remove(outputFilePath); err != nil {
+			return fmt.Errorf("failed to delete existing file: %w", err)
+		}
+	}
+
+	file, err := os.Create(outputFilePath)
+	if err != nil {
+		return fmt.Errorf("failed to create file: %w", err)
+	}
+	defer file.Close()
+
+	htmlContent := `
+# MITRE ATT&CK Coverage by Platform
+
+This provides coverage matrices of MITRE ATT&CK tactics and techniques currently covered by Stratus Red Team for different cloud platforms.
+
 <!DOCTYPE html>
 <html>
 <head>
-	<title>%s Coverage Matrix</title>
-	<link rel="icon" type="image/png" href="logo.png">
+	<title>MITRE ATT&CK Coverage</title>
 	<style>
-		body { font-family: Arial, sans-serif; margin: 20px;}
-		table { width: 100%%; border-collapse: collapse; margin: 20px 0; font-size: 12px}
-		th, td { border: 1px solid #ddd; padding: 8px; text-align: left; color: #7e56c2}
-		th { background-color: #f4f4f4; font-weight: bold; font-size: 14px; color: #333; }
-		tr:nth-child(even) { background-color: #f9f9f9; }
+		body { font-family: SFMono-Regular, Consolas, Menlo, monospace; sans-serif; margin: 20px; }
+		table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 16px; }
+		th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+		th { background-color: #f4f4f4; font-weight: bold; font-size: 18px; color: #000; }
+		td { font-weight: normal; color: #7e56c2; }
 		tr:hover { background-color: #f1f1f1; }
-		td:hover { background-color: #e9e9ff; color: #5a3ea8; cursor: pointer;}
-		caption { font-size: 1.5em; margin-bottom: 10px; font-weight: bold; }
+		td:hover { background-color: #e9e9ff; color: #5a3ea8; cursor: pointer; }
+		h1 { font-weight: 300; color: #333; }
+		h2 { color: #0000008a; text-transform: capitalize; }
 	</style>
 </head>
 <body>
-	<h1>Stratus Red Team</h1>
-	<table>
-		<caption>Coverage Matrix for %s</caption>
-`, platform, platform)
+`
 
-		// Extract unique tactics
-		tacticsSet := make(map[string]struct{})
+	// Loop through each platform and generate tables
+	for platform, tacticsMap := range index {
+		htmlContent += fmt.Sprintf("<h2>%s</h2>\n<table>\n", platform)
+
+		// Sort tactics based on MITRE ATT&CK order
+		sortedTactics := []string{}
+		tacticSet := make(map[string]bool)
+
+		// Collect tactics present for specific platform
 		for tactic := range tacticsMap {
-			tacticsSet[tactic] = struct{}{}
+			tacticSet[tactic] = true
 		}
-		tactics := make([]string, 0, len(tacticsSet))
-		for tactic := range tacticsSet {
-			tactics = append(tactics, tactic)
-		}
-		sort.Strings(tactics)
 
-		// Add header row
+		// Append tactics in the correct order
+		for _, tactic := range mitreTacticOrder {
+			if tacticSet[tactic] {
+				sortedTactics = append(sortedTactics, tactic)
+			}
+		}
+
+		// Add table header with sorted tactics
 		htmlContent += "<thead><tr>"
-		for _, tactic := range tactics {
+		for _, tactic := range sortedTactics {
 			htmlContent += fmt.Sprintf("<th>%s</th>", tactic)
 		}
 		htmlContent += "</tr></thead>\n<tbody>\n"
 
+		// Create a list of rows
 		rows := make([][]string, 0)
 		maxRows := 0
 
-		// Map tactic to techniques
+		// Map each tactic to its respective techniques (column by column)
 		tacticToTechniques := make(map[string][]string)
-		for _, tactic := range tactics {
+		for _, tactic := range sortedTactics {
 			techniques := tacticsMap[tactic]
 			for _, technique := range techniques {
 				tacticToTechniques[tactic] = append(tacticToTechniques[tactic], technique.FriendlyName)
@@ -69,10 +113,10 @@ func GenerateCoverageMatrices(index map[stratus.Platform]map[string][]*stratus.A
 			}
 		}
 
-		// Fill rows with Stratus techniques for each ATT&CK tactic
+		// Fill rows with techniques for each tactic
 		for i := 0; i < maxRows; i++ {
-			row := make([]string, len(tactics))
-			for j, tactic := range tactics {
+			row := make([]string, len(sortedTactics))
+			for j, tactic := range sortedTactics {
 				if i < len(tacticToTechniques[tactic]) {
 					row[j] = tacticToTechniques[tactic][i]
 				} else {
@@ -95,18 +139,16 @@ func GenerateCoverageMatrices(index map[stratus.Platform]map[string][]*stratus.A
 			htmlContent += "</tr>\n"
 		}
 
-		// Close table and HTML document
-		htmlContent += `
-		</tbody>
-	</table>
-</body>
-</html>`
-		filePath := filepath.Join(docsDirectory, fmt.Sprintf("%s.html", platform))
-		if err := os.WriteFile(filePath, []byte(htmlContent), 0644); err != nil {
-			return fmt.Errorf("failed to write HTML file for platform %s: %w", platform, err)
-		}
-		fmt.Printf("Generated coverage matrix for platform: %s\n", platform)
+		htmlContent += "</tbody>\n</table>\n"
 	}
 
+	htmlContent += `
+</body>
+</html>`
+
+	if _, err := file.WriteString(htmlContent); err != nil {
+		return fmt.Errorf("failed to write to file: %w", err)
+	}
+	
 	return nil
 }

@@ -28,9 +28,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Generate HTML files for each platform
 	if err := GenerateCoverageMatrices(index, docsDirectory); err != nil {
-		fmt.Fprintln(os.Stderr, "Could not generate coverage matrices")
+		fmt.Fprintln(os.Stderr, "Could not generate MITRE ATT&CK coverage file")
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		os.Exit(1)
 	}
