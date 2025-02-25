@@ -34,7 +34,7 @@ data "aws_ec2_serial_console_access" "current" {}
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = ">= 4.54.0, < 5.0.0" # 4.54.0 at least is required for proper AWS SSO support, see #626
+  version = "~> 3.0"
 
   name = "${local.resource_prefix}-vpc"
   cidr = "10.0.0.0/16"
