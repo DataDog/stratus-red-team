@@ -393,6 +393,14 @@ GCP:
             - Credential Access
           platform: GCP
           isIdempotent: true
+    Execution:
+        - id: gcp.execution.gce-launch-unusual-instances
+          name: Launch unusual GCE instances
+          isSlow: false
+          mitreAttackTactics:
+            - Execution
+          platform: GCP
+          isIdempotent: true
     Exfiltration:
         - id: gcp.exfiltration.share-compute-disk
           name: Exfiltrate Compute Disk by sharing it
