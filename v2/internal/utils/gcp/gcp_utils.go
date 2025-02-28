@@ -4,6 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
+    "google.golang.org/api/iterator"
+	"cloud.google.com/go/storage"
+	"io/ioutil"
 	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	utils "github.com/datadog/stratus-red-team/v2/internal/utils"
 	"google.golang.org/api/cloudresourcemanager/v1"
@@ -11,6 +15,12 @@ import (
 	"os"
 	"strings"
 )
+
+type BucketObject struct {
+	Name 		string 
+	Generation 	int64
+}
+
 
 // GCPAssignProjectRole grants a project-wide role to a specific service account
 // it works the same as 'gcloud projects add-iam-policy-binding':
@@ -103,4 +113,104 @@ func GetAttackerPrincipal() string {
 	} else {
 		return UserPrefix + DefaultFictitiousAttackerEmail
 	}
+}
+
+// ListAllObjectVersions lists all objects in a bucket and their versions
+// it works the same as `gsutil ls -a 'gs://<bucketName>/'`
+func ListAllObjectVersions(bucket *storage.BucketHandle, ctx context.Context) ([]BucketObject,error) {
+	ctx, cancel := context.WithTimeout(ctx, 10 * time.Second)
+	defer cancel()
+
+	// list the objects
+	var result []BucketObject 
+	it := bucket.Objects(ctx, &storage.Query{
+		Versions: true,
+	})
+
+	for {
+		attrs, err := it.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return nil, fmt.Errorf("unable to list bucket objects: %w", err)
+		}
+		result = append(result, BucketObject{
+			Name: attrs.Name,
+			Generation: attrs.Generation,
+		})
+	}
+
+	return result, nil
+}
+
+// DownloadAllObjects downloads all objects from a GCS bucket
+// it works the same as `gsutil -m cp -r 'gs://<bucketName>/*' .`
+func DownloadAllObjects(bucket *storage.BucketHandle, ctx context.Context) error {
+	ctx, cancel := context.WithTimeout(ctx, 50 * time.Second)
+	defer cancel()
+
+	// enumerate all files
+	it := bucket.Objects(ctx, nil)
+    for {
+        attrs, err := it.Next()
+        if err == iterator.Done {
+            break 
+        }
+        if err != nil {
+            return fmt.Errorf("unable to list bucket objects: %w", err)
+        }
+
+        // create reader
+        reader, err := bucket.Object(attrs.Name).NewReader(ctx)
+        if err != nil {
+            return fmt.Errorf("unable to read the object")
+        }
+        defer reader.Close()
+
+        // read the content
+        if _, err := ioutil.ReadAll(reader); err != nil {
+            return fmt.Errorf("unable to read data from bucket: " + err.Error())
+        }
+    }
+
+    log.Println("successfully downloaded all objects from the bucket")
+    return nil 
+}
+
+// UploadFile uploads a file into a GCS bucket
+// it works the same as `gsutil cp <local_file> gs://<bucketName>/<remote_file>`
+func UploadFile(bucketName string, fileName string, content []byte) (int64,error) {
+	ctx := context.Background()
+
+	// create bucket client
+    client, err := storage.NewClient(ctx)
+    if err != nil {
+        return 0,errors.New("unable to create new client")
+    }
+    defer client.Close()
+
+    // write bucket object
+    bucket := client.Bucket(bucketName)
+    return WriteBucketObject(bucket, ctx, fileName, content) 
+}
+
+// WriteBucketObject writes something into a GCS bucket
+func WriteBucketObject(bucket *storage.BucketHandle, ctx context.Context, filename string, content []byte) (int64,error) {
+	ctx, cancel := context.WithTimeout(ctx, 50 * time.Second)
+	defer cancel()
+
+	// create bucket object
+	obj := bucket.Object(filename)
+
+	// write object to bucket
+	writer := obj.NewWriter(ctx)
+	if _, err := writer.Write(content); err != nil {
+		return 0, errors.New("unable to write object: " + err.Error())
+    }
+    writer.Close()
+
+    // get the generation number
+    attrs, err := obj.Attrs(ctx)
+    return attrs.Generation, err 
 }
