@@ -56,7 +56,6 @@ This provides coverage matrices of MITRE ATT&CK tactics and techniques currently
 <head>
 	<title>MITRE ATT&CK Coverage</title>
 	<style>
-		body { font-family: SFMono-Regular, Consolas, Menlo, monospace; sans-serif; margin: 20px; }
 		table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 16px; }
 		th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
 		th { background-color: #f4f4f4; font-weight: bold; font-size: 18px; color: #000; }
