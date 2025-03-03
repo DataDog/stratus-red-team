@@ -8,7 +8,6 @@ This provides coverage matrices of MITRE ATT&CK tactics and techniques currently
 <head>
 	<title>MITRE ATT&CK Coverage</title>
 	<style>
-		body { font-family: SFMono-Regular, Consolas, Menlo, monospace; sans-serif; margin: 20px; }
 		table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 16px; }
 		th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
 		th { background-color: #f4f4f4; font-weight: bold; font-size: 18px; color: #000; }
@@ -20,16 +19,6 @@ This provides coverage matrices of MITRE ATT&CK tactics and techniques currently
 	</style>
 </head>
 <body>
-<h2>GCP</h2>
-<table>
-<thead><tr><th>Persistence</th><th>Privilege Escalation</th><th>Credential Access</th><th>Exfiltration</th></tr></thead>
-<tbody>
-<tr><td>Backdoor a GCP Service Account through its IAM Policy</td><td>Create an Admin GCP Service Account</td><td>Retrieve a High Number of Secret Manager secrets</td><td>Exfiltrate Compute Disk by sharing it</td></tr>
-<tr><td>Create an Admin GCP Service Account</td><td>Create a GCP Service Account Key</td><td></td><td>Exfiltrate Compute Image by sharing it</td></tr>
-<tr><td>Create a GCP Service Account Key</td><td>Impersonate GCP Service Accounts</td><td></td><td>Exfiltrate Compute Disk by sharing a snapshot</td></tr>
-<tr><td>Invite an External User to a GCP Project</td><td></td><td></td><td></td></tr>
-</tbody>
-</table>
 <h2>kubernetes</h2>
 <table>
 <thead><tr><th>Persistence</th><th>Privilege Escalation</th><th>Credential Access</th></tr></thead>
@@ -81,6 +70,16 @@ This provides coverage matrices of MITRE ATT&CK tactics and techniques currently
 <tr><td>Create Hidden Scoped Role Assignment Through HiddenMembership AU</td><td></td></tr>
 <tr><td>Create Application</td><td></td></tr>
 <tr><td>Create Sticky Backdoor User Through Restricted Management AU</td><td></td></tr>
+</tbody>
+</table>
+<h2>GCP</h2>
+<table>
+<thead><tr><th>Persistence</th><th>Privilege Escalation</th><th>Credential Access</th><th>Exfiltration</th></tr></thead>
+<tbody>
+<tr><td>Backdoor a GCP Service Account through its IAM Policy</td><td>Create an Admin GCP Service Account</td><td>Retrieve a High Number of Secret Manager secrets</td><td>Exfiltrate Compute Disk by sharing it</td></tr>
+<tr><td>Create an Admin GCP Service Account</td><td>Create a GCP Service Account Key</td><td></td><td>Exfiltrate Compute Image by sharing it</td></tr>
+<tr><td>Create a GCP Service Account Key</td><td>Impersonate GCP Service Accounts</td><td></td><td>Exfiltrate Compute Disk by sharing a snapshot</td></tr>
+<tr><td>Invite an External User to a GCP Project</td><td></td><td></td><td></td></tr>
 </tbody>
 </table>
 
