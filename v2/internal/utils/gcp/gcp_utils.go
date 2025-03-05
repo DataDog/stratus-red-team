@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"google.golang.org/api/compute/v1"
 	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	utils "github.com/datadog/stratus-red-team/v2/internal/utils"
 	"google.golang.org/api/cloudresourcemanager/v1"
@@ -103,4 +104,27 @@ func GetAttackerPrincipal() string {
 	} else {
 		return UserPrefix + DefaultFictitiousAttackerEmail
 	}
+}
+
+// InsertToMetadata insert item into compute metadata
+func InsertToMetadata(md *compute.Metadata, key string, value string) {
+    var found bool
+
+    // find the presence of key (ssh-keys, windows-keys) in metadata
+    for _, mdi := range md.Items {
+        // if it exists, add it to existing key
+        if mdi.Key == key {
+            val := fmt.Sprintf("%s%s", *mdi.Value, value)
+            mdi.Value = &val
+            found = true
+            break
+        }
+    }
+    // if 'ssh-keys' not exist, create it and add our key
+    if !found {
+        md.Items = append(md.Items, &compute.MetadataItems{
+            Key:    key,
+            Value:  &value,
+        })
+    }
 }

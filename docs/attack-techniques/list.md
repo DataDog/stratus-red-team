@@ -67,6 +67,7 @@ This page contains the list of all Stratus Attack Techniques.
 | [Exfiltrate Compute Disk by sharing it](./GCP/gcp.exfiltration.share-compute-disk.md) | [GCP](./GCP/index.md) | Exfiltration |
 | [Exfiltrate Compute Image by sharing it](./GCP/gcp.exfiltration.share-compute-image.md) | [GCP](./GCP/index.md) | Exfiltration |
 | [Exfiltrate Compute Disk by sharing a snapshot](./GCP/gcp.exfiltration.share-compute-snapshot.md) | [GCP](./GCP/index.md) | Exfiltration |
+| [Resetting or creating windows account](./GCP/gcp.lateral-movement.reset-windows-account.md) | [GCP](./GCP/index.md) | Lateral Movement, Persistence |
 | [Backdoor a GCP Service Account through its IAM Policy](./GCP/gcp.persistence.backdoor-service-account-policy.md) | [GCP](./GCP/index.md) | Persistence |
 | [Create an Admin GCP Service Account](./GCP/gcp.persistence.create-admin-service-account.md) | [GCP](./GCP/index.md) | Persistence, Privilege Escalation |
 | [Create a GCP Service Account Key](./GCP/gcp.persistence.create-service-account-key.md) | [GCP](./GCP/index.md) | Persistence, Privilege Escalation |
