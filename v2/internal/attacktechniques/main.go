@@ -58,6 +58,7 @@ import (
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/exfiltration/share-compute-disk"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/exfiltration/share-compute-image"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/exfiltration/share-compute-snapshot"
+	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/exfiltration/sql-export-bucket"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/persistence/backdoor-service-account-policy"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/persistence/create-admin-service-account"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/persistence/create-service-account-key"

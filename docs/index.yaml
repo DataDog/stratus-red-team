@@ -415,6 +415,13 @@ GCP:
             - Exfiltration
           platform: GCP
           isIdempotent: true
+        - id: gcp.exfiltration.sql-export-bucket
+          name: Exporting Cloud SQL database to Storage bucket
+          isSlow: true
+          mitreAttackTactics:
+            - Exfiltration
+          platform: GCP
+          isIdempotent: true
     Persistence:
         - id: gcp.persistence.backdoor-service-account-policy
           name: Backdoor a GCP Service Account through its IAM Policy

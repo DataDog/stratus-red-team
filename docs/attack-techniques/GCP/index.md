@@ -17,6 +17,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 - [Exfiltrate Compute Disk by sharing a snapshot](./gcp.exfiltration.share-compute-snapshot.md)
 
+- [Exporting Cloud SQL database to Storage bucket](./gcp.exfiltration.sql-export-bucket.md)
+
 
 ## Persistence
 
