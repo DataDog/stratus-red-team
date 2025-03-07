@@ -55,6 +55,7 @@ import (
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/entra-id/persistence/hidden-au"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/entra-id/persistence/new-application"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/entra-id/persistence/restricted-au"
+	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/exfiltration/gcs-backdoor-bucket-policy"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/exfiltration/share-compute-disk"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/exfiltration/share-compute-image"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/exfiltration/share-compute-snapshot"

@@ -11,6 +11,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 ## Exfiltration
 
+- [Backdoor an S3 Bucket via its Bucket Policy](./gcp.exfiltration.gcs-backdoor-bucket-policy.md)
+
 - [Exfiltrate Compute Disk by sharing it](./gcp.exfiltration.share-compute-disk.md)
 
 - [Exfiltrate Compute Image by sharing it](./gcp.exfiltration.share-compute-image.md)
