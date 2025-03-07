@@ -4,6 +4,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"crypto/rand"
+	"crypto/rsa"
+	"crypto/x509"
+	"encoding/pem"
+	"golang.org/x/crypto/ssh"
+	"google.golang.org/api/compute/v1"
 	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	utils "github.com/datadog/stratus-red-team/v2/internal/utils"
 	"google.golang.org/api/cloudresourcemanager/v1"
@@ -11,6 +17,11 @@ import (
 	"os"
 	"strings"
 )
+
+type SshKeyPair struct {
+    PrivateKey []byte
+    PublicKey  []byte
+}
 
 // GCPAssignProjectRole grants a project-wide role to a specific service account
 // it works the same as 'gcloud projects add-iam-policy-binding':
@@ -103,4 +114,103 @@ func GetAttackerPrincipal() string {
 	} else {
 		return UserPrefix + DefaultFictitiousAttackerEmail
 	}
+}
+
+// CreateRSAKeyPair generates a new RSA key pair
+// the private key is encoded in PEM format
+// the public key is encoded in OpenSSH format
+func CreateSSHKeyPair() (SshKeyPair, error) {
+    // generate key
+    key, err := rsa.GenerateKey(rand.Reader, 4096)
+    if err != nil {
+        return SshKeyPair{}, err
+    }
+
+    // validate private key
+    err = key.Validate()
+    if err != nil {
+        return SshKeyPair{}, err
+    }
+
+    // create public key
+    pubKey, err := ssh.NewPublicKey(&key.PublicKey)
+    if err != nil {
+        return SshKeyPair{}, err
+    }
+    pubKeyBytes := ssh.MarshalAuthorizedKey(pubKey)
+
+    // encode key
+    // get ASN.1 DER format
+    privKeyDer := x509.MarshalPKCS1PrivateKey(key)
+
+    // PEM block
+    privKeyBlock := pem.Block {
+        Type:       "RSA PRIVATE KEY",
+        Headers:    nil,
+        Bytes:      privKeyDer,
+    }
+    privKey := pem.EncodeToMemory(&privKeyBlock)
+
+    return SshKeyPair { privKey, pubKeyBytes }, nil
+}
+
+// InsertToMetadata insert item into metadata
+func InsertToMetadata(md *compute.Metadata, key string, value string) {
+    var found bool
+
+    // find the presence of key (ssh-keys, windows-keys) in metadata
+    for _, mdi := range md.Items {
+        // if it exists, add it to existing key
+        if mdi.Key == key {
+            val := fmt.Sprintf("%s%s", *mdi.Value, value)
+            mdi.Value = &val
+
+            found = true 
+            break
+        }
+    }
+
+    // if key (ssh-keys, windows-keys) is not exists, create it and add our key
+    if !found {
+        md.Items = append(md.Items, &compute.MetadataItems {
+            Key:   key,
+            Value: &value,
+        })
+    }
+}
+
+// RemoveSshKeyFromMetadata removes an SSH key from the project's metadata
+func RemoveSshKeyFromMetadata(md *compute.Metadata, username string) {
+    remove := false
+    idx_sshkey := -1
+
+    // find the presence of 'ssh-keys'
+    for idx, mdi := range md.Items {
+        if mdi.Key == "ssh-keys" {
+            keys := strings.Split(*mdi.Value, "\n")
+            new_keys := ""
+            idx_sshkey = idx
+
+            log.Printf("processing %d SSH key(s)\n", len(keys)-1)
+
+            // remove all 'stratus' user
+            for _, entry := range keys {
+                if strings.Contains(entry, username) {
+                    continue
+                }
+
+                if strings.Contains(entry, "ssh-rsa") {
+                    new_keys += fmt.Sprintf("%s\n", entry)
+                }
+            }
+            // apply the value, but if it's blank remove it later
+            mdi.Value = &new_keys
+
+            remove = (*mdi.Value == "")
+        }
+    }
+    // remove the item by appending items before and after
+    if remove {
+        md.Items = append(md.Items[:idx_sshkey], md.Items[idx_sshkey+1:]...)
+    }
 }
