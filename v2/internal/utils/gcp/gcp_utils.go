@@ -4,6 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"crypto/rand"
+	"crypto/rsa"
+	"crypto/x509"
+	"encoding/pem"
+	"golang.org/x/crypto/ssh"
 	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	utils "github.com/datadog/stratus-red-team/v2/internal/utils"
 	"google.golang.org/api/cloudresourcemanager/v1"
@@ -11,6 +16,11 @@ import (
 	"os"
 	"strings"
 )
+
+type SshKeyPair struct {
+    PrivateKey []byte
+    PublicKey  []byte
+}
 
 // GCPAssignProjectRole grants a project-wide role to a specific service account
 // it works the same as 'gcloud projects add-iam-policy-binding':
@@ -103,4 +113,42 @@ func GetAttackerPrincipal() string {
 	} else {
 		return UserPrefix + DefaultFictitiousAttackerEmail
 	}
+}
+
+// CreateRSAKeyPair generates a new RSA key pair
+// the private key is encoded in PEM format
+// the public key is encoded in OpenSSH format
+func CreateSSHKeyPair() (SshKeyPair, error) {
+    // generate key
+    key, err := rsa.GenerateKey(rand.Reader, 4096)
+    if err != nil {
+        return SshKeyPair{}, err
+    }
+
+    // validate private key
+    err = key.Validate()
+    if err != nil {
+        return SshKeyPair{}, err
+    }
+
+    // create public key
+    pubKey, err := ssh.NewPublicKey(&key.PublicKey)
+    if err != nil {
+        return SshKeyPair{}, err
+    }
+    pubKeyBytes := ssh.MarshalAuthorizedKey(pubKey)
+
+    // encode key
+    // get ASN.1 DER format
+    privKeyDer := x509.MarshalPKCS1PrivateKey(key)
+
+    // PEM block
+    privKeyBlock := pem.Block {
+        Type:       "RSA PRIVATE KEY",
+        Headers:    nil,
+        Bytes:      privKeyDer,
+    }
+    privKey := pem.EncodeToMemory(&privKeyBlock)
+
+    return SshKeyPair { privKey, pubKeyBytes }, nil
 }

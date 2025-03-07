@@ -18,6 +18,11 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 - [Exfiltrate Compute Disk by sharing a snapshot](./gcp.exfiltration.share-compute-snapshot.md)
 
 
+## Lateral Movement
+
+- [Import SSH public key to profile](./gcp.lateral-movement.oslogin-import-sshkey.md)
+
+
 ## Persistence
 
 - [Backdoor a GCP Service Account through its IAM Policy](./gcp.persistence.backdoor-service-account-policy.md)

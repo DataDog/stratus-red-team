@@ -415,6 +415,14 @@ GCP:
             - Exfiltration
           platform: GCP
           isIdempotent: true
+    Lateral Movement:
+        - id: gcp.lateral-movement.oslogin-import-sshkey
+          name: Import SSH public key to profile
+          isSlow: true
+          mitreAttackTactics:
+            - Lateral Movement
+          platform: GCP
+          isIdempotent: true
     Persistence:
         - id: gcp.persistence.backdoor-service-account-policy
           name: Backdoor a GCP Service Account through its IAM Policy
