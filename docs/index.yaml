@@ -415,7 +415,24 @@ GCP:
             - Exfiltration
           platform: GCP
           isIdempotent: true
+    Lateral Movement:
+        - id: gcp.lateral-movement.reset-windows-account
+          name: Resetting or creating windows account
+          isSlow: true
+          mitreAttackTactics:
+            - Lateral Movement
+            - Persistence
+          platform: GCP
+          isIdempotent: true
     Persistence:
+        - id: gcp.lateral-movement.reset-windows-account
+          name: Resetting or creating windows account
+          isSlow: true
+          mitreAttackTactics:
+            - Lateral Movement
+            - Persistence
+          platform: GCP
+          isIdempotent: true
         - id: gcp.persistence.backdoor-service-account-policy
           name: Backdoor a GCP Service Account through its IAM Policy
           isSlow: false
