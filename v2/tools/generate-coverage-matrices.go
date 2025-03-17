@@ -12,18 +12,18 @@ import (
 var mitreTacticOrder = []string{
 	"Reconnaissance",
 	"Resource Development",
-    "Initial Access",
-    "Execution",
-    "Persistence",
-    "Privilege Escalation",
-    "Defense Evasion",
-    "Credential Access",
-    "Discovery",
-    "Lateral Movement",
-    "Collection",
+	"Initial Access",
+	"Execution",
+	"Persistence",
+	"Privilege Escalation",
+	"Defense Evasion",
+	"Credential Access",
+	"Discovery",
+	"Lateral Movement",
+	"Collection",
 	"Command and Control",
-    "Exfiltration",
-    "Impact",
+	"Exfiltration",
+	"Impact",
 }
 
 // GenerateCoverageMatrics generates a single static .md file containing MITRE ATT&CK coverage tables split by platform
@@ -47,26 +47,16 @@ func GenerateCoverageMatrices(index map[stratus.Platform]map[string][]*stratus.A
 	defer file.Close()
 
 	htmlContent := `
+<style>
+	table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 16px; }
+	th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+	.md-sidebar.md-sidebar--secondary { display: none; }
+	.md-content { min-width: 100%; }
+</style>
+
 # MITRE ATT&CK Coverage by Platform
 
 This provides coverage matrices of MITRE ATT&CK tactics and techniques currently covered by Stratus Red Team for different cloud platforms.
-
-<!DOCTYPE html>
-<html>
-<head>
-	<title>MITRE ATT&CK Coverage</title>
-	<style>
-		table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 16px; }
-		th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-		th { background-color: #f4f4f4; font-weight: bold; font-size: 18px; color: #000; }
-		td { font-weight: normal; color: #7e56c2; }
-		tr:hover { background-color: #f1f1f1; }
-		td:hover { background-color: #e9e9ff; color: #5a3ea8; cursor: pointer; }
-		h1 { font-weight: 300; color: #333; }
-		h2 { color: #0000008a; text-transform: capitalize; }
-	</style>
-</head>
-<body>
 `
 
 	// Loop through each platform and generate tables
@@ -105,7 +95,9 @@ This provides coverage matrices of MITRE ATT&CK tactics and techniques currently
 		for _, tactic := range sortedTactics {
 			techniques := tacticsMap[tactic]
 			for _, technique := range techniques {
-				tacticToTechniques[tactic] = append(tacticToTechniques[tactic], technique.FriendlyName)
+				platform, _ := technique.Platform.FormatName()
+				cellText := fmt.Sprintf("<a href=\"%s\">%s</a>", fmt.Sprintf("../%s/%s", platform, technique.ID), technique.FriendlyName)
+				tacticToTechniques[tactic] = append(tacticToTechniques[tactic], cellText)
 			}
 			if len(tacticToTechniques[tactic]) > maxRows {
 				maxRows = len(tacticToTechniques[tactic])
@@ -148,6 +140,6 @@ This provides coverage matrices of MITRE ATT&CK tactics and techniques currently
 	if _, err := file.WriteString(htmlContent); err != nil {
 		return fmt.Errorf("failed to write to file: %w", err)
 	}
-	
+
 	return nil
 }
