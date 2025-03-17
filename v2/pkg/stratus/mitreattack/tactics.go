@@ -67,3 +67,12 @@ func (t Tactic) UnmarshalYAML(node *yaml.Node) error {
 	t, err := AttackTacticFromString(value)
 	return err
 }
+
+func GetAllMitreAttackTactics() []Tactic {
+	allTactics := make([]Tactic, len(tactics))
+	// Start with '1' to skip the 'Unspecified' tactic
+	for i := 1; i < len(tactics); i++ {
+		allTactics[i] = Tactic(i)
+	}
+	return allTactics
+}
