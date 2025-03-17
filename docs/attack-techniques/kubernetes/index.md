@@ -4,13 +4,6 @@ This page contains the Stratus attack techniques for Kubernetes, grouped by MITR
 Note that some Stratus attack techniques may correspond to more than a single ATT&CK Tactic.
 
 
-
-
-
-
-
-
-
 ## Persistence
   
   - [Create Admin ClusterRole](./k8s.persistence.create-admin-clusterrole.md)
@@ -19,8 +12,6 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   
   - [Create Long-Lived Token](./k8s.persistence.create-token.md)
   
-
-
 
 ## Privilege Escalation
   
@@ -33,24 +24,9 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   - [Run a Privileged Pod](./k8s.privilege-escalation.privileged-pod.md)
   
 
-
-
-
-
 ## Credential Access
   
   - [Dump All Secrets](./k8s.credential-access.dump-secrets.md)
   
   - [Steal Pod Service Account Token](./k8s.credential-access.steal-serviceaccount-token.md)
   
-
-
-
-
-
-
-
-
-
-
-

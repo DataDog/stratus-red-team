@@ -4,13 +4,6 @@ This page contains the Stratus attack techniques for Entra ID, grouped by MITRE 
 Note that some Stratus attack techniques may correspond to more than a single ATT&CK Tactic.
 
 
-
-
-
-
-
-
-
 ## Persistence
   
   - [Backdoor Entra ID application through service principal](./entra-id.persistence.backdoor-application-sp.md)
@@ -26,8 +19,6 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   - [Create Sticky Backdoor User Through Restricted Management AU](./entra-id.persistence.restricted-au.md)
   
 
-
-
 ## Privilege Escalation
   
   - [Backdoor Entra ID application through service principal](./entra-id.persistence.backdoor-application-sp.md)
@@ -36,18 +27,3 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   
   - [Create Application](./entra-id.persistence.new-application.md)
   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

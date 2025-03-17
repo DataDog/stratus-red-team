@@ -4,15 +4,10 @@ This page contains the Stratus attack techniques for AWS, grouped by MITRE ATT&C
 Note that some Stratus attack techniques may correspond to more than a single ATT&CK Tactic.
 
 
-
-
-
 ## Initial Access
   
   - [Console Login without MFA](./aws.initial-access.console-login-without-mfa.md)
   
-
-
 
 ## Execution
   
@@ -24,8 +19,6 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   
   - [Usage of ssm:StartSession on multiple instances](./aws.execution.ssm-start-session.md)
   
-
-
 
 ## Persistence
   
@@ -50,8 +43,6 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   - [Generate temporary AWS credentials using GetFederationToken](./aws.persistence.sts-federation-token.md)
   
 
-
-
 ## Privilege Escalation
   
   - [Execute Commands on EC2 Instance via User Data](./aws.execution.ec2-user-data.md)
@@ -68,8 +59,6 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   
   - [Change IAM user password](./aws.privilege-escalation.iam-update-user-login-profile.md)
   
-
-
 
 ## Defense Evasion
   
@@ -88,8 +77,6 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   - [Remove VPC Flow Logs](./aws.defense-evasion.vpc-remove-flow-logs.md)
   
 
-
-
 ## Credential Access
   
   - [Retrieve EC2 Password Data](./aws.credential-access.ec2-get-password-data.md)
@@ -103,8 +90,6 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   - [Retrieve And Decrypt SSM Parameters](./aws.credential-access.ssm-retrieve-securestring-parameters.md)
   
 
-
-
 ## Discovery
   
   - [Execute Discovery Commands on an EC2 Instance](./aws.discovery.ec2-enumerate-from-instance.md)
@@ -114,18 +99,12 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   - [Enumerate SES](./aws.discovery.ses-enumerate.md)
   
 
-
-
 ## Lateral Movement
   
   - [Usage of EC2 Serial Console to push SSH public key](./aws.lateral-movement.ec2-serial-console-send-ssh-public-key.md)
   
   - [Usage of EC2 Instance Connect on multiple instances](./aws.lateral-movement.ec2-instance-connect.md)
   
-
-
-
-
 
 ## Exfiltration
   
@@ -140,8 +119,6 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   - [Backdoor an S3 Bucket via its Bucket Policy](./aws.exfiltration.s3-backdoor-bucket-policy.md)
   
 
-
-
 ## Impact
   
   - [Invoke Bedrock Model](./aws.impact.bedrock-invoke-model.md)
@@ -152,4 +129,3 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   
   - [S3 Ransomware through individual file deletion](./aws.impact.s3-ransomware-individual-deletion.md)
   
-
