@@ -61,7 +61,7 @@ This provides coverage matrices of MITRE ATT&CK tactics and techniques currently
 
 	// Loop through each platform and generate tables
 	for platform, tacticsMap := range index {
-		htmlContent += fmt.Sprintf("<h2>%s</h2>\n<table>\n", platform)
+		htmlContent += fmt.Sprintf("<h2 style=\"text-transform: uppercase;\">%s</h2>\n<table>\n", platform)
 
 		// Sort tactics based on MITRE ATT&CK order
 		sortedTactics := []string{}
