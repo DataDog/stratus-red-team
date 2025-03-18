@@ -4,17 +4,17 @@ This page contains the Stratus attack techniques for EKS, grouped by MITRE ATT&C
 Note that some Stratus attack techniques may correspond to more than a single ATT&CK Tactic.
 
 
-## Lateral Movement
-
-- [Create Admin EKS Access Entry](./eks.lateral-movement.create-access-entry.md)
-
-
 ## Persistence
-
-- [Backdoor aws-auth EKS ConfigMap](./eks.persistence.backdoor-aws-auth-configmap.md)
-
+  
+  - [Backdoor aws-auth EKS ConfigMap](./eks.persistence.backdoor-aws-auth-configmap.md)
+  
 
 ## Privilege Escalation
+  
+  - [Backdoor aws-auth EKS ConfigMap](./eks.persistence.backdoor-aws-auth-configmap.md)
+  
 
-- [Backdoor aws-auth EKS ConfigMap](./eks.persistence.backdoor-aws-auth-configmap.md)
-
+## Lateral Movement
+  
+  - [Create Admin EKS Access Entry](./eks.lateral-movement.create-access-entry.md)
+  
