@@ -26,7 +26,7 @@ var mitreTacticOrder = []string{
 	"Impact",
 }
 
-// GenerateCoverageMatrics generates a single static .md file containing MITRE ATT&CK coverage tables split by platform
+// GenerateCoverageMatrices generates a single static .md file containing MITRE ATT&CK coverage tables split by platform
 func GenerateCoverageMatrices(index map[stratus.Platform]map[string][]*stratus.AttackTechnique, docsDirectory string) error {
 	outputFilePath := filepath.Join(docsDirectory, "attack-techniques", "mitre-attack-coverage-matrices.md")
 
@@ -48,10 +48,27 @@ func GenerateCoverageMatrices(index map[stratus.Platform]map[string][]*stratus.A
 
 	htmlContent := `
 <style>
-	table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 16px; }
-	th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-	.md-sidebar.md-sidebar--secondary { display: none; }
-	.md-content { min-width: 100%; }
+    .table-container {
+        overflow-x: auto; /* Enables horizontal scrolling */
+        max-width: 80%; /* Ensures it doesn't go beyond the page */
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin-bottom: 20px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        font-size: 16px;
+        white-space: nowrap; /* Prevents text wrapping in cells */
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+    }
+    .md-sidebar.md-sidebar--secondary { display: none; }
+    .md-content { min-width: 100%; }
 </style>
 
 # MITRE ATT&CK Coverage by Platform
@@ -61,7 +78,11 @@ This provides coverage matrices of MITRE ATT&CK tactics and techniques currently
 
 	// Loop through each platform and generate tables
 	for platform, tacticsMap := range index {
-		htmlContent += fmt.Sprintf("<h2 style=\"text-transform: uppercase;\">%s</h2>\n<table>\n", platform)
+		htmlContent += fmt.Sprintf("<h2 style=\"text-transform: uppercase;\">%s</h2>\n", platform)
+		htmlContent += `<div class="table-container">` // Add scrollable div
+
+		// Start the table
+		htmlContent += "<table>\n"
 
 		// Sort tactics based on MITRE ATT&CK order
 		sortedTactics := []string{}
@@ -130,16 +151,14 @@ This provides coverage matrices of MITRE ATT&CK tactics and techniques currently
 			htmlContent += "</tr>\n"
 		}
 
-		htmlContent += "</tbody>\n</table>\n"
+		htmlContent += "</tbody>\n</table>\n</div>\n" // Close scrollable div
 	}
 
-	htmlContent += `
-</body>
-</html>`
-
+	// Write to Markdown file
 	if _, err := file.WriteString(htmlContent); err != nil {
 		return fmt.Errorf("failed to write to file: %w", err)
 	}
 
+	fmt.Printf("Generated MITRE ATT&CK coverage markdown file: %s\n", outputFilePath)
 	return nil
 }
