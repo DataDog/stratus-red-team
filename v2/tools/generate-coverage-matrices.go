@@ -75,8 +75,10 @@ This provides coverage matrices of MITRE ATT&CK tactics and techniques currently
 `
 
 	// Loop through each platform and generate tables
-	for platform, tacticsMap := range index {
+	allPlatforms := []stratus.Platform{stratus.AWS, stratus.Azure, stratus.GCP, stratus.Kubernetes, stratus.EntraID, stratus.EKS}
+	for _, platform := range allPlatforms {
 		platformDisplayName, _ := platform.FormatName()
+		tacticsMap := index[platform]
 		htmlContent += fmt.Sprintf("<h2>%s</h2>\n", platformDisplayName)
 		htmlContent += `<div class="table-container">` // Add scrollable div
 

@@ -24,17 +24,6 @@
 # MITRE ATT&CK Coverage by Platform
 
 This provides coverage matrices of MITRE ATT&CK tactics and techniques currently covered by Stratus Red Team for different cloud platforms.
-<h2>Kubernetes</h2>
-<div class="table-container"><table>
-<thead><tr><th>Persistence</th><th>Privilege Escalation</th><th>Credential Access</th></tr></thead>
-<tbody>
-<tr><td><a href="../Kubernetes/k8s.persistence.create-admin-clusterrole">Create Admin ClusterRole</a></td><td><a href="../Kubernetes/k8s.persistence.create-admin-clusterrole">Create Admin ClusterRole</a></td><td><a href="../Kubernetes/k8s.credential-access.dump-secrets">Dump All Secrets</a></td></tr>
-<tr><td><a href="../Kubernetes/k8s.persistence.create-client-certificate">Create Client Certificate Credential</a></td><td><a href="../Kubernetes/k8s.privilege-escalation.hostpath-volume">Container breakout via hostPath volume mount</a></td><td><a href="../Kubernetes/k8s.credential-access.steal-serviceaccount-token">Steal Pod Service Account Token</a></td></tr>
-<tr><td><a href="../Kubernetes/k8s.persistence.create-token">Create Long-Lived Token</a></td><td><a href="../Kubernetes/k8s.privilege-escalation.nodes-proxy">Privilege escalation through node/proxy permissions</a></td><td></td></tr>
-<tr><td></td><td><a href="../Kubernetes/k8s.privilege-escalation.privileged-pod">Run a Privileged Pod</a></td><td></td></tr>
-</tbody>
-</table>
-</div>
 <h2>AWS</h2>
 <div class="table-container"><table>
 <thead><tr><th>Initial Access</th><th>Execution</th><th>Persistence</th><th>Privilege Escalation</th><th>Defense Evasion</th><th>Credential Access</th><th>Discovery</th><th>Lateral Movement</th><th>Exfiltration</th><th>Impact</th></tr></thead>
@@ -61,11 +50,25 @@ This provides coverage matrices of MITRE ATT&CK tactics and techniques currently
 </tbody>
 </table>
 </div>
-<h2>EKS</h2>
+<h2>GCP</h2>
 <div class="table-container"><table>
-<thead><tr><th>Persistence</th><th>Privilege Escalation</th><th>Lateral Movement</th></tr></thead>
+<thead><tr><th>Persistence</th><th>Privilege Escalation</th><th>Credential Access</th><th>Exfiltration</th></tr></thead>
 <tbody>
-<tr><td><a href="../EKS/eks.persistence.backdoor-aws-auth-configmap">Backdoor aws-auth EKS ConfigMap</a></td><td><a href="../EKS/eks.persistence.backdoor-aws-auth-configmap">Backdoor aws-auth EKS ConfigMap</a></td><td><a href="../EKS/eks.lateral-movement.create-access-entry">Create Admin EKS Access Entry</a></td></tr>
+<tr><td><a href="../GCP/gcp.persistence.backdoor-service-account-policy">Backdoor a GCP Service Account through its IAM Policy</a></td><td><a href="../GCP/gcp.persistence.create-admin-service-account">Create an Admin GCP Service Account</a></td><td><a href="../GCP/gcp.credential-access.secretmanager-retrieve-secrets">Retrieve a High Number of Secret Manager secrets</a></td><td><a href="../GCP/gcp.exfiltration.share-compute-disk">Exfiltrate Compute Disk by sharing it</a></td></tr>
+<tr><td><a href="../GCP/gcp.persistence.create-admin-service-account">Create an Admin GCP Service Account</a></td><td><a href="../GCP/gcp.persistence.create-service-account-key">Create a GCP Service Account Key</a></td><td></td><td><a href="../GCP/gcp.exfiltration.share-compute-image">Exfiltrate Compute Image by sharing it</a></td></tr>
+<tr><td><a href="../GCP/gcp.persistence.create-service-account-key">Create a GCP Service Account Key</a></td><td><a href="../GCP/gcp.privilege-escalation.impersonate-service-accounts">Impersonate GCP Service Accounts</a></td><td></td><td><a href="../GCP/gcp.exfiltration.share-compute-snapshot">Exfiltrate Compute Disk by sharing a snapshot</a></td></tr>
+<tr><td><a href="../GCP/gcp.persistence.invite-external-user">Invite an External User to a GCP Project</a></td><td></td><td></td><td></td></tr>
+</tbody>
+</table>
+</div>
+<h2>Kubernetes</h2>
+<div class="table-container"><table>
+<thead><tr><th>Persistence</th><th>Privilege Escalation</th><th>Credential Access</th></tr></thead>
+<tbody>
+<tr><td><a href="../Kubernetes/k8s.persistence.create-admin-clusterrole">Create Admin ClusterRole</a></td><td><a href="../Kubernetes/k8s.persistence.create-admin-clusterrole">Create Admin ClusterRole</a></td><td><a href="../Kubernetes/k8s.credential-access.dump-secrets">Dump All Secrets</a></td></tr>
+<tr><td><a href="../Kubernetes/k8s.persistence.create-client-certificate">Create Client Certificate Credential</a></td><td><a href="../Kubernetes/k8s.privilege-escalation.hostpath-volume">Container breakout via hostPath volume mount</a></td><td><a href="../Kubernetes/k8s.credential-access.steal-serviceaccount-token">Steal Pod Service Account Token</a></td></tr>
+<tr><td><a href="../Kubernetes/k8s.persistence.create-token">Create Long-Lived Token</a></td><td><a href="../Kubernetes/k8s.privilege-escalation.nodes-proxy">Privilege escalation through node/proxy permissions</a></td><td></td></tr>
+<tr><td></td><td><a href="../Kubernetes/k8s.privilege-escalation.privileged-pod">Run a Privileged Pod</a></td><td></td></tr>
 </tbody>
 </table>
 </div>
@@ -82,14 +85,11 @@ This provides coverage matrices of MITRE ATT&CK tactics and techniques currently
 </tbody>
 </table>
 </div>
-<h2>GCP</h2>
+<h2>EKS</h2>
 <div class="table-container"><table>
-<thead><tr><th>Persistence</th><th>Privilege Escalation</th><th>Credential Access</th><th>Exfiltration</th></tr></thead>
+<thead><tr><th>Persistence</th><th>Privilege Escalation</th><th>Lateral Movement</th></tr></thead>
 <tbody>
-<tr><td><a href="../GCP/gcp.persistence.backdoor-service-account-policy">Backdoor a GCP Service Account through its IAM Policy</a></td><td><a href="../GCP/gcp.persistence.create-admin-service-account">Create an Admin GCP Service Account</a></td><td><a href="../GCP/gcp.credential-access.secretmanager-retrieve-secrets">Retrieve a High Number of Secret Manager secrets</a></td><td><a href="../GCP/gcp.exfiltration.share-compute-disk">Exfiltrate Compute Disk by sharing it</a></td></tr>
-<tr><td><a href="../GCP/gcp.persistence.create-admin-service-account">Create an Admin GCP Service Account</a></td><td><a href="../GCP/gcp.persistence.create-service-account-key">Create a GCP Service Account Key</a></td><td></td><td><a href="../GCP/gcp.exfiltration.share-compute-image">Exfiltrate Compute Image by sharing it</a></td></tr>
-<tr><td><a href="../GCP/gcp.persistence.create-service-account-key">Create a GCP Service Account Key</a></td><td><a href="../GCP/gcp.privilege-escalation.impersonate-service-accounts">Impersonate GCP Service Accounts</a></td><td></td><td><a href="../GCP/gcp.exfiltration.share-compute-snapshot">Exfiltrate Compute Disk by sharing a snapshot</a></td></tr>
-<tr><td><a href="../GCP/gcp.persistence.invite-external-user">Invite an External User to a GCP Project</a></td><td></td><td></td><td></td></tr>
+<tr><td><a href="../EKS/eks.persistence.backdoor-aws-auth-configmap">Backdoor aws-auth EKS ConfigMap</a></td><td><a href="../EKS/eks.persistence.backdoor-aws-auth-configmap">Backdoor aws-auth EKS ConfigMap</a></td><td><a href="../EKS/eks.lateral-movement.create-access-entry">Create Admin EKS Access Entry</a></td></tr>
 </tbody>
 </table>
 </div>
