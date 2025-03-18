@@ -1,16 +1,50 @@
 
 <style>
-	table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 16px; }
-	th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-	.md-sidebar.md-sidebar--secondary { display: none; }
-	.md-content { min-width: 100%; }
+    .table-container {
+        overflow-x: auto; /* Enables horizontal scrolling */
+        max-width: 80%; /* Ensures it doesn't go beyond the page */
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin-bottom: 20px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        font-size: 16px;
+        white-space: nowrap; /* Prevents text wrapping in cells */
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+    }
+    .md-sidebar.md-sidebar--secondary { display: none; }
+    .md-content { min-width: 100%; }
 </style>
 
 # MITRE ATT&CK Coverage by Platform
 
 This provides coverage matrices of MITRE ATT&CK tactics and techniques currently covered by Stratus Red Team for different cloud platforms.
-<h2>entra-id</h2>
-<table>
+<h2 style="text-transform: uppercase;">azure</h2>
+<div class="table-container"><table>
+<thead><tr><th>Execution</th><th>Persistence</th><th>Exfiltration</th></tr></thead>
+<tbody>
+<tr><td><a href="../Azure/azure.execution.vm-custom-script-extension">Execute Command on Virtual Machine using Custom Script Extension</a></td><td><a href="../Azure/azure.persistence.create-bastion-shareable-link">Create Azure VM Bastion shareable link</a></td><td><a href="../Azure/azure.exfiltration.disk-export">Export Disk Through SAS URL</a></td></tr>
+<tr><td><a href="../Azure/azure.execution.vm-run-command">Execute Commands on Virtual Machine using Run Command</a></td><td></td><td></td></tr>
+</tbody>
+</table>
+</div>
+<h2 style="text-transform: uppercase;">EKS</h2>
+<div class="table-container"><table>
+<thead><tr><th>Persistence</th><th>Privilege Escalation</th><th>Lateral Movement</th></tr></thead>
+<tbody>
+<tr><td><a href="../EKS/eks.persistence.backdoor-aws-auth-configmap">Backdoor aws-auth EKS ConfigMap</a></td><td><a href="../EKS/eks.persistence.backdoor-aws-auth-configmap">Backdoor aws-auth EKS ConfigMap</a></td><td><a href="../EKS/eks.lateral-movement.create-access-entry">Create Admin EKS Access Entry</a></td></tr>
+</tbody>
+</table>
+</div>
+<h2 style="text-transform: uppercase;">entra-id</h2>
+<div class="table-container"><table>
 <thead><tr><th>Persistence</th><th>Privilege Escalation</th></tr></thead>
 <tbody>
 <tr><td><a href="../Entra ID/entra-id.persistence.backdoor-application-sp">Backdoor Entra ID application through service principal</a></td><td><a href="../Entra ID/entra-id.persistence.backdoor-application-sp">Backdoor Entra ID application through service principal</a></td></tr>
@@ -21,8 +55,9 @@ This provides coverage matrices of MITRE ATT&CK tactics and techniques currently
 <tr><td><a href="../Entra ID/entra-id.persistence.restricted-au">Create Sticky Backdoor User Through Restricted Management AU</a></td><td></td></tr>
 </tbody>
 </table>
-<h2>GCP</h2>
-<table>
+</div>
+<h2 style="text-transform: uppercase;">GCP</h2>
+<div class="table-container"><table>
 <thead><tr><th>Persistence</th><th>Privilege Escalation</th><th>Credential Access</th><th>Exfiltration</th></tr></thead>
 <tbody>
 <tr><td><a href="../GCP/gcp.persistence.backdoor-service-account-policy">Backdoor a GCP Service Account through its IAM Policy</a></td><td><a href="../GCP/gcp.persistence.create-admin-service-account">Create an Admin GCP Service Account</a></td><td><a href="../GCP/gcp.credential-access.secretmanager-retrieve-secrets">Retrieve a High Number of Secret Manager secrets</a></td><td><a href="../GCP/gcp.exfiltration.share-compute-disk">Exfiltrate Compute Disk by sharing it</a></td></tr>
@@ -31,8 +66,9 @@ This provides coverage matrices of MITRE ATT&CK tactics and techniques currently
 <tr><td><a href="../GCP/gcp.persistence.invite-external-user">Invite an External User to a GCP Project</a></td><td></td><td></td><td></td></tr>
 </tbody>
 </table>
-<h2>kubernetes</h2>
-<table>
+</div>
+<h2 style="text-transform: uppercase;">kubernetes</h2>
+<div class="table-container"><table>
 <thead><tr><th>Persistence</th><th>Privilege Escalation</th><th>Credential Access</th></tr></thead>
 <tbody>
 <tr><td><a href="../Kubernetes/k8s.persistence.create-admin-clusterrole">Create Admin ClusterRole</a></td><td><a href="../Kubernetes/k8s.persistence.create-admin-clusterrole">Create Admin ClusterRole</a></td><td><a href="../Kubernetes/k8s.credential-access.dump-secrets">Dump All Secrets</a></td></tr>
@@ -41,8 +77,9 @@ This provides coverage matrices of MITRE ATT&CK tactics and techniques currently
 <tr><td></td><td><a href="../Kubernetes/k8s.privilege-escalation.privileged-pod">Run a Privileged Pod</a></td><td></td></tr>
 </tbody>
 </table>
-<h2>AWS</h2>
-<table>
+</div>
+<h2 style="text-transform: uppercase;">AWS</h2>
+<div class="table-container"><table>
 <thead><tr><th>Initial Access</th><th>Execution</th><th>Persistence</th><th>Privilege Escalation</th><th>Defense Evasion</th><th>Credential Access</th><th>Discovery</th><th>Lateral Movement</th><th>Exfiltration</th><th>Impact</th></tr></thead>
 <tbody>
 <tr><td><a href="../AWS/aws.initial-access.console-login-without-mfa">Console Login without MFA</a></td><td><a href="../AWS/aws.execution.ec2-launch-unusual-instances">Launch Unusual EC2 instances</a></td><td><a href="../AWS/aws.persistence.iam-backdoor-role">Backdoor an IAM Role</a></td><td><a href="../AWS/aws.execution.ec2-user-data">Execute Commands on EC2 Instance via User Data</a></td><td><a href="../AWS/aws.defense-evasion.cloudtrail-delete">Delete CloudTrail Trail</a></td><td><a href="../AWS/aws.credential-access.ec2-get-password-data">Retrieve EC2 Password Data</a></td><td><a href="../AWS/aws.discovery.ec2-enumerate-from-instance">Execute Discovery Commands on an EC2 Instance</a></td><td><a href="../AWS/aws.lateral-movement.ec2-serial-console-send-ssh-public-key">Usage of EC2 Serial Console to push SSH public key</a></td><td><a href="../AWS/aws.exfiltration.ec2-security-group-open-port-22-ingress">Open Ingress Port 22 on a Security Group</a></td><td><a href="../AWS/aws.impact.bedrock-invoke-model">Invoke Bedrock Model</a></td></tr>
@@ -57,21 +94,4 @@ This provides coverage matrices of MITRE ATT&CK tactics and techniques currently
 <tr><td></td><td></td><td><a href="../AWS/aws.persistence.sts-federation-token">Generate temporary AWS credentials using GetFederationToken</a></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
 </tbody>
 </table>
-<h2>azure</h2>
-<table>
-<thead><tr><th>Execution</th><th>Persistence</th><th>Exfiltration</th></tr></thead>
-<tbody>
-<tr><td><a href="../Azure/azure.execution.vm-custom-script-extension">Execute Command on Virtual Machine using Custom Script Extension</a></td><td><a href="../Azure/azure.persistence.create-bastion-shareable-link">Create Azure VM Bastion shareable link</a></td><td><a href="../Azure/azure.exfiltration.disk-export">Export Disk Through SAS URL</a></td></tr>
-<tr><td><a href="../Azure/azure.execution.vm-run-command">Execute Commands on Virtual Machine using Run Command</a></td><td></td><td></td></tr>
-</tbody>
-</table>
-<h2>EKS</h2>
-<table>
-<thead><tr><th>Persistence</th><th>Privilege Escalation</th><th>Lateral Movement</th></tr></thead>
-<tbody>
-<tr><td><a href="../EKS/eks.persistence.backdoor-aws-auth-configmap">Backdoor aws-auth EKS ConfigMap</a></td><td><a href="../EKS/eks.persistence.backdoor-aws-auth-configmap">Backdoor aws-auth EKS ConfigMap</a></td><td><a href="../EKS/eks.lateral-movement.create-access-entry">Create Admin EKS Access Entry</a></td></tr>
-</tbody>
-</table>
-
-</body>
-</html>
+</div>
