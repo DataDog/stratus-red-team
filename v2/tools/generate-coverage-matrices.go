@@ -49,9 +49,7 @@ func GenerateCoverageMatrices(index map[stratus.Platform]map[string][]*stratus.A
 	htmlContent := `
 <style>
     .table-container {
-        overflow-x: auto; /* Enables horizontal scrolling */
         max-width: 80%; /* Ensures it doesn't go beyond the page */
-        border: 1px solid #ddd;
         padding: 10px;
         margin-bottom: 20px;
     }
@@ -78,7 +76,8 @@ This provides coverage matrices of MITRE ATT&CK tactics and techniques currently
 
 	// Loop through each platform and generate tables
 	for platform, tacticsMap := range index {
-		htmlContent += fmt.Sprintf("<h2 style=\"text-transform: uppercase;\">%s</h2>\n", platform)
+		platformDisplayName, _ := platform.FormatName()
+		htmlContent += fmt.Sprintf("<h2>%s</h2>\n", platformDisplayName)
 		htmlContent += `<div class="table-container">` // Add scrollable div
 
 		// Start the table
