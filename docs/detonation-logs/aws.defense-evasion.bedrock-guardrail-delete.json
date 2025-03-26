@@ -1,0 +1,44 @@
+{
+	"awsRegion": "us-west-2",
+	"eventCategory": "Management",
+	"eventID": "ee73c230-44bc-4492-8542-cfb189eae287",
+	"eventName": "DeleteGuardrail",
+	"eventSource": "bedrock.amazonaws.com",
+	"eventTime": "2025-03-26 16:43:57.000000000",
+	"eventType": "AwsApiCall",
+	"eventVersion": "1.09",
+	"managementEvent": true,
+	"readOnly": false,
+	"recipientAccountId": "847129010505",
+	"requestID": "206c2187-a29f-45bf-86a2-a87d99ff7186",
+	"requestParameters": {
+		"guardrailIdentifier": "14sw4es53xdo"
+	},
+	"sourceIPAddress": "8.1.250.216",
+	"tlsDetails": {
+		"cipherSuite": "TLS_AES_128_GCM_SHA256",
+		"clientProvidedHostHeader": "bedrock.us-west-2.amazonaws.com",
+		"tlsVersion": "TLSv1.3"
+	},
+	"userAgent": "stratus-red-team_a007fa03-86e2-4130-be03-ee7b7b10edcc",
+	"userIdentity": {
+		"accessKeyId": "AKIAFBJ48BV9CGRBRKGM",
+		"accountId": "847129010505",
+		"arn": "arn:aws:sts::847129010505:assumed-role/AWSReservedSSO_DevAdmin_635426549a280cc6/ariel.ropek",
+		"principalId": "AIDALE4EP1EPEPX3SDR8",
+		"sessionContext": {
+			"attributes": {
+				"creationDate": "2025-03-26T16:42:44Z",
+				"mfaAuthenticated": "false"
+			},
+			"sessionIssuer": {
+				"accountId": "847129010505",
+				"arn": "arn:aws:iam::847129010505:role/aws-reserved/sso.amazonaws.com/us-west-2/AWSReservedSSO_DevAdmin_635426549a280cc6",
+				"principalId": "AIDALE4EP1EPEPX3SDR8",
+				"type": "Role",
+				"userName": "AWSReservedSSO_DevAdmin_635426549a280cc6"
+			}
+		},
+		"type": "AssumedRole"
+	}
+}

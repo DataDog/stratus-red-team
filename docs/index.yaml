@@ -36,6 +36,13 @@ AWS:
           platform: AWS
           isIdempotent: true
     Defense Evasion:
+        - id: aws.defense-evasion.bedrock-guardrail-delete
+          name: Delete Bedrock Guardrail
+          isSlow: false
+          mitreAttackTactics:
+            - Defense Evasion
+          platform: AWS
+          isIdempotent: false
         - id: aws.defense-evasion.cloudtrail-delete
           name: Delete CloudTrail Trail
           isSlow: false
