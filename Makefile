@@ -12,7 +12,7 @@ BIN_DIR := $(ROOT_DIR)/bin
 # Define go flags
 GOFLAGS := -ldflags="-X main.BuildVersion=$(BUILD_VERSION) -w"
 
-.PHONY: build docs test thirdparty-licenses mocks
+.PHONY: build docs test thirdparty-licenses mocks lint
 
 # Default target
 all: build
@@ -31,6 +31,11 @@ test:
 	@echo "Running tests..."
 	@cd v2 && go test ./... -v
 	@echo "Tests completed successfully."
+
+lint:
+	@echo "Running Terraform linting..."
+	@cd v2/internal/attacktechniques && terraform fmt -recursive -check
+	@echo "Linting completed successfully."
 
 thirdparty-licenses:
 	@echo "Retrieving third-party licenses..."

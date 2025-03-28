@@ -27,7 +27,6 @@ jobs:
 
       - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd 
       
-      - name: Lint Terraform
-        run: terraform fmt -recursive -check
-        working-directory: v2/internal/attacktechniques
+      - name: Run Terraform linting
+        run: make lint
         
