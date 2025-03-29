@@ -4,14 +4,17 @@ import (
 	"context"
 	_ "embed"
 	"errors"
-	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/service/ssm"
-	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
-	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
-	"github.com/datadog/stratus-red-team/v2/pkg/stratus/useragent"
+	"fmt"
 	"log"
 	"strings"
 	"time"
+
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/ssm"
+	"github.com/datadog/stratus-red-team/v2/internal/utils"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/useragent"
 )
 
 //go:embed main.tf
@@ -67,6 +70,11 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	awsProvider := providers.AWS()
 	ssmClient := ssm.NewFromConfig(awsProvider.GetConnection())
 	instanceId := params["instance_id"]
+
+	if err := utils.WaitForInstancesToRegisterInSSM(ssmClient, []string{instanceId}); err != nil {
+		return fmt.Errorf("failed to wait for instances to register in SSM: %v", err)
+	}
+
 	commands := []string{
 		"export AWS_EXECUTION_ENV=" + useragent.GetStratusUserAgentForUUID(awsProvider.UniqueCorrelationId), // propagate detonation UID
 		"aws sts get-caller-identity || true", // Note: we need the || true to ensure the command exits with status 0, even if the instance role doesn't have the permission
