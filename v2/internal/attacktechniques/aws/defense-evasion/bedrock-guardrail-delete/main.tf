@@ -29,8 +29,8 @@ locals {
 
 resource "aws_bedrock_guardrail" "test_guardrail" {
   name                      = "${local.resource_prefix}-guardrail-${random_string.suffix.result}"
-  description              = "Test guardrail for Stratus Red Team"
-  blocked_input_messaging  = "This input is not allowed"
+  description               = "Test guardrail for Stratus Red Team"
+  blocked_input_messaging   = "This input is not allowed"
   blocked_outputs_messaging = "This output is not allowed"
 
   content_policy_config {
