@@ -38,8 +38,20 @@ correlated with other indicators.
 '`,
 		Platform: stratus.AWS,
 
-		IsIdempotent:               false, // iam:CreateAccessKey can only be called twice (limit of 2 access keys per user)
-		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence, mitreattack.PrivilegeEscalation},
+		IsIdempotent:       false, // iam:CreateAccessKey can only be called twice (limit of 2 access keys per user)
+		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Persistence, mitreattack.PrivilegeEscalation},
+		FrameworkMappings: []stratus.FrameworkMappings{
+			{
+				Framework: stratus.ThreatTechniqueCatalogAWS,
+				Techniques: []stratus.TechniqueMapping{
+					{
+						Name: "Account Manipulation: Additional Cloud Credentials",
+						ID:   "T1098.001",
+						URL:  "https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1098.001.html",
+					},
+				},
+			},
+		},
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,
 		Revert:                     revert,

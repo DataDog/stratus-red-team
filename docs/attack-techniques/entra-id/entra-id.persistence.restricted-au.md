@@ -9,10 +9,12 @@ title: Create Sticky Backdoor User Through Restricted Management AU
 
 Platform: Entra ID
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Persistence
 
 
-- Persistence
 
 ## Description
 

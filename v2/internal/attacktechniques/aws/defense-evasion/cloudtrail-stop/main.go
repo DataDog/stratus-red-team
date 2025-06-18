@@ -19,6 +19,18 @@ func init() {
 		FriendlyName:       "Stop CloudTrail Trail",
 		Platform:           stratus.AWS,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.DefenseEvasion},
+		FrameworkMappings: []stratus.FrameworkMappings{
+			{
+				Framework: stratus.ThreatTechniqueCatalogAWS,
+				Techniques: []stratus.TechniqueMapping{
+					{
+						Name: "Impair Defenses: Disable Cloud Logs",
+						ID:   "T1562.008",
+						URL:  "https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1562.008.html",
+					},
+				},
+			},
+		},
 		Description: `
 Stops a CloudTrail Trail from logging. Simulates an attacker disrupting CloudTrail logging.
 

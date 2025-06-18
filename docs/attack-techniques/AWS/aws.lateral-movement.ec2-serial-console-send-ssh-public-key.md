@@ -9,10 +9,12 @@ title: Usage of EC2 Serial Console to push SSH public key
 
 Platform: AWS
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Lateral Movement
 
 
-- Lateral Movement
 
 ## Description
 

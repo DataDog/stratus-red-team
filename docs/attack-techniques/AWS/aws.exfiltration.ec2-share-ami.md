@@ -9,10 +9,12 @@ title: Exfiltrate an AMI by Sharing It
 
 Platform: AWS
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Exfiltration
 
 
-- Exfiltration
 
 ## Description
 

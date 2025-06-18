@@ -9,10 +9,12 @@ title: Create Long-Lived Token
 
 Platform: Kubernetes
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Persistence
 
 
-- Persistence
 
 ## Description
 

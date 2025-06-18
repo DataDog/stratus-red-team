@@ -9,10 +9,17 @@ title: Steal EC2 Instance Credentials
 
 Platform: AWS
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Credential Access
 
 
-- Credential Access
+- Threat Technique Catalog for AWS:
+  
+    - [Unsecured Credentials: Cloud Instance Metadata API](https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1552.005.html) (T1552.005)
+  
+
 
 ## Description
 

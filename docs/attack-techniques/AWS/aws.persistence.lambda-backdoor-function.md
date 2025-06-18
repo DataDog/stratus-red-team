@@ -9,10 +9,12 @@ title: Backdoor Lambda Function Through Resource-Based Policy
 
 Platform: AWS
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Persistence
 
 
-- Persistence
 
 ## Description
 

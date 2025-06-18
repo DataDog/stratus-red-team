@@ -47,9 +47,21 @@ GuardDuty provides two findings to identify stolen EC2 instance credentials.
 
 See also: [Known detection bypasses](https://hackingthe.cloud/aws/avoiding-detection/steal-keys-undetected/).
 `,
-		Platform:                   stratus.AWS,
-		IsIdempotent:               true,
-		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.CredentialAccess},
+		Platform:           stratus.AWS,
+		IsIdempotent:       true,
+		MitreAttackTactics: []mitreattack.Tactic{mitreattack.CredentialAccess},
+		FrameworkMappings: []stratus.FrameworkMappings{
+			{
+				Framework: stratus.ThreatTechniqueCatalogAWS,
+				Techniques: []stratus.TechniqueMapping{
+					{
+						Name: "Unsecured Credentials: Cloud Instance Metadata API",
+						ID:   "T1552.005",
+						URL:  "https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1552.005.html",
+					},
+				},
+			},
+		},
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,
 	})

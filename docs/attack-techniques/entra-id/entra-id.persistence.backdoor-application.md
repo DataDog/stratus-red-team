@@ -9,11 +9,13 @@ title: Backdoor Entra ID application
 
 Platform: Entra ID
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Persistence
+  - Privilege Escalation
 
 
-- Persistence
-- Privilege Escalation
 
 ## Description
 

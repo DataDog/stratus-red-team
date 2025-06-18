@@ -9,10 +9,17 @@ title: Attempt to Leave the AWS Organization
 
 Platform: AWS
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Defense Evasion
 
 
-- Defense Evasion
+- Threat Technique Catalog for AWS:
+  
+    - [Modify Cloud Resource Hierarchy: Leave AWS Organization](https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1666.A002.html) (T1666.A002)
+  
+
 
 ## Description
 

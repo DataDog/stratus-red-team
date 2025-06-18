@@ -9,10 +9,12 @@ title: Usage of EC2 Instance Connect on multiple instances
 
 Platform: AWS
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Lateral Movement
 
 
-- Lateral Movement
 
 ## Description
 

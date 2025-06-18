@@ -9,10 +9,12 @@ title: Invite an External User to a GCP Project
 
 Platform: GCP
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Persistence
 
 
-- Persistence
 
 ## Description
 
