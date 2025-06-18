@@ -61,18 +61,21 @@ func (t Tactic) MarshalYAML() (interface{}, error) {
 
 // UnmarshalYAML implements the Marshaler interface from "gopkg.in/yaml.v3".
 // This method moes the reverse of MarshalYAML, it gets a string with the tactic name mutates into an int.
-func (t Tactic) UnmarshalYAML(node *yaml.Node) error {
+func (t *Tactic) UnmarshalYAML(node *yaml.Node) error {
 	value := node.Value
-	//lint:ignore SA4006 this is mutating the value of t rather than using it later.
-	t, err := AttackTacticFromString(value)
-	return err
+	newTactic, err := AttackTacticFromString(value)
+	if err != nil {
+		return err
+	}
+	*t = newTactic
+	return nil
 }
 
 func GetAllMitreAttackTactics() []Tactic {
-	allTactics := make([]Tactic, len(tactics))
+	allTactics := make([]Tactic, 0, len(tactics)-1)
 	// Start with '1' to skip the 'Unspecified' tactic
 	for i := 1; i < len(tactics); i++ {
-		allTactics[i] = Tactic(i)
+		allTactics = append(allTactics, Tactic(i))
 	}
 	return allTactics
 }
