@@ -67,8 +67,20 @@ which generates a finding when a role can be assumed from a new AWS account or p
 		Platform:           stratus.AWS,
 		IsIdempotent:       false, // cannot create twice a role with the same name
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Persistence},
-		Detonate:           detonate,
-		Revert:             revert,
+		FrameworkMappings: []stratus.FrameworkMappings{
+			{
+				Framework: stratus.ThreatTechniqueCatalogAWS,
+				Techniques: []stratus.TechniqueMapping{
+					{
+						Name: "Account Manipulation: Additional Cloud Roles",
+						ID:   "T1098.003",
+						URL:  "https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1098.003.html",
+					},
+				},
+			},
+		},
+		Detonate: detonate,
+		Revert:   revert,
 	})
 }
 

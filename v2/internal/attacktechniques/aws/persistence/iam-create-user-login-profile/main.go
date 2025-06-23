@@ -44,9 +44,21 @@ Through CloudTrail's <code>CreateLoginProfile</code> or <code>UpdateLoginProfile
 
 In particular, it's suspicious when these events occur on IAM users intended to be used programmatically.
 `,
-		Platform:                   stratus.AWS,
-		IsIdempotent:               false, // cannot create a login profile twice on the same user
-		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence, mitreattack.PrivilegeEscalation},
+		Platform:           stratus.AWS,
+		IsIdempotent:       false, // cannot create a login profile twice on the same user
+		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Persistence, mitreattack.PrivilegeEscalation},
+		FrameworkMappings: []stratus.FrameworkMappings{
+			{
+				Framework: stratus.ThreatTechniqueCatalogAWS,
+				Techniques: []stratus.TechniqueMapping{
+					{
+						Name: "Account Manipulation: Additional Cloud Credentials",
+						ID:   "T1098.001",
+						URL:  "https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1098.001.html",
+					},
+				},
+			},
+		},
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,
 		Revert:                     revert,

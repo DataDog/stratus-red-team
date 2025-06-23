@@ -9,10 +9,12 @@ title: Backdoor an S3 Bucket via its Bucket Policy
 
 Platform: AWS
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Exfiltration
 
 
-- Exfiltration
 
 ## Description
 

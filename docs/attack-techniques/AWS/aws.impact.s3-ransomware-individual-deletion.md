@@ -9,10 +9,17 @@ title: S3 Ransomware through individual file deletion
 
 Platform: AWS
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Impact
 
 
-- Impact
+- Threat Technique Catalog for AWS:
+  
+    - [Data Destruction: S3 Object and Bucket Deletion](https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1485.A003.html) (T1485.A003)
+  
+
 
 ## Description
 

@@ -9,10 +9,17 @@ title: Create a backdoored IAM Role
 
 Platform: AWS
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Persistence
 
 
-- Persistence
+- Threat Technique Catalog for AWS:
+  
+    - [Account Manipulation: Additional Cloud Roles](https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1098.003.html) (T1098.003)
+  
+
 
 ## Description
 

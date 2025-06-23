@@ -93,9 +93,21 @@ Sample CloudTrail event <code>CopyObject</code>, when a file is encrypted with a
 }
 ` + CodeBlock + `
 `,
-		Platform:                   stratus.AWS,
-		IsIdempotent:               false,
-		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Impact},
+		Platform:           stratus.AWS,
+		IsIdempotent:       false,
+		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Impact},
+		FrameworkMappings: []stratus.FrameworkMappings{
+			{
+				Framework: stratus.ThreatTechniqueCatalogAWS,
+				Techniques: []stratus.TechniqueMapping{
+					{
+						Name: "Data Destruction: S3 Object and Bucket Deletion",
+						ID:   "T1485.A003",
+						URL:  "https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1485.A003.html",
+					},
+				},
+			},
+		},
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,
 		Revert:                     revert, // We need to decrypt files before cleaning up, otherwise Terraform can't delete them properly

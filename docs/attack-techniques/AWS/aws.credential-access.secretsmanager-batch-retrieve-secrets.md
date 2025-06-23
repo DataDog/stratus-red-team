@@ -9,10 +9,12 @@ title: Retrieve a High Number of Secrets Manager secrets (Batch)
 
 Platform: AWS
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Credential Access
 
 
-- Credential Access
 
 ## Description
 

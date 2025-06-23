@@ -9,10 +9,19 @@ title: Launch Unusual EC2 instances
 
 Platform: AWS
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Execution
 
 
-- Execution
+- Threat Technique Catalog for AWS:
+  
+    - [Resource Hijacking: Compute Hijacking - EC2 Use](https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1496.A008.html) (T1496.A008)
+  
+    - [Modify Cloud Compute Infrastructure: Create Cloud Instance](https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1578.002.html) (T1578.002)
+  
+
 
 ## Description
 

@@ -9,10 +9,12 @@ title: Retrieve a High Number of Secret Manager secrets
 
 Platform: GCP
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Credential Access
 
 
-- Credential Access
 
 ## Description
 

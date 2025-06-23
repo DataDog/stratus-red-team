@@ -21,6 +21,18 @@ func init() {
 		Platform:           stratus.AWS,
 		IsIdempotent:       true,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Exfiltration},
+		FrameworkMappings: []stratus.FrameworkMappings{
+			{
+				Framework: stratus.ThreatTechniqueCatalogAWS,
+				Techniques: []stratus.TechniqueMapping{
+					{
+						Name: "Modify Cloud Compute Infrastructure: Create Snapshot",
+						ID:   "T1578.001",
+						URL:  "https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1578.001.html",
+					},
+				},
+			},
+		},
 		Description: `
 Exfiltrates an EBS snapshot by sharing it with an external AWS account.
 

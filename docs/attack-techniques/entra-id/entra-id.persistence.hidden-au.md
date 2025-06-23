@@ -9,10 +9,12 @@ title: Create Hidden Scoped Role Assignment Through HiddenMembership AU
 
 Platform: Entra ID
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Persistence
 
 
-- Persistence
 
 ## Description
 

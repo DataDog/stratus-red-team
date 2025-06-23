@@ -9,10 +9,12 @@ title: Run a Privileged Pod
 
 Platform: Kubernetes
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Privilege Escalation
 
 
-- Privilege Escalation
 
 ## Description
 

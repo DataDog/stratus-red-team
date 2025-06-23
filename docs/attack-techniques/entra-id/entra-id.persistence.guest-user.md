@@ -9,10 +9,12 @@ title: Create Guest User
 
 Platform: Entra ID
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Persistence
 
 
-- Persistence
 
 ## Description
 

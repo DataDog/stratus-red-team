@@ -9,10 +9,17 @@ title: Open Ingress Port 22 on a Security Group
 
 Platform: AWS
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Exfiltration
 
 
-- Exfiltration
+- Threat Technique Catalog for AWS:
+  
+    - [Impair Defenses: Disable or Modify Cloud Firewall](https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1562.007.html) (T1562.007)
+  
+
 
 ## Description
 

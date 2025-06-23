@@ -9,10 +9,12 @@ title: Exfiltrate Compute Disk by sharing a snapshot
 
 Platform: GCP
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Exfiltration
 
 
-- Exfiltration
 
 ## Description
 

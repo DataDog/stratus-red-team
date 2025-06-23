@@ -9,10 +9,12 @@ title: Create Azure VM Bastion shareable link
 
 Platform: Azure
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Persistence
 
 
-- Persistence
 
 ## Description
 

@@ -21,6 +21,18 @@ func init() {
 		Platform:           stratus.AWS,
 		IsIdempotent:       false, // cannot call ec2:AuthorizeSecurityGroupIngress multiple times with the same parameters
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Exfiltration},
+		FrameworkMappings: []stratus.FrameworkMappings{
+			{
+				Framework: stratus.ThreatTechniqueCatalogAWS,
+				Techniques: []stratus.TechniqueMapping{
+					{
+						Name: "Impair Defenses: Disable or Modify Cloud Firewall",
+						ID:   "T1562.007",
+						URL:  "https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1562.007.html",
+					},
+				},
+			},
+		},
 		Description: `
 Opens ingress traffic on port 22 from the Internet (0.0.0.0/0).
 

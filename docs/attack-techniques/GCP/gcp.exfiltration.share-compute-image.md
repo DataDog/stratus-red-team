@@ -9,10 +9,12 @@ title: Exfiltrate Compute Image by sharing it
 
 Platform: GCP
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Exfiltration
 
 
-- Exfiltration
 
 ## Description
 

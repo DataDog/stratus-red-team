@@ -9,10 +9,17 @@ title: Console Login without MFA
 
 Platform: AWS
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Initial Access
 
 
-- Initial Access
+- Threat Technique Catalog for AWS:
+  
+    - [Valid Accounts: IAM Users](https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1078.A001.html) (T1078.A001)
+  
+
 
 ## Description
 

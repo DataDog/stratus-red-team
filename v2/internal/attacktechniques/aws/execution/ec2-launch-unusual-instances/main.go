@@ -40,9 +40,26 @@ field will contain the instance type that was attempted to be launched.
 
 Depending on your account limits you might also see <code>VcpuLimitExceeded</code> error codes.
 `,
-		Platform:                   stratus.AWS,
-		IsIdempotent:               true,
-		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Execution},
+		Platform:           stratus.AWS,
+		IsIdempotent:       true,
+		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Execution},
+		FrameworkMappings: []stratus.FrameworkMappings{
+			{
+				Framework: stratus.ThreatTechniqueCatalogAWS,
+				Techniques: []stratus.TechniqueMapping{
+					{
+						Name: "Resource Hijacking: Compute Hijacking - EC2 Use",
+						ID:   "T1496.A008",
+						URL:  "https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1496.A008.html",
+					},
+					{
+						Name: "Modify Cloud Compute Infrastructure: Create Cloud Instance",
+						ID:   "T1578.002",
+						URL:  "https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1578.002.html",
+					},
+				},
+			},
+		},
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,
 	})
