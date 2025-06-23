@@ -122,6 +122,13 @@ AWS:
           platform: AWS
           isIdempotent: false
     Discovery:
+        - id: aws.discovery.bedrock-enumerate-models-multiple-regions
+          name: Enumerate Bedrock models in multiple regions
+          isSlow: false
+          mitreAttackTactics:
+            - Discovery
+          platform: AWS
+          isIdempotent: true
         - id: aws.discovery.ec2-enumerate-from-instance
           name: Execute Discovery Commands on an EC2 Instance
           isSlow: true

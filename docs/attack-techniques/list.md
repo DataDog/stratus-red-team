@@ -21,6 +21,7 @@ This page contains the list of all Stratus Attack Techniques.
 | [Delete DNS query logs](./AWS/aws.defense-evasion.dns-delete-logs.md) | [AWS](./AWS/index.md) | Defense Evasion |
 | [Attempt to Leave the AWS Organization](./AWS/aws.defense-evasion.organizations-leave.md) | [AWS](./AWS/index.md) | Defense Evasion |
 | [Remove VPC Flow Logs](./AWS/aws.defense-evasion.vpc-remove-flow-logs.md) | [AWS](./AWS/index.md) | Defense Evasion |
+| [Enumerate Bedrock models in multiple regions](./AWS/aws.discovery.bedrock-enumerate-models-multiple-regions.md) | [AWS](./AWS/index.md) | Discovery |
 | [Execute Discovery Commands on an EC2 Instance](./AWS/aws.discovery.ec2-enumerate-from-instance.md) | [AWS](./AWS/index.md) | Discovery |
 | [Download EC2 Instance User Data](./AWS/aws.discovery.ec2-download-user-data.md) | [AWS](./AWS/index.md) | Discovery |
 | [Enumerate SES](./AWS/aws.discovery.ses-enumerate.md) | [AWS](./AWS/index.md) | Discovery |
