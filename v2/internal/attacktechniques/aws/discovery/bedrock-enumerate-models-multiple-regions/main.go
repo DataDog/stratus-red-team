@@ -59,8 +59,6 @@ func detonate(_ map[string]string, providers stratus.CloudProviders) error {
 	}
 
 	for _, region := range regions {
-		log.Printf("Attempting InvokeModel for %s in region: %s", modelId, region)
-
 		regionalConfig := awsConnection.Copy()
 		regionalConfig.Region = region
 		bedrockClient := bedrockruntime.NewFromConfig(regionalConfig)
@@ -75,16 +73,15 @@ func detonate(_ map[string]string, providers stratus.CloudProviders) error {
 		_, invokeErr := bedrockClient.InvokeModel(context.Background(), params)
 		if invokeErr != nil {
 			if strings.Contains(invokeErr.Error(), "AccessDeniedException") {
-				log.Println("Got an AccessDeniedException indicating that the model isn't available in region")
+				log.Printf("%s: Got an AccessDeniedException indicating that the model isn't available", region)
 			} else if strings.Contains(invokeErr.Error(), "ValidationException") && strings.Contains(invokeErr.Error(), "StatusCode: 400") {
-				log.Println("Got a ValidationException indicating that the model is not supported in this region")
+				log.Printf("%s: Got a ValidationException indicating that the model is not supported in this region "+invokeErr.Error(), region)
 			} else {
-				return fmt.Errorf("failed to invoke model %s in region %s: %w", modelId, region, invokeErr)
+				return fmt.Errorf("failed to invoke model %s in %s: %w", modelId, region, invokeErr)
 			}
 		} else {
-			log.Printf("Successfully invoked model %s in region %s (or the call was accepted without immediate error).", modelId, region)
+			log.Printf("%s: Successfully invoked model %s indicating that the model is available in this region", region, modelId)
 		}
 	}
-	log.Println("Finished InvokeModel attempts across regions.")
 	return nil
 }
