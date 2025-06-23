@@ -6,10 +6,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/bedrockruntime"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
-	"github.com/aws/aws-sdk-go-v2/service/bedrockruntime"
 )
 
 func init() {
@@ -26,7 +26,7 @@ Detonation:
 - Perform <code>bedrock:InvokeModel</code> to check if bedrock model is available.
 `,
 		Detection: `
-Through CloudTrail's <code>InvokModel</code> events. 
+Through CloudTrail's <code>InvokeModel</code> events. 
 These can be considered suspicious especially when performed by a long-lived access key, or when the calls span across multiple regions.
 `,
 		Platform:           stratus.AWS,
