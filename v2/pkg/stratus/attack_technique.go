@@ -24,6 +24,9 @@ type AttackTechnique struct {
 	// see https://attack.mitre.org/techniques/enterprise/
 	MitreAttackTactics []mitreattack.Tactic `yaml:"mitreAttackTactics"`
 
+	// Mappings to other frameworks
+	FrameworkMappings []FrameworkMappings `yaml:"frameworkmappings,omitempty"`
+
 	// The platform of the technique, e.g. AWS
 	Platform Platform `yaml:"platform"`
 

@@ -22,6 +22,18 @@ func init() {
 		FriendlyName:       "CloudTrail Logs Impairment Through S3 Lifecycle Rule",
 		Platform:           stratus.AWS,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.DefenseEvasion},
+		FrameworkMappings: []stratus.FrameworkMappings{
+			{
+				Framework: stratus.ThreatTechniqueCatalogAWS,
+				Techniques: []stratus.TechniqueMapping{
+					{
+						Name: "Impair Defenses: Disable Cloud Logs",
+						ID:   "T1562.008",
+						URL:  "https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1562.008.html",
+					},
+				},
+			},
+		},
 		Description: `
 Set a 1-day retention policy on the S3 bucket used by a CloudTrail Trail, using a S3 Lifecycle Rule.
 

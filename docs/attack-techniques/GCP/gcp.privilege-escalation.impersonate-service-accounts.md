@@ -9,10 +9,12 @@ title: Impersonate GCP Service Accounts
 
 Platform: GCP
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Privilege Escalation
 
 
-- Privilege Escalation
 
 ## Description
 

@@ -82,7 +82,19 @@ Note that for failed console authentication events, the field <code>userIdentity
 		IsIdempotent:               true,
 		PrerequisitesTerraformCode: tf,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.InitialAccess},
-		Detonate:                   detonate,
+		FrameworkMappings: []stratus.FrameworkMappings{
+			{
+				Framework: stratus.ThreatTechniqueCatalogAWS,
+				Techniques: []stratus.TechniqueMapping{
+					{
+						Name: "Valid Accounts: IAM Users",
+						ID:   "T1078.A001",
+						URL:  "https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1078.A001.html",
+					},
+				},
+			},
+		},
+		Detonate: detonate,
 	})
 }
 

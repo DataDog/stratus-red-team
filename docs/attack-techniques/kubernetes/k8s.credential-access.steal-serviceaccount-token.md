@@ -9,10 +9,12 @@ title: Steal Pod Service Account Token
 
 Platform: Kubernetes
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Credential Access
 
 
-- Credential Access
 
 ## Description
 

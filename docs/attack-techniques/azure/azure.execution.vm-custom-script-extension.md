@@ -9,10 +9,12 @@ title: Execute Command on Virtual Machine using Custom Script Extension
 
 Platform: Azure
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Execution
 
 
-- Execution
 
 ## Description
 

@@ -9,9 +9,16 @@ title: {{.Technique.FriendlyName}}
 
 Platform: {{FormatPlatformName .Technique.Platform}}
 
-## MITRE ATT&CK Tactics
+## Mappings
 
-{{JoinTactics .Technique.MitreAttackTactics "\n- " "\n- "}}
+- MITRE ATT&CK{{JoinTactics .Technique.MitreAttackTactics "\n    - " "\n  - "}}
+
+{{range .Technique.FrameworkMappings}}
+- {{.Framework}}:
+  {{range .Techniques}}
+    - [{{.Name}}]({{.URL}}) ({{.ID}})
+  {{end}}
+{{end}}
 
 ## Description
 

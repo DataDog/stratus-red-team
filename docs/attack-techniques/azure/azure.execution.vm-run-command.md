@@ -9,10 +9,12 @@ title: Execute Commands on Virtual Machine using Run Command
 
 Platform: Azure
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Execution
 
 
-- Execution
 
 ## Description
 

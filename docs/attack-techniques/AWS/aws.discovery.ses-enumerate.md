@@ -9,10 +9,12 @@ title: Enumerate SES
 
 Platform: AWS
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Discovery
 
 
-- Discovery
 
 ## Description
 

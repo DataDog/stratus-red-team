@@ -51,8 +51,20 @@ can help to craft more precise detections:
 		Platform:           stratus.AWS,
 		IsIdempotent:       false, // cannot create twice an IAM user with the same name
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Persistence, mitreattack.PrivilegeEscalation},
-		Detonate:           detonate,
-		Revert:             revert,
+		FrameworkMappings: []stratus.FrameworkMappings{
+			{
+				Framework: stratus.ThreatTechniqueCatalogAWS,
+				Techniques: []stratus.TechniqueMapping{
+					{
+						Name: "Create Account: Create Cloud Account",
+						ID:   "T1136.003",
+						URL:  "https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1136.003.html",
+					},
+				},
+			},
+		},
+		Detonate: detonate,
+		Revert:   revert,
 	})
 }
 

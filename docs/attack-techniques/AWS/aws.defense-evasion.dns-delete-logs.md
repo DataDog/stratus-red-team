@@ -9,10 +9,12 @@ title: Delete DNS query logs
 
 Platform: AWS
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Defense Evasion
 
 
-- Defense Evasion
 
 ## Description
 

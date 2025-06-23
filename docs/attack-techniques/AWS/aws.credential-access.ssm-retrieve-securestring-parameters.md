@@ -9,10 +9,12 @@ title: Retrieve And Decrypt SSM Parameters
 
 Platform: AWS
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Credential Access
 
 
-- Credential Access
 
 ## Description
 

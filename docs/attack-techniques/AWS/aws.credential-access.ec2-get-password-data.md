@@ -9,10 +9,12 @@ title: Retrieve EC2 Password Data
 
 Platform: AWS
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Credential Access
 
 
-- Credential Access
 
 ## Description
 

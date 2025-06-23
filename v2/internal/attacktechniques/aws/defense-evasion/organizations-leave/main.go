@@ -22,6 +22,18 @@ func init() {
 		Platform:           stratus.AWS,
 		IsIdempotent:       true,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.DefenseEvasion},
+		FrameworkMappings: []stratus.FrameworkMappings{
+			{
+				Framework: stratus.ThreatTechniqueCatalogAWS,
+				Techniques: []stratus.TechniqueMapping{
+					{
+						Name: "Modify Cloud Resource Hierarchy: Leave AWS Organization",
+						ID:   "T1666.A002",
+						URL:  "https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1666.A002.html",
+					},
+				},
+			},
+		},
 		Description: `
 Attempts to leave the AWS Organization (unsuccessfully - will hit an AccessDenied error). 
 Security configurations are often defined at the organization level (GuardDuty, SecurityHub, CloudTrail...). 

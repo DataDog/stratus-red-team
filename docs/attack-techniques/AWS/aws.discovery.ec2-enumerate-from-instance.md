@@ -9,10 +9,12 @@ title: Execute Discovery Commands on an EC2 Instance
 
 Platform: AWS
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Discovery
 
 
-- Discovery
 
 ## Description
 

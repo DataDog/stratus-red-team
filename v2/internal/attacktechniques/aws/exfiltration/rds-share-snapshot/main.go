@@ -22,6 +22,18 @@ func init() {
 		IsSlow:             true,
 		IsIdempotent:       true,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Exfiltration},
+		FrameworkMappings: []stratus.FrameworkMappings{
+			{
+				Framework: stratus.ThreatTechniqueCatalogAWS,
+				Techniques: []stratus.TechniqueMapping{
+					{
+						Name: "Resource Hijacking: Cloud Service Hijacking - Bedrock LLM Abuse",
+						ID:   "T1496.A007",
+						URL:  "https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1496.A007.html",
+					},
+				},
+			},
+		},
 		Description: `
 Shares a RDS Snapshot with an external AWS account to simulate an attacker exfiltrating a database.
 

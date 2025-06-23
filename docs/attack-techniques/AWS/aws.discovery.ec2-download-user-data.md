@@ -9,10 +9,12 @@ title: Download EC2 Instance User Data
 
 Platform: AWS
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Discovery
 
 
-- Discovery
 
 ## Description
 

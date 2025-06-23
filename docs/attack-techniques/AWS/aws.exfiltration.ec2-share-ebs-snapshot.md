@@ -9,10 +9,17 @@ title: Exfiltrate EBS Snapshot by Sharing It
 
 Platform: AWS
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Exfiltration
 
 
-- Exfiltration
+- Threat Technique Catalog for AWS:
+  
+    - [Modify Cloud Compute Infrastructure: Create Snapshot](https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1578.001.html) (T1578.001)
+  
+
 
 ## Description
 

@@ -9,10 +9,12 @@ title: Create Admin EKS Access Entry
 
 Platform: EKS
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Lateral Movement
 
 
-- Lateral Movement
 
 ## Description
 

@@ -43,9 +43,21 @@ References:
 		Detection: `
 Through CloudTrail's <code>GetFederationToken</code> event.
 `,
-		Platform:                   stratus.AWS,
-		IsIdempotent:               true,
-		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence},
+		Platform:           stratus.AWS,
+		IsIdempotent:       true,
+		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Persistence},
+		FrameworkMappings: []stratus.FrameworkMappings{
+			{
+				Framework: stratus.ThreatTechniqueCatalogAWS,
+				Techniques: []stratus.TechniqueMapping{
+					{
+						Name: "Account Manipulation: Additional Cloud Credentials",
+						ID:   "T1098.001",
+						URL:  "https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1098.001.html",
+					},
+				},
+			},
+		},
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,
 	})
