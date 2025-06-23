@@ -40,7 +40,20 @@ These can be considered suspicious especially when performed by a long-lived acc
 		Platform:           stratus.AWS,
 		IsIdempotent:       true,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Discovery},
-		Detonate:           detonate,
+		FrameworkMappings: []stratus.FrameworkMappings{
+			{
+				Framework: stratus.ThreatTechniqueCatalogAWS,
+				Techniques: []stratus.TechniqueMapping{
+					{
+						Name: "Resource Hijacking: Cloud Service Hijacking - Bedrock LLM Abuse",
+						ID:   "T1496.A007",
+						URL:  "https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1496.A007.html",
+					},
+				},
+			},
+		},
+
+		Detonate: detonate,
 	})
 }
 
