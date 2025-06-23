@@ -10,6 +10,7 @@ import (
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"log"
+	"strings"
 )
 
 func init() {
@@ -49,7 +50,7 @@ func detonate(_ map[string]string, providers stratus.CloudProviders) error {
 	log.Printf("Attempting to invoke Bedrock model %s in regions: %v", modelId, regions)
 
 	requestBody := minimalPromptBody{
-		Prompt:            "Human: story of dogs",
+		Prompt:            "Human: hello\nAssistant: ",
 		MaxTokensToSample: 300,
 	}
 	bodyBytes, err := json.Marshal(requestBody)
@@ -73,7 +74,13 @@ func detonate(_ map[string]string, providers stratus.CloudProviders) error {
 
 		_, invokeErr := bedrockClient.InvokeModel(context.Background(), params)
 		if invokeErr != nil {
-			log.Printf("Error invoking model %s in region %s: %v.", modelId, region, invokeErr)
+			if strings.Contains(invokeErr.Error(), "AccessDeniedException") {
+				log.Println("Got an AccessDeniedException indicating that the model isn't available in region")
+			} else if strings.Contains(invokeErr.Error(), "ValidationException") && strings.Contains(invokeErr.Error(), "StatusCode: 400") {
+				log.Println("Got a ValidationException indicating that the model is not supported in this region")
+			} else {
+				return fmt.Errorf("failed to invoke model %s in region %s: %w", modelId, region, invokeErr)
+			}
 		} else {
 			log.Printf("Successfully invoked model %s in region %s (or the call was accepted without immediate error).", modelId, region)
 		}
