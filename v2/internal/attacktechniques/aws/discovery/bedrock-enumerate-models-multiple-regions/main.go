@@ -25,6 +25,11 @@ Warm-up: None.
 Detonation: 
 
 - Perform <code>bedrock:InvokeModel</code> to check if bedrock model is available.
+
+References:
+
+- https://permiso.io/blog/exploiting-hosted-models
+- https://sysdig.com/blog/llmjacking-stolen-cloud-credentials-used-in-new-ai-attack/
 `,
 		Detection: `
 Through CloudTrail's <code>InvokeModel</code> events. 
@@ -45,13 +50,13 @@ type minimalPromptBody struct {
 func detonate(_ map[string]string, providers stratus.CloudProviders) error {
 	awsConnection := providers.AWS().GetConnection()
 	regions := []string{"us-east-1", "us-west-2", "eu-west-2", "eu-west-3", "ap-northeast-2", "ap-southeast-2"}
-	modelId := "anthropic.claude-3-sonnet-20240229-v1:0"
+	modelId := "anthropic.claude-3-5-sonnet-20241022-v2:0"
 
 	log.Printf("Attempting to invoke Bedrock model %s in regions: %v", modelId, regions)
 
 	requestBody := minimalPromptBody{
-		Prompt:            "Human: hello\nAssistant: ",
-		MaxTokensToSample: 300,
+		Prompt:            "",
+		MaxTokensToSample: -1,
 	}
 	bodyBytes, err := json.Marshal(requestBody)
 	if err != nil {
@@ -71,16 +76,15 @@ func detonate(_ map[string]string, providers stratus.CloudProviders) error {
 		}
 
 		_, invokeErr := bedrockClient.InvokeModel(context.Background(), params)
-		if invokeErr != nil {
-			if strings.Contains(invokeErr.Error(), "AccessDeniedException") {
-				log.Printf("%s: Got an AccessDeniedException indicating that the model isn't available", region)
-			} else if strings.Contains(invokeErr.Error(), "ValidationException") && strings.Contains(invokeErr.Error(), "StatusCode: 400") {
-				log.Printf("%s: Got a ValidationException indicating that the model is not supported in this region "+invokeErr.Error(), region)
-			} else {
-				return fmt.Errorf("failed to invoke model %s in %s: %w", modelId, region, invokeErr)
-			}
+		if invokeErr == nil {
+			return fmt.Errorf("expected an error when invoking model %s in %s, but got none", modelId, region)
+		}
+		if strings.Contains(invokeErr.Error(), "AccessDeniedException") {
+			log.Printf("%s: Got an AccessDeniedException indicating that the model isn't available or the current user doesn't have permissions to invoke models", region)
+		} else if strings.Contains(invokeErr.Error(), "ValidationException") && strings.Contains(invokeErr.Error(), "StatusCode: 400") {
+			log.Printf("%s: Got a ValidationException indicating that the model isn't available in this region", region)
 		} else {
-			log.Printf("%s: Successfully invoked model %s indicating that the model is available in this region", region, modelId)
+			return fmt.Errorf("failed to invoke model %s in %s with an unexpected error: %w", modelId, region, invokeErr)
 		}
 	}
 	return nil
