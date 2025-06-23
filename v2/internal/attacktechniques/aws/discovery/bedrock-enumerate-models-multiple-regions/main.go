@@ -42,7 +42,6 @@ type minimalPromptBody struct {
 }
 
 func detonate(_ map[string]string, providers stratus.CloudProviders) error {
-	log.Printf("Get aws connection")
 	awsConnection := providers.AWS().GetConnection()
 	regions := []string{"us-east-1", "us-west-2", "eu-west-2", "eu-west-3", "ap-northeast-2", "ap-southeast-2"}
 	modelId := "anthropic.claude-3-sonnet-20240229-v1:0"
