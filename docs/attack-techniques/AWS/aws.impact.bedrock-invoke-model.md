@@ -14,6 +14,10 @@ Platform: AWS
 - MITRE ATT&CK
     - Impact
 
+- Threat Technique Catalog for AWS:
+  
+    - [Resource Hijacking: Cloud Service Hijacking - Bedrock LLM Abuse](https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1496.A007.html) (T1496.A007)
+  
 
 
 ## Description
