@@ -76,6 +76,12 @@ func GenerateTechDocs(docsDirectory string, techniques []*stratus.AttackTechniqu
 		}
 	}
 
+	allTactics := mitreattack.GetAllMitreAttackTactics()
+	allTacticsString := make([]string, len(allTactics))
+	for i := range allTactics {
+		allTacticsString[i] = mitreattack.AttackTacticToString(allTactics[i])
+	}
+
 	// Pass 2: write index per platform
 	for platform, tacticsMap := range index {
 		platformIndexFile := filepath.Join(docsDirectory, "attack-techniques", string(platform), "index.md")
@@ -83,10 +89,11 @@ func GenerateTechDocs(docsDirectory string, techniques []*stratus.AttackTechniqu
 		result := ""
 		buf := bytes.NewBufferString(result)
 		vars := struct {
+			AllTactics []string
 			TacticsMap map[string][]*stratus.AttackTechnique
 			Platform   stratus.Platform
 		}{
-			tacticsMap, platform,
+			allTacticsString, tacticsMap, platform,
 		}
 		err := tpl.Execute(buf, vars)
 		if err != nil {

@@ -93,9 +93,21 @@ Sample <code>DeleteObjects</code> event, shortened for readability:
 
 Note that <code>DeleteObjects</code> does not indicate the list of files deleted, or how many files were removed (which can be up to 1'000 files per call).'
 `,
-		Platform:                   stratus.AWS,
-		IsIdempotent:               false, // ransomware cannot be reverted :)
-		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Impact},
+		Platform:           stratus.AWS,
+		IsIdempotent:       false, // ransomware cannot be reverted :)
+		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Impact},
+		FrameworkMappings: []stratus.FrameworkMappings{
+			{
+				Framework: stratus.ThreatTechniqueCatalogAWS,
+				Techniques: []stratus.TechniqueMapping{
+					{
+						Name: "Data Destruction: S3 Object and Bucket Deletion",
+						ID:   "T1485.A003",
+						URL:  "https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1485.A003.html",
+					},
+				},
+			},
+		},
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,
 	})

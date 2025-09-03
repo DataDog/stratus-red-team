@@ -9,11 +9,13 @@ title: Execute Commands on EC2 Instance via User Data
 
 Platform: AWS
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Execution
+  - Privilege Escalation
 
 
-- Execution
-- Privilege Escalation
 
 ## Description
 

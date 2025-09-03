@@ -9,10 +9,12 @@ title: Invoke Bedrock Model
 
 Platform: AWS
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Impact
 
 
-- Impact
 
 ## Description
 

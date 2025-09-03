@@ -9,10 +9,17 @@ title: Stop CloudTrail Trail
 
 Platform: AWS
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Defense Evasion
 
 
-- Defense Evasion
+- Threat Technique Catalog for AWS:
+  
+    - [Impair Defenses: Disable Cloud Logs](https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1562.008.html) (T1562.008)
+  
+
 
 ## Description
 

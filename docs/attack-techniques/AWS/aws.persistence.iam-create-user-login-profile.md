@@ -9,11 +9,18 @@ title: Create a Login Profile on an IAM User
 
 Platform: AWS
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Persistence
+  - Privilege Escalation
 
 
-- Persistence
-- Privilege Escalation
+- Threat Technique Catalog for AWS:
+  
+    - [Account Manipulation: Additional Cloud Credentials](https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1098.001.html) (T1098.001)
+  
+
 
 ## Description
 

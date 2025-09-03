@@ -9,10 +9,12 @@ title: Create Client Certificate Credential
 
 Platform: Kubernetes
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Persistence
 
 
-- Persistence
 
 ## Description
 

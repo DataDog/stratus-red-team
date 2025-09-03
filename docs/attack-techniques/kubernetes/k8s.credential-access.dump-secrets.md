@@ -9,10 +9,12 @@ title: Dump All Secrets
 
 Platform: Kubernetes
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Credential Access
 
 
-- Credential Access
 
 ## Description
 

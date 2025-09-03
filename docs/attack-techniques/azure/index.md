@@ -5,18 +5,18 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 
 ## Execution
-
-- [Execute Command on Virtual Machine using Custom Script Extension](./azure.execution.vm-custom-script-extension.md)
-
-- [Execute Commands on Virtual Machine using Run Command](./azure.execution.vm-run-command.md)
-
-
-## Exfiltration
-
-- [Export Disk Through SAS URL](./azure.exfiltration.disk-export.md)
-
+  
+  - [Execute Command on Virtual Machine using Custom Script Extension](./azure.execution.vm-custom-script-extension.md)
+  
+  - [Execute Commands on Virtual Machine using Run Command](./azure.execution.vm-run-command.md)
+  
 
 ## Persistence
+  
+  - [Create Azure VM Bastion shareable link](./azure.persistence.create-bastion-shareable-link.md)
+  
 
-- [Create Azure VM Bastion shareable link](./azure.persistence.create-bastion-shareable-link.md)
-
+## Exfiltration
+  
+  - [Export Disk Through SAS URL](./azure.exfiltration.disk-export.md)
+  

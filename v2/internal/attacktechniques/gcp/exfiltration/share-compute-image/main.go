@@ -2,9 +2,9 @@ package gcp
 
 import (
 	compute "cloud.google.com/go/compute/apiv1"
+	"cloud.google.com/go/compute/apiv1/computepb"
 	"context"
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
-	computepb "google.golang.org/genproto/googleapis/cloud/compute/v1"
 	"log"
 
 	_ "embed"

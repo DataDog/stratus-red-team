@@ -9,11 +9,18 @@ title: Create an administrative IAM User
 
 Platform: AWS
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Persistence
+  - Privilege Escalation
 
 
-- Persistence
-- Privilege Escalation
+- Threat Technique Catalog for AWS:
+  
+    - [Create Account: Create Cloud Account](https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1136.003.html) (T1136.003)
+  
+
 
 ## Description
 

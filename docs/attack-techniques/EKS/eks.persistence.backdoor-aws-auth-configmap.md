@@ -9,11 +9,13 @@ title: Backdoor aws-auth EKS ConfigMap
 
 Platform: EKS
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Persistence
+  - Privilege Escalation
 
 
-- Persistence
-- Privilege Escalation
 
 ## Description
 

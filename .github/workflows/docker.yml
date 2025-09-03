@@ -20,7 +20,7 @@ jobs:
       packages: write
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@91182cccc01eb5e619899d80e4e971d6181294a7
+        uses: step-security/harden-runner@4d991eb9b905ef189e4c376166672c3f2f230481
         with:
           egress-policy: block
           allowed-endpoints: >
@@ -43,14 +43,14 @@ jobs:
           fetch-depth: 0
 
       - name: Log into registry ${{ env.REGISTRY }}
-        uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567
+        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@5cd11c3a4ced054e52742c5fd54dca954e0edd85
+        uses: docker/build-push-action@471d1dc4e07e5cdedd4c2171150001c434f0b7a4
         with:
           context: .
           push: true

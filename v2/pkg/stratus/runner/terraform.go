@@ -45,19 +45,16 @@ func NewTerraformManagerWithContext(ctx context.Context, terraformBinaryPath str
 }
 
 func (m *TerraformManagerImpl) Initialize() {
-	// Download the Terraform binary if it doesn't exist already
-	if !utils.FileExists(m.terraformBinaryPath) {
-		terraformInstaller := &releases.ExactVersion{
-			Product:                  product.Terraform,
-			Version:                  version.Must(version.NewVersion(TerraformVersion)),
-			InstallDir:               filepath.Dir(m.terraformBinaryPath),
-			SkipChecksumVerification: false,
-		}
-		log.Println("Installing Terraform in " + m.terraformBinaryPath)
-		_, err := terraformInstaller.Install(m.context)
-		if err != nil {
-			log.Fatalf("error installing Terraform: %s", err)
-		}
+	// Ensure the appropriate version of Terraform is installed locally in the Stratus Red Team folder
+	terraformInstaller := &releases.ExactVersion{
+		Product:                  product.Terraform,
+		Version:                  version.Must(version.NewVersion(TerraformVersion)),
+		InstallDir:               filepath.Dir(m.terraformBinaryPath),
+		SkipChecksumVerification: false,
+	}
+	_, err := terraformInstaller.Install(m.context)
+	if err != nil {
+		log.Fatalf("error installing Terraform: %s", err)
 	}
 }
 

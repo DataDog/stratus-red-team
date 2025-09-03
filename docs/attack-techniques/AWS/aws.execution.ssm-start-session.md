@@ -9,10 +9,12 @@ title: Usage of ssm:StartSession on multiple instances
 
 Platform: AWS
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Execution
 
 
-- Execution
 
 ## Description
 
