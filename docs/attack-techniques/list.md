@@ -38,6 +38,7 @@ This page contains the list of all Stratus Attack Techniques.
 | [S3 Ransomware through client-side encryption](./AWS/aws.impact.s3-ransomware-client-side-encryption.md) | [AWS](./AWS/index.md) | Impact |
 | [S3 Ransomware through individual file deletion](./AWS/aws.impact.s3-ransomware-individual-deletion.md) | [AWS](./AWS/index.md) | Impact |
 | [Console Login without MFA](./AWS/aws.initial-access.console-login-without-mfa.md) | [AWS](./AWS/index.md) | Initial Access |
+| [Usage of EC2 Serial Console to push SSH public key](./AWS/aws.lateral-movement.ec2-serial-console-send-ssh-public-key.md) | [AWS](./AWS/index.md) | Lateral Movement |
 | [Usage of EC2 Instance Connect on multiple instances](./AWS/aws.lateral-movement.ec2-instance-connect.md) | [AWS](./AWS/index.md) | Lateral Movement |
 | [Backdoor an IAM Role](./AWS/aws.persistence.iam-backdoor-role.md) | [AWS](./AWS/index.md) | Persistence |
 | [Create an Access Key on an IAM User](./AWS/aws.persistence.iam-backdoor-user.md) | [AWS](./AWS/index.md) | Persistence, Privilege Escalation |
@@ -48,6 +49,7 @@ This page contains the list of all Stratus Attack Techniques.
 | [Add a Malicious Lambda Extension](./AWS/aws.persistence.lambda-layer-extension.md) | [AWS](./AWS/index.md) | Persistence, Privilege Escalation |
 | [Overwrite Lambda Function Code](./AWS/aws.persistence.lambda-overwrite-code.md) | [AWS](./AWS/index.md) | Persistence |
 | [Create an IAM Roles Anywhere trust anchor](./AWS/aws.persistence.rolesanywhere-create-trust-anchor.md) | [AWS](./AWS/index.md) | Persistence, Privilege Escalation |
+| [Generate temporary AWS credentials using GetFederationToken](./AWS/aws.persistence.sts-federation-token.md) | [AWS](./AWS/index.md) | Persistence |
 | [Change IAM user password](./AWS/aws.privilege-escalation.iam-update-user-login-profile.md) | [AWS](./AWS/index.md) | Privilege Escalation |
 | [Execute Command on Virtual Machine using Custom Script Extension](./azure/azure.execution.vm-custom-script-extension.md) | [Azure](./azure/index.md) | Execution |
 | [Execute Commands on Virtual Machine using Run Command](./azure/azure.execution.vm-run-command.md) | [Azure](./azure/index.md) | Execution |
@@ -61,6 +63,7 @@ This page contains the list of all Stratus Attack Techniques.
 | [Create Hidden Scoped Role Assignment Through HiddenMembership AU](./entra-id/entra-id.persistence.hidden-au.md) | [Entra ID](./entra-id/index.md) | Persistence |
 | [Create Application](./entra-id/entra-id.persistence.new-application.md) | [Entra ID](./entra-id/index.md) | Persistence, Privilege Escalation |
 | [Create Sticky Backdoor User Through Restricted Management AU](./entra-id/entra-id.persistence.restricted-au.md) | [Entra ID](./entra-id/index.md) | Persistence |
+| [Retrieve a High Number of Secret Manager secrets](./GCP/gcp.credential-access.secretmanager-retrieve-secrets.md) | [GCP](./GCP/index.md) | Credential Access |
 | [Exfiltrate Compute Disk by sharing it](./GCP/gcp.exfiltration.share-compute-disk.md) | [GCP](./GCP/index.md) | Exfiltration |
 | [Exfiltrate Compute Image by sharing it](./GCP/gcp.exfiltration.share-compute-image.md) | [GCP](./GCP/index.md) | Exfiltration |
 | [Exfiltrate Compute Disk by sharing a snapshot](./GCP/gcp.exfiltration.share-compute-snapshot.md) | [GCP](./GCP/index.md) | Exfiltration |

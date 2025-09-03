@@ -9,10 +9,12 @@ title: Remove VPC Flow Logs
 
 Platform: AWS
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Defense Evasion
 
 
-- Defense Evasion
 
 ## Description
 

@@ -9,10 +9,12 @@ title: Privilege escalation through node/proxy permissions
 
 Platform: Kubernetes
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Privilege Escalation
 
 
-- Privilege Escalation
 
 ## Description
 

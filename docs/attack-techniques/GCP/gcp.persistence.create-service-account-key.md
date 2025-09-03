@@ -9,11 +9,13 @@ title: Create a GCP Service Account Key
 
 Platform: GCP
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Persistence
+  - Privilege Escalation
 
 
-- Persistence
-- Privilege Escalation
 
 ## Description
 

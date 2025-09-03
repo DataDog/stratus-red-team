@@ -9,10 +9,12 @@ title: Export Disk Through SAS URL
 
 Platform: Azure
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Exfiltration
 
 
-- Exfiltration
 
 ## Description
 

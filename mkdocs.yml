@@ -103,4 +103,5 @@ nav:
       - All Attack Techniques: attack-techniques/list.md
       - Philosophy: attack-techniques/philosophy.md
       - Supported Platforms: attack-techniques/supported-platforms.md
+      - MITRE ATT&CK Coverage Matrices: attack-techniques/mitre-attack-coverage-matrices.md
       - ... | attack-techniques/*/*.md

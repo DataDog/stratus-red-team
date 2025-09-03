@@ -9,10 +9,12 @@ title: Container breakout via hostPath volume mount
 
 Platform: Kubernetes
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Privilege Escalation
 
 
-- Privilege Escalation
 
 ## Description
 

@@ -18,10 +18,10 @@ jobs:
     timeout-minutes: 60
     runs-on:
       group: Large Runner Shared Public
-      labels: ubuntu-8-core-latest
+      labels: ubuntu-16-core-latest
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@91182cccc01eb5e619899d80e4e971d6181294a7
+        uses: step-security/harden-runner@4d991eb9b905ef189e4c376166672c3f2f230481
         with:
           egress-policy: block
           allowed-endpoints: >
@@ -46,7 +46,7 @@ jobs:
         with:
           go-version: 1.21
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@286f3b13b1b49da4ac219696163fb8c1c93e1200 # v6.0.0
+        uses: goreleaser/goreleaser-action@9ed2f89a662bf1735a48bc8557fd212fa902bebf # v6.1.0
         with:
           distribution: goreleaser
           version: "~> v2"

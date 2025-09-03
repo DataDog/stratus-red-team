@@ -9,10 +9,12 @@ title: Backdoor a GCP Service Account through its IAM Policy
 
 Platform: GCP
 
-## MITRE ATT&CK Tactics
+## Mappings
+
+- MITRE ATT&CK
+    - Persistence
 
 
-- Persistence
 
 ## Description
 
