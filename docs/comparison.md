@@ -17,6 +17,11 @@ However, the attack technique format of Atomic Red Team is [based on YAML](https
 
 > Halberd is a powerful, multi-cloud security testing tool. Born out of the need for a unified, easy-to-use tool, Halberd enables you to proactively assess your cloud defenses by executing a comprehensive array of attack techniques across Entra ID, M365, Azure, and AWS. With its intuitive web interface, you can simulate real-world attacks, generate valuable telemetry, and validate your security controls with ease & speed.
 
+Halberd is written in Python while stratus-red-team is written in Go and terraform file. Stratus-red-team provisions cloud infrastructure using terraform as IaC (Infrastructure as a Code) while Halberd doesn't have this feature. Halberd UI (User Interface) is using GUI (Graphical User Interface) while stratus-red-team is using CLI (Command Line Interface).
+
+Halberd is validating security control by simulating attacks on cloud infrastructure, while stratus-red-team is simulating attacks: from provisioning the cloud infrastructure, performing the attacks and deleting the created cloud resources. Both of the tools are using MITRE Attack to categorize the attacks.
+
+Halberd supports following platform: AWS, Azure, Microsoft Entra ID, GCP, and Microsoft M365 while stratus-red-team supports: AWS, Azure, AWS EKS (AWS Kubernetes Managed Service), Microsoft Entra ID, GCP and Kubernetes.
 
 ## [Leonidas](https://github.com/FSecureLABS/leonidas) by F-Secure (Nick Jones)
 
