@@ -12,6 +12,17 @@ For instance, [AWS - Create Access Key and Secret Key](https://github.com/redcan
 
 However, the attack technique format of Atomic Red Team is [based on YAML](https://github.com/redcanaryco/atomic-red-team/blob/7576aff377781ba3546c0835e48bffc980b4cbc8/atomics/T1098.001/T1098.001.yaml#L169-L196), and it's therefore easier to add new TTPs, even if they are not in the core of Atomic Red Team.
 
+
+## [Halberd](https://github.com/vectra-ai-research/Halberd) by Vectra AI.
+
+> Halberd is a powerful, multi-cloud security testing tool. Born out of the need for a unified, easy-to-use tool, Halberd enables you to proactively assess your cloud defenses by executing a comprehensive array of attack techniques across Entra ID, M365, Azure, and AWS. With its intuitive web interface, you can simulate real-world attacks, generate valuable telemetry, and validate your security controls with ease & speed.
+
+Halberd is written in Python while stratus-red-team is written in Go and terraform file. Stratus-red-team provisions cloud infrastructure using terraform as IaC (Infrastructure as a Code) while Halberd doesn't have this feature. Halberd UI (User Interface) is using GUI (Graphical User Interface) while stratus-red-team is using CLI (Command Line Interface).
+
+Halberd is validating security control by simulating attacks on cloud infrastructure, while stratus-red-team is simulating attacks: from provisioning the cloud infrastructure, performing the attacks and deleting the created cloud resources. Both of the tools are using MITRE Attack to categorize the attacks.
+
+Halberd supports following platform: AWS, Azure, Microsoft Entra ID, GCP, and Microsoft M365 while stratus-red-team supports: AWS, Azure, AWS EKS (AWS Kubernetes Managed Service), Microsoft Entra ID, GCP and Kubernetes.
+
 ## [Leonidas](https://github.com/FSecureLABS/leonidas) by F-Secure (Nick Jones)
 
 > Leonidas is a framework for executing attacker actions in the cloud. It provides a YAML-based format for defining cloud attacker tactics, techniques and procedures (TTPs) and their associated detection properties
