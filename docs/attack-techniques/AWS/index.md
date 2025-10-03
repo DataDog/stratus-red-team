@@ -92,6 +92,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 ## Discovery
   
+  - [Enumerate Bedrock models in multiple regions](./aws.discovery.bedrock-enumerate-models-multiple-regions.md)
+  
   - [Execute Discovery Commands on an EC2 Instance](./aws.discovery.ec2-enumerate-from-instance.md)
   
   - [Download EC2 Instance User Data](./aws.discovery.ec2-download-user-data.md)
