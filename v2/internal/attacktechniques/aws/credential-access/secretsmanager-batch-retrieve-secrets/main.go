@@ -5,13 +5,16 @@ import (
 	_ "embed"
 	"errors"
 	"fmt"
+	"log"
+	"os"
+	"strconv"
+	"strings"
+
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/secretsmanager"
 	"github.com/aws/aws-sdk-go-v2/service/secretsmanager/types"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
-	"log"
-	"strconv"
 )
 
 //go:embed main.tf
@@ -29,7 +32,7 @@ func init() {
 		ID:           "aws.credential-access.secretsmanager-batch-retrieve-secrets",
 		FriendlyName: "Retrieve a High Number of Secrets Manager secrets (Batch)",
 		Description: `
-Retrieves a high number of Secrets Manager secrets by batch, through <code>secretsmanager:BatchGetSecretValue</code> (released Novemeber 2023). 
+Retrieves a high number of Secrets Manager secrets by batch, through <code>secretsmanager:BatchGetSecretValue</code> (released November 2023). 
 An attacker may attempt to retrieve a high number of secrets by batch, to avoid detection and generate fewer calls. Note that the batch size is limited to 20 secrets.
 
 
@@ -39,7 +42,18 @@ Warm-up:
 
 Detonation: 
 
-- Dump all secrets by batch of ` + strconv.Itoa(BatchSize) + `, using <code>secretsmanager:BatchGetSecretValue</code>.
+- Default mode: Dump all stratus created secrets by batch of ` + strconv.Itoa(BatchSize) + `, using <code>secretsmanager:BatchGetSecretValue</code>.
+- With the environment variable <code>STRATUS_BATCH_RETRIEVE_ALL_SECRETS=true</code>: Dump all secrets in the current region by batch, using a negative filter.
+
+	
+	` + code + `bash
+	# Default: Retrieve only Stratus-created secrets
+	stratus detonate aws.credential-access.secretsmanager-batch-retrieve-secrets
+
+	# Retrieve all accessible secrets in the current region
+	STRATUS_BATCH_RETRIEVE_ALL_SECRETS=true stratus detonate aws.credential-access.secretsmanager-batch-retrieve-secrets
+	` + code + `
+
 
 References:
 
@@ -100,7 +114,8 @@ The following may be use to tune the detection, or validate findings:
 
 - Principals who do not usually call GetBatchSecretValue
 - Attempts to call GetBatchSecretValue resulting in access denied errors
-- Principals calling GetBatchSecretValue in several regions in a short period of time`,
+- Principals calling GetBatchSecretValue in several regions in a short period of time
+- Principals calling GetBatchSecretValue using a negative filter`,
 		Platform:                   stratus.AWS,
 		IsIdempotent:               true,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.CredentialAccess},
@@ -112,13 +127,22 @@ The following may be use to tune the detection, or validate findings:
 func detonate(_ map[string]string, providers stratus.CloudProviders) error {
 	secretsManagerClient := secretsmanager.NewFromConfig(providers.AWS().GetConnection())
 
+	// Check if user wants to retrieve ALL secrets using a negative filter
+	retrieveAllSecrets := strings.ToLower(os.Getenv("STRATUS_BATCH_RETRIEVE_ALL_SECRETS")) == "true"
+
+	filters := []types.Filter{
+		{Key: types.FilterNameStringTypeTagKey, Values: []string{"StratusRedTeam"}},
+	}
+	if retrieveAllSecrets {
+		log.Println("Attempting to retrieve all accessible secrets in the region using a negative filter")
+		filters = []types.Filter{
+			{Key: types.FilterNameStringTypeTagKey, Values: []string{"!tagKeyThatWillNeverExist"}},
+		}
+	}
+
 	log.Println("Retrieving secrets by batch of " + strconv.Itoa(BatchSize) + " using BatchGetSecretValue...")
 	paginator := secretsmanager.NewBatchGetSecretValuePaginator(secretsManagerClient, &secretsmanager.BatchGetSecretValueInput{
-		Filters: []types.Filter{
-			{Key: types.FilterNameStringTypeTagKey, Values: []string{"StratusRedTeam"}},
-			// note: you could use the filter below to dump all secrets by batch
-			// {Key: types.FilterNameStringTypeTagKey, Values: []string{"!iwillprobablyneverexist"}},
-		},
+		Filters:    filters,
 		MaxResults: aws.Int32(BatchSize),
 	})
 
