@@ -38,7 +38,7 @@ An attacker may attempt to retrieve a high number of secrets by batch, to avoid 
 	stratus detonate aws.credential-access.secretsmanager-batch-retrieve-secrets
 
 	# Retrieve all accessible secrets in the current region
-	STRATUS_PARAM_RETRIEVE_ALL_SECRETS=true stratus detonate aws.credential-access.secretsmanager-batch-retrieve-secrets
+	STRATUS_BATCH_RETRIEVE_ALL_SECRETS=true stratus detonate aws.credential-access.secretsmanager-batch-retrieve-secrets
 	```
 
 
