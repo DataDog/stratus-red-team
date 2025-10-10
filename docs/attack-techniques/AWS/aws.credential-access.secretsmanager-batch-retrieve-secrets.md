@@ -19,7 +19,7 @@ Platform: AWS
 ## Description
 
 
-Retrieves a high number of Secrets Manager secrets by batch, through <code>secretsmanager:BatchGetSecretValue</code> (released Novemeber 2023). 
+Retrieves a high number of Secrets Manager secrets by batch, through <code>secretsmanager:BatchGetSecretValue</code> (released November 2023). 
 An attacker may attempt to retrieve a high number of secrets by batch, to avoid detection and generate fewer calls. Note that the batch size is limited to 20 secrets.
 
 
@@ -29,7 +29,18 @@ An attacker may attempt to retrieve a high number of secrets by batch, to avoid 
 
 <span style="font-variant: small-caps;">Detonation</span>: 
 
-- Dump all secrets by batch of 10, using <code>secretsmanager:BatchGetSecretValue</code>.
+- Default mode: Dump all stratus created secrets by batch of 10, using <code>secretsmanager:BatchGetSecretValue</code>.
+- With the environment variable <code>STRATUS_BATCH_RETRIEVE_ALL_SECRETS=true</code>: Dump all secrets in the current region by batch, using a negative filter.
+
+	
+	```bash
+	# Default: Retrieve only Stratus-created secrets
+	stratus detonate aws.credential-access.secretsmanager-batch-retrieve-secrets
+
+	# Retrieve all accessible secrets in the current region
+	STRATUS_PARAM_RETRIEVE_ALL_SECRETS=true stratus detonate aws.credential-access.secretsmanager-batch-retrieve-secrets
+	```
+
 
 References:
 
@@ -99,6 +110,7 @@ The following may be use to tune the detection, or validate findings:
 - Principals who do not usually call GetBatchSecretValue
 - Attempts to call GetBatchSecretValue resulting in access denied errors
 - Principals calling GetBatchSecretValue in several regions in a short period of time
+- Principals calling GetBatchSecretValue using a negative filter
 
 
 ## Detonation logs <span class="smallcaps w3-badge w3-light-green w3-round w3-text-sand">new!</span>
