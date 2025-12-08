@@ -59,6 +59,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   
   - [Change IAM user password](./aws.privilege-escalation.iam-update-user-login-profile.md)
   
+  - [Create/Update SageMaker Lifecycle Configuration for Privilege Escalation](./aws.privilege-escalation.sagemaker-update-lifecycle-config.md)
+  
 
 ## Defense Evasion
   

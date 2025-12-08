@@ -51,6 +51,7 @@ This page contains the list of all Stratus Attack Techniques.
 | [Create an IAM Roles Anywhere trust anchor](./AWS/aws.persistence.rolesanywhere-create-trust-anchor.md) | [AWS](./AWS/index.md) | Persistence, Privilege Escalation |
 | [Generate temporary AWS credentials using GetFederationToken](./AWS/aws.persistence.sts-federation-token.md) | [AWS](./AWS/index.md) | Persistence |
 | [Change IAM user password](./AWS/aws.privilege-escalation.iam-update-user-login-profile.md) | [AWS](./AWS/index.md) | Privilege Escalation |
+| [Create/Update SageMaker Lifecycle Configuration for Privilege Escalation](./AWS/aws.privilege-escalation.sagemaker-update-lifecycle-config.md) | [AWS](./AWS/index.md) | Privilege Escalation |
 | [Execute Command on Virtual Machine using Custom Script Extension](./azure/azure.execution.vm-custom-script-extension.md) | [Azure](./azure/index.md) | Execution |
 | [Execute Commands on Virtual Machine using Run Command](./azure/azure.execution.vm-run-command.md) | [Azure](./azure/index.md) | Execution |
 | [Export Disk Through SAS URL](./azure/azure.exfiltration.disk-export.md) | [Azure](./azure/index.md) | Exfiltration |

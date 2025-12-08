@@ -492,6 +492,13 @@ AWS:
             - Privilege Escalation
           platform: AWS
           isIdempotent: true
+        - id: aws.privilege-escalation.sagemaker-update-lifecycle-config
+          name: Create/Update SageMaker Lifecycle Configuration for Privilege Escalation
+          isSlow: true
+          mitreAttackTactics:
+            - Privilege Escalation
+          platform: AWS
+          isIdempotent: true
 EKS:
     Lateral Movement:
         - id: eks.lateral-movement.create-access-entry
