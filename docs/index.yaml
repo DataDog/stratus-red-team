@@ -168,6 +168,14 @@ AWS:
             - Privilege Escalation
           platform: AWS
           isIdempotent: true
+        - id: aws.execution.sagemaker-update-lifecycle-config
+          name: Execute Commands on SageMaker Notebook Instance via Lifecycle Configuration
+          isSlow: true
+          mitreAttackTactics:
+            - Execution
+            - Privilege Escalation
+          platform: AWS
+          isIdempotent: true
         - id: aws.execution.ssm-send-command
           name: Usage of ssm:SendCommand on multiple instances
           isSlow: true
@@ -421,6 +429,14 @@ AWS:
     Privilege Escalation:
         - id: aws.execution.ec2-user-data
           name: Execute Commands on EC2 Instance via User Data
+          isSlow: true
+          mitreAttackTactics:
+            - Execution
+            - Privilege Escalation
+          platform: AWS
+          isIdempotent: true
+        - id: aws.execution.sagemaker-update-lifecycle-config
+          name: Execute Commands on SageMaker Notebook Instance via Lifecycle Configuration
           isSlow: true
           mitreAttackTactics:
             - Execution

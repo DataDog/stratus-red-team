@@ -26,6 +26,7 @@ This page contains the list of all Stratus Attack Techniques.
 | [Enumerate SES](./AWS/aws.discovery.ses-enumerate.md) | [AWS](./AWS/index.md) | Discovery |
 | [Launch Unusual EC2 instances](./AWS/aws.execution.ec2-launch-unusual-instances.md) | [AWS](./AWS/index.md) | Execution |
 | [Execute Commands on EC2 Instance via User Data](./AWS/aws.execution.ec2-user-data.md) | [AWS](./AWS/index.md) | Execution, Privilege Escalation |
+| [Execute Commands on SageMaker Notebook Instance via Lifecycle Configuration](./AWS/aws.execution.sagemaker-update-lifecycle-config.md) | [AWS](./AWS/index.md) | Execution, Privilege Escalation |
 | [Usage of ssm:SendCommand on multiple instances](./AWS/aws.execution.ssm-send-command.md) | [AWS](./AWS/index.md) | Execution |
 | [Usage of ssm:StartSession on multiple instances](./AWS/aws.execution.ssm-start-session.md) | [AWS](./AWS/index.md) | Execution |
 | [Open Ingress Port 22 on a Security Group](./AWS/aws.exfiltration.ec2-security-group-open-port-22-ingress.md) | [AWS](./AWS/index.md) | Exfiltration |
