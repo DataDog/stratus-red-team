@@ -122,6 +122,19 @@ AWS:
           platform: AWS
           isIdempotent: false
     Discovery:
+        - id: aws.discovery.bedrock-enumerate-models-multiple-regions
+          name: Enumerate Bedrock models in multiple regions
+          isSlow: false
+          mitreAttackTactics:
+            - Discovery
+          frameworkmappings:
+            - framework: Threat Technique Catalog for AWS
+              techniques:
+                - name: 'Resource Hijacking: Cloud Service Hijacking - Bedrock LLM Abuse'
+                  id: T1496.A007
+                  url: https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1496.A007.html
+          platform: AWS
+          isIdempotent: true
         - id: aws.discovery.ec2-enumerate-from-instance
           name: Execute Discovery Commands on an EC2 Instance
           isSlow: true
@@ -242,6 +255,12 @@ AWS:
           isSlow: false
           mitreAttackTactics:
             - Impact
+          frameworkmappings:
+            - framework: Threat Technique Catalog for AWS
+              techniques:
+                - name: 'Resource Hijacking: Cloud Service Hijacking - Bedrock LLM Abuse'
+                  id: T1496.A007
+                  url: https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1496.A007.html
           platform: AWS
           isIdempotent: true
         - id: aws.impact.s3-ransomware-batch-deletion
