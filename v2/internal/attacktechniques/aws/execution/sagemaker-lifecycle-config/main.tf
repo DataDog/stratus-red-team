@@ -27,7 +27,7 @@ locals {
 # --- 1. High-Privilege Target Role (The Goal of the Attack) ---
 
 resource "aws_iam_role" "high_priv_execution_role" {
-  name = "${local.resource_prefix}-high-priv-role"
+  name        = "${local.resource_prefix}-high-priv-role"
   description = "Execution role for SageMaker instance. Target for privilege escalation."
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -44,7 +44,7 @@ resource "aws_iam_role" "high_priv_execution_role" {
 }
 # The High-Privilege Policy: Contains sensitive permissions the attacker is seeking.
 resource "aws_iam_policy" "high_priv_policy" {
-  name = "${local.resource_prefix}-sagemaker-high-priv-policy"
+  name        = "${local.resource_prefix}-sagemaker-high-priv-policy"
   description = "Policy with IAM and S3 admin privileges."
   policy = jsonencode({
     Version = "2012-10-17",
@@ -98,7 +98,7 @@ resource "aws_iam_role_policy_attachment" "high_priv_attach" {
 # --- 2. Low-Privilege Attacker Role (The Enabler of the Attack) ---
 
 resource "aws_iam_role" "low_priv_attacker_role" {
-  name = "${local.resource_prefix}-low-priv-role"
+  name        = "${local.resource_prefix}-low-priv-role"
   description = "Role with permissions to execute the SageMaker update attack."
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -116,7 +116,7 @@ resource "aws_iam_role" "low_priv_attacker_role" {
 
 # The Low-Privilege Policy: Contains the specific permissions for the exploit chain.
 resource "aws_iam_policy" "low_priv_attacker_policy" {
-  name = "${local.resource_prefix}-sagemaker-low-priv-attacker-policy"
+  name        = "${local.resource_prefix}-sagemaker-low-priv-attacker-policy"
   description = "Vulnerable policy allowing SageMaker notebook modification."
   policy = jsonencode({
     Version = "2012-10-17",
@@ -136,8 +136,8 @@ resource "aws_iam_policy" "low_priv_attacker_policy" {
       # they want to create a new notebook, but for attacking an EXISTING
       # notebook, these four actions are key.
       {
-        Effect = "Allow",
-        Action = "sagemaker:DescribeNotebookInstance",
+        Effect   = "Allow",
+        Action   = "sagemaker:DescribeNotebookInstance",
         Resource = "*"
       }
     ],
@@ -157,7 +157,7 @@ resource "aws_sagemaker_notebook_instance" "target_notebook" {
   role_arn      = aws_iam_role.high_priv_execution_role.arn
   instance_type = "ml.t2.medium"
   # Set to skip root access to ensure only the role is the entry point
-  root_access   = "Disabled" 
+  root_access = "Disabled"
 }
 
 # --- Variable Definitions ---
@@ -171,17 +171,17 @@ resource "random_integer" "random" {
 
 output "attacker_role_arn" {
   description = "The IAM role with the low-privilege, vulnerable permissions."
-  value = aws_iam_role.low_priv_attacker_role.arn
+  value       = aws_iam_role.low_priv_attacker_role.arn
 }
 
 output "target_notebook_name" {
   description = "The name of the target SageMaker Notebook Instance."
-  value = aws_sagemaker_notebook_instance.target_notebook.name
+  value       = aws_sagemaker_notebook_instance.target_notebook.name
 }
 
 output "high_priv_role_arn" {
   description = "The ARN of the high-privilege role that the attacker will attempt to assume."
-  value = aws_iam_role.high_priv_execution_role.arn
+  value       = aws_iam_role.high_priv_execution_role.arn
 }
 
 output "display" {
