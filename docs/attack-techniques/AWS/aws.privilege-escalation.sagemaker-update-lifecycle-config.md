@@ -44,6 +44,7 @@ stratus detonate aws.privilege-escalation.sagemaker-update-lifecycle-config
 ## Detection
 
 
-Through CloudTrail's <code>UpdateNotebookInstance</code> events.
+Through CloudTrail's <code>UpdateNotebookInstance</code> events. 
+You can also watch for suspicious sequences of <code>StopNotebookInstance</code> and <code>StopNotebookInstance</code> events correlated with <code>UpdateNotebookInstance</code> events. 
 
 

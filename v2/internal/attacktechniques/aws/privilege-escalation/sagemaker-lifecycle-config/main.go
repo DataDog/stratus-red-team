@@ -44,7 +44,8 @@ References:
 - https://www.plerion.com/blog/privilege-escalation-with-sagemaker-and-execution-roles
 `,
 		Detection: `
-Through CloudTrail's <code>UpdateNotebookInstance</code> events.
+Through CloudTrail's <code>UpdateNotebookInstance</code> events. 
+You can also watch for suspicious sequences of <code>StopNotebookInstance</code> and <code>StopNotebookInstance</code> events correlated with <code>UpdateNotebookInstance</code> events. 
 `,
 		Platform:                   stratus.AWS,
 		IsSlow:                     true,
