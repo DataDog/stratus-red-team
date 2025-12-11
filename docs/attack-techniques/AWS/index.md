@@ -15,7 +15,7 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   
   - [Execute Commands on EC2 Instance via User Data](./aws.execution.ec2-user-data.md)
   
-  - [Create/Update SageMaker Lifecycle Configuration for Privilege Escalation](./aws.execution.sagemaker-update-lifecycle-config.md)
+  - [Execute Commands on SageMaker Notebook Instance via Lifecycle Configuration](./aws.execution.sagemaker-update-lifecycle-config.md)
   
   - [Usage of ssm:SendCommand on multiple instances](./aws.execution.ssm-send-command.md)
   
@@ -49,7 +49,7 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   
   - [Execute Commands on EC2 Instance via User Data](./aws.execution.ec2-user-data.md)
   
-  - [Create/Update SageMaker Lifecycle Configuration for Privilege Escalation](./aws.execution.sagemaker-update-lifecycle-config.md)
+  - [Execute Commands on SageMaker Notebook Instance via Lifecycle Configuration](./aws.execution.sagemaker-update-lifecycle-config.md)
   
   - [Create an Access Key on an IAM User](./aws.persistence.iam-backdoor-user.md)
   

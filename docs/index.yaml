@@ -169,7 +169,7 @@ AWS:
           platform: AWS
           isIdempotent: true
         - id: aws.execution.sagemaker-update-lifecycle-config
-          name: Create/Update SageMaker Lifecycle Configuration for Privilege Escalation
+          name: Execute Commands on SageMaker Notebook Instance via Lifecycle Configuration
           isSlow: true
           mitreAttackTactics:
             - Execution
@@ -436,7 +436,7 @@ AWS:
           platform: AWS
           isIdempotent: true
         - id: aws.execution.sagemaker-update-lifecycle-config
-          name: Create/Update SageMaker Lifecycle Configuration for Privilege Escalation
+          name: Execute Commands on SageMaker Notebook Instance via Lifecycle Configuration
           isSlow: true
           mitreAttackTactics:
             - Execution

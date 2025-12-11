@@ -1,8 +1,8 @@
 ---
-title: Create/Update SageMaker Lifecycle Configuration for Privilege Escalation
+title: Execute Commands on SageMaker Notebook Instance via Lifecycle Configuration
 ---
 
-# Create/Update SageMaker Lifecycle Configuration for Privilege Escalation
+# Execute Commands on SageMaker Notebook Instance via Lifecycle Configuration
 
  <span class="smallcaps w3-badge w3-orange w3-round w3-text-sand" title="This attack technique might be slow to warm up or detonate">slow</span> 
  <span class="smallcaps w3-badge w3-blue w3-round w3-text-white" title="This attack technique can be detonated multiple times">idempotent</span> 
@@ -20,7 +20,7 @@ Platform: AWS
 ## Description
 
 
-An attacker with permissions to stop, update, and start a SageMaker Notebook instance can escalate privileges by attaching a malicious lifecycle configuration script to a stopped instance. When the instance is restarted, this script executes automatically, allowing the attacker to exfiltrate the instance's IAM execution role credentials or perform actions with its elevated permissions.
+An attacker with permissions to stop, update, and start a SageMaker Notebook instance can execute code inside this instance by attaching a malicious lifecycle configuration script to a stopped instance. When the instance is restarted, this script executes automatically, allowing the attacker execute arbitrary commands, for instance to exfiltrate the instance's IAM execution role credentials.
 
 <span style="font-variant: small-caps;">Warm-up</span>:
 
