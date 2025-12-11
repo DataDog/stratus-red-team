@@ -19,7 +19,7 @@ import (
 
 //go:embed main.tf
 var tf []byte
-var configName string = "priv-esc-config"
+var configName = "priv-esc-config"
 var notebookName string
 
 func init() {
@@ -84,7 +84,7 @@ func CreateNotebookLifecycleConfig(
 	// 3. Execute the API call
 	log.Printf("Attempting to create lifecycle configuration: %s", configName)
 
-	_, err := client.CreateNotebookInstanceLifecycleConfig(context.TODO(), input)
+	_, err := client.CreateNotebookInstanceLifecycleConfig(context.Background(), input)
 
 	if err != nil {
 		return fmt.Errorf("failed to create lifecycle config %s: %w", configName, err)
@@ -99,7 +99,7 @@ func UpdateAndRestartNotebook(
 	notebookName string,
 	lifecycleConfigName string) error {
 
-	ctx := context.TODO()
+	ctx := context.Background()
 
 	log.Printf("Starting workflow for Notebook: %s", notebookName)
 
@@ -182,7 +182,7 @@ func DetachAndDeleteLifecycleConfig(
 	notebookName string,
 	configName string) error {
 
-	ctx := context.TODO()
+	ctx := context.Background()
 	log.Printf("Starting cleanup workflow for Notebook: %s and Config: %s", notebookName, configName)
 
 	// --- 1. Stop the Notebook Instance (Prerequisite for Update) ---
