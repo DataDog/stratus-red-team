@@ -24,7 +24,7 @@ var notebookName string
 
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
-		ID:           "aws.privilege-escalation.sagemaker-update-lifecycle-config",
+		ID:           "aws.execution.sagemaker-update-lifecycle-config",
 		FriendlyName: "Create/Update SageMaker Lifecycle Configuration for Privilege Escalation",
 		Description: `
 An attacker with permissions to stop, update, and start a SageMaker Notebook instance can escalate privileges by attaching a malicious lifecycle configuration script to a stopped instance. When the instance is restarted, this script executes automatically, allowing the attacker to exfiltrate the instance's IAM execution role credentials or perform actions with its elevated permissions.
@@ -50,7 +50,7 @@ You can also watch for suspicious sequences of <code>StopNotebookInstance</code>
 		Platform:                   stratus.AWS,
 		IsSlow:                     true,
 		IsIdempotent:               true,
-		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.PrivilegeEscalation},
+		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Execution, mitreattack.PrivilegeEscalation},
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,
 		Revert:                     revert,

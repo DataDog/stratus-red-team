@@ -26,6 +26,7 @@ This page contains the list of all Stratus Attack Techniques.
 | [Enumerate SES](./AWS/aws.discovery.ses-enumerate.md) | [AWS](./AWS/index.md) | Discovery |
 | [Launch Unusual EC2 instances](./AWS/aws.execution.ec2-launch-unusual-instances.md) | [AWS](./AWS/index.md) | Execution |
 | [Execute Commands on EC2 Instance via User Data](./AWS/aws.execution.ec2-user-data.md) | [AWS](./AWS/index.md) | Execution, Privilege Escalation |
+| [Create/Update SageMaker Lifecycle Configuration for Privilege Escalation](./AWS/aws.execution.sagemaker-update-lifecycle-config.md) | [AWS](./AWS/index.md) | Execution, Privilege Escalation |
 | [Usage of ssm:SendCommand on multiple instances](./AWS/aws.execution.ssm-send-command.md) | [AWS](./AWS/index.md) | Execution |
 | [Usage of ssm:StartSession on multiple instances](./AWS/aws.execution.ssm-start-session.md) | [AWS](./AWS/index.md) | Execution |
 | [Open Ingress Port 22 on a Security Group](./AWS/aws.exfiltration.ec2-security-group-open-port-22-ingress.md) | [AWS](./AWS/index.md) | Exfiltration |
@@ -51,7 +52,6 @@ This page contains the list of all Stratus Attack Techniques.
 | [Create an IAM Roles Anywhere trust anchor](./AWS/aws.persistence.rolesanywhere-create-trust-anchor.md) | [AWS](./AWS/index.md) | Persistence, Privilege Escalation |
 | [Generate temporary AWS credentials using GetFederationToken](./AWS/aws.persistence.sts-federation-token.md) | [AWS](./AWS/index.md) | Persistence |
 | [Change IAM user password](./AWS/aws.privilege-escalation.iam-update-user-login-profile.md) | [AWS](./AWS/index.md) | Privilege Escalation |
-| [Create/Update SageMaker Lifecycle Configuration for Privilege Escalation](./AWS/aws.privilege-escalation.sagemaker-update-lifecycle-config.md) | [AWS](./AWS/index.md) | Privilege Escalation |
 | [Execute Command on Virtual Machine using Custom Script Extension](./azure/azure.execution.vm-custom-script-extension.md) | [Azure](./azure/index.md) | Execution |
 | [Execute Commands on Virtual Machine using Run Command](./azure/azure.execution.vm-run-command.md) | [Azure](./azure/index.md) | Execution |
 | [Export Disk Through SAS URL](./azure/azure.exfiltration.disk-export.md) | [Azure](./azure/index.md) | Exfiltration |

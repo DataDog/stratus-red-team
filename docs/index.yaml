@@ -168,6 +168,14 @@ AWS:
             - Privilege Escalation
           platform: AWS
           isIdempotent: true
+        - id: aws.execution.sagemaker-update-lifecycle-config
+          name: Create/Update SageMaker Lifecycle Configuration for Privilege Escalation
+          isSlow: true
+          mitreAttackTactics:
+            - Execution
+            - Privilege Escalation
+          platform: AWS
+          isIdempotent: true
         - id: aws.execution.ssm-send-command
           name: Usage of ssm:SendCommand on multiple instances
           isSlow: true
@@ -427,6 +435,14 @@ AWS:
             - Privilege Escalation
           platform: AWS
           isIdempotent: true
+        - id: aws.execution.sagemaker-update-lifecycle-config
+          name: Create/Update SageMaker Lifecycle Configuration for Privilege Escalation
+          isSlow: true
+          mitreAttackTactics:
+            - Execution
+            - Privilege Escalation
+          platform: AWS
+          isIdempotent: true
         - id: aws.persistence.iam-backdoor-user
           name: Create an Access Key on an IAM User
           isSlow: false
@@ -488,13 +504,6 @@ AWS:
         - id: aws.privilege-escalation.iam-update-user-login-profile
           name: Change IAM user password
           isSlow: false
-          mitreAttackTactics:
-            - Privilege Escalation
-          platform: AWS
-          isIdempotent: true
-        - id: aws.privilege-escalation.sagemaker-update-lifecycle-config
-          name: Create/Update SageMaker Lifecycle Configuration for Privilege Escalation
-          isSlow: true
           mitreAttackTactics:
             - Privilege Escalation
           platform: AWS

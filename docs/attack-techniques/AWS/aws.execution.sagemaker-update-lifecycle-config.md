@@ -12,7 +12,8 @@ Platform: AWS
 ## Mappings
 
 - MITRE ATT&CK
-    - Privilege Escalation
+    - Execution
+  - Privilege Escalation
 
 
 
@@ -39,7 +40,7 @@ References:
 ## Instructions
 
 ```bash title="Detonate with Stratus Red Team"
-stratus detonate aws.privilege-escalation.sagemaker-update-lifecycle-config
+stratus detonate aws.execution.sagemaker-update-lifecycle-config
 ```
 ## Detection
 
