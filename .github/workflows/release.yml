@@ -35,6 +35,7 @@ jobs:
             sum.golang.org:443
             *.actions.githubusercontent.com:443
             go.dev:443
+            dl.google.com:443
             golang.org:443
 
       - name: Checkout
@@ -42,9 +43,9 @@ jobs:
         with:
           fetch-depth: 0
       - name: Set up Go
-        uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed
+        uses: actions/setup-go@4dc6199c7b1a012772edbd06daecab0f50c9053c
         with:
-          go-version: 1.21
+          go-version: 1.23
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@9ed2f89a662bf1735a48bc8557fd212fa902bebf # v6.1.0
         with:
