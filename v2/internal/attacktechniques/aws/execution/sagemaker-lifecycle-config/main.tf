@@ -184,4 +184,6 @@ output "high_priv_role_arn" {
   value = aws_iam_role.high_priv_execution_role.arn
 }
 
-
+output "display" {
+  value = "SageMaker Notebook Instance ${aws_sagemaker_notebook_instance.target_notebook.arn} is ready"
+}
