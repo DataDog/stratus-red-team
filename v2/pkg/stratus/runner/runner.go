@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/datadog/stratus-red-team/v2/internal/config"
 	"github.com/datadog/stratus-red-team/v2/internal/state"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/useragent"
@@ -117,10 +118,11 @@ func (m *runnerImpl) WarmUp() (map[string]string, error) {
 	}
 
 	log.Println("Warming up " + m.Technique.ID)
-	outputs, err := m.TerraformManager.TerraformInitAndApply(m.TerraformDir, m.TerraformVariables)
+	mergedVars := m.getMergedTerraformVariables()
+	outputs, err := m.TerraformManager.TerraformInitAndApply(m.TerraformDir, mergedVars)
 	if err != nil {
 		log.Println("Error during warm up. Cleaning up technique prerequisites with terraform destroy")
-		_ = m.TerraformManager.TerraformDestroy(m.TerraformDir, m.TerraformVariables)
+		_ = m.TerraformManager.TerraformDestroy(m.TerraformDir, mergedVars)
 		if errors.Is(err, context.Canceled) {
 			return nil, err
 		}
@@ -135,8 +137,8 @@ func (m *runnerImpl) WarmUp() (map[string]string, error) {
 	if err != nil {
 		return nil, errors.New("unable to persist Terraform outputs: " + err.Error())
 	}
-	if len(m.TerraformVariables) > 0 {
-		err = m.StateManager.WriteTerraformVariables(m.TerraformVariables)
+	if len(mergedVars) > 0 {
+		err = m.StateManager.WriteTerraformVariables(mergedVars)
 		if err != nil {
 			return nil, errors.New("unable to persist Terraform variables: " + err.Error())
 		}
@@ -280,9 +282,50 @@ func (m *runnerImpl) GetUniqueExecutionId() string {
 	return m.UniqueCorrelationID.String()
 }
 
-// SetTerraformVariables sets variables to be passed to Terraform during apply/destroy
+// SetTerraformVariables sets variables to be passed to Terraform during apply/destroy.
+// These variables are merged with any config file variables, with explicitly set variables taking precedence.
 func (m *runnerImpl) SetTerraformVariables(variables map[string]string) {
 	m.TerraformVariables = variables
+}
+
+// getMergedTerraformVariables returns the terraform variables to use, merging:
+// 1. Config file namespace for k8s techniques
+// 2. Pod config (image, tolerations, nodeSelector) if technique has terraformVariables: true
+// 3. Explicitly set variables via SetTerraformVariables (CLI flags)
+// Explicit variables take precedence over config file values.
+func (m *runnerImpl) getMergedTerraformVariables() map[string]string {
+	result := make(map[string]string)
+
+	// Load config for k8s/EKS techniques
+	if m.Technique.Platform == stratus.Kubernetes || m.Technique.Platform == stratus.EKS {
+		cfg, err := config.LoadConfig()
+		if err == nil && cfg != nil {
+			// Always add namespace from config if set
+			if cfg.Kubernetes.Namespace != "" {
+				result["namespace"] = cfg.Kubernetes.Namespace
+			}
+
+			// Add pod config as TF variables if technique has terraformVariables: true
+			techniqueConfig := cfg.Kubernetes.GetTechniqueConfig(m.Technique.ID)
+			if techniqueConfig.TerraformVariables {
+				if tfVars := techniqueConfig.ToTerraformVariables(); tfVars != nil {
+					for k, v := range tfVars {
+						result[k] = v
+					}
+				}
+			}
+		}
+	}
+
+	// Explicitly set variables (from CLI) take precedence
+	for k, v := range m.TerraformVariables {
+		result[k] = v
+	}
+
+	if len(result) == 0 {
+		return nil
+	}
+	return result
 }
 
 // Utility function to display better error messages than the Terraform ones

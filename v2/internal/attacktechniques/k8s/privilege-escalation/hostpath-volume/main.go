@@ -2,24 +2,25 @@ package kubernetes
 
 import (
 	"context"
+	_ "embed"
 	"errors"
+	"log"
+
 	"github.com/aws/smithy-go/ptr"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	v1 "k8s.io/api/core/v1"
-	"log"
-
-	_ "embed"
-
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 //go:embed main.tf
 var tf []byte
 
+const techniqueID = "k8s.privilege-escalation.hostpath-volume"
+
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
-		ID:                 "k8s.privilege-escalation.hostpath-volume",
+		ID:                 techniqueID,
 		FriendlyName:       "Container breakout via hostPath volume mount",
 		Platform:           stratus.Kubernetes,
 		IsIdempotent:       false,
@@ -50,7 +51,10 @@ Detonation:
 func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	client := providers.K8s().GetClient()
 	namespace := params["namespace"]
-	podSpec := nodeRootPodSpec(namespace)
+	podSpec := basePodSpec(namespace)
+
+	// Apply configuration overrides (image, tolerations, nodeSelector, securityContext)
+	providers.K8s().ApplyPodConfig(techniqueID, podSpec)
 
 	log.Println("Creating malicious pod " + podSpec.ObjectMeta.Name)
 	_, err := client.CoreV1().Pods(namespace).Create(context.Background(), podSpec, metav1.CreateOptions{})
@@ -65,7 +69,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 func revert(params map[string]string, providers stratus.CloudProviders) error {
 	client := providers.K8s().GetClient()
 	namespace := params["namespace"]
-	podSpec := nodeRootPodSpec(namespace)
+	podSpec := basePodSpec(namespace)
 
 	log.Println("Removing malicious pod " + podSpec.ObjectMeta.Name)
 	deleteOptions := metav1.DeleteOptions{GracePeriodSeconds: ptr.Int64(0)}
@@ -77,10 +81,10 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 	return nil
 }
 
-func nodeRootPodSpec(namespace string) *v1.Pod {
+func basePodSpec(namespace string) *v1.Pod {
 	return &v1.Pod{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      "k8s.privilege-escalation.hostpath-volume",
+			Name:      techniqueID,
 			Namespace: namespace,
 		},
 		Spec: v1.PodSpec{

@@ -6,11 +6,11 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/datadog/stratus-red-team/v2/internal/config"
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 )
 
-const StratusStateDirectoryName = ".stratus-red-team"
 const StratusStateTerraformOutputsFileName = ".terraform-outputs"
 const StratusStateTerraformVariablesFileName = ".terraform-variables"
 const StratusStateTechniqueStateFileName = ".state"
@@ -68,7 +68,7 @@ type StateManager interface {
 func NewFileSystemStateManager(technique *stratus.AttackTechnique) *FileSystemStateManager {
 	homeDirectory, _ := os.UserHomeDir()
 	stateManager := FileSystemStateManager{
-		RootDirectory: filepath.Join(homeDirectory, StratusStateDirectoryName),
+		RootDirectory: filepath.Join(homeDirectory, config.StratusStateDirectoryName),
 		Technique:     technique,
 		FileSystem:    &LocalFileSystem{},
 	}

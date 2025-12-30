@@ -2,18 +2,21 @@ package providers
 
 import (
 	"context"
+	"log"
+	"os"
+	"path/filepath"
+
+	"github.com/datadog/stratus-red-team/v2/internal/config"
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/useragent"
 	"github.com/google/uuid"
 	authv1 "k8s.io/api/authorization/v1"
+	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/util/homedir"
-	"log"
-	"os"
-	"path/filepath"
 )
 
 const (
@@ -110,4 +113,37 @@ func (m *K8sProvider) IsAuthenticated() bool {
 		metav1.CreateOptions{},
 	)
 	return err == nil || auth.Status.Allowed
+}
+
+// GetDefaultNamespace returns the default namespace from config, or empty string if not configured.
+func (m *K8sProvider) GetDefaultNamespace() string {
+	cfg, err := config.LoadConfig()
+	if err != nil || cfg == nil {
+		return ""
+	}
+	return cfg.Kubernetes.Namespace
+}
+
+// ApplyPodConfig applies configuration from the config file to a pod spec.
+// Modifies the pod in place.
+func (m *K8sProvider) ApplyPodConfig(techniqueID string, pod *v1.Pod) {
+	cfg, err := config.LoadConfig()
+	if err != nil || cfg == nil {
+		return
+	}
+
+	techniqueConfig := cfg.Kubernetes.GetTechniqueConfig(techniqueID)
+	techniqueConfig.ApplyToPod(pod)
+}
+
+// GetTerraformVariables returns Terraform variables for k8s pod configuration.
+// This is used for techniques that create pods via Terraform rather than Go code.
+func (m *K8sProvider) GetTerraformVariables(techniqueID string) map[string]string {
+	cfg, err := config.LoadConfig()
+	if err != nil || cfg == nil {
+		return nil
+	}
+
+	techniqueConfig := cfg.Kubernetes.GetTechniqueConfig(techniqueID)
+	return techniqueConfig.ToTerraformVariables()
 }
