@@ -10,12 +10,13 @@ import (
 )
 
 var forceWarmup bool
+var warmupNamespace string
 
 func buildWarmupCmd() *cobra.Command {
 	warmupCmd := &cobra.Command{
 		Use:                   "warmup attack-technique-id [attack-technique-id]...",
 		Short:                 "\"Warm up\" an attack technique by spinning up the prerequisite infrastructure or configuration, without detonating it",
-		Example:               "stratus warmup aws.defense-evasion.cloudtrail-stop",
+		Example:               "stratus warmup aws.defense-evasion.cloudtrail-stop\nstratus warmup k8s.credential-access.steal-serviceaccount-token --namespace my-namespace",
 		DisableFlagsInUseLine: true,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {
@@ -40,6 +41,7 @@ func buildWarmupCmd() *cobra.Command {
 		},
 	}
 	warmupCmd.Flags().BoolVarP(&forceWarmup, "force", "f", false, "Force re-ensuring the prerequisite infrastructure or configuration is up to date")
+	warmupCmd.Flags().StringVarP(&warmupNamespace, "namespace", "n", "", "For Kubernetes attack techniques: use an existing namespace instead of creating a new one")
 	return warmupCmd
 }
 
@@ -64,6 +66,9 @@ func doWarmupCmd(techniques []*stratus.AttackTechnique) {
 func warmupCmdWorker(techniques <-chan *stratus.AttackTechnique, errors chan<- error) {
 	for technique := range techniques {
 		stratusRunner := runner.NewRunner(technique, forceWarmup)
+		if warmupNamespace != "" && (technique.Platform == stratus.Kubernetes || technique.Platform == stratus.EKS) {
+			stratusRunner.SetTerraformVariables(map[string]string{"namespace": warmupNamespace})
+		}
 		_, err := stratusRunner.WarmUp()
 		errors <- err
 	}

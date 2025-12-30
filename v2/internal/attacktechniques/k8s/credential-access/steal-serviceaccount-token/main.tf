@@ -7,9 +7,17 @@ terraform {
   }
 }
 
+variable "namespace" {
+  description = "Kubernetes namespace to use. If empty, a new namespace will be created."
+  type        = string
+  default     = ""
+}
+
 locals {
-  kubeconfig_path = pathexpand("~/.kube/config")
-  namespace       = format("stratus-red-team-%s", random_string.suffix.result)
+  kubeconfig_path   = pathexpand("~/.kube/config")
+  create_namespace  = var.namespace == ""
+  generated_ns_name = format("stratus-red-team-%s", random_string.suffix.result)
+  namespace         = local.create_namespace ? local.generated_ns_name : var.namespace
   labels = {
     "datadoghq.com/stratus-red-team" : true
   }
@@ -29,8 +37,9 @@ resource "random_string" "suffix" {
 }
 
 resource "kubernetes_namespace" "namespace" {
+  count = local.create_namespace ? 1 : 0
   metadata {
-    name   = local.namespace
+    name   = local.generated_ns_name
     labels = local.labels
   }
 }
@@ -39,7 +48,7 @@ resource "kubernetes_service_account" "serviceaccount" {
   metadata {
     name      = format("%s-sa", local.resource_prefix)
     labels    = local.labels
-    namespace = kubernetes_namespace.namespace.metadata[0].name
+    namespace = local.namespace
   }
 }
 
@@ -61,7 +70,7 @@ resource "kubernetes_pod" "pod" {
 }
 
 output "namespace" {
-  value = kubernetes_namespace.namespace.metadata[0].name
+  value = local.namespace
 }
 
 output "pod_name" {
@@ -69,5 +78,5 @@ output "pod_name" {
 }
 
 output "display" {
-  value = format("Pod %s in namespace %s ready", kubernetes_pod.pod.metadata[0].name, kubernetes_namespace.namespace.metadata[0].name)
+  value = format("Pod %s in namespace %s ready", kubernetes_pod.pod.metadata[0].name, local.namespace)
 }
