@@ -1,12 +1,13 @@
 ---
 title: detonate
 ---
+
 # `stratus detonate`
 
 Detonates an attack technique.
 
-* If the technique was previously warmed up using `stratus warmup`, it will not be warmed up again.
-* Otherwise, `stratus detonate` will automatically warm up the technique before detonating it.
+- If the technique was previously warmed up using `stratus warmup`, it will not be warmed up again.
+- Otherwise, `stratus detonate` will automatically warm up the technique before detonating it.
 
 ## Sample Usage
 
@@ -20,4 +21,8 @@ stratus detonate aws.exfiltration.s3-backdoor-bucket-policy aws.defense-evasion.
 
 ```bash title="Detonate an attack technique, then automatically clean up any resources deployed on AWS"
 stratus detonate aws.exfiltration.s3-backdoor-bucket-policy --cleanup
+```
+
+```bash title="(Kubernetes) Use an existing namespace instead of creating one"
+stratus detonate k8s.privilege-escalation.privileged-pod --namespace my-namespace
 ```

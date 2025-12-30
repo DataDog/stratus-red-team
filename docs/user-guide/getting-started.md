@@ -26,10 +26,10 @@ alias stratus="docker run --rm -v $HOME/.stratus-red-team/:/root/.stratus-red-te
 
 ## Concepts
 
-An <span class="concept">attack technique</span> is a granular TTP that has *prerequisites* infrastructure or configuration.
+An <span class="concept">attack technique</span> is a granular TTP that has _prerequisites_ infrastructure or configuration.
 You can see the list of attack techniques supported by Stratus Red Team [here](../attack-techniques/list.md).
 
-<span class="concept">Warming up</span> an attack technique means making sure its prerequisites are met, without detonating it. 
+<span class="concept">Warming up</span> an attack technique means making sure its prerequisites are met, without detonating it.
 Warm-up is a preparation phase, before executing the actual attack. Behind the scenes, Stratus Red Team transparently uses Terraform[^1] to spin up and tear down the prerequisites of each attack technique.
 
 <span class="concept">Detonating</span> an attack technique means executing it against a live environment, for instance against a test AWS account.
@@ -158,7 +158,6 @@ export AZURE_SUBSCRIPTION_ID=45e0ad3f-ff94-499a-a2f0-bbb884e9c4a3
     When using Stratus Red Team with Azure, the location in which resources are created cannot be configured and is
     fixed to `West US` (California). See why [here](https://github.com/DataDog/stratus-red-team/discussions/125).
 
-
 ### Microsoft Entra ID
 
 - Use the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) to authenticate against your Azure tenant:
@@ -183,13 +182,40 @@ export GOOGLE_PROJECT=your-project-id
 
 ### Kubernetes
 
-Stratus Red Team does not create a Kubernetes cluster for you. 
+Stratus Red Team does not create a Kubernetes cluster for you.
 Instead, it assumes you're already authenticated against a test Kubernetes cluster with kubectl and uses your default context.
 
 As a rule of thumb, Stratus Red Team detonates attack techniques against the cluster you see when running `kubectl cluster-info`.
 
 Tested with Minikube and AWS EKS.
 
+## Configuration File
+
+For Kubernetes techniques, you can create a configuration file at `~/.stratus-red-team/config.yaml` to customize behavior:
+
+```yaml
+kubernetes:
+  namespace: "security-testing" # Default namespace (overridable with --namespace)
+  defaults:
+    tolerations:
+      - key: "dedicated"
+        operator: "Equal"
+        value: "security"
+        effect: "NoSchedule"
+    nodeSelector:
+      team: "security"
+  techniques:
+    "k8s.privilege-escalation.privileged-pod":
+      image: "your-registry/busybox:stable"
+```
+
+This allows you to:
+
+- Use a specific namespace instead of creating one (if you don't want to give permissions to create namespaces)
+- Override container images (useful when there are restrictions to use only images from private registries)
+- Add tolerations and node selectors for pod scheduling
+
+Set `STRATUS_CONFIG_PATH` environment variable to use a config file at a different location.
 
 Encountering issues? See our [troubleshooting](./troubleshooting.md) page, or [open an issue](https://github.com/DataDog/stratus-red-team/issues/new/choose).
 
