@@ -2,6 +2,7 @@ package config
 
 import (
 	"encoding/json"
+	"maps"
 
 	v1 "k8s.io/api/core/v1"
 )
@@ -24,6 +25,9 @@ type K8sPodConfig struct {
 	// Image overrides the container image (applies to first container)
 	Image string `yaml:"image"`
 
+	// Labels to add to the pod metadata
+	Labels map[string]string `yaml:"labels"`
+
 	// Tolerations to apply to the pod
 	Tolerations []v1.Toleration `yaml:"tolerations"`
 
@@ -33,7 +37,7 @@ type K8sPodConfig struct {
 	// SecurityContext overrides for the first container
 	SecurityContext *v1.SecurityContext `yaml:"securityContext"`
 
-	// TerraformVariables indicates that pod config (image, tolerations, nodeSelector)
+	// TerraformVariables indicates that pod config (image, tolerations, nodeSelector, labels)
 	// should be passed to Terraform as variables instead of being applied via ApplyPodConfig().
 	// Use this for techniques that create pods via Terraform rather than Go code.
 	TerraformVariables bool `yaml:"terraformVariables"`
@@ -48,6 +52,9 @@ func (k *KubernetesConfig) GetTechniqueConfig(techniqueID string) K8sPodConfig {
 		// Override with technique-specific values (non-zero values take precedence)
 		if techniqueConfig.Image != "" {
 			result.Image = techniqueConfig.Image
+		}
+		if len(techniqueConfig.Labels) > 0 {
+			result.Labels = techniqueConfig.Labels
 		}
 		if len(techniqueConfig.Tolerations) > 0 {
 			result.Tolerations = techniqueConfig.Tolerations
@@ -70,6 +77,14 @@ func (c *K8sPodConfig) ApplyToPod(pod *v1.Pod) {
 	// Apply image override to first container
 	if c.Image != "" && len(pod.Spec.Containers) > 0 {
 		pod.Spec.Containers[0].Image = c.Image
+	}
+
+	// Apply labels (merge with existing)
+	if len(c.Labels) > 0 {
+		if pod.ObjectMeta.Labels == nil {
+			pod.ObjectMeta.Labels = make(map[string]string)
+		}
+		maps.Copy(pod.ObjectMeta.Labels, c.Labels)
 	}
 
 	// Apply tolerations
@@ -95,6 +110,13 @@ func (c *K8sPodConfig) ToTerraformVariables() map[string]string {
 
 	if c.Image != "" {
 		vars["image"] = c.Image
+	}
+
+	if len(c.Labels) > 0 {
+		labelsJSON, err := json.Marshal(c.Labels)
+		if err == nil {
+			vars["labels"] = string(labelsJSON)
+		}
 	}
 
 	if len(c.Tolerations) > 0 {

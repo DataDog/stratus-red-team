@@ -7,22 +7,22 @@ terraform {
   }
 }
 
-variable "namespace" {
-  description = "Kubernetes namespace to use. If empty, a new namespace will be created."
-  type        = string
-  default     = ""
-}
-
 variable "image" {
   description = "Container image to use for the pod."
   type        = string
   default     = "public.ecr.aws/docker/library/alpine:3.15.0"
 }
 
-variable "tolerations" {
-  description = "JSON-encoded list of tolerations for the pod."
+variable "labels" {
+  description = "JSON-encoded map of additional labels to apply to pods."
   type        = string
-  default     = "[]"
+  default     = "{}"
+}
+
+variable "namespace" {
+  description = "Kubernetes namespace to use. If empty, a new namespace will be created."
+  type        = string
+  default     = ""
 }
 
 variable "node_selector" {
@@ -31,17 +31,28 @@ variable "node_selector" {
   default     = "{}"
 }
 
+variable "tolerations" {
+  description = "JSON-encoded list of tolerations for the pod."
+  type        = string
+  default     = "[]"
+}
+
 locals {
-  kubeconfig_path   = pathexpand("~/.kube/config")
+  kubeconfig_path = pathexpand("~/.kube/config")
+
+  base_labels = {
+    "datadoghq.com/stratus-red-team" : true
+  }
+  custom_labels = jsondecode(var.labels)
+  labels        = merge(local.base_labels, local.custom_labels)
+
   create_namespace  = var.namespace == ""
   generated_ns_name = format("stratus-red-team-%s", random_string.suffix.result)
   namespace         = local.create_namespace ? local.generated_ns_name : var.namespace
-  labels = {
-    "datadoghq.com/stratus-red-team" : true
-  }
+
+  node_selector   = jsondecode(var.node_selector)
   resource_prefix = "stratus-red-team-ssat" # stratus red team steal service account token
   tolerations     = jsondecode(var.tolerations)
-  node_selector   = jsondecode(var.node_selector)
 }
 
 # Use ~/.kube/config as a configuration file if it exists (with current context).
