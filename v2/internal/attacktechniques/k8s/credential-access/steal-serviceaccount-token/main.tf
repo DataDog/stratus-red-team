@@ -13,6 +13,24 @@ variable "namespace" {
   default     = ""
 }
 
+variable "image" {
+  description = "Container image to use for the pod."
+  type        = string
+  default     = "public.ecr.aws/docker/library/alpine:3.15.0"
+}
+
+variable "tolerations" {
+  description = "JSON-encoded list of tolerations for the pod."
+  type        = string
+  default     = "[]"
+}
+
+variable "node_selector" {
+  description = "JSON-encoded map of node selector labels."
+  type        = string
+  default     = "{}"
+}
+
 locals {
   kubeconfig_path   = pathexpand("~/.kube/config")
   create_namespace  = var.namespace == ""
@@ -22,6 +40,8 @@ locals {
     "datadoghq.com/stratus-red-team" : true
   }
   resource_prefix = "stratus-red-team-ssat" # stratus red team steal service account token
+  tolerations     = jsondecode(var.tolerations)
+  node_selector   = jsondecode(var.node_selector)
 }
 
 # Use ~/.kube/config as a configuration file if it exists (with current context).
@@ -60,11 +80,21 @@ resource "kubernetes_pod" "pod" {
   }
   spec {
     service_account_name = kubernetes_service_account.serviceaccount.metadata[0].name
+    node_selector        = local.node_selector
     container {
-      image   = "public.ecr.aws/docker/library/alpine:3.15.0"
+      image   = var.image
       name    = "main-container"
       command = ["/bin/sh"]
       args    = ["-c", "while true; do sleep 3600; done"]
+    }
+    dynamic "toleration" {
+      for_each = local.tolerations
+      content {
+        key      = toleration.value.key
+        operator = toleration.value.operator
+        value    = toleration.value.value
+        effect   = toleration.value.effect
+      }
     }
   }
 }

@@ -2,15 +2,14 @@ package kubernetes
 
 import (
 	"context"
+	_ "embed"
 	"errors"
+	"log"
+
 	"github.com/aws/smithy-go/ptr"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	v1 "k8s.io/api/core/v1"
-	"log"
-
-	_ "embed"
-
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -18,10 +17,11 @@ import (
 var tf []byte
 
 const codeBlock = "```"
+const techniqueID = "k8s.privilege-escalation.privileged-pod"
 
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
-		ID:                 "k8s.privilege-escalation.privileged-pod",
+		ID:                 techniqueID,
 		FriendlyName:       "Run a Privileged Pod",
 		Platform:           stratus.Kubernetes,
 		IsIdempotent:       false,
@@ -90,7 +90,10 @@ Sample event (shortened):
 func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	client := providers.K8s().GetClient()
 	namespace := params["namespace"]
-	podSpec := podSpec(namespace)
+	podSpec := basePodSpec(namespace)
+
+	// Apply configuration overrides (image, tolerations, nodeSelector, securityContext)
+	providers.K8s().ApplyPodConfig(techniqueID, podSpec)
 
 	log.Println("Creating privileged pod " + podSpec.ObjectMeta.Name)
 	_, err := client.CoreV1().Pods(namespace).Create(context.Background(), podSpec, metav1.CreateOptions{})
@@ -105,7 +108,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 func revert(params map[string]string, providers stratus.CloudProviders) error {
 	client := providers.K8s().GetClient()
 	namespace := params["namespace"]
-	podSpec := podSpec(namespace)
+	podSpec := basePodSpec(namespace)
 
 	log.Println("Removing privileged pod " + podSpec.ObjectMeta.Name)
 	deleteOptions := metav1.DeleteOptions{GracePeriodSeconds: ptr.Int64(0)}
@@ -117,10 +120,10 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 	return nil
 }
 
-func podSpec(namespace string) *v1.Pod {
+func basePodSpec(namespace string) *v1.Pod {
 	return &v1.Pod{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      "k8s.privilege-escalation.privileged-pod",
+			Name:      techniqueID,
 			Namespace: namespace,
 		},
 		Spec: v1.PodSpec{
