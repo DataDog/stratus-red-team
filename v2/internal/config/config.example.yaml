@@ -1,0 +1,43 @@
+# Stratus Red Team Configuration
+# Place this file at ~/.stratus-red-team/config.yaml
+# or set STRATUS_CONFIG_PATH environment variable to point to it
+
+kubernetes:
+  # Namespace for k8s techniques. If not set, Stratus Red Team will create one during warmup.
+  namespace: "security-testing"
+
+  # Default pod configuration applied to all k8s techniques
+  defaults:
+    # Labels added to all pods (e.g., for network policy exceptions)
+    labels:
+      cnp-selector-label: "my-selector-allowing-egress"
+    tolerations:
+      - key: "dedicated"
+        operator: "Equal"
+        value: "security"
+        effect: "NoSchedule"
+    nodeSelector:
+      team: "security"
+
+  # Per-technique configuration overrides
+  # Key is the technique ID (use 'stratus list --platform kubernetes' to see IDs)
+  techniques:
+    "k8s.privilege-escalation.privileged-pod":
+      image: "your-registry.example.com/busybox:stable"
+      labels:
+        your-custom-key: "other-value-used-for-CNP-matching"
+      tolerations:
+        - key: "node"
+          operator: "Equal"
+          value: "privileged-testing"
+          effect: "NoSchedule"
+      securityContext:
+        privileged: true
+
+    "k8s.privilege-escalation.hostpath-volume":
+      image: "your-registry.example.com/busybox:stable"
+
+    "k8s.credential-access.steal-serviceaccount-token":
+      image: "your-registry.example.com/alpine:3.15.0"
+      labels:
+        app: "stratus-red-team-specific-label-used-for-monitoring"
