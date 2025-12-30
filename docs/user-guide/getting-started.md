@@ -207,6 +207,7 @@ kubernetes:
   techniques:
     "k8s.privilege-escalation.privileged-pod":
       image: "your-registry/busybox:stable"
+      tolerations: ...
 ```
 
 This allows you to:
@@ -214,6 +215,7 @@ This allows you to:
 - Use a specific namespace instead of creating one (if you don't want to give permissions to create namespaces)
 - Override container images (useful when there are restrictions to use only images from private registries)
 - Add tolerations and node selectors for pod scheduling
+- Add labels (CNP policy selectors, monitoring...)
 
 Set `STRATUS_CONFIG_PATH` environment variable to use a config file at a different location.
 

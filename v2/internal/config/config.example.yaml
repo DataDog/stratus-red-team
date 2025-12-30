@@ -8,6 +8,9 @@ kubernetes:
 
   # Default pod configuration applied to all k8s techniques
   defaults:
+    # Labels added to all pods (e.g., for network policy exceptions)
+    labels:
+      cnp-selector-label: "my-selector-allowing-egress"
     tolerations:
       - key: "dedicated"
         operator: "Equal"
@@ -23,6 +26,8 @@ kubernetes:
     # Pod config is applied via ApplyPodConfig() during detonation
     "k8s.privilege-escalation.privileged-pod":
       image: "your-registry.example.com/busybox:stable"
+      labels:
+        your-custom-key: "other-value-used-for-CNP-matching"
       tolerations:
         - key: "node"
           operator: "Equal"
@@ -35,7 +40,9 @@ kubernetes:
       image: "your-registry.example.com/busybox:stable"
 
     # Techniques that create pods via Terraform need terraformVariables: true
-    # This passes image/tolerations/nodeSelector as Terraform variables
+    # This passes image/tolerations/nodeSelector/labels as Terraform variables
     "k8s.credential-access.steal-serviceaccount-token":
       image: "your-registry.example.com/alpine:3.15.0"
+      labels:
+        app: "stratus-red-team-specific-label-used-for-monitoring"
       terraformVariables: true

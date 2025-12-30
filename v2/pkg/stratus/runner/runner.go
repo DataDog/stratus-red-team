@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"log"
+	"maps"
 	"os"
 	"path/filepath"
 	"strings"
@@ -309,18 +310,14 @@ func (m *runnerImpl) getMergedTerraformVariables() map[string]string {
 			techniqueConfig := cfg.Kubernetes.GetTechniqueConfig(m.Technique.ID)
 			if techniqueConfig.TerraformVariables {
 				if tfVars := techniqueConfig.ToTerraformVariables(); tfVars != nil {
-					for k, v := range tfVars {
-						result[k] = v
-					}
+					maps.Copy(result, tfVars)
 				}
 			}
 		}
 	}
 
 	// Explicitly set variables (from CLI) take precedence
-	for k, v := range m.TerraformVariables {
-		result[k] = v
-	}
+	maps.Copy(result, m.TerraformVariables)
 
 	if len(result) == 0 {
 		return nil
