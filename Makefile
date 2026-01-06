@@ -1,4 +1,5 @@
 BUILD_VERSION := dev-snapshot
+TECHNIQUE_IMPORTS ?=
 
 MAKEFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
 ROOT_DIR := $(dir $(MAKEFILE_PATH))
@@ -18,6 +19,8 @@ GOFLAGS := -ldflags="-X main.BuildVersion=$(BUILD_VERSION) -w"
 all: build
 
 build:
+	@echo "Generating technique imports..."
+	@cd v2 && TECHNIQUE_IMPORTS="$(TECHNIQUE_IMPORTS)" go generate ./internal/attacktechniques
 	@echo "Building Stratus..."
 	@cd v2 && go build $(GOFLAGS) -o $(BIN_DIR)/stratus cmd/stratus/*.go
 	@echo "Build completed. Binaries are saved in $(BIN_DIR)"
