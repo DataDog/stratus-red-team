@@ -1,3 +1,5 @@
+//go:build entraid || allproviders
+
 package providers
 
 import (

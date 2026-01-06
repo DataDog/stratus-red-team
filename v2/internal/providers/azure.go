@@ -1,3 +1,5 @@
+//go:build azure || allproviders
+
 package providers
 
 import (

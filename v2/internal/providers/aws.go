@@ -1,3 +1,5 @@
+//go:build aws || allproviders
+
 package providers
 
 import (

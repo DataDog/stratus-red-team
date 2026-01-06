@@ -1,3 +1,5 @@
+//go:build eks || allproviders
+
 package providers
 
 import (

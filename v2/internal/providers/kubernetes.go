@@ -1,3 +1,5 @@
+//go:build kubernetes || allproviders
+
 package providers
 
 import (

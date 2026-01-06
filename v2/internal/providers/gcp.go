@@ -1,3 +1,5 @@
+//go:build gcp || allproviders
+
 package providers
 
 import (

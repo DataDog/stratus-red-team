@@ -10,8 +10,21 @@ export GO111MODULE=on
 # Define binaries directory
 BIN_DIR := $(ROOT_DIR)/bin
 
+# Determine which providers are needed based on TECHNIQUE_IMPORTS
+# If TECHNIQUE_IMPORTS is empty, use allproviders tag (default behavior)
+# Otherwise, parse the imports to determine required providers
+ifeq ($(strip $(TECHNIQUE_IMPORTS)),)
+    BUILD_TAGS := allproviders
+else
+    # Extract provider tags from technique imports
+    PROVIDERS_NEEDED := $(shell echo "$(TECHNIQUE_IMPORTS)" | tr ',' '\n' | grep -oE '/(aws|azure|gcp|k8s|eks|entra-id)/' | tr -d '/' | sort -u | tr '\n' ',' | sed 's/,$$//')
+    # Convert entra-id to entraid for build tag
+    PROVIDERS_NEEDED := $(shell echo "$(PROVIDERS_NEEDED)" | sed 's/entra-id/entraid/g')
+    BUILD_TAGS := $(PROVIDERS_NEEDED)
+endif
+
 # Define go flags
-GOFLAGS := -ldflags="-X main.BuildVersion=$(BUILD_VERSION) -w"
+GOFLAGS := -ldflags="-X main.BuildVersion=$(BUILD_VERSION) -w" -tags="$(BUILD_TAGS)"
 
 .PHONY: build docs test thirdparty-licenses mocks
 
@@ -21,7 +34,7 @@ all: build
 build:
 	@echo "Generating technique imports..."
 	@cd v2 && TECHNIQUE_IMPORTS="$(TECHNIQUE_IMPORTS)" go generate ./internal/attacktechniques
-	@echo "Building Stratus..."
+	@echo "Building Stratus with tags: $(BUILD_TAGS)"
 	@cd v2 && go build $(GOFLAGS) -o $(BIN_DIR)/stratus cmd/stratus/*.go
 	@echo "Build completed. Binaries are saved in $(BIN_DIR)"
 

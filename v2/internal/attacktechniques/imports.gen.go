@@ -2,5 +2,5 @@
 
 package attacktechniques
 import (
-    _ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/discovery/ses-enumerate"
+    _ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/persistence/backdoor-service-account-policy"
 )
