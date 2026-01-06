@@ -33,6 +33,11 @@ type AttackTechnique struct {
 	// Terraform code to apply to create the necessary prerequisites for the technique to be detonated
 	PrerequisitesTerraformCode []byte `yaml:"-"`
 
+	// PodConfigViaTerraform indicates that this technique creates pods via Terraform
+	// rather than Go code. When true, pod configuration (image, tolerations, nodeSelector, labels)
+	// is passed as Terraform variables during warm-up instead of being applied via ApplyPodConfig().
+	PodConfigViaTerraform bool `yaml:"-"`
+
 	// Detonation function
 	// Parameters are the Terraform outputs
 	Detonate func(params map[string]string, providerFactory CloudProviders) error `yaml:"-"`

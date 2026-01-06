@@ -22,7 +22,7 @@ type KubernetesConfig struct {
 
 // K8sPodConfig holds pod-level configuration that can be applied to k8s pods
 type K8sPodConfig struct {
-	// Image overrides the container image (applies to first container)
+	// Image overrides the container image
 	Image string `yaml:"image"`
 
 	// Labels to add to the pod metadata
@@ -34,17 +34,11 @@ type K8sPodConfig struct {
 	// NodeSelector to apply to the pod
 	NodeSelector map[string]string `yaml:"nodeSelector"`
 
-	// SecurityContext overrides for the first container
+	// SecurityContext overrides
 	SecurityContext *v1.SecurityContext `yaml:"securityContext"`
-
-	// TerraformVariables indicates that pod config (image, tolerations, nodeSelector, labels)
-	// should be passed to Terraform as variables instead of being applied via ApplyPodConfig().
-	// Use this for techniques that create pods via Terraform rather than Go code.
-	TerraformVariables bool `yaml:"terraformVariables"`
 }
 
 // GetTechniqueConfig returns the merged configuration for a specific technique.
-// It merges defaults with technique-specific overrides (technique config takes precedence).
 func (k *KubernetesConfig) GetTechniqueConfig(techniqueID string) K8sPodConfig {
 	result := k.Defaults
 
@@ -65,8 +59,6 @@ func (k *KubernetesConfig) GetTechniqueConfig(techniqueID string) K8sPodConfig {
 		if techniqueConfig.SecurityContext != nil {
 			result.SecurityContext = techniqueConfig.SecurityContext
 		}
-		// TerraformVariables is per-technique only, not inherited from defaults
-		result.TerraformVariables = techniqueConfig.TerraformVariables
 	}
 
 	return result
@@ -79,7 +71,8 @@ func (c *K8sPodConfig) ApplyToPod(pod *v1.Pod) {
 		pod.Spec.Containers[0].Image = c.Image
 	}
 
-	// Apply labels (merge with existing)
+	// Merge existing spec with configuration
+
 	if len(c.Labels) > 0 {
 		if pod.ObjectMeta.Labels == nil {
 			pod.ObjectMeta.Labels = make(map[string]string)
@@ -87,24 +80,27 @@ func (c *K8sPodConfig) ApplyToPod(pod *v1.Pod) {
 		maps.Copy(pod.ObjectMeta.Labels, c.Labels)
 	}
 
-	// Apply tolerations
 	if len(c.Tolerations) > 0 {
-		pod.Spec.Tolerations = c.Tolerations
+		if pod.Spec.Tolerations == nil {
+			pod.Spec.Tolerations = make([]v1.Toleration, 0)
+		}
+		pod.Spec.Tolerations = append(pod.Spec.Tolerations, c.Tolerations...)
 	}
 
-	// Apply node selector
 	if len(c.NodeSelector) > 0 {
-		pod.Spec.NodeSelector = c.NodeSelector
+		if pod.Spec.NodeSelector == nil {
+			pod.Spec.NodeSelector = make(map[string]string)
+		}
+		maps.Copy(pod.Spec.NodeSelector, c.NodeSelector)
 	}
 
-	// Apply security context to first container
+	// TODO: Allow merging security context rather than overriding completely.
 	if c.SecurityContext != nil && len(pod.Spec.Containers) > 0 {
 		pod.Spec.Containers[0].SecurityContext = c.SecurityContext
 	}
 }
 
-// ToTerraformVariables converts the config to Terraform variables for k8s techniques
-// that create pods via Terraform. Returns nil if no config values are set.
+// ToTerraformVariables converts the config to Terraform variables.
 func (c *K8sPodConfig) ToTerraformVariables() map[string]string {
 	vars := make(map[string]string)
 

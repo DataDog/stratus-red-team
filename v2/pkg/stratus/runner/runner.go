@@ -21,6 +21,21 @@ const StratusRunnerNoForce = false
 
 const EnvVarStratusRedTeamDetonationId = "STRATUS_RED_TEAM_DETONATION_ID"
 
+// RunnerOption is a functional option for configuring a Runner.
+type RunnerOption func(r *runnerImpl)
+
+// WithNamespace sets the namespace for Kubernetes/EKS techniques.
+func WithNamespace(namespace string) RunnerOption {
+	return func(r *runnerImpl) {
+		if namespace != "" && (r.Technique.Platform == stratus.Kubernetes || r.Technique.Platform == stratus.EKS) {
+			if r.TerraformVariables == nil {
+				r.TerraformVariables = make(map[string]string)
+			}
+			r.TerraformVariables["namespace"] = namespace
+		}
+	}
+}
+
 type runnerImpl struct {
 	Technique           *stratus.AttackTechnique
 	TechniqueState      stratus.AttackTechniqueState
@@ -41,16 +56,15 @@ type Runner interface {
 	CleanUp() error
 	GetState() stratus.AttackTechniqueState
 	GetUniqueExecutionId() string
-	SetTerraformVariables(variables map[string]string)
 }
 
 var _ Runner = &runnerImpl{}
 
-func NewRunner(technique *stratus.AttackTechnique, force bool) Runner {
-	return NewRunnerWithContext(context.Background(), technique, force)
+func NewRunner(technique *stratus.AttackTechnique, force bool, opts ...RunnerOption) Runner {
+	return NewRunnerWithContext(context.Background(), technique, force, opts...)
 }
 
-func NewRunnerWithContext(ctx context.Context, technique *stratus.AttackTechnique, force bool) Runner {
+func NewRunnerWithContext(ctx context.Context, technique *stratus.AttackTechnique, force bool, opts ...RunnerOption) Runner {
 	stateManager := state.NewFileSystemStateManager(technique)
 
 	var correlationId = uuid.New()
@@ -74,6 +88,11 @@ func NewRunnerWithContext(ctx context.Context, technique *stratus.AttackTechniqu
 		),
 		Context: ctx,
 	}
+
+	for _, opt := range opts {
+		opt(runner)
+	}
+
 	runner.initialize()
 
 	return runner
@@ -132,6 +151,10 @@ func (m *runnerImpl) WarmUp() (map[string]string, error) {
 
 	// Resources are created, set state to warm
 	m.setState(stratus.AttackTechniqueStatusWarm)
+	if display, ok := outputs["display"]; ok {
+		display := strings.ReplaceAll(display, "\\n", "\n")
+		log.Println(display)
+	}
 
 	// Persist outputs and variables to disk
 	err = m.StateManager.WriteTerraformOutputs(outputs)
@@ -145,10 +168,6 @@ func (m *runnerImpl) WarmUp() (map[string]string, error) {
 		}
 	}
 
-	if display, ok := outputs["display"]; ok {
-		display := strings.ReplaceAll(display, "\\n", "\n")
-		log.Println(display)
-	}
 	return outputs, nil
 }
 
@@ -235,18 +254,15 @@ func (m *runnerImpl) CleanUp() error {
 
 	// Nuke prerequisites
 	if m.Technique.PrerequisitesTerraformCode != nil {
-		// Load persisted Terraform variables if not already set
-		if len(m.TerraformVariables) == 0 {
-			persistedVars, err := m.StateManager.GetTerraformVariables()
-			if err != nil {
-				log.Println("Warning: unable to load persisted Terraform variables: " + err.Error())
-			} else if len(persistedVars) > 0 {
-				m.TerraformVariables = persistedVars
-			}
+		// Load persisted Terraform variables from filesystem. We don't use the variables from the
+		// config file, that may have change since warmup, so we rely only on the persisted variables.
+		persistedVars, err := m.StateManager.GetTerraformVariables()
+		if err != nil {
+			log.Println("Warning: unable to load persisted Terraform variables: " + err.Error())
 		}
 
 		log.Println("Cleaning up technique prerequisites with terraform destroy")
-		err := m.TerraformManager.TerraformDestroy(m.TerraformDir, m.TerraformVariables)
+		err = m.TerraformManager.TerraformDestroy(m.TerraformDir, persistedVars)
 		if err != nil {
 			if errors.Is(err, context.Canceled) {
 				return err
@@ -283,16 +299,11 @@ func (m *runnerImpl) GetUniqueExecutionId() string {
 	return m.UniqueCorrelationID.String()
 }
 
-// SetTerraformVariables sets variables to be passed to Terraform during apply/destroy.
-// These variables are merged with any config file variables, with explicitly set variables taking precedence.
-func (m *runnerImpl) SetTerraformVariables(variables map[string]string) {
-	m.TerraformVariables = variables
-}
-
-// getMergedTerraformVariables returns the terraform variables to use, merging:
-// 1. Config file namespace for k8s techniques
-// 2. Pod config (image, tolerations, nodeSelector) if technique has terraformVariables: true
-// 3. Explicitly set variables via SetTerraformVariables (CLI flags)
+// getMergedTerraformVariables returns the terraform variables to use by merging, in increasing order of precedence:
+//  1. From config file: namespace for k8s techniques
+//  2. From config file:Pod specific config (image, tolerations...) if technique has PodConfigViaTerraform
+//  3. From CLI: Explicitly set variables via RunnerOptions
+//
 // Explicit variables take precedence over config file values.
 func (m *runnerImpl) getMergedTerraformVariables() map[string]string {
 	result := make(map[string]string)
@@ -306,9 +317,9 @@ func (m *runnerImpl) getMergedTerraformVariables() map[string]string {
 				result["namespace"] = cfg.Kubernetes.Namespace
 			}
 
-			// Add pod config as TF variables if technique has terraformVariables: true
-			techniqueConfig := cfg.Kubernetes.GetTechniqueConfig(m.Technique.ID)
-			if techniqueConfig.TerraformVariables {
+			// Add pod config as TF variables if technique creates pods via Terraform
+			if m.Technique.PodConfigViaTerraform {
+				techniqueConfig := cfg.Kubernetes.GetTechniqueConfig(m.Technique.ID)
 				if tfVars := techniqueConfig.ToTerraformVariables(); tfVars != nil {
 					maps.Copy(result, tfVars)
 				}
@@ -316,7 +327,7 @@ func (m *runnerImpl) getMergedTerraformVariables() map[string]string {
 		}
 	}
 
-	// Explicitly set variables (from CLI) take precedence
+	// Explicitly defined variables (from CLI) take precedence
 	maps.Copy(result, m.TerraformVariables)
 
 	if len(result) == 0 {

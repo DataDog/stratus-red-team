@@ -65,10 +65,7 @@ func doWarmupCmd(techniques []*stratus.AttackTechnique) {
 
 func warmupCmdWorker(techniques <-chan *stratus.AttackTechnique, errors chan<- error) {
 	for technique := range techniques {
-		stratusRunner := runner.NewRunner(technique, forceWarmup)
-		if warmupNamespace != "" && (technique.Platform == stratus.Kubernetes || technique.Platform == stratus.EKS) {
-			stratusRunner.SetTerraformVariables(map[string]string{"namespace": warmupNamespace})
-		}
+		stratusRunner := runner.NewRunner(technique, forceWarmup, runner.WithNamespace(warmupNamespace))
 		_, err := stratusRunner.WarmUp()
 		errors <- err
 	}

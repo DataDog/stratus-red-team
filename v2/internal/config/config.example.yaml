@@ -22,8 +22,6 @@ kubernetes:
   # Per-technique configuration overrides
   # Key is the technique ID (use 'stratus list --platform kubernetes' to see IDs)
   techniques:
-    # Techniques that create pods via Go code (default behavior)
-    # Pod config is applied via ApplyPodConfig() during detonation
     "k8s.privilege-escalation.privileged-pod":
       image: "your-registry.example.com/busybox:stable"
       labels:
@@ -39,10 +37,7 @@ kubernetes:
     "k8s.privilege-escalation.hostpath-volume":
       image: "your-registry.example.com/busybox:stable"
 
-    # Techniques that create pods via Terraform need terraformVariables: true
-    # This passes image/tolerations/nodeSelector/labels as Terraform variables
     "k8s.credential-access.steal-serviceaccount-token":
       image: "your-registry.example.com/alpine:3.15.0"
       labels:
         app: "stratus-red-team-specific-label-used-for-monitoring"
-      terraformVariables: true
