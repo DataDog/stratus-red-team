@@ -3,14 +3,15 @@ package kubernetes
 import (
 	_ "embed"
 	"errors"
+	"log"
+	"strings"
+
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"github.com/golang-jwt/jwt/v4"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/tools/remotecommand"
-	"log"
-	"strings"
 )
 
 //go:embed main.tf
@@ -78,6 +79,7 @@ Sample event (shortened):
 ` + codeBlock + `
 `,
 		PrerequisitesTerraformCode: tf,
+		PodConfigViaTerraform:      true,
 		Detonate:                   detonate,
 	})
 }

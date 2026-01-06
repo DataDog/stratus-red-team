@@ -20,7 +20,6 @@ type Config struct {
 }
 
 // LoadConfig loads configuration from file.
-// Returns nil config (not an error) if no config file exists.
 func LoadConfig() (*Config, error) {
 	configPath := getConfigPath()
 	if configPath == "" {

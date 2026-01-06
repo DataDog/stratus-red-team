@@ -124,8 +124,7 @@ func (m *K8sProvider) GetDefaultNamespace() string {
 	return cfg.Kubernetes.Namespace
 }
 
-// ApplyPodConfig applies configuration from the config file to a pod spec.
-// Modifies the pod in place.
+// ApplyPodConfig applies configuration from the config file to a pod spec. Modifies the pod in place.
 func (m *K8sProvider) ApplyPodConfig(techniqueID string, pod *v1.Pod) {
 	cfg, err := config.LoadConfig()
 	if err != nil || cfg == nil {
