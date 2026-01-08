@@ -1,0 +1,12 @@
+{
+  "name": "stratus-red-team-infostealer",
+  "version": "1.0.0",
+  "description": "Simulated infostealer for Stratus Red Team - does NOT exfiltrate real data",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "dependencies": {
+    "malicious-package": "file:./malicious-package"
+  }
+}

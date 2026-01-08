@@ -2,7 +2,7 @@ terraform {
   required_providers {
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "2.13.0"
+      version = "2.7.1"
     }
   }
 }
@@ -47,11 +47,11 @@ locals {
   labels        = merge(local.base_labels, local.custom_labels)
 
   create_namespace  = var.namespace == ""
-  generated_ns_name = format("stratus-red-team-%s", random_string.suffix.result)
+  generated_ns_name = format("stratus-red-team-infostealer-%s", random_string.suffix.result)
   namespace         = local.create_namespace ? local.generated_ns_name : var.namespace
 
   node_selector   = jsondecode(var.node_selector)
-  resource_prefix = "stratus-red-team-ssat" # stratus red team steal service account token
+  resource_prefix = "stratus-red-team-infostealer"
   tolerations     = jsondecode(var.tolerations)
 }
 
@@ -75,14 +75,6 @@ resource "kubernetes_namespace" "namespace" {
   }
 }
 
-resource "kubernetes_service_account" "serviceaccount" {
-  metadata {
-    name      = format("%s-sa", local.resource_prefix)
-    labels    = local.base_labels
-    namespace = local.namespace
-  }
-}
-
 resource "kubernetes_pod" "pod" {
   metadata {
     name      = format("%s-pod", local.resource_prefix)
@@ -90,8 +82,7 @@ resource "kubernetes_pod" "pod" {
     namespace = local.namespace
   }
   spec {
-    service_account_name = kubernetes_service_account.serviceaccount.metadata[0].name
-    node_selector        = local.node_selector
+    node_selector = local.node_selector
     container {
       image   = var.image
       name    = "main-container"
@@ -109,6 +100,7 @@ resource "kubernetes_pod" "pod" {
     }
   }
 }
+
 
 output "namespace" {
   value = local.namespace

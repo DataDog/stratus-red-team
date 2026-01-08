@@ -1,0 +1,13 @@
+{
+  "name": "malicious-package",
+  "version": "1.0.0",
+  "description": "Simulated malicious package for Stratus Red Team",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "node index.js"
+  },
+  "dependencies": {
+    "semver": "^7.6.0"
+  }
+}
+

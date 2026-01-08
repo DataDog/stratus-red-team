@@ -67,6 +67,7 @@ import (
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/privilege-escalation/impersonate-service-accounts"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/k8s/credential-access/dump-secrets"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/k8s/credential-access/steal-serviceaccount-token"
+	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/k8s/exfiltration/infostealer"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/k8s/persistence/create-admin-clusterrole"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/k8s/persistence/create-client-certificate"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/k8s/persistence/create-token"
