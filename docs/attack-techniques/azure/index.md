@@ -20,3 +20,7 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   
   - [Export Disk Through SAS URL](./azure.exfiltration.disk-export.md)
   
+  - [Exfiltrate Azure Storage via public access](./azure.exfiltration.storage-public-access.md)
+  
+  - [Exfiltrate Azure Storage through SAS URL](./azure.exfiltration.storage-sas-export.md)
+  
