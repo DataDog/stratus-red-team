@@ -16,9 +16,11 @@ permissions:
 jobs:
   goreleaser:
     timeout-minutes: 60
-    runs-on:
-      group: Large Runner Shared Public
-      labels: ubuntu-16-core-latest
+    runs-on: ubuntu-4-core-latest
+    # Original config (restore after debugging):
+    # runs-on:
+    #   group: Large Runner Shared Public
+    #   labels: ubuntu-16-core-latest
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a
