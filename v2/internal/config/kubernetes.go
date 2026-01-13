@@ -9,7 +9,7 @@ import (
 
 // KubernetesConfig holds Kubernetes-specific configuration
 type KubernetesConfig struct {
-	// Namespace is the default namespace for k8s techniques (overridable by --namespace CLI flag)
+	// Namespace is the default namespace for k8s techniques
 	Namespace string `yaml:"namespace"`
 
 	// Defaults are applied to all k8s pods unless overridden per-technique

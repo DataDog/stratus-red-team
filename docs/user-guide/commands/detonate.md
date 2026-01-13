@@ -22,7 +22,3 @@ stratus detonate aws.exfiltration.s3-backdoor-bucket-policy aws.defense-evasion.
 ```bash title="Detonate an attack technique, then automatically clean up any resources deployed on AWS"
 stratus detonate aws.exfiltration.s3-backdoor-bucket-policy --cleanup
 ```
-
-```bash title="(Kubernetes) Use an existing namespace instead of creating one"
-stratus detonate k8s.privilege-escalation.privileged-pod --namespace my-namespace
-```
