@@ -46,7 +46,7 @@ Detonation:
 - Download test file from the public container
 `,
 		Detection: `
-Monitor Azure Activity Logs for storage account property changes, specifically <code>Microsoft.Storage/storageAccounts/write</code> operations that modify network access rules.
+Monitor Azure Activity Logs for storage account property changes, specifically <code>Microsoft.Storage/storageAccounts/write</code> operations that modify storage access policies.
 
 Sample Azure Activity Log event to monitor:
 
@@ -62,9 +62,6 @@ Sample Azure Activity Log event to monitor:
         "message": "Microsoft.Storage/storageAccounts/write",
         "hierarchy": "[REMOVED]"
     }
-` + codeBlock + `
-
-Also monitor for unusual blob download activity from newly allowed IP addresses.
 `,
 		Platform:                   stratus.Azure,
 		IsIdempotent:               true,

@@ -22,11 +22,12 @@ import (
 var tf []byte
 
 func init() {
+	const codeBlock = "```"
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
 		ID:           "azure.exfiltration.storage-sas-export",
 		FriendlyName: "Exfiltrate Azure Storage through SAS URL",
 		Description: `
-[Generate a Shared Access Signature (SAS) to download content in an Azure storage account.
+Generate a Shared Access Signature (SAS) to download content in an Azure storage account.
 
 References:
 
@@ -44,7 +45,21 @@ Detonation:
 - Download test file from the container using SAS URL
 `,
 		Detection: `
-[TODO: Add detection guidance on generating SAS URL]
+Monitor Azure Activity Logs for storage account property changes, specifically <code>Microsoft.Storage/storageAccounts/listKeys/action</code> operations. Once an attacker has accessed storage keys, they are able to generate a SAS URL for any storage the key has access to.
+
+Sample Azure Activity Log event to monitor:
+
+` + codeBlock + `json hl_lines="1 5"
+    "operationName": {
+        "value": "Microsoft.Storage/storageAccounts/listKeys/action",
+        "localizedValue": "List Storage Account Keys"
+    },
+	"properties": {
+        "eventCategory": "Administrative",
+        "entity": "/subscriptions/[SUBSCRIPTION-ID]/resourceGroups/stratus-red-team-storage-storage-27n4/providers/Microsoft.Storage/storageAccounts/stratusredteamexport",
+        "message": "Microsoft.Storage/storageAccounts/listKeys/action",
+        "hierarchy": "[REMOVED]"
+    }
 `,
 		Platform:                   stratus.Azure,
 		IsIdempotent:               true,
