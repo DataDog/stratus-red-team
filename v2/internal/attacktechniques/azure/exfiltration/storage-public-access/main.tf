@@ -20,7 +20,7 @@ resource "random_string" "suffix" {
 locals {
   resource_prefix = "stratus-red-team-storage"
   # Storage account names must be between 3 and 24 characters in length and use numbers and lower-case letters only
-  storage_account_name = "stratusredteamstorage"
+  storage_account_name = "stratusredteampublic"
   container_name       = "private-data"
 }
 
@@ -37,7 +37,6 @@ resource "azurerm_storage_account" "storage" {
   account_replication_type = "LRS"
   # Set storage account to disable blob anonymous access
   allow_nested_items_to_be_public = false
-
 }
 
 resource "azurerm_storage_container" "container" {
