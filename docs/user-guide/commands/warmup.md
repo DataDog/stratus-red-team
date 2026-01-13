@@ -21,7 +21,3 @@ stratus warmup aws.exfiltration.ec2-share-ami aws.exfiltration.s3-backdoor-bucke
 ```bash title="(advanced) Warm up again an attack technique that was already WARM, to ensure its prerequisites are met"
 stratus warmup aws.exfiltration.ec2-share-ami --force
 ```
-
-```bash title="(Kubernetes) Use an existing namespace instead of creating one"
-stratus warmup k8s.credential-access.steal-serviceaccount-token --namespace my-namespace
-```

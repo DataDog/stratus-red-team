@@ -3,7 +3,7 @@
 # or set STRATUS_CONFIG_PATH environment variable to point to it
 
 kubernetes:
-  # Default namespace for k8s techniques (can be overridden with --namespace CLI flag)
+  # Namespace for k8s techniques. If not set, Stratus Red Team will create one during warmup.
   namespace: "security-testing"
 
   # Default pod configuration applied to all k8s techniques

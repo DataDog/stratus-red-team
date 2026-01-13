@@ -13,7 +13,6 @@ import (
 
 var detonateForce bool
 var detonateCleanup bool
-var detonateNamespace string
 
 func buildDetonateCmd() *cobra.Command {
 	detonateCmd := &cobra.Command{
@@ -22,7 +21,6 @@ func buildDetonateCmd() *cobra.Command {
 		Example: strings.Join([]string{
 			"stratus detonate aws.defense-evasion.cloudtrail-stop",
 			"stratus detonate aws.defense-evasion.cloudtrail-stop --cleanup",
-			"stratus detonate k8s.credential-access.steal-serviceaccount-token --namespace my-namespace",
 		}, "\n"),
 		DisableFlagsInUseLine: true,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
@@ -50,7 +48,6 @@ func buildDetonateCmd() *cobra.Command {
 	detonateCmd.Flags().BoolVarP(&detonateCleanup, "cleanup", "", false, "Clean up the infrastructure that was spun up as part of the technique prerequisites")
 	//detonateCmd.Flags().BoolVarP(&detonateNoWarmup, "no-warmup", "", false, "Do not spin up prerequisite infrastructure or configuration. Requires that 'warmup' was used before.")
 	detonateCmd.Flags().BoolVarP(&detonateForce, "force", "f", false, "Force detonation in cases where the technique is not idempotent and has already been detonated")
-	detonateCmd.Flags().StringVarP(&detonateNamespace, "namespace", "n", "", "For Kubernetes attack techniques: use an existing namespace instead of creating a new one")
 
 	return detonateCmd
 }
@@ -78,7 +75,7 @@ func doDetonateCmd(techniques []*stratus.AttackTechnique, cleanup bool) {
 
 func detonateCmdWorker(techniques <-chan *stratus.AttackTechnique, errors chan<- error) {
 	for technique := range techniques {
-		stratusRunner := runner.NewRunner(technique, detonateForce, runner.WithNamespace(detonateNamespace))
+		stratusRunner := runner.NewRunner(technique, detonateForce)
 		detonateErr := stratusRunner.Detonate()
 		if detonateCleanup {
 			cleanupErr := stratusRunner.CleanUp()

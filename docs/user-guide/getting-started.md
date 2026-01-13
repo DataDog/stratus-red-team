@@ -195,7 +195,7 @@ For Kubernetes techniques, you can create a configuration file at `~/.stratus-re
 
 ```yaml
 kubernetes:
-  namespace: "security-testing" # Default namespace (overridable with --namespace)
+  namespace: "security-testing" # Namespace for k8s techniques
   defaults:
     tolerations:
       - key: "dedicated"
