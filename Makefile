@@ -41,6 +41,7 @@ thirdparty-licenses:
 
 mocks:
 	@echo "Generating mocks..."
+	@cd v2 && mockery --name=Config --dir internal/config --output internal/config/mocks
 	@cd v2 && mockery --name=StateManager --dir internal/state --output internal/state/mocks
 	@cd v2 && mockery --name=TerraformManager --dir pkg/stratus/runner --output pkg/stratus/runner/mocks
 	@cd v2 && mockery --name=FileSystem --structname FileSystemMock --dir internal/state --output internal/state/mocks

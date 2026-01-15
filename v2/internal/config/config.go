@@ -19,12 +19,19 @@ const (
 //
 // It is used to override techniques specifications. It can set variables in Terraform, or be called
 // directly in the technique code.
-type Config struct {
+type Config interface {
+	GetKubernetesConfig() KubernetesConfig
+	GetTerraformVariables(techniqueID string, overrides []string) map[string]string
+}
+
+type ConfigImpl struct {
 	Kubernetes KubernetesConfig `yaml:"kubernetes"`
 }
 
+var _ Config = &ConfigImpl{}
+
 // LoadConfig loads configuration from file.
-func LoadConfig() (*Config, error) {
+func LoadConfig() (Config, error) {
 	configPath := getConfigPath()
 	if configPath == "" {
 		return nil, nil
@@ -35,7 +42,7 @@ func LoadConfig() (*Config, error) {
 		return nil, err
 	}
 
-	var config Config
+	var config ConfigImpl
 	if err := yaml.Unmarshal(data, &config); err != nil {
 		return nil, err
 	}
@@ -74,6 +81,10 @@ func fileExists(path string) bool {
 	return err == nil
 }
 
+func (c *ConfigImpl) GetKubernetesConfig() KubernetesConfig {
+	return c.Kubernetes
+}
+
 /*
  * Terraform variables
  *
@@ -87,7 +98,7 @@ func fileExists(path string) bool {
 type TerraformConfigVariable string
 
 // GetTerraformVariables returns the Terraform variables to use for the given overrides.
-func (c *Config) GetTerraformVariables(techniqueID string, overrides []string) map[string]string {
+func (c *ConfigImpl) GetTerraformVariables(techniqueID string, overrides []string) map[string]string {
 	result := make(map[string]string)
 
 	// Kubernetes and EKS variables

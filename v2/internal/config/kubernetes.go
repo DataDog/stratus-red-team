@@ -9,7 +9,12 @@ import (
 )
 
 // KubernetesConfig holds Kubernetes-specific configuration
-type KubernetesConfig struct {
+type KubernetesConfig interface {
+	GetTechniquePodConfig(techniqueID string) K8sPodConfig
+	GetTerraformVariables(techniqueID string, overrides []TerraformConfigVariable) map[string]string
+}
+
+type KubernetesConfigImpl struct {
 	// Namespace is the default namespace for k8s techniques
 	Namespace string `yaml:"namespace"`
 
@@ -20,6 +25,8 @@ type KubernetesConfig struct {
 	// Key is the technique ID (e.g., "k8s.privilege-escalation.privileged-pod")
 	Techniques map[string]K8sPodConfig `yaml:"techniques"`
 }
+
+var _ KubernetesConfig = &KubernetesConfigImpl{}
 
 // K8sPodConfig holds pod-level configuration that can be applied to k8s pods
 type K8sPodConfig struct {
@@ -40,7 +47,7 @@ type K8sPodConfig struct {
 }
 
 // GetTechniquePodConfig returns the merged Pod configuration for a specific technique.
-func (k *KubernetesConfig) GetTechniquePodConfig(techniqueID string) K8sPodConfig {
+func (k *KubernetesConfigImpl) GetTechniquePodConfig(techniqueID string) K8sPodConfig {
 	result := k.Defaults
 
 	if techniqueConfig, exists := k.Techniques[techniqueID]; exists {
@@ -121,7 +128,7 @@ var KubernetesVariables = KubernetesVariablesNames{
 	SecurityContext: TerraformConfigVariable("security_context"),
 }
 
-func (c *KubernetesConfig) GetTerraformVariables(techniqueID string, overrides []TerraformConfigVariable) map[string]string {
+func (c *KubernetesConfigImpl) GetTerraformVariables(techniqueID string, overrides []TerraformConfigVariable) map[string]string {
 	techniqueConfig := c.GetTechniquePodConfig(techniqueID)
 
 	// Get all available variables from the pod config
