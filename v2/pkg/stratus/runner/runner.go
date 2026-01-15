@@ -25,6 +25,7 @@ type runnerImpl struct {
 	TechniqueState      stratus.AttackTechniqueState
 	TerraformDir        string
 	ShouldForce         bool
+	Config              config.Config
 	TerraformManager    TerraformManager
 	StateManager        state.StateManager
 	ProviderFactory     stratus.CloudProviders
@@ -48,10 +49,13 @@ func NewRunner(technique *stratus.AttackTechnique, force bool) Runner {
 }
 
 func NewRunnerWithContext(ctx context.Context, technique *stratus.AttackTechnique, force bool) Runner {
+	config, err := config.LoadConfig()
+	if err != nil {
+		log.Fatalf("error loading config: %s", err)
+	}
 	stateManager := state.NewFileSystemStateManager(technique)
 
 	var correlationId = uuid.New()
-	var err error
 	if grimoireDetonationId := os.Getenv("STRATUS_RED_TEAM_DETONATION_ID"); grimoireDetonationId != "" {
 		log.Println("STRATUS_RED_TEAM_DETONATION_ID is set, using it as the correlation ID")
 		correlationId, err = uuid.Parse(grimoireDetonationId)
@@ -66,6 +70,7 @@ func NewRunnerWithContext(ctx context.Context, technique *stratus.AttackTechniqu
 		ShouldForce:         force,
 		StateManager:        stateManager,
 		UniqueCorrelationID: correlationId,
+		Config:              config,
 		TerraformManager: NewTerraformManagerWithContext(
 			ctx, filepath.Join(stateManager.GetRootDirectory(), "terraform"), useragent.GetStratusUserAgentForUUID(correlationId),
 		),
@@ -280,11 +285,7 @@ func (m *runnerImpl) GetUniqueExecutionId() string {
 
 // getTerraformVariablesFromConfig returns the terraform variables to use from the config file
 func (m *runnerImpl) getTerraformVariablesFromConfig() map[string]string {
-	cfg, err := config.LoadConfig()
-	if err != nil || cfg == nil {
-		return nil
-	}
-	return cfg.GetTerraformVariables(m.Technique.ID, m.Technique.TerraformOverrideConfig)
+	return m.Config.GetTerraformVariables(m.Technique.ID, m.Technique.TerraformOverrideConfig)
 }
 
 // Utility function to display better error messages than the Terraform ones

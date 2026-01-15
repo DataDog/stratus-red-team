@@ -23,15 +23,15 @@ func TestGetTerraformVariables(t *testing.T) {
 
 	tests := []struct {
 		name        string
-		cfg         *Config
+		cfg         *ConfigImpl
 		techniqueID string
 		overrides   []string
 		expected    map[string]string
 	}{
 		{
 			name: "namespace",
-			cfg: &Config{
-				Kubernetes: KubernetesConfig{
+			cfg: &ConfigImpl{
+				Kubernetes: &KubernetesConfigImpl{
 					Namespace: "test-namespace",
 				},
 			},
@@ -43,8 +43,8 @@ func TestGetTerraformVariables(t *testing.T) {
 		},
 		{
 			name: "namespace-and-default-image",
-			cfg: &Config{
-				Kubernetes: KubernetesConfig{
+			cfg: &ConfigImpl{
+				Kubernetes: &KubernetesConfigImpl{
 					Namespace: "test-namespace",
 					Defaults: K8sPodConfig{
 						Image: "test-default-image",
@@ -60,8 +60,8 @@ func TestGetTerraformVariables(t *testing.T) {
 		},
 		{
 			name: "namespace-and-override-image",
-			cfg: &Config{
-				Kubernetes: KubernetesConfig{
+			cfg: &ConfigImpl{
+				Kubernetes: &KubernetesConfigImpl{
 					Namespace: "test-namespace",
 					Defaults: K8sPodConfig{
 						Image: "test-default-image",
@@ -85,8 +85,8 @@ func TestGetTerraformVariables(t *testing.T) {
 		},
 		{
 			name: "overloaded-config",
-			cfg: &Config{
-				Kubernetes: KubernetesConfig{
+			cfg: &ConfigImpl{
+				Kubernetes: &KubernetesConfigImpl{
 					Namespace: "test-namespace",
 					Defaults: K8sPodConfig{
 						Image: "test-default-image",
@@ -109,8 +109,8 @@ func TestGetTerraformVariables(t *testing.T) {
 		},
 		{
 			name: "variable-not-present",
-			cfg: &Config{
-				Kubernetes: KubernetesConfig{
+			cfg: &ConfigImpl{
+				Kubernetes: &KubernetesConfigImpl{
 					Namespace: "test-namespace",
 				},
 			},

@@ -122,6 +122,6 @@ func (m *K8sProvider) ApplyPodConfig(techniqueID string, pod *v1.Pod) {
 		return
 	}
 
-	techniqueConfig := cfg.Kubernetes.GetTechniquePodConfig(techniqueID)
+	techniqueConfig := cfg.GetKubernetesConfig().GetTechniquePodConfig(techniqueID)
 	techniqueConfig.ApplyToPod(pod)
 }
