@@ -10,15 +10,17 @@ defaults:
     working-directory: ./v2
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
+  pull-requests: read
 
 jobs:
   goreleaser:
-    timeout-minutes: 60
+    timeout-minutes: 120
     runs-on:
       group: Large Runner Shared Public
-      labels: ubuntu-16-core-latest
+      labels: ubuntu-4-core-latest
+    permissions:
+      pull-requests: write
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a
@@ -53,7 +55,7 @@ jobs:
         with:
           distribution: goreleaser
           version: "~> v2"
-          args: release --clean --config ../.goreleaser.yaml --timeout 600m0s
+          args: release --clean --config ../.goreleaser.yaml --timeout 600m0s --verbose --parallelism 1
           workdir: ./v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
