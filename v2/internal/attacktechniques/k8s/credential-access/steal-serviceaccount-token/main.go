@@ -79,7 +79,7 @@ Sample event (shortened):
 ` + codeBlock + `
 `,
 		PrerequisitesTerraformCode: tf,
-		PodConfigViaTerraform:      true,
+		TerraformOverrideConfig:    []string{"image", "labels", "namespace", "node_selector", "tolerations"},
 		Detonate:                   detonate,
 	})
 }

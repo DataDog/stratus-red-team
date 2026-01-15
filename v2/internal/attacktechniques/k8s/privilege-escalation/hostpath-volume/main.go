@@ -43,6 +43,7 @@ Detonation:
 	that reads "/etc/passwd" from the host filesystem
 `,
 		PrerequisitesTerraformCode: tf,
+		TerraformOverrideConfig:    []string{"namespace"},
 		Detonate:                   detonate,
 		Revert:                     revert,
 	})
