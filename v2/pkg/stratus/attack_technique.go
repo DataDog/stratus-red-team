@@ -33,10 +33,11 @@ type AttackTechnique struct {
 	// Terraform code to apply to create the necessary prerequisites for the technique to be detonated
 	PrerequisitesTerraformCode []byte `yaml:"-"`
 
-	// PodConfigViaTerraform indicates that this technique creates pods via Terraform
-	// rather than Go code. When true, pod configuration (image, tolerations, nodeSelector, labels)
-	// is passed as Terraform variables during warm-up instead of being applied via ApplyPodConfig().
-	PodConfigViaTerraform bool `yaml:"-"`
+	// TerraformOverrideConfig is an array of Terraform variables that can be overridden from the
+	// config file.
+	// For instance, Kubernetes attacks can set this variable to allow the namespace and the pod image
+	// to be overridden from the config file.
+	TerraformOverrideConfig []string `yaml:"-"`
 
 	// Detonation function
 	// Parameters are the Terraform outputs

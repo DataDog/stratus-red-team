@@ -115,15 +115,6 @@ func (m *K8sProvider) IsAuthenticated() bool {
 	return err == nil || auth.Status.Allowed
 }
 
-// GetDefaultNamespace returns the default namespace from config, or empty string if not configured.
-func (m *K8sProvider) GetDefaultNamespace() string {
-	cfg, err := config.LoadConfig()
-	if err != nil || cfg == nil {
-		return ""
-	}
-	return cfg.Kubernetes.Namespace
-}
-
 // ApplyPodConfig applies configuration from the config file to a pod spec. Modifies the pod in place.
 func (m *K8sProvider) ApplyPodConfig(techniqueID string, pod *v1.Pod) {
 	cfg, err := config.LoadConfig()
@@ -131,18 +122,6 @@ func (m *K8sProvider) ApplyPodConfig(techniqueID string, pod *v1.Pod) {
 		return
 	}
 
-	techniqueConfig := cfg.Kubernetes.GetTechniqueConfig(techniqueID)
+	techniqueConfig := cfg.Kubernetes.GetTechniquePodConfig(techniqueID)
 	techniqueConfig.ApplyToPod(pod)
-}
-
-// GetTerraformVariables returns Terraform variables for k8s pod configuration.
-// This is used for techniques that create pods via Terraform rather than Go code.
-func (m *K8sProvider) GetTerraformVariables(techniqueID string) map[string]string {
-	cfg, err := config.LoadConfig()
-	if err != nil || cfg == nil {
-		return nil
-	}
-
-	techniqueConfig := cfg.Kubernetes.GetTechniqueConfig(techniqueID)
-	return techniqueConfig.ToTerraformVariables()
 }

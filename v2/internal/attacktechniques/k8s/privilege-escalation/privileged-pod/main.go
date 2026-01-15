@@ -82,6 +82,7 @@ Sample event (shortened):
 }
 ` + codeBlock,
 		PrerequisitesTerraformCode: tf,
+		TerraformOverrideConfig:    []string{"namespace"},
 		Detonate:                   detonate,
 		Revert:                     revert,
 	})

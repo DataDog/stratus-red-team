@@ -2,6 +2,7 @@ package config
 
 import (
 	"encoding/json"
+	"log"
 	"maps"
 
 	v1 "k8s.io/api/core/v1"
@@ -38,8 +39,8 @@ type K8sPodConfig struct {
 	SecurityContext *v1.SecurityContext `yaml:"securityContext"`
 }
 
-// GetTechniqueConfig returns the merged configuration for a specific technique.
-func (k *KubernetesConfig) GetTechniqueConfig(techniqueID string) K8sPodConfig {
+// GetTechniquePodConfig returns the merged Pod configuration for a specific technique.
+func (k *KubernetesConfig) GetTechniquePodConfig(techniqueID string) K8sPodConfig {
 	result := k.Defaults
 
 	if techniqueConfig, exists := k.Techniques[techniqueID]; exists {
@@ -100,48 +101,76 @@ func (c *K8sPodConfig) ApplyToPod(pod *v1.Pod) {
 	}
 }
 
+type KubernetesVariablesNames struct {
+	Namespace TerraformConfigVariable
+
+	Image           TerraformConfigVariable
+	Labels          TerraformConfigVariable
+	Tolerations     TerraformConfigVariable
+	NodeSelector    TerraformConfigVariable
+	SecurityContext TerraformConfigVariable
+}
+
+var KubernetesVariables = KubernetesVariablesNames{
+	Namespace: TerraformConfigVariable("namespace"),
+
+	Image:           TerraformConfigVariable("image"),
+	Labels:          TerraformConfigVariable("labels"),
+	Tolerations:     TerraformConfigVariable("tolerations"),
+	NodeSelector:    TerraformConfigVariable("node_selector"),
+	SecurityContext: TerraformConfigVariable("security_context"),
+}
+
+func (c *KubernetesConfig) GetTerraformVariables(techniqueID string, overrides []TerraformConfigVariable) map[string]string {
+	techniqueConfig := c.GetTechniquePodConfig(techniqueID)
+
+	// Get all available variables from the pod config
+	allVars := techniqueConfig.ToTerraformVariables()
+	if allVars == nil {
+		allVars = make(map[string]string)
+	}
+
+	// Add namespace (lives at KubernetesConfig level, not K8sPodConfig)
+	if c.Namespace != "" {
+		allVars[string(KubernetesVariables.Namespace)] = c.Namespace
+	}
+
+	// Filter to only the requested variables
+	return FilterVariables(allVars, overrides)
+}
+
 // ToTerraformVariables converts the config to Terraform variables.
 func (c *K8sPodConfig) ToTerraformVariables() map[string]string {
 	vars := make(map[string]string)
 
 	if c.Image != "" {
-		vars["image"] = c.Image
+		vars[string(KubernetesVariables.Image)] = c.Image
 	}
 
 	if len(c.Labels) > 0 {
 		labelsJSON, err := json.Marshal(c.Labels)
-		if err == nil {
-			vars["labels"] = string(labelsJSON)
+		if err != nil {
+			log.Println("Error marshalling config labels to terraform variables - They will be ignored: " + err.Error())
+		} else {
+			vars[string(KubernetesVariables.Labels)] = string(labelsJSON)
 		}
 	}
 
 	if len(c.Tolerations) > 0 {
-		// Convert to simplified format for Terraform
-		type simpleToleration struct {
-			Key      string `json:"key"`
-			Operator string `json:"operator"`
-			Value    string `json:"value"`
-			Effect   string `json:"effect"`
-		}
-		simplified := make([]simpleToleration, len(c.Tolerations))
-		for i, t := range c.Tolerations {
-			simplified[i] = simpleToleration{
-				Key:      t.Key,
-				Operator: string(t.Operator),
-				Value:    t.Value,
-				Effect:   string(t.Effect),
-			}
-		}
-		tolerationsJSON, err := json.Marshal(simplified)
-		if err == nil {
-			vars["tolerations"] = string(tolerationsJSON)
+		tolerationsJSON, err := marshalTolerations(c.Tolerations)
+		if err != nil {
+			log.Println("Error marshalling config tolerations to terraform variables - They will be ignored: " + err.Error())
+		} else {
+			vars[string(KubernetesVariables.Tolerations)] = string(tolerationsJSON)
 		}
 	}
 
 	if len(c.NodeSelector) > 0 {
 		nodeSelectorJSON, err := json.Marshal(c.NodeSelector)
-		if err == nil {
-			vars["node_selector"] = string(nodeSelectorJSON)
+		if err != nil {
+			log.Println("Error marshalling config node selector to terraform variables - They will be ignored: " + err.Error())
+		} else {
+			vars[string(KubernetesVariables.NodeSelector)] = string(nodeSelectorJSON)
 		}
 	}
 
@@ -149,4 +178,24 @@ func (c *K8sPodConfig) ToTerraformVariables() map[string]string {
 		return nil
 	}
 	return vars
+}
+
+func marshalTolerations(tolerations []v1.Toleration) ([]byte, error) {
+	// Convert to simplified format for Terraform
+	type simpleToleration struct {
+		Key      string `json:"key"`
+		Operator string `json:"operator"`
+		Value    string `json:"value"`
+		Effect   string `json:"effect"`
+	}
+	simplified := make([]simpleToleration, len(tolerations))
+	for i, t := range tolerations {
+		simplified[i] = simpleToleration{
+			Key:      t.Key,
+			Operator: string(t.Operator),
+			Value:    t.Value,
+			Effect:   string(t.Effect),
+		}
+	}
+	return json.Marshal(simplified)
 }

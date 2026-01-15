@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"log"
-	"maps"
 	"os"
 	"path/filepath"
 	"strings"
@@ -118,11 +117,11 @@ func (m *runnerImpl) WarmUp() (map[string]string, error) {
 	}
 
 	log.Println("Warming up " + m.Technique.ID)
-	mergedVars := m.getTerraformVariablesFromConfig()
-	outputs, err := m.TerraformManager.TerraformInitAndApply(m.TerraformDir, mergedVars)
+	overrideVars := m.getTerraformVariablesFromConfig()
+	outputs, err := m.TerraformManager.TerraformInitAndApply(m.TerraformDir, overrideVars)
 	if err != nil {
 		log.Println("Error during warm up. Cleaning up technique prerequisites with terraform destroy")
-		_ = m.TerraformManager.TerraformDestroy(m.TerraformDir, mergedVars)
+		_ = m.TerraformManager.TerraformDestroy(m.TerraformDir, overrideVars)
 		if errors.Is(err, context.Canceled) {
 			return nil, err
 		}
@@ -141,8 +140,8 @@ func (m *runnerImpl) WarmUp() (map[string]string, error) {
 	if err != nil {
 		return nil, errors.New("unable to persist Terraform outputs: " + err.Error())
 	}
-	if len(mergedVars) > 0 {
-		err = m.StateManager.WriteTerraformVariables(mergedVars)
+	if len(overrideVars) > 0 {
+		err = m.StateManager.WriteTerraformVariables(overrideVars)
 		if err != nil {
 			return nil, errors.New("unable to persist Terraform variables: " + err.Error())
 		}
@@ -281,35 +280,11 @@ func (m *runnerImpl) GetUniqueExecutionId() string {
 
 // getTerraformVariablesFromConfig returns the terraform variables to use from the config file
 func (m *runnerImpl) getTerraformVariablesFromConfig() map[string]string {
-	// Load config for k8s/EKS techniques
-	if m.Technique.Platform != stratus.Kubernetes && m.Technique.Platform != stratus.EKS {
-		return nil
-	}
-
 	cfg, err := config.LoadConfig()
 	if err != nil || cfg == nil {
 		return nil
 	}
-
-	result := make(map[string]string)
-
-	// Always add namespace from config if set
-	if cfg.Kubernetes.Namespace != "" {
-		result["namespace"] = cfg.Kubernetes.Namespace
-	}
-
-	// Add pod config as TF variables if technique creates pods via Terraform
-	if m.Technique.PodConfigViaTerraform {
-		techniqueConfig := cfg.Kubernetes.GetTechniqueConfig(m.Technique.ID)
-		if tfVars := techniqueConfig.ToTerraformVariables(); tfVars != nil {
-			maps.Copy(result, tfVars)
-		}
-	}
-
-	if len(result) == 0 {
-		return nil
-	}
-	return result
+	return cfg.GetTerraformVariables(m.Technique.ID, m.Technique.TerraformOverrideConfig)
 }
 
 // Utility function to display better error messages than the Terraform ones
