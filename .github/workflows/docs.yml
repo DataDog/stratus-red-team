@@ -9,13 +9,10 @@ on:
       - mkdocs.yml
       - "tools/**"
 
-permissions:
-  contents: read
-
 jobs:
   deploy:
     permissions:
-      contents: write # for mkdocs gh-deploy to publish docs
+      id-token: write
     runs-on: ubuntu-latest
     steps:
       - name: Harden Runner

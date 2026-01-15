@@ -9,15 +9,11 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: datadog/stratus-red-team
 
-permissions:
-  contents: read
-
 jobs:
   docker-build-push:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      packages: write
+      id-token: write
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a
