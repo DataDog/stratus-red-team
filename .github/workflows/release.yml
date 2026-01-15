@@ -41,7 +41,7 @@ jobs:
         id: octo-sts
         with:
           scope: DataDog/stratus-red-team
-          policy: YOUR_POLICY # trust policy in target repo
+          policy: self.release.create-pr.sts.yml
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:

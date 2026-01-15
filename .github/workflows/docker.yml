@@ -9,11 +9,15 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: datadog/stratus-red-team
 
+permissions:
+  contents: read
+
 jobs:
   docker-build-push:
     runs-on: ubuntu-latest
     permissions:
-      id-token: write
+      contents: read
+      packages: write
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a
@@ -33,12 +37,6 @@ jobs:
             storage.googleapis.com:443
             *.actions.githubusercontent.com:443
 
-      - uses: DataDog/dd-octo-sts-action@acaa02eee7e3bb0839e4272dacb37b8f3b58ba80 # v1.0.3
-        id: octo-sts
-        with:
-          scope: DataDog/stratus-red-team
-          policy: YOUR_POLICY # trust policy in target repo
-
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -49,7 +47,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ steps.octo-sts.outputs.token }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83
