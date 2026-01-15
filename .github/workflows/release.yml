@@ -11,7 +11,6 @@ defaults:
 
 permissions:
   contents: read
-  pull-requests: read
 
 jobs:
   goreleaser:
@@ -20,6 +19,7 @@ jobs:
       group: Large Runner Shared Public
       labels: ubuntu-4-core-latest
     permissions:
+      contents: write
       pull-requests: write
     steps:
       - name: Harden Runner
@@ -41,7 +41,11 @@ jobs:
             go.dev:443
             dl.google.com:443
             golang.org:443
-
+      - uses: DataDog/dd-octo-sts-action@acaa02eee7e3bb0839e4272dacb37b8f3b58ba80 # v1.0.3
+        id: octo-sts
+        with:
+          scope: DataDog/stratus-red-team
+          policy: YOUR_POLICY # trust policy in target repo
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -58,4 +62,4 @@ jobs:
           args: release --clean --config ../.goreleaser.yaml --timeout 600m0s --verbose --parallelism 1
           workdir: ./v2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.octo-sts.outputs.token }}

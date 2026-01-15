@@ -15,7 +15,7 @@ permissions:
 jobs:
   deploy:
     permissions:
-      contents: write  # for mkdocs gh-deploy to publish docs
+      contents: write # for mkdocs gh-deploy to publish docs
     runs-on: ubuntu-latest
     steps:
       - name: Harden Runner
@@ -27,10 +27,16 @@ jobs:
             github.com:443
             pypi.org:443
             *.actions.githubusercontent.com:443
-
+      - uses: DataDog/dd-octo-sts-action@acaa02eee7e3bb0839e4272dacb37b8f3b58ba80 # v1.0.3
+        id: octo-sts
+        with:
+          scope: DataDog/stratus-red-team
+          policy: YOUR_POLICY # trust policy in target repo
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c
         with:
           python-version: 3.x
       - run: pip install mkdocs-material mkdocs-awesome-pages-plugin
       - run: mkdocs gh-deploy --force
+        env:
+          GITHUB_TOKEN: ${{ steps.octo-sts.outputs.token }}
