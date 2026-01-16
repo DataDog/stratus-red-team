@@ -3,23 +3,24 @@ package runner
 import (
 	"context"
 	"errors"
+	"log"
+	"os"
+	"path"
+	"path/filepath"
+
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
 	"github.com/hashicorp/go-version"
 	"github.com/hashicorp/hc-install/product"
 	"github.com/hashicorp/hc-install/releases"
 	"github.com/hashicorp/terraform-exec/tfexec"
-	"log"
-	"os"
-	"path"
-	"path/filepath"
 )
 
 const TerraformVersion = "1.1.2"
 
 type TerraformManager interface {
 	Initialize()
-	TerraformInitAndApply(directory string) (map[string]string, error)
-	TerraformDestroy(directory string) error
+	TerraformInitAndApply(directory string, variables map[string]string) (map[string]string, error)
+	TerraformDestroy(directory string, variables map[string]string) error
 }
 
 type TerraformManagerImpl struct {
@@ -58,7 +59,7 @@ func (m *TerraformManagerImpl) Initialize() {
 	}
 }
 
-func (m *TerraformManagerImpl) TerraformInitAndApply(directory string) (map[string]string, error) {
+func (m *TerraformManagerImpl) TerraformInitAndApply(directory string, variables map[string]string) (map[string]string, error) {
 	terraform, err := tfexec.NewTerraform(directory, m.terraformBinaryPath)
 	if err != nil {
 		return map[string]string{}, errors.New("unable to instantiate Terraform: " + err.Error())
@@ -85,7 +86,11 @@ func (m *TerraformManagerImpl) TerraformInitAndApply(directory string) (map[stri
 	}
 
 	log.Println("Applying Terraform to spin up technique prerequisites")
-	err = terraform.Apply(m.context, tfexec.Refresh(false))
+	applyOptions := []tfexec.ApplyOption{tfexec.Refresh(false)}
+	for key, value := range variables {
+		applyOptions = append(applyOptions, tfexec.Var(key+"="+value))
+	}
+	err = terraform.Apply(m.context, applyOptions...)
 	if err != nil {
 		return nil, errors.New("unable to apply Terraform: " + err.Error())
 	}
@@ -101,11 +106,15 @@ func (m *TerraformManagerImpl) TerraformInitAndApply(directory string) (map[stri
 	return outputs, nil
 }
 
-func (m *TerraformManagerImpl) TerraformDestroy(directory string) error {
+func (m *TerraformManagerImpl) TerraformDestroy(directory string, variables map[string]string) error {
 	terraform, err := tfexec.NewTerraform(directory, m.terraformBinaryPath)
 	if err != nil {
 		return err
 	}
 
-	return terraform.Destroy(m.context)
+	destroyOptions := []tfexec.DestroyOption{}
+	for key, value := range variables {
+		destroyOptions = append(destroyOptions, tfexec.Var(key+"="+value))
+	}
+	return terraform.Destroy(m.context, destroyOptions...)
 }

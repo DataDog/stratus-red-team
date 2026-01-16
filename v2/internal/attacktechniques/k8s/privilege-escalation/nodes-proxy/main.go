@@ -6,17 +6,18 @@ import (
 	_ "embed"
 	"errors"
 	"fmt"
+	"io"
+	"log"
+	"net/http"
+	"strconv"
+
 	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/useragent"
-	"io"
 	authenticationv1 "k8s.io/api/authentication/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
-	"log"
-	"net/http"
-	"strconv"
 )
 
 //go:embed main.tf
@@ -89,6 +90,7 @@ Additionally, looking at the Kubelet API path that was proxied can help identify
 See [kubeletctl](https://github.com/cyberark/kubeletctl/blob/master/pkg/api/constants.go) for an unofficial list of Kubelet API endpoints.
 `,
 		PrerequisitesTerraformCode: tf,
+		TerraformOverrideConfig:    []string{"namespace"},
 		Detonate:                   detonate,
 	})
 }
