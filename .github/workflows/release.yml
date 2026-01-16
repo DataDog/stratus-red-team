@@ -9,6 +9,10 @@ defaults:
   run:
     working-directory: ./v2
 
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
   goreleaser:
     timeout-minutes: 120
