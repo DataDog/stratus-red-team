@@ -10,4 +10,4 @@ claim_pattern:
 
 permissions:
   contents: read
-  pull-requests: write
+  pull_requests: write
