@@ -35,7 +35,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           fetch-depth: 1
-      - uses: dominikh/staticcheck-action@fe1dd0c3658873b46f8c9bb3291096a617310ca6
+      - uses: dominikh/staticcheck-action@024238d2898c874f26d723e7d0ff4308c35589a2
         with:
           install-go: true
           working-directory: "./v2"
