@@ -11,6 +11,8 @@ defaults:
 
 permissions:
   contents: read
+  # PR write access is granted by dd-octo-sts-action. The job-level write permission is blocked at organization level
+  # See trust policy in .github/chainguard/self.release.create-pr.sts.yml
   pull-requests: read
 
 jobs:
@@ -62,4 +64,4 @@ jobs:
           args: release --clean --config ../.goreleaser.yaml --timeout 600m0s --verbose --parallelism 1
           workdir: ./v2
         env:
-          GITHUB_TOKEN: ${{ steps.octo-sts.outputs.token }}
+          GITHUB_TOKEN: ${{ steps.octo-sts.outputs.token }} # Write permission is granted by the trust policy
