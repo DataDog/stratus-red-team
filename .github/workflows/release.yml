@@ -10,15 +10,19 @@ defaults:
     working-directory: ./v2
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
+  # PR write access is granted by dd-octo-sts-action. The job-level write permission is blocked at organization level
+  # See trust policy in .github/chainguard/self.release.create-pr.sts.yml
+  pull-requests: read
 
 jobs:
   goreleaser:
-    timeout-minutes: 60
+    timeout-minutes: 120
     runs-on:
       group: Large Runner Shared Public
-      labels: ubuntu-16-core-latest
+      labels: ubuntu-4-core-latest
+    permissions:
+      id-token: write
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a
@@ -39,7 +43,11 @@ jobs:
             go.dev:443
             dl.google.com:443
             golang.org:443
-
+      - uses: DataDog/dd-octo-sts-action@acaa02eee7e3bb0839e4272dacb37b8f3b58ba80 # v1.0.3
+        id: octo-sts
+        with:
+          scope: DataDog/stratus-red-team
+          policy: self.release.create-pr.sts.yml
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -53,7 +61,7 @@ jobs:
         with:
           distribution: goreleaser
           version: "~> v2"
-          args: release --clean --config ../.goreleaser.yaml --timeout 600m0s
+          args: release --clean --config ../.goreleaser.yaml --timeout 600m0s --verbose --parallelism 1
           workdir: ./v2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.octo-sts.outputs.token }} # Write permission is granted by the trust policy
