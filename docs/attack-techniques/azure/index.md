@@ -20,3 +20,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   
   - [Export Disk Through SAS URL](./azure.exfiltration.disk-export.md)
   
+
+## Impact
+  
+  - [Azure ransomware via Storage Account blob deletion](./azure.impact.blob-ransomware-individual-file-deletion.md)
+  

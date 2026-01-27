@@ -43,10 +43,10 @@ This provides coverage matrices of MITRE ATT&CK tactics and techniques currently
 </div>
 <h2>Azure</h2>
 <div class="table-container"><table>
-<thead><tr><th>Execution</th><th>Persistence</th><th>Exfiltration</th></tr></thead>
+<thead><tr><th>Execution</th><th>Persistence</th><th>Exfiltration</th><th>Impact</th></tr></thead>
 <tbody>
-<tr><td><a href="../Azure/azure.execution.vm-custom-script-extension">Execute Command on Virtual Machine using Custom Script Extension</a></td><td><a href="../Azure/azure.persistence.create-bastion-shareable-link">Create Azure VM Bastion shareable link</a></td><td><a href="../Azure/azure.exfiltration.disk-export">Export Disk Through SAS URL</a></td></tr>
-<tr><td><a href="../Azure/azure.execution.vm-run-command">Execute Commands on Virtual Machine using Run Command</a></td><td></td><td></td></tr>
+<tr><td><a href="../Azure/azure.execution.vm-custom-script-extension">Execute Command on Virtual Machine using Custom Script Extension</a></td><td><a href="../Azure/azure.persistence.create-bastion-shareable-link">Create Azure VM Bastion shareable link</a></td><td><a href="../Azure/azure.exfiltration.disk-export">Export Disk Through SAS URL</a></td><td><a href="../Azure/azure.impact.blob-ransomware-individual-file-deletion">Azure ransomware via Storage Account blob deletion</a></td></tr>
+<tr><td><a href="../Azure/azure.execution.vm-run-command">Execute Commands on Virtual Machine using Run Command</a></td><td></td><td></td><td></td></tr>
 </tbody>
 </table>
 </div>
