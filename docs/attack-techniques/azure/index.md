@@ -23,5 +23,5 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 ## Impact
   
-  - [Azure ransomware via Storage Account blob deletion](./azure.impact.blob-ransomware-individual-file-deletion.md)
+  - [Azure ransomware via Storage Account Blob deletion](./azure.impact.blob-ransomware-individual-file-deletion.md)
   

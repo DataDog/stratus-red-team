@@ -647,7 +647,7 @@ Azure:
           isIdempotent: true
     Impact:
         - id: azure.impact.blob-ransomware-individual-file-deletion
-          name: Azure ransomware via Storage Account blob deletion
+          name: Azure ransomware via Storage Account Blob deletion
           isSlow: false
           mitreAttackTactics:
             - Impact

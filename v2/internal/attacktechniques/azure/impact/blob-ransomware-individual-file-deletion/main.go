@@ -29,9 +29,9 @@ func init() {
 	const codeBlock = "```"
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
 		ID:           "azure.impact.blob-ransomware-individual-file-deletion",
-		FriendlyName: "Azure ransomware via Storage Account blob deletion",
+		FriendlyName: "Azure ransomware via Storage Account Blob deletion",
 		Description: `
-Simulates Azure Storage ransomware activity that empties a storage account through individual blob deletion, then uploads a ransom note.
+Simulates Azure Storage ransomware activity that empties a storage account through individual Blob deletion, then uploads a ransom note.
 
 Warm-up: 
 
@@ -45,7 +45,7 @@ Detonation:
 - List and delete all blobs _again_ to delete any backups created by versioning
 - Upload a ransom note to the storage account
 
-Note: The attack does not need to disable versioning, which does not protect against ransomware. This attack removes all versions of the objects in the bucket. #TODO: confirm this
+Note: The attack does not need to disable versioning, which does not protect against ransomware. This attack removes all versions of the objects in the bucket. 
 
 References:
 #TODO
@@ -53,11 +53,9 @@ References:
 `,
 		Detection: `
 You can detect ransomware activity by identifying abnormal patterns of blobs being downloaded or deleted in a storage account. 
-In general, this can be done through [CloudTrail S3 data events](https://docs.aws.amazon.com/AmazonS3/latest/userguide/cloudtrail-logging-s3-info.html#cloudtrail-object-level-tracking) (<code>DeleteObject</code>, <code>DeleteObjects</code>, <code>GetObject</code>),
-[CloudWatch metrics](https://docs.aws.amazon.com/AmazonS3/latest/userguide/metrics-dimensions.html#s3-request-cloudwatch-metrics) (<code>NumberOfObjects</code>),
-or [GuardDuty findings](https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-types-active.html) (<code>[Exfiltration:S3/AnomalousBehavior](https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-types-s3.html#exfiltration-s3-anomalousbehavior)</code>, <code>[Impact:S3/AnomalousBehavior.Delete](https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-types-s3.html#impact-s3-anomalousbehavior-delete)</code>).
+In general, this can be done through [Blob storage events](https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-event-overview)
 
-Sample CloudTrail event <code>DeleteObject</code>, shortened for readability:
+Sample Blob storage event <code>DeleteBlob</code>, shortened for readability:
 
 ` + codeBlock + `json hl_lines="3 8 10"
 {
