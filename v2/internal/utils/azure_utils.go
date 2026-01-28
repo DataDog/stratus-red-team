@@ -8,6 +8,7 @@ import (
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/storage/armstorage"
 	"github.com/Azure/azure-sdk-for-go/sdk/storage/azblob"
+	"github.com/Azure/azure-sdk-for-go/sdk/azcore/to"
 
 	"io"
 )
@@ -33,9 +34,10 @@ func GetAzureBlobClient(serviceURL string, subscriptionID string, defaultCredent
 		return nil, err
 	}
 
-	return azblob.NewClientWithSharedKeyCredential(serviceURL, cred, nil)
-
-	//return azblob.NewClient(serviceURL, azure.GetCredentials(), nil)//, azure.ClientOptions) Disabled Because of "cannot use azure.ClientOptions (variable of type *arm.ClientOptions) as *azblob.ClientOptions value in argument to azblob.NewClient". May want to look into enabling it
+	return azblob.NewClientWithSharedKeyCredential(serviceURL, cred, 
+		to.Ptr(azblob.ClientOptions{
+			ClientOptions : clientOptions.ClientOptions,
+		}))
 }
 
 func ListAllBlobVersions(client *azblob.Client) (map[string]map[string][]*string, error) {
