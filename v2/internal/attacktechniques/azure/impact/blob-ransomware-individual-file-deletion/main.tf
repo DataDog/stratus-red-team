@@ -18,13 +18,13 @@ resource "random_string" "suffix" {
 }
 
 locals {
-  resource_prefix    = "stratusrt"
+  resource_prefix      = "stratusrt"
   storage_account_name = "${local.resource_prefix}${random_string.suffix.result}"
-  num_files          = 51
-  num_containers     = 5
-  min_size_bytes     = 1
-  max_size_bytes     = 200
-  file_extensions    = ["sql", "txt", "docx", "pdf", "png", "tar.gz"]
+  num_files            = 51
+  num_containers       = 5
+  min_size_bytes       = 1
+  max_size_bytes       = 200
+  file_extensions      = ["sql", "txt", "docx", "pdf", "png", "tar.gz"]
   wordlist = split("\n", <<EOW
 liable
 donated

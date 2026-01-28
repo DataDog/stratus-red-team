@@ -24,8 +24,8 @@ func GetAzureBlobClient(serviceURL string, subscriptionID string, defaultCredent
 		return nil, err
 	}
 
-	if resp.Keys == nil || len(resp.Keys) == 0 || resp.Keys[0].Value == nil {
-		return nil, fmt.Errorf("No Keys returned from Storage")
+	if len(resp.Keys) == 0 || resp.Keys[0].Value == nil {
+		return nil, fmt.Errorf("no Keys returned from Storage")
 	}
 	key := *resp.Keys[0].Value
 	cred, err := azblob.NewSharedKeyCredential(account, key)
@@ -46,7 +46,7 @@ func ListAllBlobVersions(client *azblob.Client) (map[string]map[string][]*string
 	for containerPager.More() {
 		containerResp, err := containerPager.NextPage(context.Background())
 		if err != nil {
-			return nil, fmt.Errorf("Error when enumerating storage containers:  %w", err)
+			return nil, fmt.Errorf("error when enumerating storage containers:  %w", err)
 		}
 		for _, _container := range containerResp.ContainerItems {
 			result[*_container.Name] = make(map[string][]*string)
@@ -55,7 +55,7 @@ func ListAllBlobVersions(client *azblob.Client) (map[string]map[string][]*string
 			})
 			blobResp, err := blobPager.NextPage(context.Background())
 			if err != nil {
-				return nil, fmt.Errorf("Error when enumerating storage blobs in container %s: %w", *_container.Name, err)
+				return nil, fmt.Errorf("error when enumerating storage blobs in container %s: %w", *_container.Name, err)
 			}
 			for _, _blob := range blobResp.Segment.BlobItems {
 				result[*_container.Name][*_blob.Name] = append(result[*_container.Name][*_blob.Name], _blob.VersionID)
