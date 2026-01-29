@@ -9,7 +9,7 @@ terraform {
 
 provider "azurerm" {
   features {}
-  storage_use_azuread      = true
+  storage_use_azuread = true
 }
 
 resource "random_string" "suffix" {
