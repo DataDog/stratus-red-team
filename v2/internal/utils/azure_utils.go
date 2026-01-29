@@ -38,6 +38,7 @@ func GetAzureBlobClient(serviceURL string, subscriptionID string, defaultCredent
 		to.Ptr(azblob.ClientOptions{
 			ClientOptions : clientOptions.ClientOptions,
 		}))
+
 }
 
 func ListAllBlobVersions(client *azblob.Client) (map[string]map[string][]*string, error) {

