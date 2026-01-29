@@ -24,3 +24,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   
   - [Exfiltrate Azure Storage through SAS URL](./azure.exfiltration.storage-sas-export.md)
   
+
+## Impact
+  
+  - [Delete Azure resource lock](./azure.impact.resource-lock.md)
+  

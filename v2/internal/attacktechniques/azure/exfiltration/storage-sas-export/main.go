@@ -63,6 +63,7 @@ Sample Azure Activity Log event to monitor:
 `,
 		Platform:                   stratus.Azure,
 		IsIdempotent:               true,
+		IsSlow:                     false,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Exfiltration},
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,
