@@ -48,6 +48,7 @@ Detonation:
 Note: The attack does not need to disable versioning, which does not protect against ransomware. This attack removes all versions of the objects in the bucket. 
 
 References:
+[Storm-0501’s evolving techniques lead to cloud-based ransomware](https://www.microsoft.com/en-us/security/blog/2025/08/27/storm-0501s-evolving-techniques-lead-to-cloud-based-ransomware/)
 (https://www.microsoft.com/en-us/security/blog/2025/10/20/inside-the-attack-chain-threat-activity-targeting-azure-blob-storage/)
 
 `,
@@ -159,7 +160,6 @@ func deleteBlobsWithFilter(client *azblob.Client, includeVersions bool) error {
 	for containerName, versionMap := range blobMap {
 		containerClient := client.ServiceClient().NewContainerClient(containerName)
 
-		log.Println("Iterating over container:", containerName)
 		for blobName, versionIDs := range versionMap {
 			for _, versionID := range versionIDs {
 
