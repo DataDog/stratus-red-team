@@ -37,7 +37,7 @@ Note: The attack does not need to disable versioning, which does not protect aga
 
 References:
 [Storm-0501’s evolving techniques lead to cloud-based ransomware](https://www.microsoft.com/en-us/security/blog/2025/08/27/storm-0501s-evolving-techniques-lead-to-cloud-based-ransomware/)
-(https://www.microsoft.com/en-us/security/blog/2025/10/20/inside-the-attack-chain-threat-activity-targeting-azure-blob-storage/)
+[Inside the attack chain: threat activity targeting Azure Blob Storage](https://www.microsoft.com/en-us/security/blog/2025/10/20/inside-the-attack-chain-threat-activity-targeting-azure-blob-storage/)
 
 
 
@@ -50,7 +50,8 @@ stratus detonate azure.impact.blob-ransomware-individual-file-deletion
 
 
 You can detect ransomware activity by identifying abnormal patterns of blobs being downloaded or deleted in a storage account. 
-In general, this can be done through [Blob storage events](https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-event-overview)
+In general, this can be done through [Blob storage events](https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-event-overview).
+Blob storage events are resource logs, which require (configuing diagnositic settings to enable)[https://learn.microsoft.com/en-us/azure/storage/blobs/monitor-blob-storage?tabs=azure-portal#azure-monitor-resource-logs].
 
 Sample Blob storage event <code>DeleteBlob</code>, shortened for readability:
 
