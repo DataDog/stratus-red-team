@@ -56,12 +56,14 @@ func ListAllBlobVersions(client *azblob.Client) (map[string]map[string][]*string
 			blobPager := client.NewListBlobsFlatPager(*_container.Name, &azblob.ListBlobsFlatOptions{
 				Include: azblob.ListBlobsInclude{Deleted: true, Versions: true},
 			})
-			blobResp, err := blobPager.NextPage(context.Background())
-			if err != nil {
-				return nil, fmt.Errorf("error when enumerating storage blobs in container %s: %w", *_container.Name, err)
-			}
-			for _, _blob := range blobResp.Segment.BlobItems {
-				result[*_container.Name][*_blob.Name] = append(result[*_container.Name][*_blob.Name], _blob.VersionID)
+			for blobPager.More() {
+				blobResp, err := blobPager.NextPage(context.Background())
+				if err != nil {
+					return nil, fmt.Errorf("error when enumerating storage blobs in container %s: %w", *_container.Name, err)
+				}
+				for _, _blob := range blobResp.Segment.BlobItems {
+					result[*_container.Name][*_blob.Name] = append(result[*_container.Name][*_blob.Name], _blob.VersionID)
+				}
 			}
 		}
 	}
