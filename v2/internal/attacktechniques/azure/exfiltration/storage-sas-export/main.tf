@@ -20,7 +20,7 @@ resource "random_string" "suffix" {
 locals {
   resource_prefix = "stratus-red-team-storage"
   # Storage account names must be between 3 and 24 characters in length and use numbers and lower-case letters only
-  storage_account_name = "stratusredteamexport"
+  storage_account_name = "stratusredteam${random_string.suffix.result}"
   container_name       = "private-data"
 }
 
