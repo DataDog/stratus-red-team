@@ -48,7 +48,7 @@ jobs:
         id: octo-sts
         with:
           scope: DataDog/stratus-red-team
-          policy: self.release.create-pr.sts.yaml
+          policy: self.release.create-pr
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
