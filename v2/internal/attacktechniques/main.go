@@ -51,6 +51,7 @@ import (
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/azure/exfiltration/storage-sas-export"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/azure/persistence/create-bastion-shareable-link"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/azure/impact/resource-lock"
+	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/azure/impact/blob-ransomware-individual-file-deletion"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/eks/lateral-movement/create-access-entry"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/eks/persistence/backdoor-aws-auth-configmap"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/entra-id/persistence/backdoor-application"

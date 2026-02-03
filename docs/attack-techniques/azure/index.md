@@ -29,3 +29,5 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   
   - [Delete Azure resource lock](./azure.impact.resource-lock.md)
   
+  - [Azure ransomware via Storage Account Blob deletion](./azure.impact.blob-ransomware-individual-file-deletion.md)
+  

@@ -48,6 +48,8 @@ This provides coverage matrices of MITRE ATT&CK tactics and techniques currently
 <tr><td><a href="../Azure/azure.execution.vm-custom-script-extension">Execute Command on Virtual Machine using Custom Script Extension</a></td><td><a href="../Azure/azure.persistence.create-bastion-shareable-link">Create Azure VM Bastion shareable link</a></td><td><a href="../Azure/azure.exfiltration.disk-export">Export Disk Through SAS URL</a></td><td><a href="../Azure/azure.impact.resource-lock">Delete Azure resource lock</a></td></tr>
 <tr><td><a href="../Azure/azure.execution.vm-run-command">Execute Commands on Virtual Machine using Run Command</a></td><td></td><td><a href="../Azure/azure.exfiltration.storage-public-access">Exfiltrate Azure Storage via public access</a></td><td></td></tr>
 <tr><td></td><td></td><td><a href="../Azure/azure.exfiltration.storage-sas-export">Exfiltrate Azure Storage through SAS URL</a></td><td></td></tr>
+<tr><td><a href="../Azure/azure.execution.vm-custom-script-extension">Execute Command on Virtual Machine using Custom Script Extension</a></td><td><a href="../Azure/azure.persistence.create-bastion-shareable-link">Create Azure VM Bastion shareable link</a></td><td><a href="../Azure/azure.exfiltration.disk-export">Export Disk Through SAS URL</a></td><td><a href="../Azure/azure.impact.blob-ransomware-individual-file-deletion">Azure ransomware via Storage Account Blob deletion</a></td></tr>
+<tr><td><a href="../Azure/azure.execution.vm-run-command">Execute Commands on Virtual Machine using Run Command</a></td><td></td><td></td><td></td></tr>
 </tbody>
 </table>
 </div>
