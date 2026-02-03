@@ -645,6 +645,14 @@ Azure:
             - Exfiltration
           platform: Azure
           isIdempotent: true
+    Impact:
+        - id: azure.impact.blob-ransomware-individual-file-deletion
+          name: Azure ransomware via Storage Account Blob deletion
+          isSlow: false
+          mitreAttackTactics:
+            - Impact
+          platform: Azure
+          isIdempotent: false
     Persistence:
         - id: azure.persistence.create-bastion-shareable-link
           name: Create Azure VM Bastion shareable link
