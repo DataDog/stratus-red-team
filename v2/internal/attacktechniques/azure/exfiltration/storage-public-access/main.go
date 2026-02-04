@@ -29,21 +29,21 @@ func init() {
 		Description: `
 Modify storage policies to download content in an Azure storage account.
 
-References:
-
-- https://www.microsoft.com/en-us/security/blog/2025/08/27/storm-0501s-evolving-techniques-lead-to-cloud-based-ransomware/
-- https://learn.microsoft.com/en-us/azure/storage/blobs/anonymous-read-access-configure
-
-Warm-up: 
+Warm-up:
 
 - Create a storage account with anonymous blob access disabled
 - Create a storage container with an empty test file
 
-Detonation: 
+Detonation:
 
 - Enable anonymous blob access on the storage account
 - Change storage container access level to allow public access (anonymous access to containers and blobs)
 - Download test file from the public container
+
+References:
+
+- https://www.microsoft.com/en-us/security/blog/2025/08/27/storm-0501s-evolving-techniques-lead-to-cloud-based-ransomware/
+- https://learn.microsoft.com/en-us/azure/storage/blobs/anonymous-read-access-configure
 `,
 		Detection: `
 Monitor Azure Activity Logs for storage account property changes, specifically <code>Microsoft.Storage/storageAccounts/write</code> operations that modify storage access policies.

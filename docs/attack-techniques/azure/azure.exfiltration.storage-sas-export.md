@@ -21,11 +21,6 @@ Platform: Azure
 
 Generate a Shared Access Signature (SAS) to download content in an Azure storage account.
 
-References:
-
-- https://www.microsoft.com/en-us/security/blog/2025/08/27/storm-0501s-evolving-techniques-lead-to-cloud-based-ransomware/
-- https://microsoft.github.io/Azure-Threat-Research-Matrix/Impact/AZT701/AZT701-2/
-
 <span style="font-variant: small-caps;">Warm-up</span>:
 
 - Create a storage account with anonymous blob access disabled
@@ -35,6 +30,11 @@ References:
 
 - Generate a shared access signature (SAS) URL for the storage container
 - Download test file from the container using SAS URL
+
+References:
+
+- https://www.microsoft.com/en-us/security/blog/2025/08/27/storm-0501s-evolving-techniques-lead-to-cloud-based-ransomware/
+- https://microsoft.github.io/Azure-Threat-Research-Matrix/Impact/AZT701/AZT701-2/
 
 
 ## Instructions
@@ -54,7 +54,7 @@ Sample Azure Activity Log event to monitor:
         "value": "Microsoft.Storage/storageAccounts/listKeys/action",
         "localizedValue": "List Storage Account Keys"
     },
-	"properties": {
+    "properties": {
         "eventCategory": "Administrative",
         "entity": "/subscriptions/[SUBSCRIPTION-ID]/resourceGroups/stratus-red-team-storage-storage-27n4/providers/Microsoft.Storage/storageAccounts/stratusredteamexport",
         "message": "Microsoft.Storage/storageAccounts/listKeys/action",

@@ -660,13 +660,6 @@ Azure:
           platform: Azure
           isIdempotent: true
     Impact:
-        - id: azure.impact.resource-lock
-          name: Delete Azure resource lock
-          isSlow: true
-          mitreAttackTactics:
-            - Impact
-          platform: Azure
-          isIdempotent: true
         - id: azure.impact.blob-ransomware-individual-file-deletion
           name: Azure ransomware via Storage Account Blob deletion
           isSlow: false
@@ -674,6 +667,13 @@ Azure:
             - Impact
           platform: Azure
           isIdempotent: false
+        - id: azure.impact.resource-lock
+          name: Delete Azure resource lock
+          isSlow: true
+          mitreAttackTactics:
+            - Impact
+          platform: Azure
+          isIdempotent: true
     Persistence:
         - id: azure.persistence.create-bastion-shareable-link
           name: Create Azure VM Bastion shareable link

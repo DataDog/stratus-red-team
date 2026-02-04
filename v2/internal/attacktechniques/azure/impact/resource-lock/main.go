@@ -26,19 +26,19 @@ NOTE: Due to resource lock delays, the warmup and cleanup steps of this techniqu
 
 Disable Azure resource locks to allow resource deletion. Resource locks can be applied to any Azure resource, resource group, or subscription. This technique uses a lock on a resource group containing an Azure storage account as an example.
 
-References:
-
-- https://www.microsoft.com/en-us/security/blog/2025/08/27/storm-0501s-evolving-techniques-lead-to-cloud-based-ransomware/
-- https://learn.microsoft.com/azure/azure-resource-manager/management/lock-resources
-
-Warm-up: 
+Warm-up:
 
 - Create a storage account
 - Set storage account as ReadOnly using an Azure resource lock at the resource group level
 
-Detonation: 
+Detonation:
 
 - Delete Azure resource lock
+
+References:
+
+- https://www.microsoft.com/en-us/security/blog/2025/08/27/storm-0501s-evolving-techniques-lead-to-cloud-based-ransomware/
+- https://learn.microsoft.com/azure/azure-resource-manager/management/lock-resources
 
 `,
 		Detection: `

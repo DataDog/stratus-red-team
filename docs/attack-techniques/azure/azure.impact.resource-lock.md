@@ -23,19 +23,19 @@ NOTE: Due to resource lock delays, the warmup and cleanup steps of this techniqu
 
 Disable Azure resource locks to allow resource deletion. Resource locks can be applied to any Azure resource, resource group, or subscription. This technique uses a lock on a resource group containing an Azure storage account as an example.
 
-References:
-
-- https://www.microsoft.com/en-us/security/blog/2025/08/27/storm-0501s-evolving-techniques-lead-to-cloud-based-ransomware/
-- https://learn.microsoft.com/azure/azure-resource-manager/management/lock-resources
-
-<span style="font-variant: small-caps;">Warm-up</span>: 
+<span style="font-variant: small-caps;">Warm-up</span>:
 
 - Create a storage account
 - Set storage account as ReadOnly using an Azure resource lock at the resource group level
 
-<span style="font-variant: small-caps;">Detonation</span>: 
+<span style="font-variant: small-caps;">Detonation</span>:
 
 - Delete Azure resource lock
+
+References:
+
+- https://www.microsoft.com/en-us/security/blog/2025/08/27/storm-0501s-evolving-techniques-lead-to-cloud-based-ransomware/
+- https://learn.microsoft.com/azure/azure-resource-manager/management/lock-resources
 
 
 
@@ -56,7 +56,7 @@ Sample Azure Activity Log event to monitor:
         "value": "Microsoft.Authorization/locks/delete",
         "localizedValue": "Delete management locks"
     },
-	"properties": {
+    "properties": {
         "properties": {
         "eventCategory": "Administrative",
         "entity": "/subscriptions/[SUBSCRIPTION-ID]/resourceGroups/stratus-red-team-lock-storage-71mu/providers/Microsoft.Authorization/locks/stratus-storage-lock-71mu",
