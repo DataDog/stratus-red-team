@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stratus Red Team Test Report - {{TECHNIQUE_ID}}</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 1200px; margin: 40px auto; padding: 20px; }
+        h1 { color: #d32f2f; }
+        h2 { color: #1976d2; border-bottom: 2px solid #1976d2; padding-bottom: 5px; }
+        .metadata { background: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0; }
+        .phase { margin: 30px 0; padding: 20px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background: #e8f5e9; border-left: 4px solid #4caf50; }
+        .failure { background: #ffebee; border-left: 4px solid #f44336; }
+        .warning { background: #fff3e0; border-left: 4px solid #ff9800; }
+        .check { margin: 10px 0; padding: 10px; background: white; border-radius: 3px; border-left: 3px solid #ddd; }
+        .check.pass { border-left-color: #4caf50; }
+        .check.fail { border-left-color: #f44336; }
+        .check.pass::before { content: "✓ "; color: #4caf50; font-weight: bold; }
+        .check.fail::before { content: "✗ "; color: #f44336; font-weight: bold; }
+        .check-command { background: #f5f5f5; padding: 8px; margin: 8px 0; border-radius: 3px; font-family: monospace; font-size: 0.9em; }
+        .check-output { background: #263238; color: #aed581; padding: 10px; margin: 8px 0; border-radius: 3px; font-family: monospace; font-size: 0.85em; max-height: 200px; overflow-y: auto; }
+        code { background: #f5f5f5; padding: 2px 6px; border-radius: 3px; }
+        pre { background: #263238; color: #aed581; padding: 15px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>Stratus Red Team Test Report</h1>
+
+    <div class="metadata">
+        <h3>Technique Information</h3>
+        <p><strong>ID:</strong> {{TECHNIQUE_ID}}</p>
+        <p><strong>Name:</strong> {{TECHNIQUE_NAME}}</p>
+        <p><strong>Platform:</strong> {{PLATFORM}}</p>
+        <p><strong>MITRE ATT&CK:</strong> {{TACTIC}}</p>
+        <p><strong>Test Date:</strong> {{TIMESTAMP}}</p>
+        <p><strong>Credentials:</strong> {{CREDENTIAL_INFO}}</p>
+    </div>
+
+    <h2>Test Plan</h2>
+    <div class="phase">
+        <h3>Expected Warmup Outcomes</h3>
+        <ul>{{EXPECTED_WARMUP_RESOURCES}}</ul>
+
+        <h3>Expected Detonation Outcomes</h3>
+        <ul>{{EXPECTED_DETONATION_BEHAVIORS}}</ul>
+
+        <h3>Validation Checks</h3>
+        <ul>{{PLANNED_CHECKS}}</ul>
+    </div>
+
+    <h2>Execution Results</h2>
+
+    <div class="phase {{WARMUP_STATUS_CLASS}}">
+        <h3>Warmup Phase</h3>
+        <p><strong>Status:</strong> {{WARMUP_STATUS}}</p>
+        <p><strong>Resources Created:</strong></p>
+        <ul>{{WARMUP_RESOURCES}}</ul>
+        <details>
+            <summary>Full Output</summary>
+            <pre>{{WARMUP_OUTPUT}}</pre>
+        </details>
+    </div>
+
+    <div class="phase {{DETONATION_STATUS_CLASS}}">
+        <h3>Detonation Phase</h3>
+        <p><strong>Status:</strong> {{DETONATION_STATUS}}</p>
+        <p><strong>Observed Behaviors:</strong></p>
+        <ul>{{DETONATION_BEHAVIORS}}</ul>
+        <details>
+            <summary>Full Output</summary>
+            <pre>{{DETONATION_OUTPUT}}</pre>
+        </details>
+    </div>
+
+    <h2>Validation Results</h2>
+    <div class="phase">
+        {{VALIDATION_CHECKS}}
+    </div>
+
+    <div class="phase {{CLEANUP_STATUS_CLASS}}">
+        <h3>Cleanup Phase</h3>
+        <p><strong>Status:</strong> {{CLEANUP_STATUS}}</p>
+        <details>
+            <summary>Full Output</summary>
+            <pre>{{CLEANUP_OUTPUT}}</pre>
+        </details>
+    </div>
+
+    <h2>Summary</h2>
+    <div class="metadata">
+        <p><strong>Overall Result:</strong> {{OVERALL_RESULT}}</p>
+        <p><strong>Checks Passed:</strong> {{CHECKS_PASSED}}/{{TOTAL_CHECKS}}</p>
+        <p><strong>Issues Encountered:</strong> {{ISSUES}}</p>
+        <p><strong>Recommendations:</strong> {{RECOMMENDATIONS}}</p>
+    </div>
+</body>
+</html>
