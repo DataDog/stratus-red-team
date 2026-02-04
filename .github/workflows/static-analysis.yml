@@ -32,10 +32,10 @@ jobs:
             objects.githubusercontent.com:443
             raw.githubusercontent.com:443
             go.dev:443
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           fetch-depth: 1
-      - uses: dominikh/staticcheck-action@024238d2898c874f26d723e7d0ff4308c35589a2
+      - uses: dominikh/staticcheck-action@024238d2898c874f26d723e7d0ff4308c35589a2 # v1.4.0
         with:
           install-go: true
           working-directory: "./v2"
