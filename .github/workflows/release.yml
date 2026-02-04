@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 120
     runs-on:
       group: Large Runner Shared Public
-      labels: ubuntu-4-core-latest
+      labels: ubuntu-16-core-latest
     permissions:
       id-token: write
     steps:
@@ -62,7 +62,7 @@ jobs:
         with:
           distribution: goreleaser
           version: "~> v2"
-          args: release --clean --config ../.goreleaser.yaml --timeout 600m0s --verbose --parallelism 1
+          args: release --clean --config ../.goreleaser.yaml --timeout 600m0s --verbose --parallelism 2
           workdir: ./v2
         env:
           GITHUB_TOKEN: ${{ steps.octo-sts.outputs.token }} # Write permission is granted by the trust policy
