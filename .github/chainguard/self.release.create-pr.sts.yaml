@@ -9,5 +9,5 @@ claim_pattern:
   job_workflow_ref: DataDog/stratus-red-team/.github/workflows/release.yml@refs/(heads/main|tags/.*)
 
 permissions:
-  contents: read
+  contents: write
   pull_requests: write
