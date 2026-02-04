@@ -70,8 +70,3 @@ func SHA256Hash(input string) string {
 	hash.Write([]byte(input))
 	return hex.EncodeToString(hash.Sum(nil))
 }
-
-func SHA256HashBase64(input []byte) string {
-	hash := sha256.Sum256(input)
-	return base64.StdEncoding.EncodeToString(hash[:])
-}

@@ -17,9 +17,16 @@ resource "random_string" "suffix" {
   upper   = false
 }
 
+resource "random_string" "keyvault_suffix" {
+  length  = 8
+  special = false
+  upper   = false
+}
+
 locals {
   resource_prefix      = "stratusrt"
   storage_account_name = "${local.resource_prefix}${random_string.suffix.result}"
+  key_vault_name       = "srt-ransom-${random_string.keyvault_suffix.result}"
   num_files            = 51
   num_containers       = 5
   min_size_bytes       = 1
@@ -335,12 +342,24 @@ resource "azurerm_resource_group" "rg" {
   location = "West US"
 }
 
+data "azurerm_client_config" "current" {}
+
 resource "azurerm_storage_account" "storage" {
   name                     = local.storage_account_name
   resource_group_name      = azurerm_resource_group.rg.name
   location                 = azurerm_resource_group.rg.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
+
+  identity {
+    type = "SystemAssigned"
+  }
+}
+
+resource "azurerm_role_assignment" "storage_keyvault_crypto" {
+  scope                = azurerm_resource_group.rg.id
+  role_definition_name = "Key Vault Crypto Service Encryption User"
+  principal_id         = azurerm_storage_account.storage.identity[0].principal_id
 }
 
 resource "azurerm_storage_container" "containers" {
@@ -400,6 +419,10 @@ output "resource_group_name" {
   value = azurerm_resource_group.rg.name
 }
 
-output "container_names" {
-  value = [for container in azurerm_storage_container.containers : container.name]
+output "tenant_id" {
+  value = data.azurerm_client_config.current.tenant_id
+}
+
+output "key_vault_name" {
+  value = local.key_vault_name
 }
