@@ -54,7 +54,7 @@ Sample Azure Activity Log event to monitor:
         "value": "Microsoft.Storage/storageAccounts/listKeys/action",
         "localizedValue": "List Storage Account Keys"
     },
-	"properties": {
+    "properties": {
         "eventCategory": "Administrative",
         "entity": "/subscriptions/[SUBSCRIPTION-ID]/resourceGroups/stratus-red-team-storage-storage-27n4/providers/Microsoft.Storage/storageAccounts/stratusredteamexport",
         "message": "Microsoft.Storage/storageAccounts/listKeys/action",

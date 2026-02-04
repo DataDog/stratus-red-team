@@ -51,7 +51,7 @@ Sample Azure Activity Log event to monitor:
         "value": "Microsoft.Authorization/locks/delete",
         "localizedValue": "Delete management locks"
     },
-	"properties": {
+    "properties": {
         "properties": {
         "eventCategory": "Administrative",
         "entity": "/subscriptions/[SUBSCRIPTION-ID]/resourceGroups/stratus-red-team-lock-storage-71mu/providers/Microsoft.Authorization/locks/stratus-storage-lock-71mu",
