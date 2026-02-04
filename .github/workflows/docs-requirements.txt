@@ -1,0 +1,9 @@
+# Documentation dependencies with hash pinning for OpenSSF Scorecard
+# Generated: 2026-02-04
+# To update: pip download --no-deps <package> && sha256sum <package>.whl
+
+mkdocs-material==9.7.1 \
+    --hash=sha256:3f6100937d7d731f87f1e3e3b021c97f7239666b9ba1151ab476cabb96c60d5c
+
+mkdocs-awesome-pages-plugin==2.10.1 \
+    --hash=sha256:c6939dbea37383fc3cf8c0a4e892144ec3d2f8a585e16fdc966b34e7c97042a7
