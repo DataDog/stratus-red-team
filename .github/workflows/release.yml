@@ -3,7 +3,7 @@ name: release
 on:
   push:
     tags:
-      - "*"
+      - "v*"
 
 defaults:
   run:
@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 120
     runs-on:
       group: Large Runner Shared Public
-      labels: ubuntu-4-core-latest
+      labels: ubuntu-16-core-latest
     permissions:
       id-token: write
     steps:
@@ -50,19 +50,25 @@ jobs:
           scope: DataDog/stratus-red-team
           policy: self.release.create-pr
       - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           fetch-depth: 0
+      - name: Check if tag is on main branch
+        run: |
+          if ! git merge-base --is-ancestor ${{ github.sha }} origin/main; then
+            echo "::error::Tag does not reference a commit on main branch"
+            exit 1
+          fi
       - name: Set up Go
         uses: actions/setup-go@4dc6199c7b1a012772edbd06daecab0f50c9053c
         with:
           go-version: 1.23
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@9ed2f89a662bf1735a48bc8557fd212fa902bebf # v6.1.0
+        uses: goreleaser/goreleaser-action@e435ccd777264be153ace6237001ef4d979d3a7a # v6.4.0
         with:
           distribution: goreleaser
           version: "~> v2"
-          args: release --clean --config ../.goreleaser.yaml --timeout 600m0s --verbose --parallelism 1
+          args: release --clean --config ../.goreleaser.yaml --timeout 600m0s --verbose --parallelism 2
           workdir: ./v2
         env:
           GITHUB_TOKEN: ${{ steps.octo-sts.outputs.token }} # Write permission is granted by the trust policy
