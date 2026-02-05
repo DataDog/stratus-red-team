@@ -26,7 +26,7 @@ resource "random_string" "keyvault_suffix" {
 locals {
   resource_prefix      = "stratusrt"
   storage_account_name = "${local.resource_prefix}${random_string.suffix.result}"
-  key_vault_name       = "srt-ransom-${random_string.keyvault_suffix.result}"
+  key_vault_name       = "${local.resource_prefix}${random_string.keyvault_suffix.result}"
   num_files            = 51
   num_containers       = 5
   min_size_bytes       = 1
@@ -356,11 +356,23 @@ resource "azurerm_storage_account" "storage" {
   }
 }
 
+resource "azurerm_key_vault" "kv" {
+  name                        = local.key_vault_name
+  location                    = azurerm_resource_group.rg.location
+  resource_group_name         = azurerm_resource_group.rg.name
+  tenant_id                   = data.azurerm_client_config.current.tenant_id
+  sku_name                    = "standard"
+  soft_delete_retention_days  = 7
+  purge_protection_enabled    = false
+  enable_rbac_authorization   = true
+}
+
 resource "azurerm_role_assignment" "storage_keyvault_crypto" {
-  scope                = azurerm_resource_group.rg.id
+  scope                = azurerm_key_vault.kv.id
   role_definition_name = "Key Vault Crypto Service Encryption User"
   principal_id         = azurerm_storage_account.storage.identity[0].principal_id
 }
+
 
 resource "azurerm_storage_container" "containers" {
   count                 = local.num_containers
@@ -408,7 +420,7 @@ resource "azurerm_storage_blob" "fake_blobs" {
 }
 
 output "display" {
-  value = format("Storage account %s containing %d blobs across %d containers ready", azurerm_storage_account.storage.name, local.num_files, local.num_containers)
+  value = format("Storage account %s containing %d blobs across %d containers ready. Key Vault %s ready.", azurerm_storage_account.storage.name, local.num_files, local.num_containers, local.key_vault_name)
 }
 
 output "storage_account_name" {
@@ -417,10 +429,6 @@ output "storage_account_name" {
 
 output "resource_group_name" {
   value = azurerm_resource_group.rg.name
-}
-
-output "tenant_id" {
-  value = data.azurerm_client_config.current.tenant_id
 }
 
 output "key_vault_name" {
