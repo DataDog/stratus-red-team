@@ -1,8 +1,8 @@
 ---
-title: Azure Blob Storage ransomware through Key Vault encryption scope
+title: Azure Blob Storage ransomware through Encryption Scope using client-managed Key Vault key
 ---
 
-# Azure Blob Storage ransomware through Key Vault encryption scope
+# Azure Blob Storage ransomware through Encryption Scope using client-managed Key Vault key
 
 
 
@@ -49,7 +49,7 @@ References:
 ## Instructions
 
 ```bash title="Detonate with Stratus Red Team"
-stratus detonate azure.impact.blob-ransomware-client-side-encryption
+stratus detonate azure.impact.blob-ransomware-client-encryption-scope
 ```
 ## Detection
 

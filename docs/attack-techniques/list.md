@@ -55,7 +55,7 @@ This page contains the list of all Stratus Attack Techniques.
 | [Execute Command on Virtual Machine using Custom Script Extension](./azure/azure.execution.vm-custom-script-extension.md) | [Azure](./azure/index.md) | Execution |
 | [Execute Commands on Virtual Machine using Run Command](./azure/azure.execution.vm-run-command.md) | [Azure](./azure/index.md) | Execution |
 | [Export Disk Through SAS URL](./azure/azure.exfiltration.disk-export.md) | [Azure](./azure/index.md) | Exfiltration |
-| [Azure Blob Storage ransomware through Key Vault encryption scope](./azure/azure.impact.blob-ransomware-client-side-encryption.md) | [Azure](./azure/index.md) | Impact |
+| [Azure Blob Storage ransomware through Encryption Scope using client-managed Key Vault key](./azure/azure.impact.blob-ransomware-client-encryption-scope.md) | [Azure](./azure/index.md) | Impact |
 | [Azure ransomware via Storage Account Blob deletion](./azure/azure.impact.blob-ransomware-individual-file-deletion.md) | [Azure](./azure/index.md) | Impact |
 | [Create Azure VM Bastion shareable link](./azure/azure.persistence.create-bastion-shareable-link.md) | [Azure](./azure/index.md) | Persistence |
 | [Create Admin EKS Access Entry](./EKS/eks.lateral-movement.create-access-entry.md) | [EKS](./EKS/index.md) | Lateral Movement |

@@ -37,8 +37,8 @@ const CodeBlock = "```"
 
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
-		ID:           "azure.impact.blob-ransomware-client-side-encryption",
-		FriendlyName: "Azure Blob Storage ransomware through Key Vault encryption scope",
+		ID:           "azure.impact.blob-ransomware-client-encryption-scope",
+		FriendlyName: "Azure Blob Storage ransomware through Encryption Scope using client-managed Key Vault key",
 		Description: `
 Simulates Azure Blob Storage ransomware activity that encrypts files using an encryption scope backed by a customer-managed Key Vault key, then deletes the key to render the data inaccessible.
 Note that due to Azure's purge protection feature, it is impossible to hard-delete the key and the blobs remain recoverable.
