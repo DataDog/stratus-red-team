@@ -7,9 +7,17 @@ terraform {
   }
 }
 
+variable "namespace" {
+  description = "Kubernetes namespace to use. If empty, a new namespace will be created."
+  type        = string
+  default     = ""
+}
+
 locals {
-  kubeconfig_path = pathexpand("~/.kube/config")
-  namespace       = format("stratus-red-team-privileged-name-%s", random_string.suffix.result)
+  kubeconfig_path   = pathexpand("~/.kube/config")
+  create_namespace  = var.namespace == ""
+  generated_ns_name = format("stratus-red-team-privileged-name-%s", random_string.suffix.result)
+  namespace         = local.create_namespace ? local.generated_ns_name : var.namespace
 }
 
 # Use ~/.kube/config as a configuration file if it exists (with current context).
@@ -25,16 +33,17 @@ resource "random_string" "suffix" {
 }
 
 resource "kubernetes_namespace" "namespace" {
+  count = local.create_namespace ? 1 : 0
   metadata {
-    name   = local.namespace
+    name   = local.generated_ns_name
     labels = { "datadoghq.com/stratus-red-team" : true }
   }
 }
 
 output "namespace" {
-  value = kubernetes_namespace.namespace.metadata[0].name
+  value = local.namespace
 }
 
 output "display" {
-  value = format("Namespace %s ready", kubernetes_namespace.namespace.metadata[0].name)
+  value = format("Namespace %s ready", local.namespace)
 }

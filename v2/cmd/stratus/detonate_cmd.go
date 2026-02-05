@@ -2,11 +2,12 @@ package main
 
 import (
 	"errors"
+	"os"
+	"strings"
+
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/runner"
-	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )

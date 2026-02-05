@@ -3,14 +3,16 @@ package runner
 import (
 	"context"
 	"errors"
-	"github.com/datadog/stratus-red-team/v2/internal/state"
-	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
-	"github.com/datadog/stratus-red-team/v2/pkg/stratus/useragent"
-	"github.com/google/uuid"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/datadog/stratus-red-team/v2/internal/config"
+	"github.com/datadog/stratus-red-team/v2/internal/state"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/useragent"
+	"github.com/google/uuid"
 )
 
 const StratusRunnerForce = true
@@ -23,6 +25,7 @@ type runnerImpl struct {
 	TechniqueState      stratus.AttackTechniqueState
 	TerraformDir        string
 	ShouldForce         bool
+	Config              config.Config
 	TerraformManager    TerraformManager
 	StateManager        state.StateManager
 	ProviderFactory     stratus.CloudProviders
@@ -46,10 +49,13 @@ func NewRunner(technique *stratus.AttackTechnique, force bool) Runner {
 }
 
 func NewRunnerWithContext(ctx context.Context, technique *stratus.AttackTechnique, force bool) Runner {
+	config, err := config.LoadConfig()
+	if err != nil {
+		log.Fatalf("error loading config: %s", err)
+	}
 	stateManager := state.NewFileSystemStateManager(technique)
 
 	var correlationId = uuid.New()
-	var err error
 	if grimoireDetonationId := os.Getenv("STRATUS_RED_TEAM_DETONATION_ID"); grimoireDetonationId != "" {
 		log.Println("STRATUS_RED_TEAM_DETONATION_ID is set, using it as the correlation ID")
 		correlationId, err = uuid.Parse(grimoireDetonationId)
@@ -64,11 +70,13 @@ func NewRunnerWithContext(ctx context.Context, technique *stratus.AttackTechniqu
 		ShouldForce:         force,
 		StateManager:        stateManager,
 		UniqueCorrelationID: correlationId,
+		Config:              config,
 		TerraformManager: NewTerraformManagerWithContext(
 			ctx, filepath.Join(stateManager.GetRootDirectory(), "terraform"), useragent.GetStratusUserAgentForUUID(correlationId),
 		),
 		Context: ctx,
 	}
+
 	runner.initialize()
 
 	return runner
@@ -114,25 +122,37 @@ func (m *runnerImpl) WarmUp() (map[string]string, error) {
 	}
 
 	log.Println("Warming up " + m.Technique.ID)
-	outputs, err := m.TerraformManager.TerraformInitAndApply(m.TerraformDir)
+	overrideVars := m.getTerraformVariablesFromConfig()
+	outputs, err := m.TerraformManager.TerraformInitAndApply(m.TerraformDir, overrideVars)
 	if err != nil {
 		log.Println("Error during warm up. Cleaning up technique prerequisites with terraform destroy")
-		_ = m.TerraformManager.TerraformDestroy(m.TerraformDir)
+		_ = m.TerraformManager.TerraformDestroy(m.TerraformDir, overrideVars)
 		if errors.Is(err, context.Canceled) {
 			return nil, err
 		}
 		return nil, errors.New("unable to run terraform apply on prerequisite: " + errorMessageFromTerraformError(err))
 	}
 
-	// Persist outputs to disk
-	err = m.StateManager.WriteTerraformOutputs(outputs)
+	// Resources are created, set state to warm
 	m.setState(stratus.AttackTechniqueStatusWarm)
-
 	if display, ok := outputs["display"]; ok {
 		display := strings.ReplaceAll(display, "\\n", "\n")
 		log.Println(display)
 	}
-	return outputs, err
+
+	// Persist outputs and variables to disk
+	err = m.StateManager.WriteTerraformOutputs(outputs)
+	if err != nil {
+		return nil, errors.New("unable to persist Terraform outputs: " + err.Error())
+	}
+	if len(overrideVars) > 0 {
+		err = m.StateManager.WriteTerraformVariables(overrideVars)
+		if err != nil {
+			return nil, errors.New("unable to persist Terraform variables: " + err.Error())
+		}
+	}
+
+	return outputs, nil
 }
 
 func (m *runnerImpl) Detonate() error {
@@ -218,8 +238,15 @@ func (m *runnerImpl) CleanUp() error {
 
 	// Nuke prerequisites
 	if m.Technique.PrerequisitesTerraformCode != nil {
+		// Load persisted Terraform variables from filesystem. We don't use the variables from the
+		// config file, that may have change since warmup, so we rely only on the persisted variables.
+		persistedVars, err := m.StateManager.GetTerraformVariables()
+		if err != nil {
+			log.Println("Warning: unable to load persisted Terraform variables: " + err.Error())
+		}
+
 		log.Println("Cleaning up technique prerequisites with terraform destroy")
-		err := m.TerraformManager.TerraformDestroy(m.TerraformDir)
+		err = m.TerraformManager.TerraformDestroy(m.TerraformDir, persistedVars)
 		if err != nil {
 			if errors.Is(err, context.Canceled) {
 				return err
@@ -254,6 +281,11 @@ func (m *runnerImpl) setState(state stratus.AttackTechniqueState) {
 // GetUniqueExecutionId returns an unique execution ID, unique for each runner instance
 func (m *runnerImpl) GetUniqueExecutionId() string {
 	return m.UniqueCorrelationID.String()
+}
+
+// getTerraformVariablesFromConfig returns the terraform variables to use from the config file
+func (m *runnerImpl) getTerraformVariablesFromConfig() map[string]string {
+	return m.Config.GetTerraformVariables(m.Technique.ID, m.Technique.TerraformOverrideConfig)
 }
 
 // Utility function to display better error messages than the Terraform ones
