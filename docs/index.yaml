@@ -645,6 +645,20 @@ Azure:
             - Exfiltration
           platform: Azure
           isIdempotent: true
+        - id: azure.exfiltration.storage-public-access
+          name: Exfiltrate Azure Storage via public access
+          isSlow: false
+          mitreAttackTactics:
+            - Exfiltration
+          platform: Azure
+          isIdempotent: true
+        - id: azure.exfiltration.storage-sas-export
+          name: Exfiltrate Azure Storage through SAS URL
+          isSlow: false
+          mitreAttackTactics:
+            - Exfiltration
+          platform: Azure
+          isIdempotent: true
     Impact:
         - id: azure.impact.blob-ransomware-client-encryption-scope
           name: Azure Blob Storage ransomware through Encryption Scope using client-managed Key Vault key
@@ -660,6 +674,13 @@ Azure:
             - Impact
           platform: Azure
           isIdempotent: false
+        - id: azure.impact.resource-lock
+          name: Delete Azure resource lock
+          isSlow: true
+          mitreAttackTactics:
+            - Impact
+          platform: Azure
+          isIdempotent: true
     Persistence:
         - id: azure.persistence.create-bastion-shareable-link
           name: Create Azure VM Bastion shareable link
