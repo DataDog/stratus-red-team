@@ -30,10 +30,10 @@ You will need to have the <code>Key Vault Administrator</code> role on your Azur
 - Create an Azure Key Vault without purge protection
 - Grant the storage account the "Key Vault Crypto Service Encryption User" role on the Key Vault
 - Create multiple storage containers in the account
-- Create a number of blobs in the containers with random content and file extensions
 
 <span style="font-variant: small-caps;">Detonation</span>:
 
+- Create a number of blobs in the containers with random content and file extensions
 - Enable purge protection on the Key Vault (to generate MICROSOFT.KEYVAULT/VAULTS/WRITE activity log event)
 - Create an RSA 2048 key in the Key Vault
 - Create an encryption scope on the storage account using the Key Vault key

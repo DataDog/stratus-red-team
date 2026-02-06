@@ -3,10 +3,12 @@ package azure
 import (
 	"bytes"
 	"context"
+	"crypto/rand"
 	_ "embed"
 	"fmt"
 	"io"
 	"log"
+	"math/big"
 	"strings"
 	"time"
 
@@ -35,6 +37,25 @@ const RansomNoteContents = "Your data has been encrypted with a Key Vault key th
 
 const CodeBlock = "```"
 
+// Blob generation constants
+const numContainers = 5
+const numFiles = 51
+const minSizeBytes = 1
+const maxSizeBytes = 200
+
+var fileExtensions = []string{"sql", "txt", "docx", "pdf", "png", "tar.gz"}
+var nameSeparators = []string{" ", "-", "_"}
+var wordlist = []string{
+	"liable", "donated", "mayday", "blooper", "pueblo", "tantrum", "scary", "secret",
+	"secluded", "babied", "ignition", "unfasten", "affirm", "margarine", "credit",
+	"underage", "june", "licking", "approve", "overbite", "ditto", "pavilion", "chewy",
+	"drivable", "favorable", "kitchen", "wriggly", "shape", "resistant", "unless",
+	"backlight", "cruelty", "empower", "freewill", "passage", "net", "retrial", "hulk",
+	"drizzly", "ambitious", "banknote", "calm", "these", "outlet", "survivor", "silenced",
+	"fantasy", "flogging", "aeration", "balsamic", "antivirus", "glowing", "setup",
+	"unpopular", "immobile", "divisive", "dosage", "amicably", "follicle", "ogle",
+}
+
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
 		ID:           "azure.impact.blob-ransomware-client-encryption-scope",
@@ -51,10 +72,10 @@ Warm-up:
 - Create an Azure Key Vault without purge protection
 - Grant the storage account the "Key Vault Crypto Service Encryption User" role on the Key Vault
 - Create multiple storage containers in the account
-- Create a number of blobs in the containers with random content and file extensions
 
 Detonation:
 
+- Create a number of blobs in the containers with random content and file extensions
 - Enable purge protection on the Key Vault (to generate MICROSOFT.KEYVAULT/VAULTS/WRITE activity log event)
 - Create an RSA 2048 key in the Key Vault
 - Create an encryption scope on the storage account using the Key Vault key
@@ -129,6 +150,16 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 
 	log.Println("Simulating a ransomware attack on storage account " + storageAccount)
 
+	// Create blob client first - needed for blob creation
+	blobClient, err := utils.GetAzureBlobClient(blobServiceURL, azureConfig.SubscriptionID, azureConfig.GetCredentials(), azureConfig.ClientOptions, params)
+	if err != nil {
+		return fmt.Errorf("failed to instantiate Blob Client: %w", err)
+	}
+
+	if err := createFakeBlobs(blobClient); err != nil {
+		return fmt.Errorf("failed to create fake blobs: %w", err)
+	}
+
 	if err := enablePurgeProtection(azureConfig, resourceGroup, keyVaultName); err != nil {
 		return fmt.Errorf("failed to enable purge protection: %w", err)
 	}
@@ -141,11 +172,6 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 
 	if err := createEncryptionScope(azureConfig, resourceGroup, storageAccount, keyVaultName); err != nil {
 		return fmt.Errorf("failed to create encryption scope: %w", err)
-	}
-
-	blobClient, err := utils.GetAzureBlobClient(blobServiceURL, azureConfig.SubscriptionID, azureConfig.GetCredentials(), azureConfig.ClientOptions, params)
-	if err != nil {
-		return fmt.Errorf("failed to instantiate Blob Client: %w", err)
 	}
 
 	if err := encryptAllBlobsWithScope(blobClient); err != nil {
@@ -166,6 +192,40 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	}
 
 	log.Println("Technique execution completed - blobs are now encrypted with a deleted key")
+	return nil
+}
+
+func createFakeBlobs(client *azblob.Client) error {
+	log.Printf("Creating %d fake blobs across %d containers", numFiles, numContainers)
+
+	for i := 0; i < numFiles; i++ {
+		containerName := fmt.Sprintf("container-%d", (i%numContainers)+1)
+
+		word1Idx, _ := rand.Int(rand.Reader, big.NewInt(int64(len(wordlist))))
+		word2Idx, _ := rand.Int(rand.Reader, big.NewInt(int64(len(wordlist))))
+		sepIdx, _ := rand.Int(rand.Reader, big.NewInt(int64(len(nameSeparators))))
+		extIdx, _ := rand.Int(rand.Reader, big.NewInt(int64(len(fileExtensions))))
+
+		blobName := fmt.Sprintf("%s%s%s.%s",
+			wordlist[word1Idx.Int64()],
+			nameSeparators[sepIdx.Int64()],
+			wordlist[word2Idx.Int64()],
+			fileExtensions[extIdx.Int64()],
+		)
+
+		sizeRange := maxSizeBytes - minSizeBytes
+		sizeOffset, _ := rand.Int(rand.Reader, big.NewInt(int64(sizeRange)))
+		contentSize := minSizeBytes + int(sizeOffset.Int64())
+		content := make([]byte, contentSize)
+		rand.Read(content)
+
+		_, err := client.UploadBuffer(context.Background(), containerName, blobName, content, nil)
+		if err != nil {
+			return fmt.Errorf("failed to upload blob %s to container %s: %w", blobName, containerName, err)
+		}
+	}
+
+	log.Printf("Created %d fake blobs", numFiles)
 	return nil
 }
 
