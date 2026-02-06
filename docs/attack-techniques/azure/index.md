@@ -27,6 +27,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 ## Impact
   
+  - [Azure Blob Storage ransomware through Encryption Scope using client-managed Key Vault key](./azure.impact.blob-ransomware-client-encryption-scope.md)
+  
   - [Azure ransomware via Storage Account Blob deletion](./azure.impact.blob-ransomware-individual-file-deletion.md)
   
   - [Delete Azure resource lock](./azure.impact.resource-lock.md)
