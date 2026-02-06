@@ -69,7 +69,7 @@ $ stratus detonate aws.persistence.iam-backdoor-role
 2022/01/19 10:28:09 Warming up aws.persistence.iam-backdoor-role
 2022/01/19 10:28:09 Initializing Terraform
 2022/01/19 10:28:18 Applying Terraform
-2022/01/19 10:28:32 Backdooring IAM role by allowing sts:AssumeRole from an extenral AWS account
+2022/01/19 10:28:32 Backdooring IAM role by allowing sts:AssumeRole from an external AWS account
 ```
 
 Great! The attack technique has been executed against our AWS account.

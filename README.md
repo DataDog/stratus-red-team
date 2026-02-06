@@ -33,7 +33,7 @@ See the documentation at **[stratus-red-team.cloud](https://stratus-red-team.clo
 
 ### Direct install
 
-Requires Go 1.22+
+Requires Go 1.23+
 
 ```
 go install -v github.com/datadog/stratus-red-team/v2/cmd/stratus@latest
@@ -46,7 +46,7 @@ brew tap datadog/stratus-red-team https://github.com/DataDog/stratus-red-team
 brew install datadog/stratus-red-team/stratus-red-team
 ```
 
-### Pre-build binaries
+### Pre-built binaries
 
 For Linux / Windows / Mac OS: download one of the [pre-built binaries](https://github.com/datadog/stratus-red-team/releases).
 
