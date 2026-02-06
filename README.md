@@ -46,7 +46,7 @@ brew tap datadog/stratus-red-team https://github.com/DataDog/stratus-red-team
 brew install datadog/stratus-red-team/stratus-red-team
 ```
 
-### Pre-build binaries
+### Pre-built binaries
 
 For Linux / Windows / Mac OS: download one of the [pre-built binaries](https://github.com/datadog/stratus-red-team/releases).
 
