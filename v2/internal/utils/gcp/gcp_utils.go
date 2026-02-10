@@ -2,25 +2,25 @@ package gcp_utils
 
 import (
 	"context"
-	"errors"
-	"fmt"
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
-	"golang.org/x/crypto/ssh"
-	"google.golang.org/api/compute/v1"
+	"errors"
+	"fmt"
 	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	utils "github.com/datadog/stratus-red-team/v2/internal/utils"
+	"golang.org/x/crypto/ssh"
 	"google.golang.org/api/cloudresourcemanager/v1"
+	"google.golang.org/api/compute/v1"
 	"log"
 	"os"
 	"strings"
 )
 
 type SshKeyPair struct {
-    PrivateKey []byte
-    PublicKey  []byte
+	PrivateKey []byte
+	PublicKey  []byte
 }
 
 // GCPAssignProjectRole grants a project-wide role to a specific service account
@@ -120,61 +120,61 @@ func GetAttackerPrincipal() string {
 // the private key is encoded in PEM format
 // the public key is encoded in OpenSSH format
 func CreateSSHKeyPair() (SshKeyPair, error) {
-    // generate key
-    key, err := rsa.GenerateKey(rand.Reader, 4096)
-    if err != nil {
-        return SshKeyPair{}, err
-    }
+	// generate key
+	key, err := rsa.GenerateKey(rand.Reader, 4096)
+	if err != nil {
+		return SshKeyPair{}, err
+	}
 
-    // validate private key
-    err = key.Validate()
-    if err != nil {
-        return SshKeyPair{}, err
-    }
+	// validate private key
+	err = key.Validate()
+	if err != nil {
+		return SshKeyPair{}, err
+	}
 
-    // create public key
-    pubKey, err := ssh.NewPublicKey(&key.PublicKey)
-    if err != nil {
-        return SshKeyPair{}, err
-    }
-    pubKeyBytes := ssh.MarshalAuthorizedKey(pubKey)
+	// create public key
+	pubKey, err := ssh.NewPublicKey(&key.PublicKey)
+	if err != nil {
+		return SshKeyPair{}, err
+	}
+	pubKeyBytes := ssh.MarshalAuthorizedKey(pubKey)
 
-    // encode key
-    // get ASN.1 DER format
-    privKeyDer := x509.MarshalPKCS1PrivateKey(key)
+	// encode key
+	// get ASN.1 DER format
+	privKeyDer := x509.MarshalPKCS1PrivateKey(key)
 
-    // PEM block
-    privKeyBlock := pem.Block {
-        Type:       "RSA PRIVATE KEY",
-        Headers:    nil,
-        Bytes:      privKeyDer,
-    }
-    privKey := pem.EncodeToMemory(&privKeyBlock)
+	// PEM block
+	privKeyBlock := pem.Block{
+		Type:    "RSA PRIVATE KEY",
+		Headers: nil,
+		Bytes:   privKeyDer,
+	}
+	privKey := pem.EncodeToMemory(&privKeyBlock)
 
-    return SshKeyPair { privKey, pubKeyBytes }, nil
+	return SshKeyPair{privKey, pubKeyBytes}, nil
 }
 
 // InsertToMetadata insert item into metadata
 func InsertToMetadata(md *compute.Metadata, key string, value string) {
-    var found bool
+	var found bool
 
-    // find the presence of key (ssh-keys, windows-keys) in metadata
-    for _, mdi := range md.Items {
-        // if it exists, add it to existing key
-        if mdi.Key == key {
-            val := fmt.Sprintf("%s\n%s", *mdi.Value, value)
-            mdi.Value = &val
+	// find the presence of key (ssh-keys, windows-keys) in metadata
+	for _, mdi := range md.Items {
+		// if it exists, add it to existing key
+		if mdi.Key == key {
+			val := fmt.Sprintf("%s\n%s", *mdi.Value, value)
+			mdi.Value = &val
 
-            found = true 
-            break
-        }
-    }
+			found = true
+			break
+		}
+	}
 
-    // if key (ssh-keys, windows-keys) is not exists, create it and add our key
-    if !found {
-        md.Items = append(md.Items, &compute.MetadataItems {
-            Key:   key,
-            Value: &value,
-        })
-    }
+	// if key (ssh-keys, windows-keys) is not exists, create it and add our key
+	if !found {
+		md.Items = append(md.Items, &compute.MetadataItems{
+			Key:   key,
+			Value: &value,
+		})
+	}
 }
