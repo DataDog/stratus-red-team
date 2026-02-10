@@ -96,7 +96,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	// create compute service
 	service, err := compute.NewService(ctx, gcp.Options())
 	if err != nil {
-		return fmt.Errorf("Failed to create compute service: %v", err)
+		return fmt.Errorf("failed to create compute service: %v", err)
 	}
 
 	log.Println("Generating public/private key pair for user")
@@ -104,7 +104,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	// create RSA public/key pair
 	key, err := gcp_utils.CreateSSHKeyPair()
 	if err != nil {
-		return fmt.Errorf("Failed to create RSA key-pair: %v", err)
+		return fmt.Errorf("failed to create RSA key-pair: %v", err)
 	}
 
 	log.Println("Registering public key to instance's metadata")
@@ -112,7 +112,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	// get instance information
 	instance, err := service.Instances.Get(projectId, zone, instanceName).Do()
 	if err != nil {
-		return fmt.Errorf("Failed to get instance information: %v", err)
+		return fmt.Errorf("failed to get instance information: %v", err)
 	}
 
 	md := instance.Metadata
@@ -120,7 +120,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 
 	gcp_utils.InsertToMetadata(md, "ssh-keys", entry)
 	if _, err := service.Instances.SetMetadata(projectId, zone, instanceName, md).Do(); err != nil {
-		return fmt.Errorf("Failed to update instance metadata: %v", err)
+		return fmt.Errorf("failed to update instance metadata: %v", err)
 	}
 
 	log.Printf("Save this Private Key as 'account.priv':\n\n%s\n", key.PrivateKey)
