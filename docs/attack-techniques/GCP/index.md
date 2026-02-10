@@ -6,6 +6,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 ## Persistence
   
+  - [Register SSH public key to instance metadata](./gcp.lateral-movement.add-sshkey-instance-metadata.md)
+  
   - [Backdoor a GCP Service Account through its IAM Policy](./gcp.persistence.backdoor-service-account-policy.md)
   
   - [Create an Admin GCP Service Account](./gcp.persistence.create-admin-service-account.md)
@@ -27,6 +29,11 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 ## Credential Access
   
   - [Retrieve a High Number of Secret Manager secrets](./gcp.credential-access.secretmanager-retrieve-secrets.md)
+  
+
+## Lateral Movement
+  
+  - [Register SSH public key to instance metadata](./gcp.lateral-movement.add-sshkey-instance-metadata.md)
   
 
 ## Exfiltration
