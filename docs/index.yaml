@@ -660,6 +660,13 @@ Azure:
           platform: Azure
           isIdempotent: true
     Impact:
+        - id: azure.impact.blob-ransomware-client-encryption-scope
+          name: Azure Blob Storage ransomware through Encryption Scope using client-managed Key Vault key
+          isSlow: false
+          mitreAttackTactics:
+            - Impact
+          platform: Azure
+          isIdempotent: false
         - id: azure.impact.blob-ransomware-individual-file-deletion
           name: Azure ransomware via Storage Account Blob deletion
           isSlow: false
