@@ -15,7 +15,7 @@ import (
 //go:embed main.tf
 var tf []byte
 
-const AttackerUsername = "stratus-skim"
+const AttackerUsername = "stratus-red-team"
 
 func init() {
 	const CodeBlock = "```"

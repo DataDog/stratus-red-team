@@ -14,7 +14,7 @@ provider "google" {
 }
 
 locals {
-  resource_prefix = "stratus-red-team-skim"
+  resource_prefix = "stratus-red-team-ssh-key"
   region          = "us-east1"
   instance_type   = "f1-micro"
   image           = "debian-cloud/debian-11"
