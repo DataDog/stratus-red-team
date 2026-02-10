@@ -5,6 +5,7 @@ import (
     _ "embed"
     "fmt"
     "log"
+    "strings"
     "google.golang.org/api/compute/v1"
     gcp_utils "github.com/datadog/stratus-red-team/v2/internal/utils/gcp"
     "github.com/datadog/stratus-red-team/v2/pkg/stratus"
@@ -79,6 +80,7 @@ Sample event (shortened for readability):
             mitreattack.Persistence },
         PrerequisitesTerraformCode: tf,
         Detonate:                   detonate,
+        Revert:                     revert,
     })
 }
 
@@ -124,6 +126,48 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
     log.Printf("Save this Private Key as 'account.priv':\n\n%s\n", key.PrivateKey)
     log.Println("Attacker can now login to the instance using the following command:")
     log.Printf("ssh -i account.priv %s@%s", AttackerUsername, instanceIp)
+
+    return nil
+}
+
+func revert(params map[string]string, providers stratus.CloudProviders) error {
+    gcp := providers.GCP()
+    ctx := context.Background()
+
+    projectId    := gcp.GetProjectId()
+    zone         := params["zone"]
+    instanceName := params["instance_name"]
+
+    service, err := compute.NewService(ctx, gcp.Options())
+    if err != nil {
+        return fmt.Errorf("failed to create compute service: %v", err)
+    }
+
+    instance, err := service.Instances.Get(projectId, zone, instanceName).Do()
+    if err != nil {
+        return fmt.Errorf("failed to get instance information: %v", err)
+    }
+
+    md := instance.Metadata
+    for _, mdi := range md.Items {
+        if mdi.Key == "ssh-keys" && mdi.Value != nil {
+            lines := strings.Split(*mdi.Value, "\n")
+            var filtered []string
+            for _, line := range lines {
+                if !strings.HasPrefix(line, AttackerUsername+":") {
+                    filtered = append(filtered, line)
+                }
+            }
+            val := strings.Join(filtered, "\n")
+            mdi.Value = &val
+            break
+        }
+    }
+
+    log.Println("Removing attacker SSH key from instance metadata")
+    if _, err := service.Instances.SetMetadata(projectId, zone, instanceName, md).Do(); err != nil {
+        return fmt.Errorf("failed to update instance metadata: %v", err)
+    }
 
     return nil
 }
