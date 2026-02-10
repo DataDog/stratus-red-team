@@ -568,8 +568,8 @@ GCP:
           isIdempotent: true
     Lateral Movement:
         - id: gcp.lateral-movement.add-sshkey-instance-metadata
-          name: Register SSH public key to instance
-          isSlow: true
+          name: Register SSH public key to instance metadata
+          isSlow: false
           mitreAttackTactics:
             - Lateral Movement
             - Persistence
@@ -577,8 +577,8 @@ GCP:
           isIdempotent: true
     Persistence:
         - id: gcp.lateral-movement.add-sshkey-instance-metadata
-          name: Register SSH public key to instance
-          isSlow: true
+          name: Register SSH public key to instance metadata
+          isSlow: false
           mitreAttackTactics:
             - Lateral Movement
             - Persistence
