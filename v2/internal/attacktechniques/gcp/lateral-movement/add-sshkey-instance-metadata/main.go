@@ -134,6 +134,11 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	return nil
 }
 
+// revert removes the attacker's SSH key from instance metadata.
+// Note: This only undoes the cloud-level API change (setMetadata). The GCE guest agent
+// may have already synced the key to ~/.ssh/authorized_keys on the VM's filesystem,
+// and removing the key from metadata does not guarantee it is removed from disk.
+// The attacker's user account also persists.
 func revert(params map[string]string, providers stratus.CloudProviders) error {
 	gcp := providers.GCP()
 	ctx := context.Background()
