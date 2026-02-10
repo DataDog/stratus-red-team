@@ -162,7 +162,7 @@ func InsertToMetadata(md *compute.Metadata, key string, value string) {
     for _, mdi := range md.Items {
         // if it exists, add it to existing key
         if mdi.Key == key {
-            val := fmt.Sprintf("%s%s", *mdi.Value, value)
+            val := fmt.Sprintf("%s\n%s", *mdi.Value, value)
             mdi.Value = &val
 
             found = true 
