@@ -21,8 +21,8 @@ locals {
 }
 
 resource "random_string" "suffix" {
-  special = false
-  length  = 16
+  special   = false
+  length    = 16
   min_lower = 16
 }
 
@@ -31,8 +31,8 @@ data "google_compute_zones" "available" {
 }
 
 resource "google_compute_network" "network" {
-  name  = "${local.resource_prefix}-vpc-${random_string.suffix.result}"
-  routing_mode = "REGIONAL"
+  name                    = "${local.resource_prefix}-vpc-${random_string.suffix.result}"
+  routing_mode            = "REGIONAL"
   auto_create_subnetworks = false
 }
 
@@ -44,7 +44,7 @@ resource "google_compute_subnetwork" "subnet" {
 }
 
 resource "google_compute_firewall" "firewall" {
-  name = "${local.resource_prefix}-firewall-${random_string.suffix.result}"
+  name    = "${local.resource_prefix}-firewall-${random_string.suffix.result}"
   network = google_compute_network.network.id
   allow {
     protocol = "tcp"
@@ -68,18 +68,18 @@ resource "google_compute_instance" "target" {
   }
 
   network_interface {
-    network = google_compute_network.network.id
+    network    = google_compute_network.network.id
     subnetwork = google_compute_subnetwork.subnet.id
 
-    access_config { }
+    access_config {}
   }
 }
 
 output "display" {
-  value = format("Linux instance (hostname: %s, ip: %s) is ready", 
+  value = format("Linux instance (hostname: %s, ip: %s) is ready",
     google_compute_instance.target.name,
     google_compute_instance.target.network_interface.0.access_config.0.nat_ip
-  )  
+  )
 }
 
 output "zone" {
