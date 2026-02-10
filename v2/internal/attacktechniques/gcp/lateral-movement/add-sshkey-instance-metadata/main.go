@@ -92,7 +92,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
     instanceIp   := params["instance_ip"]
 
     // create compute service
-    service, err := compute.NewService(ctx)
+    service, err := compute.NewService(ctx, gcp.Options())
     if err != nil {
         return fmt.Errorf("Failed to create compute service: %v", err)
     }
