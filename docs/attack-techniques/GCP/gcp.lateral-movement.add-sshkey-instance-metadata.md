@@ -47,7 +47,11 @@ stratus detonate gcp.lateral-movement.add-sshkey-instance-metadata
 ## Detection
 
 
-Registering SSH public key to the instance's metadata is detected as 'compute.instances.setMetadata' in Cloud Logging
+Identify when an SSH key is added to a GCE instance's metadata through the GCP Admin Activity audit logs event <code>v1.compute.instances.setMetadata</code>.
+
+Monitor specifically for <code>setMetadata</code> calls where the <code>instanceMetadataDelta</code> contains modifications to the <code>ssh-keys</code> metadata key, especially from unexpected principals or service accounts.
+
+This technique corresponds to MITRE ATT&CK <a href="https://attack.mitre.org/techniques/T1098/004/">T1098.004: Account Manipulation: SSH Authorized Keys</a>.
 
 Sample event (shortened for readability):
 
