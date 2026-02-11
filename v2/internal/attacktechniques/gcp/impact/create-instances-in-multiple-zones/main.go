@@ -172,6 +172,8 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 	log.Printf("Deleting instances, this can take a few minutes.")
 	suffix := params["suffix"]
 	var wg sync.WaitGroup
+	var mu sync.Mutex
+	var errors []error
 	for _, zone := range targetZones {
 		wg.Add(1)
 		go func(zone string) {
@@ -185,15 +187,25 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 				Instance: instanceName,
 			})
 			if err != nil {
+				mu.Lock()
 				log.Printf("Warning: failed to delete instance %s in zone %s: %v\n", instanceName, zone, err)
+				errors = append(errors, fmt.Errorf("zone %s: %w", zone, err))
+				mu.Unlock()
 				return
 			}
 			if err := op.Wait(ctx); err != nil {
+				mu.Lock()
 				log.Printf("Warning: failed waiting for deletion of instance %s in zone %s: %v\n", instanceName, zone, err)
+				errors = append(errors, fmt.Errorf("zone %s wait: %w", zone, err))
+				mu.Unlock()
 			}
 		}(zone)
 	}
 	wg.Wait()
+
+	if len(errors) > 0 {
+		return fmt.Errorf("failed to delete %d instance(s): %v", len(errors), errors[0])
+	}
 
 	log.Println("Successfully cleaned up instances")
 	return nil
