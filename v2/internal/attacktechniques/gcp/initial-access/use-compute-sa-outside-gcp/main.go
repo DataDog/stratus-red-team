@@ -51,7 +51,7 @@ Detonation:
 
 References:
 
-- https://about.gitlab.com/blog/2022/02/09/gcp-ssrf-escalated/
+- https://about.gitlab.com/blog/plundering-gcp-escalating-privileges-in-google-cloud-platform/
 - https://securitylabs.datadoghq.com/articles/google-cloud-default-service-accounts/
 - https://cloud.google.com/compute/docs/access/service-accounts#default_service_account
 `,
