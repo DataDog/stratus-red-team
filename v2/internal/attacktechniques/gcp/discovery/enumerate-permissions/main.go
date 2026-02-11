@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"sync"
 	"sync/atomic"
+	"time"
 
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
@@ -124,6 +125,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	}
 
 	httpClient := oauth2.NewClient(ctx, creds.TokenSource)
+	httpClient.Timeout = 10 * time.Second
 
 	endpoints := buildEndpointList(projectID)
 	if len(endpoints) > numAPICalls {
