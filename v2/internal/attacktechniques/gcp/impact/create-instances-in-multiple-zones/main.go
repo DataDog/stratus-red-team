@@ -3,6 +3,7 @@ package gcp
 import (
 	"context"
 	_ "embed"
+	"errors"
 	"fmt"
 	"log"
 	"strconv"
@@ -12,6 +13,7 @@ import (
 	"cloud.google.com/go/compute/apiv1/computepb"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
+	"golang.org/x/sync/errgroup"
 )
 
 //go:embed main.tf
@@ -171,13 +173,10 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 
 	log.Printf("Deleting instances, this can take a few minutes.")
 	suffix := params["suffix"]
-	var wg sync.WaitGroup
-	var mu sync.Mutex
-	var errors []error
+	g := new(errgroup.Group)
 	for _, zone := range targetZones {
-		wg.Add(1)
-		go func(zone string) {
-			defer wg.Done()
+		zone := zone
+		g.Go(func() error {
 			instanceName := fmt.Sprintf("stratus-red-team-%s-%s", suffix, zone)
 			log.Printf("Deleting instance %s in zone %s\n", instanceName, zone)
 
@@ -187,24 +186,17 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 				Instance: instanceName,
 			})
 			if err != nil {
-				mu.Lock()
-				log.Printf("Warning: failed to delete instance %s in zone %s: %v\n", instanceName, zone, err)
-				errors = append(errors, fmt.Errorf("zone %s: %w", zone, err))
-				mu.Unlock()
-				return
+				return fmt.Errorf("failed to delete instance %s in zone %s: %w", instanceName, zone, err)
 			}
 			if err := op.Wait(ctx); err != nil {
-				mu.Lock()
-				log.Printf("Warning: failed waiting for deletion of instance %s in zone %s: %v\n", instanceName, zone, err)
-				errors = append(errors, fmt.Errorf("zone %s wait: %w", zone, err))
-				mu.Unlock()
+				return fmt.Errorf("failed waiting for deletion of instance %s in zone %s: %w", instanceName, zone, err)
 			}
-		}(zone)
+			return nil
+		})
 	}
-	wg.Wait()
 
-	if len(errors) > 0 {
-		return fmt.Errorf("failed to delete %d instance(s): %v", len(errors), errors[0])
+	if err := g.Wait(); err != nil {
+		return errors.Join(fmt.Errorf("failed to delete instance(s)"), err)
 	}
 
 	log.Println("Successfully cleaned up instances")
