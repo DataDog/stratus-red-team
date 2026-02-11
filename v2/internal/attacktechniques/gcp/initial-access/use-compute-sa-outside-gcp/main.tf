@@ -39,11 +39,16 @@ fetch_token() {
     "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token")
   if [ -n "$TOKEN" ]; then
     echo "STRATUS_TOKEN_START$${TOKEN}STRATUS_TOKEN_END" > /dev/ttyS0
+    return 0
   fi
+  return 1
 }
 
-# Initial fetch
-fetch_token
+# Retry initial fetch every 5 seconds for up to 2 minutes
+for i in $(seq 1 24); do
+  fetch_token && break
+  sleep 5
+done
 
 # Background refresh loop every 30 minutes so the token stays fresh
 while true; do sleep 1800; fetch_token; done &
