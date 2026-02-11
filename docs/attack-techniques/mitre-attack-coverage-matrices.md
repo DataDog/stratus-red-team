@@ -53,6 +53,7 @@ This provides coverage matrices of MITRE ATT&CK tactics and techniques currently
 </div>
 <h2>GCP</h2>
 <div class="table-container"><table>
+<<<<<<< HEAD
 <thead><tr><th>Persistence</th><th>Privilege Escalation</th><th>Credential Access</th><th>Lateral Movement</th><th>Exfiltration</th><th>Impact</th></tr></thead>
 <tbody>
 <tr><td><a href="../GCP/gcp.lateral-movement.add-sshkey-instance-metadata">Register SSH public key to instance metadata</a></td><td><a href="../GCP/gcp.persistence.create-admin-service-account">Create an Admin GCP Service Account</a></td><td><a href="../GCP/gcp.credential-access.secretmanager-retrieve-secrets">Retrieve a High Number of Secret Manager secrets</a></td><td><a href="../GCP/gcp.lateral-movement.add-sshkey-instance-metadata">Register SSH public key to instance metadata</a></td><td><a href="../GCP/gcp.exfiltration.share-compute-disk">Exfiltrate Compute Disk by sharing it</a></td><td><a href="../GCP/gcp.impact.create-gpu-vm">Create a GCE GPU Virtual Machine</a></td></tr>
@@ -60,6 +61,15 @@ This provides coverage matrices of MITRE ATT&CK tactics and techniques currently
 <tr><td><a href="../GCP/gcp.persistence.create-admin-service-account">Create an Admin GCP Service Account</a></td><td><a href="../GCP/gcp.privilege-escalation.impersonate-service-accounts">Impersonate GCP Service Accounts</a></td><td></td><td></td><td><a href="../GCP/gcp.exfiltration.share-compute-snapshot">Exfiltrate Compute Disk by sharing a snapshot</a></td><td></td></tr>
 <tr><td><a href="../GCP/gcp.persistence.create-service-account-key">Create a GCP Service Account Key</a></td><td></td><td></td><td></td><td></td><td></td></tr>
 <tr><td><a href="../GCP/gcp.persistence.invite-external-user">Invite an External User to a GCP Project</a></td><td></td><td></td><td></td><td></td><td></td></tr>
+=======
+<thead><tr><th>Initial Access</th><th>Persistence</th><th>Privilege Escalation</th><th>Credential Access</th><th>Lateral Movement</th><th>Exfiltration</th></tr></thead>
+<tbody>
+<tr><td><a href="../GCP/gcp.initial-access.use-compute-sa-outside-gcp">Steal and Use the GCE Default Service Account Token from Outside Google Cloud</a></td><td><a href="../GCP/gcp.lateral-movement.add-sshkey-instance-metadata">Register SSH public key to instance metadata</a></td><td><a href="../GCP/gcp.persistence.create-admin-service-account">Create an Admin GCP Service Account</a></td><td><a href="../GCP/gcp.credential-access.secretmanager-retrieve-secrets">Retrieve a High Number of Secret Manager secrets</a></td><td><a href="../GCP/gcp.lateral-movement.add-sshkey-instance-metadata">Register SSH public key to instance metadata</a></td><td><a href="../GCP/gcp.exfiltration.share-compute-disk">Exfiltrate Compute Disk by sharing it</a></td></tr>
+<tr><td></td><td><a href="../GCP/gcp.persistence.backdoor-service-account-policy">Backdoor a GCP Service Account through its IAM Policy</a></td><td><a href="../GCP/gcp.persistence.create-service-account-key">Create a GCP Service Account Key</a></td><td><a href="../GCP/gcp.initial-access.use-compute-sa-outside-gcp">Steal and Use the GCE Default Service Account Token from Outside Google Cloud</a></td><td></td><td><a href="../GCP/gcp.exfiltration.share-compute-image">Exfiltrate Compute Image by sharing it</a></td></tr>
+<tr><td></td><td><a href="../GCP/gcp.persistence.create-admin-service-account">Create an Admin GCP Service Account</a></td><td><a href="../GCP/gcp.privilege-escalation.impersonate-service-accounts">Impersonate GCP Service Accounts</a></td><td></td><td></td><td><a href="../GCP/gcp.exfiltration.share-compute-snapshot">Exfiltrate Compute Disk by sharing a snapshot</a></td></tr>
+<tr><td></td><td><a href="../GCP/gcp.persistence.create-service-account-key">Create a GCP Service Account Key</a></td><td></td><td></td><td></td><td></td></tr>
+<tr><td></td><td><a href="../GCP/gcp.persistence.invite-external-user">Invite an External User to a GCP Project</a></td><td></td><td></td><td></td><td></td></tr>
+>>>>>>> 00109bb (New GCP technique: Steal and use GCE default service account token from outside Google Cloud)
 </tbody>
 </table>
 </div>
