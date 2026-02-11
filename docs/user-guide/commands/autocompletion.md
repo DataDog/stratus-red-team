@@ -40,8 +40,8 @@ When installing Stratus Red Team through Homebrew, shell completions are automat
         # Install bash-completion if necessary
         sudo apt install bash-completion
         
-        mkdir -p /etc/bash_completion.d
-        stratus completion bash > /etc/bash_completion.d/stratus
+        sudo mkdir -p /etc/bash_completion.d
+        stratus completion bash | sudo tee /etc/bash_completion.d/stratus > /dev/null
         echo "source /etc/bash_completion" >> ~/.bashrc
         ```
 
