@@ -118,8 +118,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 			log.Println("Note: Instance creation failed due to GPU quota restrictions, but the GCP audit log was still generated and is sufficient to trigger detection rules")
 			return nil
 		}
-		log.Printf("Note: Instance creation failed (%v), but the GCP audit log was still generated and is sufficient to trigger detection rules\n", err)
-		return nil
+		return fmt.Errorf("instance creation failed: %w", err)
 	}
 
 	log.Printf("Successfully created GPU-enabled instance %s\n", instanceName)
@@ -141,7 +140,7 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 
 	log.Printf("Deleting GPU instance %s in zone %s\n", instanceName, defaultZone)
 
-	_, err = instancesClient.Delete(ctx, &computepb.DeleteInstanceRequest{
+	op, err := instancesClient.Delete(ctx, &computepb.DeleteInstanceRequest{
 		Project:  projectId,
 		Zone:     defaultZone,
 		Instance: instanceName,
@@ -152,6 +151,10 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 			return nil
 		}
 		return fmt.Errorf("failed to delete GPU instance: %w", err)
+	}
+
+	if err = op.Wait(ctx); err != nil {
+		return fmt.Errorf("failed waiting for GPU instance deletion to complete: %w", err)
 	}
 
 	log.Println("Successfully deleted GPU instance")
