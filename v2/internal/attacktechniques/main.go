@@ -62,6 +62,7 @@ import (
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/entra-id/persistence/new-application"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/entra-id/persistence/restricted-au"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/credential-access/secretmanager-retrieve-secrets"
+	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/discovery/enumerate-permissions"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/exfiltration/share-compute-disk"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/exfiltration/share-compute-image"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/exfiltration/share-compute-snapshot"
