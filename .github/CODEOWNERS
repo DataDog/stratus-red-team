@@ -1,4 +1,4 @@
 # Default code owners for all files in the repository
 # These owners will be requested for review when someone opens a pull request.
 
-* @DataDog/security-advocacy
+* @DataDog/security-advocacy @DataDog/ase
