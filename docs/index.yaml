@@ -582,6 +582,13 @@ GCP:
             - Impact
           platform: GCP
           isIdempotent: true
+        - id: gcp.impact.create-instances-in-multiple-zones
+          name: Create GCE Instances in Multiple Zones
+          isSlow: false
+          mitreAttackTactics:
+            - Impact
+          platform: GCP
+          isIdempotent: false
     Initial Access:
         - id: gcp.initial-access.use-compute-sa-outside-gcp
           name: Steal and Use the GCE Default Service Account Token from Outside Google Cloud

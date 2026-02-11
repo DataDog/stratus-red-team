@@ -56,3 +56,5 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   
   - [Create a GCE GPU Virtual Machine](./gcp.impact.create-gpu-vm.md)
   
+  - [Create GCE Instances in Multiple Zones](./gcp.impact.create-instances-in-multiple-zones.md)
+  
