@@ -102,7 +102,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 
 			log.Printf("Creating instance %s in zone %s\n", instanceName, zone)
 
-			_, err := instancesClient.Insert(ctx, &computepb.InsertInstanceRequest{
+			op, err := instancesClient.Insert(ctx, &computepb.InsertInstanceRequest{
 				Project: projectId,
 				Zone:    zone,
 				InstanceResource: &computepb.Instance{
@@ -122,15 +122,25 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 				},
 			})
 
-			mu.Lock()
-			defer mu.Unlock()
 			if err != nil {
+				mu.Lock()
 				log.Printf("Warning: failed to create instance in zone %s: %v\n", zone, err)
 				errors = append(errors, fmt.Errorf("zone %s: %w", zone, err))
+				mu.Unlock()
 				return
 			}
 
+			if err := op.Wait(ctx); err != nil {
+				mu.Lock()
+				log.Printf("Warning: instance creation failed in zone %s: %v\n", zone, err)
+				errors = append(errors, fmt.Errorf("zone %s: %w", zone, err))
+				mu.Unlock()
+				return
+			}
+
+			mu.Lock()
 			created++
+			mu.Unlock()
 		}(zone)
 	}
 
