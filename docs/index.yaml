@@ -566,6 +566,14 @@ GCP:
             - Exfiltration
           platform: GCP
           isIdempotent: true
+    Impact:
+        - id: gcp.impact.create-gpu-vm
+          name: Create a GCE GPU Virtual Machine
+          isSlow: false
+          mitreAttackTactics:
+            - Impact
+          platform: GCP
+          isIdempotent: true
     Lateral Movement:
         - id: gcp.lateral-movement.add-sshkey-instance-metadata
           name: Register SSH public key to instance metadata
