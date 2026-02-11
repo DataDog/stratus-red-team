@@ -580,6 +580,8 @@ GCP:
           isSlow: false
           mitreAttackTactics:
             - Impact
+          platform: GCP
+          isIdempotent: true
     Initial Access:
         - id: gcp.initial-access.use-compute-sa-outside-gcp
           name: Steal and Use the GCE Default Service Account Token from Outside Google Cloud
