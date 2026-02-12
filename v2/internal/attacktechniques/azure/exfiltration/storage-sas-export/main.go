@@ -60,6 +60,7 @@ Sample Azure Activity Log event to monitor:
         "message": "Microsoft.Storage/storageAccounts/listKeys/action",
         "hierarchy": "[REMOVED]"
     }
+` + codeBlock + `
 `,
 		Platform:                   stratus.Azure,
 		IsIdempotent:               true,
