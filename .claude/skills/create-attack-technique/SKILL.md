@@ -132,3 +132,7 @@ go fmt ./...
 ```
 make docs
 ```
+
+## DON'T
+
+- Don't persist anything in the Go detonation code. The revert and detonate methods are called in different runs, so they cannot use variables to share state.

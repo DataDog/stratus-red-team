@@ -4,6 +4,11 @@ This page contains the Stratus attack techniques for GCP, grouped by MITRE ATT&C
 Note that some Stratus attack techniques may correspond to more than a single ATT&CK Tactic.
 
 
+## Initial Access
+  
+  - [Steal and Use the GCE Default Service Account Token from Outside Google Cloud](./gcp.initial-access.use-compute-sa-outside-gcp.md)
+  
+
 ## Persistence
   
   - [Register SSH public key to instance metadata](./gcp.lateral-movement.add-sshkey-instance-metadata.md)
@@ -29,6 +34,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 ## Credential Access
   
   - [Retrieve a High Number of Secret Manager secrets](./gcp.credential-access.secretmanager-retrieve-secrets.md)
+  
+  - [Steal and Use the GCE Default Service Account Token from Outside Google Cloud](./gcp.initial-access.use-compute-sa-outside-gcp.md)
   
 
 ## Lateral Movement

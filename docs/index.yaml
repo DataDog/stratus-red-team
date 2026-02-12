@@ -544,6 +544,14 @@ GCP:
             - Credential Access
           platform: GCP
           isIdempotent: true
+        - id: gcp.initial-access.use-compute-sa-outside-gcp
+          name: Steal and Use the GCE Default Service Account Token from Outside Google Cloud
+          isSlow: true
+          mitreAttackTactics:
+            - Credential Access
+            - Initial Access
+          platform: GCP
+          isIdempotent: true
     Exfiltration:
         - id: gcp.exfiltration.share-compute-disk
           name: Exfiltrate Compute Disk by sharing it
@@ -572,6 +580,15 @@ GCP:
           isSlow: false
           mitreAttackTactics:
             - Impact
+          platform: GCP
+          isIdempotent: true
+    Initial Access:
+        - id: gcp.initial-access.use-compute-sa-outside-gcp
+          name: Steal and Use the GCE Default Service Account Token from Outside Google Cloud
+          isSlow: true
+          mitreAttackTactics:
+            - Credential Access
+            - Initial Access
           platform: GCP
           isIdempotent: true
     Lateral Movement:
