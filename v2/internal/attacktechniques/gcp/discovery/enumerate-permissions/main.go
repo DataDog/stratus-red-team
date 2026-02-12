@@ -24,9 +24,9 @@ import (
 var tf []byte
 
 const (
-	testIAMChunkSize      = 100
-	max429RetriesPerChunk = 6
-	base429Backoff        = 1 * time.Minute
+	testIAMChunkSize       = 100
+	max429RetriesPerChunk  = 10
+	sleep429BetweenRetries = 30 * time.Second
 )
 
 func init() {
@@ -176,7 +176,6 @@ func callTestIAMPermissionsWith429Retry(
 	projectID string,
 	permissions []string,
 ) (*cloudresourcemanager.TestIamPermissionsResponse, int, error) {
-	backoff := base429Backoff
 	for attempt := 0; attempt <= max429RetriesPerChunk; attempt++ {
 		resp, err := service.Projects.TestIamPermissions(projectID, &cloudresourcemanager.TestIamPermissionsRequest{
 			Permissions: permissions,
@@ -189,13 +188,12 @@ func callTestIAMPermissionsWith429Retry(
 		}
 
 		log.Printf("  Chunk hit 429 rate limit; retrying in %s (attempt %d/%d)",
-			backoff.Round(time.Second), attempt+1, max429RetriesPerChunk)
+			sleep429BetweenRetries.Round(time.Second), attempt+1, max429RetriesPerChunk)
 		select {
-		case <-time.After(backoff):
+		case <-time.After(sleep429BetweenRetries):
 		case <-ctx.Done():
 			return nil, attempt, ctx.Err()
 		}
-		backoff *= 2
 	}
 
 	return nil, max429RetriesPerChunk, fmt.Errorf("unreachable retry state")
