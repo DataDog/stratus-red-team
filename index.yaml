@@ -1,0 +1,889 @@
+AWS:
+    Credential Access:
+        - id: aws.credential-access.ec2-get-password-data
+          name: Retrieve EC2 Password Data
+          isSlow: false
+          mitreAttackTactics:
+            - Credential Access
+          platform: AWS
+          isIdempotent: true
+        - id: aws.credential-access.ec2-steal-instance-credentials
+          name: Steal EC2 Instance Credentials
+          isSlow: true
+          mitreAttackTactics:
+            - Credential Access
+          frameworkmappings:
+            - framework: Threat Technique Catalog for AWS
+              techniques:
+                - name: 'Unsecured Credentials: Cloud Instance Metadata API'
+                  id: T1552.005
+                  url: https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1552.005.html
+          platform: AWS
+          isIdempotent: true
+        - id: aws.credential-access.secretsmanager-batch-retrieve-secrets
+          name: Retrieve a High Number of Secrets Manager secrets (Batch)
+          isSlow: false
+          mitreAttackTactics:
+            - Credential Access
+          platform: AWS
+          isIdempotent: true
+        - id: aws.credential-access.secretsmanager-retrieve-secrets
+          name: Retrieve a High Number of Secrets Manager secrets
+          isSlow: false
+          mitreAttackTactics:
+            - Credential Access
+          platform: AWS
+          isIdempotent: true
+        - id: aws.credential-access.ssm-retrieve-securestring-parameters
+          name: Retrieve And Decrypt SSM Parameters
+          isSlow: false
+          mitreAttackTactics:
+            - Credential Access
+          platform: AWS
+          isIdempotent: true
+    Defense Evasion:
+        - id: aws.defense-evasion.cloudtrail-delete
+          name: Delete CloudTrail Trail
+          isSlow: false
+          mitreAttackTactics:
+            - Defense Evasion
+          frameworkmappings:
+            - framework: Threat Technique Catalog for AWS
+              techniques:
+                - name: 'Impair Defenses: Disable Cloud Logs'
+                  id: T1562.008
+                  url: https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1562.008.html
+          platform: AWS
+          isIdempotent: false
+        - id: aws.defense-evasion.cloudtrail-event-selectors
+          name: Disable CloudTrail Logging Through Event Selectors
+          isSlow: false
+          mitreAttackTactics:
+            - Defense Evasion
+          frameworkmappings:
+            - framework: Threat Technique Catalog for AWS
+              techniques:
+                - name: 'Impair Defenses: Disable Cloud Logs'
+                  id: T1562.008
+                  url: https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1562.008.html
+          platform: AWS
+          isIdempotent: true
+        - id: aws.defense-evasion.cloudtrail-lifecycle-rule
+          name: CloudTrail Logs Impairment Through S3 Lifecycle Rule
+          isSlow: false
+          mitreAttackTactics:
+            - Defense Evasion
+          frameworkmappings:
+            - framework: Threat Technique Catalog for AWS
+              techniques:
+                - name: 'Impair Defenses: Disable Cloud Logs'
+                  id: T1562.008
+                  url: https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1562.008.html
+          platform: AWS
+          isIdempotent: false
+        - id: aws.defense-evasion.cloudtrail-stop
+          name: Stop CloudTrail Trail
+          isSlow: false
+          mitreAttackTactics:
+            - Defense Evasion
+          frameworkmappings:
+            - framework: Threat Technique Catalog for AWS
+              techniques:
+                - name: 'Impair Defenses: Disable Cloud Logs'
+                  id: T1562.008
+                  url: https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1562.008.html
+          platform: AWS
+          isIdempotent: true
+        - id: aws.defense-evasion.dns-delete-logs
+          name: Delete DNS query logs
+          isSlow: false
+          mitreAttackTactics:
+            - Defense Evasion
+          platform: AWS
+          isIdempotent: false
+        - id: aws.defense-evasion.organizations-leave
+          name: Attempt to Leave the AWS Organization
+          isSlow: false
+          mitreAttackTactics:
+            - Defense Evasion
+          frameworkmappings:
+            - framework: Threat Technique Catalog for AWS
+              techniques:
+                - name: 'Modify Cloud Resource Hierarchy: Leave AWS Organization'
+                  id: T1666.A002
+                  url: https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1666.A002.html
+          platform: AWS
+          isIdempotent: true
+        - id: aws.defense-evasion.vpc-remove-flow-logs
+          name: Remove VPC Flow Logs
+          isSlow: false
+          mitreAttackTactics:
+            - Defense Evasion
+          platform: AWS
+          isIdempotent: false
+    Discovery:
+        - id: aws.discovery.ec2-enumerate-from-instance
+          name: Execute Discovery Commands on an EC2 Instance
+          isSlow: true
+          mitreAttackTactics:
+            - Discovery
+          platform: AWS
+          isIdempotent: true
+        - id: aws.discovery.ec2-download-user-data
+          name: Download EC2 Instance User Data
+          isSlow: false
+          mitreAttackTactics:
+            - Discovery
+          platform: AWS
+          isIdempotent: true
+        - id: aws.discovery.ses-enumerate
+          name: Enumerate SES
+          isSlow: false
+          mitreAttackTactics:
+            - Discovery
+          platform: AWS
+          isIdempotent: true
+    Execution:
+        - id: aws.execution.ec2-launch-unusual-instances
+          name: Launch Unusual EC2 instances
+          isSlow: false
+          mitreAttackTactics:
+            - Execution
+          frameworkmappings:
+            - framework: Threat Technique Catalog for AWS
+              techniques:
+                - name: 'Resource Hijacking: Compute Hijacking - EC2 Use'
+                  id: T1496.A008
+                  url: https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1496.A008.html
+                - name: 'Modify Cloud Compute Infrastructure: Create Cloud Instance'
+                  id: T1578.002
+                  url: https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1578.002.html
+          platform: AWS
+          isIdempotent: true
+        - id: aws.execution.ec2-user-data
+          name: Execute Commands on EC2 Instance via User Data
+          isSlow: true
+          mitreAttackTactics:
+            - Execution
+            - Privilege Escalation
+          platform: AWS
+          isIdempotent: true
+        - id: aws.execution.sagemaker-update-lifecycle-config
+          name: Execute Commands on SageMaker Notebook Instance via Lifecycle Configuration
+          isSlow: true
+          mitreAttackTactics:
+            - Execution
+            - Privilege Escalation
+          platform: AWS
+          isIdempotent: true
+        - id: aws.execution.ssm-send-command
+          name: Usage of ssm:SendCommand on multiple instances
+          isSlow: true
+          mitreAttackTactics:
+            - Execution
+          platform: AWS
+          isIdempotent: true
+        - id: aws.execution.ssm-start-session
+          name: Usage of ssm:StartSession on multiple instances
+          isSlow: true
+          mitreAttackTactics:
+            - Execution
+          platform: AWS
+          isIdempotent: true
+    Exfiltration:
+        - id: aws.exfiltration.ec2-security-group-open-port-22-ingress
+          name: Open Ingress Port 22 on a Security Group
+          isSlow: false
+          mitreAttackTactics:
+            - Exfiltration
+          frameworkmappings:
+            - framework: Threat Technique Catalog for AWS
+              techniques:
+                - name: 'Impair Defenses: Disable or Modify Cloud Firewall'
+                  id: T1562.007
+                  url: https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1562.007.html
+          platform: AWS
+          isIdempotent: false
+        - id: aws.exfiltration.ec2-share-ami
+          name: Exfiltrate an AMI by Sharing It
+          isSlow: false
+          mitreAttackTactics:
+            - Exfiltration
+          platform: AWS
+          isIdempotent: true
+        - id: aws.exfiltration.ec2-share-ebs-snapshot
+          name: Exfiltrate EBS Snapshot by Sharing It
+          isSlow: false
+          mitreAttackTactics:
+            - Exfiltration
+          frameworkmappings:
+            - framework: Threat Technique Catalog for AWS
+              techniques:
+                - name: 'Modify Cloud Compute Infrastructure: Create Snapshot'
+                  id: T1578.001
+                  url: https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1578.001.html
+          platform: AWS
+          isIdempotent: true
+        - id: aws.exfiltration.rds-share-snapshot
+          name: Exfiltrate RDS Snapshot by Sharing
+          isSlow: true
+          mitreAttackTactics:
+            - Exfiltration
+          frameworkmappings:
+            - framework: Threat Technique Catalog for AWS
+              techniques:
+                - name: 'Resource Hijacking: Cloud Service Hijacking - Bedrock LLM Abuse'
+                  id: T1496.A007
+                  url: https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1496.A007.html
+          platform: AWS
+          isIdempotent: true
+        - id: aws.exfiltration.s3-backdoor-bucket-policy
+          name: Backdoor an S3 Bucket via its Bucket Policy
+          isSlow: false
+          mitreAttackTactics:
+            - Exfiltration
+          platform: AWS
+          isIdempotent: true
+    Impact:
+        - id: aws.impact.bedrock-invoke-model
+          name: Invoke Bedrock Model
+          isSlow: false
+          mitreAttackTactics:
+            - Impact
+          platform: AWS
+          isIdempotent: true
+        - id: aws.impact.s3-ransomware-batch-deletion
+          name: S3 Ransomware through batch file deletion
+          isSlow: false
+          mitreAttackTactics:
+            - Impact
+          frameworkmappings:
+            - framework: Threat Technique Catalog for AWS
+              techniques:
+                - name: 'Data Destruction: S3 Object and Bucket Deletion'
+                  id: T1485.A003
+                  url: https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1485.A003.html
+          platform: AWS
+          isIdempotent: false
+        - id: aws.impact.s3-ransomware-client-side-encryption
+          name: S3 Ransomware through client-side encryption
+          isSlow: false
+          mitreAttackTactics:
+            - Impact
+          frameworkmappings:
+            - framework: Threat Technique Catalog for AWS
+              techniques:
+                - name: 'Data Destruction: S3 Object and Bucket Deletion'
+                  id: T1485.A003
+                  url: https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1485.A003.html
+          platform: AWS
+          isIdempotent: false
+        - id: aws.impact.s3-ransomware-individual-deletion
+          name: S3 Ransomware through individual file deletion
+          isSlow: false
+          mitreAttackTactics:
+            - Impact
+          frameworkmappings:
+            - framework: Threat Technique Catalog for AWS
+              techniques:
+                - name: 'Data Destruction: S3 Object and Bucket Deletion'
+                  id: T1485.A003
+                  url: https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1485.A003.html
+          platform: AWS
+          isIdempotent: false
+    Initial Access:
+        - id: aws.initial-access.console-login-without-mfa
+          name: Console Login without MFA
+          isSlow: false
+          mitreAttackTactics:
+            - Initial Access
+          frameworkmappings:
+            - framework: Threat Technique Catalog for AWS
+              techniques:
+                - name: 'Valid Accounts: IAM Users'
+                  id: T1078.A001
+                  url: https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1078.A001.html
+          platform: AWS
+          isIdempotent: true
+    Lateral Movement:
+        - id: aws.lateral-movement.ec2-serial-console-send-ssh-public-key
+          name: Usage of EC2 Serial Console to push SSH public key
+          isSlow: true
+          mitreAttackTactics:
+            - Lateral Movement
+          platform: AWS
+          isIdempotent: true
+        - id: aws.lateral-movement.ec2-instance-connect
+          name: Usage of EC2 Instance Connect on multiple instances
+          isSlow: true
+          mitreAttackTactics:
+            - Lateral Movement
+          platform: AWS
+          isIdempotent: true
+    Persistence:
+        - id: aws.persistence.iam-backdoor-role
+          name: Backdoor an IAM Role
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+          platform: AWS
+          isIdempotent: true
+        - id: aws.persistence.iam-backdoor-user
+          name: Create an Access Key on an IAM User
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          frameworkmappings:
+            - framework: Threat Technique Catalog for AWS
+              techniques:
+                - name: 'Account Manipulation: Additional Cloud Credentials'
+                  id: T1098.001
+                  url: https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1098.001.html
+          platform: AWS
+          isIdempotent: false
+        - id: aws.persistence.iam-create-admin-user
+          name: Create an administrative IAM User
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          frameworkmappings:
+            - framework: Threat Technique Catalog for AWS
+              techniques:
+                - name: 'Create Account: Create Cloud Account'
+                  id: T1136.003
+                  url: https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1136.003.html
+          platform: AWS
+          isIdempotent: false
+        - id: aws.persistence.iam-create-backdoor-role
+          name: Create a backdoored IAM Role
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+          frameworkmappings:
+            - framework: Threat Technique Catalog for AWS
+              techniques:
+                - name: 'Account Manipulation: Additional Cloud Roles'
+                  id: T1098.003
+                  url: https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1098.003.html
+          platform: AWS
+          isIdempotent: false
+        - id: aws.persistence.iam-create-user-login-profile
+          name: Create a Login Profile on an IAM User
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          frameworkmappings:
+            - framework: Threat Technique Catalog for AWS
+              techniques:
+                - name: 'Account Manipulation: Additional Cloud Credentials'
+                  id: T1098.001
+                  url: https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1098.001.html
+          platform: AWS
+          isIdempotent: false
+        - id: aws.persistence.lambda-backdoor-function
+          name: Backdoor Lambda Function Through Resource-Based Policy
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+          platform: AWS
+          isIdempotent: false
+        - id: aws.persistence.lambda-layer-extension
+          name: Add a Malicious Lambda Extension
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: AWS
+          isIdempotent: true
+        - id: aws.persistence.lambda-overwrite-code
+          name: Overwrite Lambda Function Code
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+          platform: AWS
+          isIdempotent: true
+        - id: aws.persistence.rolesanywhere-create-trust-anchor
+          name: Create an IAM Roles Anywhere trust anchor
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: AWS
+          isIdempotent: false
+        - id: aws.persistence.sts-federation-token
+          name: Generate temporary AWS credentials using GetFederationToken
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+          frameworkmappings:
+            - framework: Threat Technique Catalog for AWS
+              techniques:
+                - name: 'Account Manipulation: Additional Cloud Credentials'
+                  id: T1098.001
+                  url: https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1098.001.html
+          platform: AWS
+          isIdempotent: true
+    Privilege Escalation:
+        - id: aws.execution.ec2-user-data
+          name: Execute Commands on EC2 Instance via User Data
+          isSlow: true
+          mitreAttackTactics:
+            - Execution
+            - Privilege Escalation
+          platform: AWS
+          isIdempotent: true
+        - id: aws.execution.sagemaker-update-lifecycle-config
+          name: Execute Commands on SageMaker Notebook Instance via Lifecycle Configuration
+          isSlow: true
+          mitreAttackTactics:
+            - Execution
+            - Privilege Escalation
+          platform: AWS
+          isIdempotent: true
+        - id: aws.persistence.iam-backdoor-user
+          name: Create an Access Key on an IAM User
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          frameworkmappings:
+            - framework: Threat Technique Catalog for AWS
+              techniques:
+                - name: 'Account Manipulation: Additional Cloud Credentials'
+                  id: T1098.001
+                  url: https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1098.001.html
+          platform: AWS
+          isIdempotent: false
+        - id: aws.persistence.iam-create-admin-user
+          name: Create an administrative IAM User
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          frameworkmappings:
+            - framework: Threat Technique Catalog for AWS
+              techniques:
+                - name: 'Create Account: Create Cloud Account'
+                  id: T1136.003
+                  url: https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1136.003.html
+          platform: AWS
+          isIdempotent: false
+        - id: aws.persistence.iam-create-user-login-profile
+          name: Create a Login Profile on an IAM User
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          frameworkmappings:
+            - framework: Threat Technique Catalog for AWS
+              techniques:
+                - name: 'Account Manipulation: Additional Cloud Credentials'
+                  id: T1098.001
+                  url: https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1098.001.html
+          platform: AWS
+          isIdempotent: false
+        - id: aws.persistence.lambda-layer-extension
+          name: Add a Malicious Lambda Extension
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: AWS
+          isIdempotent: true
+        - id: aws.persistence.rolesanywhere-create-trust-anchor
+          name: Create an IAM Roles Anywhere trust anchor
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: AWS
+          isIdempotent: false
+        - id: aws.privilege-escalation.iam-update-user-login-profile
+          name: Change IAM user password
+          isSlow: false
+          mitreAttackTactics:
+            - Privilege Escalation
+          platform: AWS
+          isIdempotent: true
+EKS:
+    Lateral Movement:
+        - id: eks.lateral-movement.create-access-entry
+          name: Create Admin EKS Access Entry
+          isSlow: false
+          mitreAttackTactics:
+            - Lateral Movement
+          platform: EKS
+          isIdempotent: false
+    Persistence:
+        - id: eks.persistence.backdoor-aws-auth-configmap
+          name: Backdoor aws-auth EKS ConfigMap
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: EKS
+          isIdempotent: false
+    Privilege Escalation:
+        - id: eks.persistence.backdoor-aws-auth-configmap
+          name: Backdoor aws-auth EKS ConfigMap
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: EKS
+          isIdempotent: false
+GCP:
+    Credential Access:
+        - id: gcp.credential-access.secretmanager-retrieve-secrets
+          name: Retrieve a High Number of Secret Manager secrets
+          isSlow: false
+          mitreAttackTactics:
+            - Credential Access
+          platform: GCP
+          isIdempotent: true
+        - id: gcp.initial-access.use-compute-sa-outside-gcp
+          name: Steal and Use the GCE Default Service Account Token from Outside Google Cloud
+          isSlow: true
+          mitreAttackTactics:
+            - Credential Access
+            - Initial Access
+          platform: GCP
+          isIdempotent: true
+    Discovery:
+        - id: gcp.discovery.enumerate-permissions
+          name: Enumerate Permissions of a GCP Service Account
+          isSlow: false
+          mitreAttackTactics:
+            - Discovery
+          platform: GCP
+          isIdempotent: true
+    Exfiltration:
+        - id: gcp.exfiltration.share-compute-disk
+          name: Exfiltrate Compute Disk by sharing it
+          isSlow: false
+          mitreAttackTactics:
+            - Exfiltration
+          platform: GCP
+          isIdempotent: true
+        - id: gcp.exfiltration.share-compute-image
+          name: Exfiltrate Compute Image by sharing it
+          isSlow: true
+          mitreAttackTactics:
+            - Exfiltration
+          platform: GCP
+          isIdempotent: true
+        - id: gcp.exfiltration.share-compute-snapshot
+          name: Exfiltrate Compute Disk by sharing a snapshot
+          isSlow: false
+          mitreAttackTactics:
+            - Exfiltration
+          platform: GCP
+          isIdempotent: true
+    Impact:
+        - id: gcp.impact.create-gpu-vm
+          name: Create a GCE GPU Virtual Machine
+          isSlow: false
+          mitreAttackTactics:
+            - Impact
+          platform: GCP
+          isIdempotent: true
+        - id: gcp.impact.create-instances-in-multiple-zones
+          name: Create GCE Instances in Multiple Zones
+          isSlow: false
+          mitreAttackTactics:
+            - Impact
+          platform: GCP
+          isIdempotent: false
+    Initial Access:
+        - id: gcp.initial-access.use-compute-sa-outside-gcp
+          name: Steal and Use the GCE Default Service Account Token from Outside Google Cloud
+          isSlow: true
+          mitreAttackTactics:
+            - Credential Access
+            - Initial Access
+          platform: GCP
+          isIdempotent: true
+    Lateral Movement:
+        - id: gcp.lateral-movement.add-sshkey-instance-metadata
+          name: Register SSH public key to instance metadata
+          isSlow: false
+          mitreAttackTactics:
+            - Lateral Movement
+            - Persistence
+          platform: GCP
+          isIdempotent: true
+    Persistence:
+        - id: gcp.lateral-movement.add-sshkey-instance-metadata
+          name: Register SSH public key to instance metadata
+          isSlow: false
+          mitreAttackTactics:
+            - Lateral Movement
+            - Persistence
+          platform: GCP
+          isIdempotent: true
+        - id: gcp.persistence.backdoor-service-account-policy
+          name: Backdoor a GCP Service Account through its IAM Policy
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+          platform: GCP
+          isIdempotent: true
+        - id: gcp.persistence.create-admin-service-account
+          name: Create an Admin GCP Service Account
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: GCP
+          isIdempotent: false
+        - id: gcp.persistence.create-service-account-key
+          name: Create a GCP Service Account Key
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: GCP
+          isIdempotent: false
+        - id: gcp.persistence.invite-external-user
+          name: Invite an External User to a GCP Project
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+          platform: GCP
+          isIdempotent: true
+    Privilege Escalation:
+        - id: gcp.persistence.create-admin-service-account
+          name: Create an Admin GCP Service Account
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: GCP
+          isIdempotent: false
+        - id: gcp.persistence.create-service-account-key
+          name: Create a GCP Service Account Key
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: GCP
+          isIdempotent: false
+        - id: gcp.privilege-escalation.impersonate-service-accounts
+          name: Impersonate GCP Service Accounts
+          isSlow: false
+          mitreAttackTactics:
+            - Privilege Escalation
+          platform: GCP
+          isIdempotent: true
+Azure:
+    Execution:
+        - id: azure.execution.vm-custom-script-extension
+          name: Execute Command on Virtual Machine using Custom Script Extension
+          isSlow: true
+          mitreAttackTactics:
+            - Execution
+          platform: Azure
+          isIdempotent: false
+        - id: azure.execution.vm-run-command
+          name: Execute Commands on Virtual Machine using Run Command
+          isSlow: true
+          mitreAttackTactics:
+            - Execution
+          platform: Azure
+          isIdempotent: true
+    Exfiltration:
+        - id: azure.exfiltration.disk-export
+          name: Export Disk Through SAS URL
+          isSlow: false
+          mitreAttackTactics:
+            - Exfiltration
+          platform: Azure
+          isIdempotent: true
+        - id: azure.exfiltration.storage-public-access
+          name: Exfiltrate Azure Storage via public access
+          isSlow: false
+          mitreAttackTactics:
+            - Exfiltration
+          platform: Azure
+          isIdempotent: true
+        - id: azure.exfiltration.storage-sas-export
+          name: Exfiltrate Azure Storage through SAS URL
+          isSlow: false
+          mitreAttackTactics:
+            - Exfiltration
+          platform: Azure
+          isIdempotent: true
+    Impact:
+        - id: azure.impact.blob-ransomware-client-encryption-scope
+          name: Azure Blob Storage ransomware through Encryption Scope using client-managed Key Vault key
+          isSlow: false
+          mitreAttackTactics:
+            - Impact
+          platform: Azure
+          isIdempotent: false
+        - id: azure.impact.blob-ransomware-individual-file-deletion
+          name: Azure ransomware via Storage Account Blob deletion
+          isSlow: false
+          mitreAttackTactics:
+            - Impact
+          platform: Azure
+          isIdempotent: false
+        - id: azure.impact.resource-lock
+          name: Delete Azure resource lock
+          isSlow: true
+          mitreAttackTactics:
+            - Impact
+          platform: Azure
+          isIdempotent: true
+    Persistence:
+        - id: azure.persistence.create-bastion-shareable-link
+          name: Create Azure VM Bastion shareable link
+          isSlow: true
+          mitreAttackTactics:
+            - Persistence
+          platform: Azure
+          isIdempotent: false
+Entra ID:
+    Persistence:
+        - id: entra-id.persistence.backdoor-application-sp
+          name: Backdoor Entra ID application through service principal
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: Entra ID
+          isIdempotent: false
+        - id: entra-id.persistence.backdoor-application
+          name: Backdoor Entra ID application
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: Entra ID
+          isIdempotent: false
+        - id: entra-id.persistence.guest-user
+          name: Create Guest User
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+          platform: Entra ID
+          isIdempotent: false
+        - id: entra-id.persistence.hidden-au
+          name: Create Hidden Scoped Role Assignment Through HiddenMembership AU
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+          platform: Entra ID
+          isIdempotent: false
+        - id: entra-id.persistence.new-application
+          name: Create Application
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: Entra ID
+          isIdempotent: false
+        - id: entra-id.persistence.restricted-au
+          name: Create Sticky Backdoor User Through Restricted Management AU
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+          platform: Entra ID
+          isIdempotent: false
+    Privilege Escalation:
+        - id: entra-id.persistence.backdoor-application-sp
+          name: Backdoor Entra ID application through service principal
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: Entra ID
+          isIdempotent: false
+        - id: entra-id.persistence.backdoor-application
+          name: Backdoor Entra ID application
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: Entra ID
+          isIdempotent: false
+        - id: entra-id.persistence.new-application
+          name: Create Application
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: Entra ID
+          isIdempotent: false
+Kubernetes:
+    Credential Access:
+        - id: k8s.credential-access.dump-secrets
+          name: Dump All Secrets
+          isSlow: false
+          mitreAttackTactics:
+            - Credential Access
+          platform: Kubernetes
+          isIdempotent: true
+        - id: k8s.credential-access.steal-serviceaccount-token
+          name: Steal Pod Service Account Token
+          isSlow: false
+          mitreAttackTactics:
+            - Credential Access
+          platform: Kubernetes
+          isIdempotent: true
+    Persistence:
+        - id: k8s.persistence.create-admin-clusterrole
+          name: Create Admin ClusterRole
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: Kubernetes
+          isIdempotent: false
+        - id: k8s.persistence.create-client-certificate
+          name: Create Client Certificate Credential
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+          platform: Kubernetes
+          isIdempotent: true
+        - id: k8s.persistence.create-token
+          name: Create Long-Lived Token
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+          platform: Kubernetes
+          isIdempotent: true
+    Privilege Escalation:
+        - id: k8s.persistence.create-admin-clusterrole
+          name: Create Admin ClusterRole
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: Kubernetes
+          isIdempotent: false
+        - id: k8s.privilege-escalation.hostpath-volume
+          name: Container breakout via hostPath volume mount
+          isSlow: false
+          mitreAttackTactics:
+            - Privilege Escalation
+          platform: Kubernetes
+          isIdempotent: false
+        - id: k8s.privilege-escalation.nodes-proxy
+          name: Privilege escalation through node/proxy permissions
+          isSlow: false
+          mitreAttackTactics:
+            - Privilege Escalation
+          platform: Kubernetes
+          isIdempotent: true
+        - id: k8s.privilege-escalation.privileged-pod
+          name: Run a Privileged Pod
+          isSlow: false
+          mitreAttackTactics:
+            - Privilege Escalation
+          platform: Kubernetes
+          isIdempotent: false
