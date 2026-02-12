@@ -66,6 +66,7 @@ import (
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/exfiltration/share-compute-image"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/exfiltration/share-compute-snapshot"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/impact/create-gpu-vm"
+	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/impact/create-instances-in-multiple-zones"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/initial-access/use-compute-sa-outside-gcp"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/lateral-movement/add-sshkey-instance-metadata"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/persistence/backdoor-service-account-policy"
