@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/datadog/stratus-red-team/v2/internal/utils"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"golang.org/x/oauth2/google"
@@ -93,7 +94,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	}
 	permissions := strings.Split(testablePermissions, ",")
 
-	chunks := chunkPermissions(permissions, testIAMChunkSize)
+	chunks := utils.Chunk(permissions, testIAMChunkSize)
 	log.Printf("Enumerating permissions of %s on project %s (%d permissions, %d chunks of up to %d)",
 		saEmail, projectID, len(permissions), len(chunks), testIAMChunkSize)
 
@@ -159,24 +160,6 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	}
 
 	return nil
-}
-
-func chunkPermissions(permissions []string, chunkSize int) [][]string {
-	// Split the permission list into fixed-size batches for testIamPermissions requests.
-	if len(permissions) == 0 || chunkSize <= 0 {
-		return nil
-	}
-
-	chunks := make([][]string, 0, (len(permissions)+chunkSize-1)/chunkSize)
-	for start := 0; start < len(permissions); start += chunkSize {
-		end := start + chunkSize
-		if end > len(permissions) {
-			end = len(permissions)
-		}
-		chunks = append(chunks, permissions[start:end])
-	}
-
-	return chunks
 }
 
 func isRateLimit(err error) bool {
