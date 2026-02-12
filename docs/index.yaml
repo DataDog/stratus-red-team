@@ -552,6 +552,14 @@ GCP:
             - Initial Access
           platform: GCP
           isIdempotent: true
+    Discovery:
+        - id: gcp.discovery.enumerate-permissions
+          name: Enumerate Permissions of a GCP Service Account
+          isSlow: false
+          mitreAttackTactics:
+            - Discovery
+          platform: GCP
+          isIdempotent: true
     Exfiltration:
         - id: gcp.exfiltration.share-compute-disk
           name: Exfiltrate Compute Disk by sharing it

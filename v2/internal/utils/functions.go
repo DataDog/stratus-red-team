@@ -60,6 +60,24 @@ func IndexOf[T comparable](slice []T, searchValue T) int {
 	return -1
 }
 
+// Chunk splits a slice into consecutive chunks of at most chunkSize elements.
+func Chunk[T any](items []T, chunkSize int) [][]T {
+	if len(items) == 0 || chunkSize <= 0 {
+		return nil
+	}
+
+	chunks := make([][]T, 0, (len(items)+chunkSize-1)/chunkSize)
+	for start := 0; start < len(items); start += chunkSize {
+		end := start + chunkSize
+		if end > len(items) {
+			end = len(items)
+		}
+		chunks = append(chunks, items[start:end])
+	}
+
+	return chunks
+}
+
 func MD5HashBase64(text string) string {
 	hash := md5.Sum([]byte(text))
 	return base64.StdEncoding.EncodeToString(hash[:])
