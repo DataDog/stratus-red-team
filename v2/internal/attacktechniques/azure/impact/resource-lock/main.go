@@ -58,6 +58,7 @@ Sample Azure Activity Log event to monitor:
         "message": "Microsoft.Authorization/locks/delete",
         "hierarchy": "[REMOVED]"
     }
+` + codeBlock + `
 `,
 		Platform:                   stratus.Azure,
 		IsIdempotent:               true,
