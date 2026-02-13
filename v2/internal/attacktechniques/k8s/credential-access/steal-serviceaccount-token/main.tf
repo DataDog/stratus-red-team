@@ -7,13 +7,52 @@ terraform {
   }
 }
 
+variable "image" {
+  description = "Container image to use for the pod."
+  type        = string
+  default     = "public.ecr.aws/docker/library/alpine:3.15.0"
+}
+
+variable "labels" {
+  description = "JSON-encoded map of additional labels to apply to pods."
+  type        = string
+  default     = "{}"
+}
+
+variable "namespace" {
+  description = "Kubernetes namespace to use. If empty, a new namespace will be created."
+  type        = string
+  default     = ""
+}
+
+variable "node_selector" {
+  description = "JSON-encoded map of node selector labels."
+  type        = string
+  default     = "{}"
+}
+
+variable "tolerations" {
+  description = "JSON-encoded list of tolerations for the pod."
+  type        = string
+  default     = "[]"
+}
+
 locals {
   kubeconfig_path = pathexpand("~/.kube/config")
-  namespace       = format("stratus-red-team-%s", random_string.suffix.result)
-  labels = {
+
+  base_labels = {
     "datadoghq.com/stratus-red-team" : true
   }
+  custom_labels = jsondecode(var.labels)
+  labels        = merge(local.base_labels, local.custom_labels)
+
+  create_namespace  = var.namespace == ""
+  generated_ns_name = format("stratus-red-team-%s", random_string.suffix.result)
+  namespace         = local.create_namespace ? local.generated_ns_name : var.namespace
+
+  node_selector   = jsondecode(var.node_selector)
   resource_prefix = "stratus-red-team-ssat" # stratus red team steal service account token
+  tolerations     = jsondecode(var.tolerations)
 }
 
 # Use ~/.kube/config as a configuration file if it exists (with current context).
@@ -29,8 +68,9 @@ resource "random_string" "suffix" {
 }
 
 resource "kubernetes_namespace" "namespace" {
+  count = local.create_namespace ? 1 : 0
   metadata {
-    name   = local.namespace
+    name   = local.generated_ns_name
     labels = local.labels
   }
 }
@@ -39,7 +79,7 @@ resource "kubernetes_service_account" "serviceaccount" {
   metadata {
     name      = format("%s-sa", local.resource_prefix)
     labels    = local.labels
-    namespace = kubernetes_namespace.namespace.metadata[0].name
+    namespace = local.namespace
   }
 }
 
@@ -51,17 +91,27 @@ resource "kubernetes_pod" "pod" {
   }
   spec {
     service_account_name = kubernetes_service_account.serviceaccount.metadata[0].name
+    node_selector        = local.node_selector
     container {
-      image   = "public.ecr.aws/docker/library/alpine:3.15.0"
+      image   = var.image
       name    = "main-container"
       command = ["/bin/sh"]
       args    = ["-c", "while true; do sleep 3600; done"]
+    }
+    dynamic "toleration" {
+      for_each = local.tolerations
+      content {
+        key      = toleration.value.key
+        operator = toleration.value.operator
+        value    = toleration.value.value
+        effect   = toleration.value.effect
+      }
     }
   }
 }
 
 output "namespace" {
-  value = kubernetes_namespace.namespace.metadata[0].name
+  value = local.namespace
 }
 
 output "pod_name" {
@@ -69,5 +119,5 @@ output "pod_name" {
 }
 
 output "display" {
-  value = format("Pod %s in namespace %s ready", kubernetes_pod.pod.metadata[0].name, kubernetes_namespace.namespace.metadata[0].name)
+  value = format("Pod %s in namespace %s ready", kubernetes_pod.pod.metadata[0].name, local.namespace)
 }
