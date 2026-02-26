@@ -1,14 +1,15 @@
-package main
+package cmd
 
 import (
 	"fmt"
+	"log"
+	"strings"
+
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"github.com/fatih/color"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/spf13/cobra"
-	"log"
-	"strings"
 )
 
 var listPlatform string

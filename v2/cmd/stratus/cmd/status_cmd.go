@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"github.com/datadog/stratus-red-team/v2/internal/state"
