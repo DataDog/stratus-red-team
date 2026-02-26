@@ -1,12 +1,13 @@
 ---
 title: detonate
 ---
+
 # `stratus detonate`
 
 Detonates an attack technique.
 
-* If the technique was previously warmed up using `stratus warmup`, it will not be warmed up again.
-* Otherwise, `stratus detonate` will automatically warm up the technique before detonating it.
+- If the technique was previously warmed up using `stratus warmup`, it will not be warmed up again.
+- Otherwise, `stratus detonate` will automatically warm up the technique before detonating it.
 
 ## Sample Usage
 
