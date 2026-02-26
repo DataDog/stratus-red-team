@@ -1,12 +1,12 @@
-package main
+package cmd
 
 import (
 	"errors"
-	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
-	"github.com/datadog/stratus-red-team/v2/pkg/stratus/runner"
 	"log"
 	"os"
 
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/runner"
 	"github.com/spf13/cobra"
 )
 

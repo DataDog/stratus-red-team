@@ -1,12 +1,13 @@
-package main
+package cmd
 
 import (
 	"errors"
-	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
-	"github.com/jedib0t/go-pretty/v6/table"
 	"log"
 	"os"
 	"strings"
+
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/jedib0t/go-pretty/v6/table"
 )
 
 func GetDisplayTable() table.Writer {

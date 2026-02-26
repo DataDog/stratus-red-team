@@ -1,11 +1,12 @@
-package main
+package cmd
 
 import (
 	"errors"
+	"os"
+
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/runner"
 	"github.com/spf13/cobra"
-	"os"
 )
 
 var forceWarmup bool

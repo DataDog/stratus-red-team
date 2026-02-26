@@ -1,8 +1,9 @@
-package main
+package cmd
 
 import (
 	"errors"
 	"fmt"
+
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/spf13/cobra"
 )
