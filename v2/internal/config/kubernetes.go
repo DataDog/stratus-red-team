@@ -48,6 +48,10 @@ type K8sPodConfig struct {
 
 // GetTechniquePodConfig returns the merged Pod configuration for a specific technique.
 func (k *KubernetesConfigImpl) GetTechniquePodConfig(techniqueID string) K8sPodConfig {
+	if k == nil {
+		return K8sPodConfig{}
+	}
+
 	result := k.Defaults
 
 	if techniqueConfig, exists := k.Techniques[techniqueID]; exists {
@@ -74,6 +78,10 @@ func (k *KubernetesConfigImpl) GetTechniquePodConfig(techniqueID string) K8sPodC
 
 // ApplyToPod applies the configuration to a pod spec, modifying it in place.
 func (c *K8sPodConfig) ApplyToPod(pod *v1.Pod) {
+	if c == nil {
+		return
+	}
+
 	// Apply image override to first container
 	if c.Image != "" && len(pod.Spec.Containers) > 0 {
 		pod.Spec.Containers[0].Image = c.Image
@@ -129,6 +137,10 @@ var KubernetesVariables = KubernetesVariablesNames{
 }
 
 func (c *KubernetesConfigImpl) GetTerraformVariables(techniqueID string, overrides []TerraformConfigVariable) map[string]string {
+	if c == nil {
+		return nil
+	}
+
 	techniqueConfig := c.GetTechniquePodConfig(techniqueID)
 
 	// Get all available variables from the pod config
@@ -148,6 +160,10 @@ func (c *KubernetesConfigImpl) GetTerraformVariables(techniqueID string, overrid
 
 // ToTerraformVariables converts the config to Terraform variables.
 func (c *K8sPodConfig) ToTerraformVariables() map[string]string {
+	if c == nil {
+		return nil
+	}
+
 	vars := make(map[string]string)
 
 	if c.Image != "" {
@@ -178,6 +194,15 @@ func (c *K8sPodConfig) ToTerraformVariables() map[string]string {
 			log.Println("Error marshalling config node selector to terraform variables - They will be ignored: " + err.Error())
 		} else {
 			vars[string(KubernetesVariables.NodeSelector)] = string(nodeSelectorJSON)
+		}
+	}
+
+	if c.SecurityContext != nil {
+		securityContextJSON, err := json.Marshal(c.SecurityContext)
+		if err != nil {
+			log.Println("Error marshalling config security context to terraform variables - It will be ignored: " + err.Error())
+		} else {
+			vars[string(KubernetesVariables.SecurityContext)] = string(securityContextJSON)
 		}
 	}
 

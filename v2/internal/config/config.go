@@ -25,16 +25,17 @@ type Config interface {
 }
 
 type ConfigImpl struct {
-	Kubernetes KubernetesConfig `yaml:"kubernetes"`
+	Kubernetes *KubernetesConfigImpl `yaml:"kubernetes,omitempty"`
 }
 
 var _ Config = &ConfigImpl{}
 
 // LoadConfig loads configuration from file.
 func LoadConfig() (Config, error) {
+	var config ConfigImpl
 	configPath := getConfigPath()
 	if configPath == "" {
-		return nil, nil
+		return &config, nil
 	}
 
 	data, err := os.ReadFile(configPath)
@@ -42,7 +43,6 @@ func LoadConfig() (Config, error) {
 		return nil, err
 	}
 
-	var config ConfigImpl
 	if err := yaml.Unmarshal(data, &config); err != nil {
 		return nil, err
 	}
@@ -82,7 +82,10 @@ func fileExists(path string) bool {
 }
 
 func (c *ConfigImpl) GetKubernetesConfig() KubernetesConfig {
-	return c.Kubernetes
+	if c != nil {
+		return c.Kubernetes
+	}
+	return &KubernetesConfigImpl{}
 }
 
 /*
@@ -99,13 +102,16 @@ type TerraformConfigVariable string
 
 // GetTerraformVariables returns the Terraform variables to use for the given overrides.
 func (c *ConfigImpl) GetTerraformVariables(techniqueID string, overrides []string) map[string]string {
+	if c == nil {
+		return nil
+	}
 	result := make(map[string]string)
 
 	// Kubernetes and EKS variables
-	kubernetesVariables := c.Kubernetes.GetTerraformVariables(techniqueID, toConfigVars(overrides))
+	kubernetesVariables := c.GetKubernetesConfig().GetTerraformVariables(techniqueID, toConfigVars(overrides))
 	maps.Copy(result, kubernetesVariables)
 
-	// If one day we add other platforms overrides, we will defined them here.
+	// If one day we add other platforms overrides, we will define them here.
 
 	return result
 }
