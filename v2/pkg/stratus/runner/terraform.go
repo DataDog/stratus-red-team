@@ -14,7 +14,7 @@ import (
 	"path/filepath"
 )
 
-const TerraformVersion = "1.1.2"
+const TerraformVersion = "1.3.10"
 
 type TerraformManager interface {
 	Initialize()
