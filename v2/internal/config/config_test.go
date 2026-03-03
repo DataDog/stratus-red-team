@@ -1,130 +1,133 @@
 package config
 
 import (
+	"strings"
 	"testing"
 
+	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-	v1 "k8s.io/api/core/v1"
 )
 
-func TestGetTerraformVariables(t *testing.T) {
-	// Objects used in tests
-	tolerations := []v1.Toleration{
-		{
-			Key:      "test-toleration",
-			Operator: "Equal",
-			Value:    "test-toleration-value",
-			Effect:   "NoSchedule",
-		},
-	}
-	tolerationsJSON, err := marshalTolerations(tolerations)
-	require.NoError(t, err)
+// newTestConfig builds a ConfigImpl from a YAML string, mirroring how LoadConfig
+// works when reading from a file.
+func newTestConfig(yamlStr string) *ConfigImpl {
+	v := viper.New()
+	v.SetConfigType("yaml")
+	_ = v.ReadConfig(strings.NewReader(yamlStr))
+	return &ConfigImpl{kubernetes: &KubernetesConfigImpl{v: v}, v: v}
+}
 
+func TestGetTerraformVariables(t *testing.T) {
 	tests := []struct {
 		name        string
-		cfg         *ConfigImpl
+		yaml        string
 		techniqueID string
 		overrides   []string
 		expected    map[string]string
 	}{
 		{
 			name: "namespace",
-			cfg: &ConfigImpl{
-				Kubernetes: &KubernetesConfigImpl{
-					Namespace: "test-namespace",
-				},
-			},
+			yaml: `
+kubernetes:
+  default:
+    namespace: test-namespace
+`,
 			techniqueID: "",
-			overrides:   []string{"namespace"},
+			overrides:   []string{"kubernetes.namespace"},
 			expected: map[string]string{
-				"namespace": "test-namespace",
+				"config": `{"kubernetes":{"namespace":"test-namespace"}}`,
 			},
 		},
 		{
 			name: "namespace-and-default-image",
-			cfg: &ConfigImpl{
-				Kubernetes: &KubernetesConfigImpl{
-					Namespace: "test-namespace",
-					Defaults: K8sPodConfig{
-						Image: "test-default-image",
-					},
-				},
-			},
+			yaml: `
+kubernetes:
+  default:
+    namespace: test-namespace
+    pod:
+      image: test-default-image
+`,
 			techniqueID: "",
-			overrides:   []string{"namespace", "image"},
+			overrides:   []string{"kubernetes.namespace", "kubernetes.pod.image"},
 			expected: map[string]string{
-				"namespace": "test-namespace",
-				"image":     "test-default-image",
+				"config": `{"kubernetes":{"namespace":"test-namespace","pod":{"image":"test-default-image"}}}`,
 			},
 		},
 		{
 			name: "namespace-and-override-image",
-			cfg: &ConfigImpl{
-				Kubernetes: &KubernetesConfigImpl{
-					Namespace: "test-namespace",
-					Defaults: K8sPodConfig{
-						Image: "test-default-image",
-					},
-					Techniques: map[string]K8sPodConfig{
-						"test-technique": {
-							Image: "test-override-image",
-						},
-						"test-technique-2": {
-							Image: "test-override-image-2",
-						},
-					},
-				},
-			},
-			techniqueID: "test-technique",
-			overrides:   []string{"namespace", "image"},
+			yaml: `
+kubernetes:
+  default:
+    namespace: test-namespace
+    pod:
+      image: test-default-image
+  techniques:
+    "k8s.tactic.procedure":
+      pod:
+        image: test-override-image
+    "k8s.tactic.procedure-2":
+      pod:
+        image: test-override-image-2
+`,
+			techniqueID: "k8s.tactic.procedure",
+			overrides:   []string{"kubernetes.namespace", "kubernetes.pod.image"},
 			expected: map[string]string{
-				"namespace": "test-namespace",
-				"image":     "test-override-image",
+				"config": `{"kubernetes":{"namespace":"test-namespace","pod":{"image":"test-override-image"}}}`,
 			},
 		},
 		{
 			name: "overloaded-config",
-			cfg: &ConfigImpl{
-				Kubernetes: &KubernetesConfigImpl{
-					Namespace: "test-namespace",
-					Defaults: K8sPodConfig{
-						Image: "test-default-image",
-						Labels: map[string]string{
-							"test-label": "test-label-value",
-						},
-					},
-					Techniques: map[string]K8sPodConfig{
-						"test-technique": {
-							Tolerations: tolerations,
-						},
-					},
-				},
-			},
-			techniqueID: "test-technique",
-			overrides:   []string{"tolerations"},
+			yaml: `
+kubernetes:
+  default:
+    pod:
+      image: test-default-image
+      labels:
+        test-label: test-label-value
+  techniques:
+    "k8s.tactic.procedure":
+      pod:
+        tolerations:
+          - key: test-toleration
+            operator: Equal
+            value: test-toleration-value
+            effect: NoSchedule
+`,
+			techniqueID: "k8s.tactic.procedure",
+			overrides:   []string{"kubernetes.pod.tolerations"},
 			expected: map[string]string{
-				"tolerations": string(tolerationsJSON),
+				"config": `{"kubernetes":{"pod":{"tolerations":[{"effect":"NoSchedule","key":"test-toleration","operator":"Equal","value":"test-toleration-value"}]}}}`,
 			},
 		},
 		{
+			// Unset paths are omitted from the JSON entirely (Viper drops nil-valued keys).
+			// Terraform uses optional(type, default) to fill in zero values for absent fields.
 			name: "variable-not-present",
-			cfg: &ConfigImpl{
-				Kubernetes: &KubernetesConfigImpl{
-					Namespace: "test-namespace",
-				},
-			},
-			techniqueID: "test-technique",
-			overrides:   []string{"namespace", "image"},
+			yaml: `
+kubernetes:
+  default:
+    namespace: test-namespace
+`,
+			techniqueID: "k8s.tactic.procedure",
+			overrides:   []string{"kubernetes.namespace", "kubernetes.pod.image"},
 			expected: map[string]string{
-				"namespace": "test-namespace",
+				"config": `{"kubernetes":{"namespace":"test-namespace"}}`,
 			},
+		},
+		{
+			// No config file at all: return nil so Terraform uses its variable default.
+			name:        "no-config",
+			yaml:        ``,
+			techniqueID: "k8s.tactic.procedure",
+			overrides:   []string{"kubernetes.namespace", "kubernetes.pod.image"},
+			expected:    nil,
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			actual := test.cfg.GetTerraformVariables(test.techniqueID, test.overrides)
+			cfg := newTestConfig(test.yaml)
+			actual := cfg.GetTerraformVariables(test.techniqueID, test.overrides)
 			assert.Equal(t, test.expected, actual)
 		})
 	}
