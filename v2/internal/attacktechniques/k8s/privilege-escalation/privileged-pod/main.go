@@ -82,7 +82,7 @@ Sample event (shortened):
 }
 ` + codeBlock,
 		PrerequisitesTerraformCode: tf,
-		TerraformOverrideConfig:    []string{"namespace"},
+		TerraformOverrideConfig:    []string{"kubernetes.namespace"},
 		Detonate:                   detonate,
 		Revert:                     revert,
 	})
@@ -108,6 +108,8 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 
 func revert(params map[string]string, providers stratus.CloudProviders) error {
 	client := providers.K8s().GetClient()
+	// Param retrieved from the Terraform output. If a namespace was defined in the config, it will
+	// be passed through terraform, otherwise it's the created namespace.
 	namespace := params["namespace"]
 	podSpec := basePodSpec(namespace)
 

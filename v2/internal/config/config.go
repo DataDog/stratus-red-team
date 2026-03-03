@@ -1,18 +1,19 @@
 package config
 
 import (
-	"maps"
+	"encoding/json"
+	"log"
 	"os"
 	"path/filepath"
 
-	"gopkg.in/yaml.v3"
+	"github.com/spf13/viper"
 )
 
 const (
-	// StratusStateDirectoryName is the name of the directory where Stratus Red Team stores state and config
-	StratusStateDirectoryName = ".stratus-red-team"
-	ConfigFileName            = "config.yaml"
-	ConfigEnvVar              = "STRATUS_CONFIG_PATH"
+	// StratusBaseDirectoryName is the name of the directory where Stratus Red Team stores state and config
+	StratusBaseDirectoryName = ".stratus-red-team"
+	ConfigFileName           = "config.yaml"
+	ConfigEnvVar             = "STRATUS_CONFIG_PATH"
 )
 
 // Config is the root configuration structure.
@@ -25,29 +26,23 @@ type Config interface {
 }
 
 type ConfigImpl struct {
-	Kubernetes *KubernetesConfigImpl `yaml:"kubernetes,omitempty"`
+	kubernetes *KubernetesConfigImpl
+	v          *viper.Viper
 }
 
 var _ Config = &ConfigImpl{}
 
 // LoadConfig loads configuration from file.
 func LoadConfig() (Config, error) {
-	var config ConfigImpl
+	v := viper.New()
 	configPath := getConfigPath()
-	if configPath == "" {
-		return &config, nil
+	if configPath != "" {
+		v.SetConfigFile(configPath)
+		if err := v.ReadInConfig(); err != nil {
+			return nil, err
+		}
 	}
-
-	data, err := os.ReadFile(configPath)
-	if err != nil {
-		return nil, err
-	}
-
-	if err := yaml.Unmarshal(data, &config); err != nil {
-		return nil, err
-	}
-
-	return &config, nil
+	return &ConfigImpl{kubernetes: &KubernetesConfigImpl{v: v}, v: v}, nil
 }
 
 // getConfigPath returns the path to the config file, checking:
@@ -68,7 +63,7 @@ func getConfigPath() string {
 		return ""
 	}
 
-	defaultPath := filepath.Join(homeDir, StratusStateDirectoryName, ConfigFileName)
+	defaultPath := filepath.Join(homeDir, StratusBaseDirectoryName, ConfigFileName)
 	if fileExists(defaultPath) {
 		return defaultPath
 	}
@@ -82,59 +77,47 @@ func fileExists(path string) bool {
 }
 
 func (c *ConfigImpl) GetKubernetesConfig() KubernetesConfig {
-	if c != nil {
-		return c.Kubernetes
-	}
-	return &KubernetesConfigImpl{}
+	return c.kubernetes
 }
 
-/*
- * Terraform variables
- *
- * This section defines the types and functions to handle Terraform variables override.
- */
+// buildMergedViper produces a Viper containing the merged technique config.
+// Each provider populates its own subtree via populateViperOverride.
+func (c *ConfigImpl) buildMergedViper(techniqueID string) *viper.Viper {
+	v := viper.New()
+	if c == nil || c.kubernetes == nil {
+		return v
+	}
+	c.kubernetes.populateViperOverride(c.v, v, techniqueID)
+	// Add here other providers config
+	return v
+}
 
-// Name of the Terraform variables. Must match the name in the Terraform code.
-//
-// This is for internal use to create a list of Terraform variables. All the other code uses string
-// instead to avoid depending on an internal type.
-type TerraformConfigVariable string
-
-// GetTerraformVariables returns the Terraform variables to use for the given overrides.
+// GetTerraformVariables returns a single "config" Terraform variable whose value is a JSON object
+// built by looking up each dotted override path in the merged technique config.
+// Returns nil if overrides is empty.
 func (c *ConfigImpl) GetTerraformVariables(techniqueID string, overrides []string) map[string]string {
-	if c == nil {
+	if c == nil || len(overrides) == 0 {
 		return nil
 	}
-	result := make(map[string]string)
 
-	// Kubernetes and EKS variables
-	kubernetesVariables := c.GetKubernetesConfig().GetTerraformVariables(techniqueID, toConfigVars(overrides))
-	maps.Copy(result, kubernetesVariables)
-
-	// If one day we add other platforms overrides, we will define them here.
-
-	return result
-}
-
-func toConfigVars(s []string) []TerraformConfigVariable {
-	r := make([]TerraformConfigVariable, len(s))
-	for i, v := range s {
-		r[i] = TerraformConfigVariable(v)
+	merged := c.buildMergedViper(techniqueID)
+	output := viper.New()
+	for _, path := range overrides {
+		output.Set(path, merged.Get(path))
 	}
-	return r
-}
 
-// FilterVariables returns only the requested variables from allVars.
-// This is a provider-independent helper for filtering Terraform variables.
-func FilterVariables(allVars map[string]string, requested []TerraformConfigVariable) map[string]string {
-	if len(requested) == 0 {
-		return allVars
+	settings := output.AllSettings()
+	if len(settings) == 0 {
+		// Returning nil, otherwise it would return { "config": {} } and Terraform would complain
+		// that the config doesn't contain the expected keys
+		return nil
 	}
-	result := make(map[string]string)
-	for _, v := range requested {
-		if val, ok := allVars[string(v)]; ok {
-			result[string(v)] = val
-		}
+
+	jsonBytes, err := json.Marshal(settings)
+	if err != nil {
+		log.Println("Error marshalling Terraform config variables: " + err.Error())
+		return nil
 	}
-	return result
+
+	return map[string]string{"config": string(jsonBytes)}
 }

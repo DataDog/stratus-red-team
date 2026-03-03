@@ -195,9 +195,13 @@ For Kubernetes techniques, you can create a configuration file at `~/.stratus-re
 
 ```yaml
 kubernetes:
-  namespace: "security-testing" # Namespace for k8s techniques
-  defaults:
-    tolerations:
+  default:
+    namespace: "security-testing" # Namespace for k8s techniques, for instance if your user is not allowed to create a namespace
+    # You can add labels that can help you find the generated IoCs, attribute the pod, etc.
+    labels:
+      app: "stratus-red-team"
+      team: "your-team-name"
+    tolerations: # Tolerations, in case your cluster requires this kind of information to schedule pods correctly
       - key: "dedicated"
         operator: "Equal"
         value: "security"
@@ -212,10 +216,10 @@ kubernetes:
 
 This allows you to:
 
+- Add labels to your pods (Attribution, CNP policy selectors, monitoring...)
 - Use a specific namespace instead of creating one (if you don't want to give permissions to create namespaces)
 - Override container images (useful when there are restrictions to use only images from private registries)
 - Add tolerations and node selectors for pod scheduling
-- Add labels (CNP policy selectors, monitoring...)
 
 Set `STRATUS_CONFIG_PATH` environment variable to use a config file at a different location.
 

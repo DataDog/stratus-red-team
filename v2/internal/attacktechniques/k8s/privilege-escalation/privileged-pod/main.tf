@@ -7,17 +7,24 @@ terraform {
   }
 }
 
-variable "namespace" {
-  description = "Kubernetes namespace to use. If empty, a new namespace will be created."
-  type        = string
-  default     = ""
+variable "config" {
+  type = object({
+    kubernetes = object({
+      namespace = string
+    })
+  })
+  default = {
+    kubernetes = {
+      namespace = ""
+    }
+  }
 }
 
 locals {
   kubeconfig_path   = pathexpand("~/.kube/config")
-  create_namespace  = var.namespace == ""
+  create_namespace  = var.config.kubernetes.namespace == ""
   generated_ns_name = format("stratus-red-team-privileged-name-%s", random_string.suffix.result)
-  namespace         = local.create_namespace ? local.generated_ns_name : var.namespace
+  namespace         = local.create_namespace ? local.generated_ns_name : var.config.kubernetes.namespace
 }
 
 # Use ~/.kube/config as a configuration file if it exists (with current context).

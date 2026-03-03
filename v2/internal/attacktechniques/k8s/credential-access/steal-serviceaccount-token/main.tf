@@ -7,34 +7,34 @@ terraform {
   }
 }
 
-variable "image" {
-  description = "Container image to use for the pod."
-  type        = string
-  default     = "public.ecr.aws/docker/library/alpine:3.15.0"
-}
-
-variable "labels" {
-  description = "JSON-encoded map of additional labels to apply to pods."
-  type        = string
-  default     = "{}"
-}
-
-variable "namespace" {
-  description = "Kubernetes namespace to use. If empty, a new namespace will be created."
-  type        = string
-  default     = ""
-}
-
-variable "node_selector" {
-  description = "JSON-encoded map of node selector labels."
-  type        = string
-  default     = "{}"
-}
-
-variable "tolerations" {
-  description = "JSON-encoded list of tolerations for the pod."
-  type        = string
-  default     = "[]"
+variable "config" {
+  type = object({
+    kubernetes = object({
+      namespace = optional(string, "")
+      pod = optional(object({
+        image         = optional(string, "")
+        labels        = optional(map(string), {})
+        node_selector = optional(map(string), {})
+        tolerations = optional(list(object({
+          key      = string
+          operator = string
+          value    = string
+          effect   = string
+        })), [])
+      }), { image = "", labels = {}, node_selector = {}, tolerations = [] })
+    })
+  })
+  default = {
+    kubernetes = {
+      namespace = ""
+      pod = {
+        image         = ""
+        labels        = {}
+        node_selector = {}
+        tolerations   = []
+      }
+    }
+  }
 }
 
 locals {
@@ -43,16 +43,16 @@ locals {
   base_labels = {
     "datadoghq.com/stratus-red-team" : true
   }
-  custom_labels = jsondecode(var.labels)
+  custom_labels = var.config.kubernetes.pod.labels
   labels        = merge(local.base_labels, local.custom_labels)
 
-  create_namespace  = var.namespace == ""
+  create_namespace  = var.config.kubernetes.namespace == ""
   generated_ns_name = format("stratus-red-team-%s", random_string.suffix.result)
-  namespace         = local.create_namespace ? local.generated_ns_name : var.namespace
+  namespace         = local.create_namespace ? local.generated_ns_name : var.config.kubernetes.namespace
 
-  node_selector   = jsondecode(var.node_selector)
+  image = var.config.kubernetes.pod.image != "" ? var.config.kubernetes.pod.image : "public.ecr.aws/docker/library/alpine:3.15.0"
+
   resource_prefix = "stratus-red-team-ssat" # stratus red team steal service account token
-  tolerations     = jsondecode(var.tolerations)
 }
 
 # Use ~/.kube/config as a configuration file if it exists (with current context).
@@ -91,15 +91,15 @@ resource "kubernetes_pod" "pod" {
   }
   spec {
     service_account_name = kubernetes_service_account.serviceaccount.metadata[0].name
-    node_selector        = local.node_selector
+    node_selector        = var.config.kubernetes.pod.node_selector
     container {
-      image   = var.image
+      image   = local.image
       name    = "main-container"
       command = ["/bin/sh"]
       args    = ["-c", "while true; do sleep 3600; done"]
     }
     dynamic "toleration" {
-      for_each = local.tolerations
+      for_each = var.config.kubernetes.pod.tolerations
       content {
         key      = toleration.value.key
         operator = toleration.value.operator

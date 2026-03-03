@@ -68,7 +68,7 @@ type StateManager interface {
 func NewFileSystemStateManager(technique *stratus.AttackTechnique) *FileSystemStateManager {
 	homeDirectory, _ := os.UserHomeDir()
 	stateManager := FileSystemStateManager{
-		RootDirectory: filepath.Join(homeDirectory, config.StratusStateDirectoryName),
+		RootDirectory: filepath.Join(homeDirectory, config.StratusBaseDirectoryName),
 		Technique:     technique,
 		FileSystem:    &LocalFileSystem{},
 	}
