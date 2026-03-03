@@ -153,7 +153,7 @@ $ az account list
 export AZURE_SUBSCRIPTION_ID=45e0ad3f-ff94-499a-a2f0-bbb884e9c4a3
 ```
 
-!!! Note
+!!! note
 
     When using Stratus Red Team with Azure, the location in which resources are created cannot be configured and is
     fixed to `West US` (California). See why [here](https://github.com/DataDog/stratus-red-team/discussions/125).
@@ -191,7 +191,7 @@ Tested with Minikube and AWS EKS.
 
 ## Configuration File
 
-For Kubernetes techniques, you can create a configuration file at `~/.stratus-red-team/config.yaml` to customize behavior:
+You can create a configuration file at `~/.stratus-red-team/config.yaml` to customize behavior:
 
 ```yaml
 kubernetes:
@@ -214,14 +214,18 @@ kubernetes:
       tolerations: ...
 ```
 
-This allows you to:
-
+This is currently only used in some Kubernetes attacks and allows you to:
 - Add labels to your pods (Attribution, CNP policy selectors, monitoring...)
 - Use a specific namespace instead of creating one (if you don't want to give permissions to create namespaces)
 - Override container images (useful when there are restrictions to use only images from private registries)
 - Add tolerations and node selectors for pod scheduling
+- Use a custom SecurityContext
 
-Set `STRATUS_CONFIG_PATH` environment variable to use a config file at a different location.
+The kubernetes configuration has a default subsection. This subsection is applied to all techniques and can be overridden key by key in the techniques.attack-id subsection.
+
+!!! note
+
+    Use the `STRATUS_CONFIG_PATH` environment variable to use a config file at a different location.
 
 Encountering issues? See our [troubleshooting](./troubleshooting.md) page, or [open an issue](https://github.com/DataDog/stratus-red-team/issues/new/choose).
 

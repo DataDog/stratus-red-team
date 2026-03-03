@@ -92,9 +92,26 @@ func (c *ConfigImpl) buildMergedViper(techniqueID string) *viper.Viper {
 	return v
 }
 
-// GetTerraformVariables returns a single "config" Terraform variable whose value is a JSON object
-// built by looking up each dotted override path in the merged technique config.
+// GetTerraformVariables returns a map of key/values pairs to be used as Terraform variables.
+// The keys are the variable names, and the values are the variable values.
 // Returns nil if overrides is empty.
+//
+// If the config contains information that is matched by the overrides, the return map will contain
+// an entry "config" with a JSON object whose keys are the overrides strings, dot separated.
+//
+// Example:
+//
+//	overrides := []string{"kubernetes.namespace", "kubernetes.pod.image"}
+//	tfVars := c.GetTerraformVariables(techniqueID, overrides)
+//	// the 'reconstructed' object would be:
+//	// config: '{
+//	//   "kubernetes": {
+//	//     "namespace": "ns-set-in-config",
+//	//     "pod": {
+//	//       "image": "image-set-in-config"
+//	//     }
+//	//   }'
+//	// }
 func (c *ConfigImpl) GetTerraformVariables(techniqueID string, overrides []string) map[string]string {
 	if c == nil || len(overrides) == 0 {
 		return nil
