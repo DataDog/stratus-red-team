@@ -7,10 +7,25 @@ terraform {
   }
 }
 
+variable "config" {
+  type = object({
+    kubernetes = object({
+      namespace = string
+    })
+  })
+  default = {
+    kubernetes = {
+      namespace = ""
+    }
+  }
+}
+
 locals {
-  kubeconfig_path = pathexpand("~/.kube/config")
-  namespace       = format("stratus-red-team-np-name-%s", random_string.suffix.result)
-  resource_prefix = "stratus-red-team-np"
+  kubeconfig_path   = pathexpand("~/.kube/config")
+  create_namespace  = var.config.kubernetes.namespace == ""
+  generated_ns_name = format("stratus-red-team-np-name-%s", random_string.suffix.result)
+  namespace         = local.create_namespace ? local.generated_ns_name : var.config.kubernetes.namespace
+  resource_prefix   = "stratus-red-team-np"
 }
 
 # Use ~/.kube/config as a configuration file if it exists (with current context).
@@ -26,14 +41,15 @@ resource "random_string" "suffix" {
 }
 
 resource "kubernetes_namespace" "namespace" {
+  count = local.create_namespace ? 1 : 0
   metadata {
-    name   = local.namespace
+    name   = local.generated_ns_name
     labels = { "datadoghq.com/stratus-red-team" : true }
   }
 }
 
 output "namespace" {
-  value = kubernetes_namespace.namespace.metadata[0].name
+  value = local.namespace
 }
 
 resource "kubernetes_cluster_role" "clusterrole" {
@@ -51,7 +67,7 @@ resource "kubernetes_cluster_role" "clusterrole" {
 resource "kubernetes_service_account" "sa" {
   metadata {
     name      = format("%s-sa", local.resource_prefix)
-    namespace = kubernetes_namespace.namespace.metadata[0].name
+    namespace = local.namespace
   }
 }
 
@@ -83,6 +99,6 @@ output "display" {
   value = format(
     "K8s service account with node/proxy permission is ready: %s in namespace %s",
     kubernetes_service_account.sa.metadata[0].name,
-    kubernetes_namespace.namespace.metadata[0].name
+    local.namespace
   )
 }
