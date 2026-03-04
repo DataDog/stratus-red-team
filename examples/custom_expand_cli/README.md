@@ -41,8 +41,5 @@ custom_expand_cli/
 make build
 
 # Run the CLI
-./stratus list
-./stratus warmup my-sample-attack-technique
-./stratus detonate my-sample-attack-technique
-./stratus cleanup my-sample-attack-technique
+./stratus show my-sample-attack-technique
 ```
