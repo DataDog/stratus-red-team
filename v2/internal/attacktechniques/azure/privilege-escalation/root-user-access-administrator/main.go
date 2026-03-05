@@ -38,7 +38,7 @@ Warm-up: None
 
 Detonation:
 
-- Call the elevateAccess REST API endpoint, which assigns the User Access Administrator role at root scope (/) to the current principal
+- Call the <code>elevateAccess</code> REST API endpoint, which assigns the User Access Administrator role at root scope (/) to the current principal
 
 Revert:
 
@@ -53,7 +53,7 @@ References:
 		Detection: `
 Identify when the <code>elevateAccess</code> action is called through either the Entra ID Audit Logs or the Azure Activity Log.
 
-Sample Entra ID Audit Log entry (sensitive fields redacted), filtering on service <code>Azure RBAC (Elevated Access)</code>:
+Sample Entra ID Audit Log entry:
 
 ` + codeBlock + `json hl_lines="1 3"
 {
@@ -76,7 +76,7 @@ Sample Entra ID Audit Log entry (sensitive fields redacted), filtering on servic
   
 ` + codeBlock + `
 
-Sample Azure Activity Log entry (sensitive fields redacted):
+Sample Azure Activity Log entry:
 
 ` + codeBlock + `json hl_lines="2 8"
 {
@@ -100,8 +100,6 @@ Sample Azure Activity Log entry (sensitive fields redacted):
   }
 }
 ` + codeBlock + `
-
-Microsoft Sentinel provides a built-in analytics rule <b>Azure RBAC (Elevate Access)</b> to detect this behavior using the <code>AuditLogs</code> table.
 `,
 		IsIdempotent: false,
 		Detonate:     detonate,
