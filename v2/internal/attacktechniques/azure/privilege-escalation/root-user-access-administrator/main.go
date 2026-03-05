@@ -43,12 +43,12 @@ Detonation:
 Revert:
 
 - Remove the User Access Administrator role assignment at root scope (/)
+If you are getting a 403 error when attempting to revert, you may need to refresh your credentials with <code>az login</code>
 
 References:
 
 - https://learn.microsoft.com/en-us/azure/role-based-access-control/elevate-access-global-admin
 - https://microsoft.github.io/Azure-Threat-Research-Matrix/PrivilegeEscalation/AZT402/AZT402/
-- https://www.mandiant.com/resources/blog/detecting-microsoft-365-azure-active-directory-backdoors
 `,
 		Detection: `
 Identify when the <code>elevateAccess</code> action is called through either the Entra ID Audit Logs or the Azure Activity Log.
@@ -57,22 +57,23 @@ Sample Entra ID Audit Log entry (sensitive fields redacted), filtering on servic
 
 ` + codeBlock + `json hl_lines="1 3"
 {
-  "activityDisplayName": "User has elevated their access to User Access Administrator for their Azure Resources",
-  "category": "AzureRBACRoleManagementElevateAccess",
-  "loggedByService": "Azure RBAC (Elevated Access)",
-  "result": "success",
-  "additionalDetails": [
-    { "key": "OperationName", "value": "Microsoft.Authorization/elevateAccess/action" },
-    { "key": "Resource",      "value": "/providers/Microsoft.Authorization" }
-  ],
-  "initiatedBy": {
-    "user": {
+  "operationName": "User has elevated their access to User Access Administrator for their Azure Resources",
+  "category": "AuditLogs",
+  "properties": {
+    "category": "AzureRBACRoleManagementElevateAccess",
+    "activityDisplayName": "User has elevated their access to User Access Administrator for their Azure Resources",
+    "loggedByService": "Azure RBAC (Elevated Access)",
+    "result": "success",
+    "initiatedBy": {
+      "user": {
       "id": "00000000-0000-0000-0000-000000000000",
       "userPrincipalName": "user@example.com",
       "ipAddress": "1.2.3.4"
+      }
     }
   }
 }
+  
 ` + codeBlock + `
 
 Sample Azure Activity Log entry (sensitive fields redacted):
@@ -88,6 +89,12 @@ Sample Azure Activity Log entry (sensitive fields redacted):
     "value": "Microsoft.Authorization/elevateAccess/action",
     "localizedValue": "Assigns the caller to User Access Administrator role"
   },
+  "properties": {
+    "statusCode": "OK",
+    "eventCategory": "Administrative",
+    "entity": "/providers/Microsoft.Authorization",
+    "message": "Microsoft.Authorization/elevateAccess/action",
+  }
   "status": {
     "value": "Succeeded"
   }
@@ -174,7 +181,7 @@ func revert(_ map[string]string, providers stratus.CloudProviders) error {
 		}
 	}
 
-	return fmt.Errorf("User Access Administrator role assignment at root scope not found")
+	return fmt.Errorf("user access administrator role assignment at root scope not found")
 }
 
 // getOIDFromToken extracts the object ID (oid claim) from an Azure AD JWT access token
