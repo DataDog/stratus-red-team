@@ -16,7 +16,7 @@ import (
 )
 
 // Built-in User Access Administrator role definition ID (constant across all tenants)
-const userAccessAdminRoleDefinitionID = "18d7d88d-d35e-4fb5-a5c3-7773c20a72d9" //TODO: double check this is constant across all tenants
+const userAccessAdminRoleDefinitionID = "18d7d88d-d35e-4fb5-a5c3-7773c20a72d9"
 
 func init() {
 	const codeBlock = "```"
@@ -150,8 +150,7 @@ func revert(_ map[string]string, providers stratus.CloudProviders) error {
 		return fmt.Errorf("failed to create role assignments client: %w", err)
 	}
 
-	// List all role assignments at root scope (principalId filter is unsupported at root scope)
-	// and filter by principal ID and role definition ID in Go
+	// List all role assignments at root scope and filter by principal ID and role definition ID
 	log.Println("Listing role assignments at root scope (/) for principal " + principalID)
 	pager := roleAssignmentsClient.NewListForScopePager("/", &armauthorization.RoleAssignmentsClientListForScopeOptions{
 		Filter: to.Ptr("atScope()"),
@@ -182,8 +181,6 @@ func revert(_ map[string]string, providers stratus.CloudProviders) error {
 	return fmt.Errorf("user access administrator role assignment at root scope not found")
 }
 
-// getOIDFromToken extracts the object ID (oid claim) from an Azure AD JWT access token
-// without validating the signature, since we already obtained the token from Azure AD ourselves.
 func getOIDFromToken(tokenString string) (string, error) {
 	parts := strings.Split(tokenString, ".")
 	if len(parts) != 3 {
