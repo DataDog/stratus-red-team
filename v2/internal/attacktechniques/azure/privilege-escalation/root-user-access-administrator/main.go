@@ -4,10 +4,12 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"strings"
 
+	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/policy"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/to"
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/authorization/armauthorization/v2"
@@ -171,6 +173,10 @@ func revert(_ map[string]string, providers stratus.CloudProviders) error {
 			log.Println("Found User Access Administrator role assignment at root scope, deleting it")
 			_, err := roleAssignmentsClient.DeleteByID(ctx, *ra.ID, nil)
 			if err != nil {
+				var respErr *azcore.ResponseError
+				if errors.As(err, &respErr) && respErr.StatusCode == 403 {
+					return fmt.Errorf("failed to delete role assignment - got 403 Forbidden. Your token may no longer reflect the elevated role assignment. Run 'az login' to refresh your credentials and try again: %w", err)
+				}
 				return fmt.Errorf("failed to delete role assignment %s: %w", *ra.ID, err)
 			}
 			log.Println("Successfully removed User Access Administrator role assignment at root scope")
