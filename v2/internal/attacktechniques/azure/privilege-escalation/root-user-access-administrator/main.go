@@ -51,13 +51,15 @@ References:
 
 - https://learn.microsoft.com/en-us/azure/role-based-access-control/elevate-access-global-admin
 - https://microsoft.github.io/Azure-Threat-Research-Matrix/PrivilegeEscalation/AZT402/AZT402/
+- https://www.invictus-ir.com/nieuws/the-azure-log-you-probably-didnt-know-existed
+- https://permiso.io/blog/azures-apex-permissions-elevate-access-the-logs-security-teams-overlook
 `,
 		Detection: `
 Identify when the <code>elevateAccess</code> action is called through either the Entra ID Audit Logs or the Azure Activity Log.
 
 Sample Entra ID Audit Log entry:
 
-` + codeBlock + `json hl_lines="1 3"
+` + codeBlock + ` json hl_lines="2 5"
 {
   "operationName": "User has elevated their access to User Access Administrator for their Azure Resources",
   "category": "AuditLogs",
@@ -80,7 +82,7 @@ Sample Entra ID Audit Log entry:
 
 Sample Azure Activity Log entry:
 
-` + codeBlock + `json hl_lines="2 8"
+` + codeBlock + ` json hl_lines="3 8"
 {
   "authorization": {
     "action": "Microsoft.Authorization/elevateAccess/action",
