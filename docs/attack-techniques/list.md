@@ -61,6 +61,7 @@ This page contains the list of all Stratus Attack Techniques.
 | [Azure ransomware via Storage Account Blob deletion](./azure/azure.impact.blob-ransomware-individual-file-deletion.md) | [Azure](./azure/index.md) | Impact |
 | [Delete Azure resource lock](./azure/azure.impact.resource-lock.md) | [Azure](./azure/index.md) | Impact |
 | [Create Azure VM Bastion shareable link](./azure/azure.persistence.create-bastion-shareable-link.md) | [Azure](./azure/index.md) | Persistence |
+| [Elevate to User Access Administrator at Root Scope](./azure/azure.privilege-escalation.root-user-access-administrator.md) | [Azure](./azure/index.md) | Privilege Escalation |
 | [Create Admin EKS Access Entry](./EKS/eks.lateral-movement.create-access-entry.md) | [EKS](./EKS/index.md) | Lateral Movement |
 | [Backdoor aws-auth EKS ConfigMap](./EKS/eks.persistence.backdoor-aws-auth-configmap.md) | [EKS](./EKS/index.md) | Persistence, Privilege Escalation |
 | [Backdoor Entra ID application through service principal](./entra-id/entra-id.persistence.backdoor-application-sp.md) | [Entra ID](./entra-id/index.md) | Persistence, Privilege Escalation |

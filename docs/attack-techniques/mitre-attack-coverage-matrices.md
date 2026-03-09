@@ -43,11 +43,11 @@ This provides coverage matrices of MITRE ATT&CK tactics and techniques currently
 </div>
 <h2>Azure</h2>
 <div class="table-container"><table>
-<thead><tr><th>Execution</th><th>Persistence</th><th>Exfiltration</th><th>Impact</th></tr></thead>
+<thead><tr><th>Execution</th><th>Persistence</th><th>Privilege Escalation</th><th>Exfiltration</th><th>Impact</th></tr></thead>
 <tbody>
-<tr><td><a href="../Azure/azure.execution.vm-custom-script-extension">Execute Command on Virtual Machine using Custom Script Extension</a></td><td><a href="../Azure/azure.persistence.create-bastion-shareable-link">Create Azure VM Bastion shareable link</a></td><td><a href="../Azure/azure.exfiltration.disk-export">Export Disk Through SAS URL</a></td><td><a href="../Azure/azure.impact.blob-ransomware-client-encryption-scope">Azure Blob Storage ransomware through Encryption Scope using client-managed Key Vault key</a></td></tr>
-<tr><td><a href="../Azure/azure.execution.vm-run-command">Execute Commands on Virtual Machine using Run Command</a></td><td></td><td><a href="../Azure/azure.exfiltration.storage-public-access">Exfiltrate Azure Storage via public access</a></td><td><a href="../Azure/azure.impact.blob-ransomware-individual-file-deletion">Azure ransomware via Storage Account Blob deletion</a></td></tr>
-<tr><td></td><td></td><td><a href="../Azure/azure.exfiltration.storage-sas-export">Exfiltrate Azure Storage through SAS URL</a></td><td><a href="../Azure/azure.impact.resource-lock">Delete Azure resource lock</a></td></tr>
+<tr><td><a href="../Azure/azure.execution.vm-custom-script-extension">Execute Command on Virtual Machine using Custom Script Extension</a></td><td><a href="../Azure/azure.persistence.create-bastion-shareable-link">Create Azure VM Bastion shareable link</a></td><td><a href="../Azure/azure.privilege-escalation.root-user-access-administrator">Elevate to User Access Administrator at Root Scope</a></td><td><a href="../Azure/azure.exfiltration.disk-export">Export Disk Through SAS URL</a></td><td><a href="../Azure/azure.impact.blob-ransomware-client-encryption-scope">Azure Blob Storage ransomware through Encryption Scope using client-managed Key Vault key</a></td></tr>
+<tr><td><a href="../Azure/azure.execution.vm-run-command">Execute Commands on Virtual Machine using Run Command</a></td><td></td><td></td><td><a href="../Azure/azure.exfiltration.storage-public-access">Exfiltrate Azure Storage via public access</a></td><td><a href="../Azure/azure.impact.blob-ransomware-individual-file-deletion">Azure ransomware via Storage Account Blob deletion</a></td></tr>
+<tr><td></td><td></td><td></td><td><a href="../Azure/azure.exfiltration.storage-sas-export">Exfiltrate Azure Storage through SAS URL</a></td><td><a href="../Azure/azure.impact.resource-lock">Delete Azure resource lock</a></td></tr>
 </tbody>
 </table>
 </div>

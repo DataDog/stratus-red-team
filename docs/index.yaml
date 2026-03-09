@@ -746,6 +746,14 @@ Azure:
             - Persistence
           platform: Azure
           isIdempotent: false
+    Privilege Escalation:
+        - id: azure.privilege-escalation.root-user-access-administrator
+          name: Elevate to User Access Administrator at Root Scope
+          isSlow: false
+          mitreAttackTactics:
+            - Privilege Escalation
+          platform: Azure
+          isIdempotent: false
 Entra ID:
     Persistence:
         - id: entra-id.persistence.backdoor-application-sp
