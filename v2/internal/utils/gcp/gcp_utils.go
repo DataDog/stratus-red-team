@@ -59,7 +59,7 @@ func GCPAssignProjectRole(gcp *providers.GCPProvider, principal string, roleToGr
 	}).Do()
 
 	if err != nil {
-		return fmt.Errorf("Failed to update project IAM policy: " + err.Error())
+		return fmt.Errorf("failed to update project IAM policy: %w", err)
 	}
 	return nil
 }

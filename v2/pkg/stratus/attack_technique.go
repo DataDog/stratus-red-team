@@ -33,6 +33,37 @@ type AttackTechnique struct {
 	// Terraform code to apply to create the necessary prerequisites for the technique to be detonated
 	PrerequisitesTerraformCode []byte `yaml:"-"`
 
+	// TerraformOverrideConfig represents the variables defined in the `PrerequisitesTerraformCode`
+	// that can be overridden from the config file.
+	// Overrides are the dotted paths to the values in the config file. In the terraform code, these
+	// variables must be defined as a "config" object whose structure is the overrides dot-separated paths.
+	//
+	// See the "Configuration File" section of the Getting Started guide for more details.
+	//
+	// Example:
+	//   // Terraform code
+	//   variable "config" {
+	//     type = object({
+	//       kubernetes = object({
+	//         namespace = optional(string, "")
+	//       })
+	//     })
+	//     default = {
+	//       kubernetes = {
+	//         namespace = ""
+	//       }
+	//     }
+	//   }
+	//   // Config file
+	//   kubernetes:
+	//     default:
+	//       namespace: "my-namespace"
+	//       pod:
+	//         image: "my-image"
+	//   // Override array
+	//   overrides := []string{"kubernetes.namespace", "kubernetes.pod.image"}
+	TerraformOverrideConfig []string `yaml:"-"`
+
 	// Detonation function
 	// Parameters are the Terraform outputs
 	Detonate func(params map[string]string, providerFactory CloudProviders) error `yaml:"-"`
