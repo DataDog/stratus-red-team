@@ -251,9 +251,8 @@ func DetachAndDeleteLifecycleConfig(
 	log.Println("2/4. Detaching lifecycle configuration...")
 
 	detachInput := &sagemaker.UpdateNotebookInstanceInput{
-		NotebookInstanceName: aws.String(notebookName),
-		// Setting LifecycleConfigName to an empty string pointer detaches the current configuration.
-		LifecycleConfigName: aws.String(""),
+		NotebookInstanceName:        aws.String(notebookName),
+		DisassociateLifecycleConfig: aws.Bool(true),
 	}
 
 	_, err = client.UpdateNotebookInstance(ctx, detachInput)
