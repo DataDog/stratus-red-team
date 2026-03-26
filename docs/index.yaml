@@ -791,6 +791,13 @@ GCP:
             - Persistence
           platform: GCP
           isIdempotent: true
+        - id: gcp.persistence.overwrite-cloud-function
+          name: Overwrite a Cloud Function with Malicious Source Code
+          isSlow: true
+          mitreAttackTactics:
+            - Persistence
+          platform: GCP
+          isIdempotent: true
     Privilege Escalation:
         - id: gcp.execution.modify-gce-startup-script
           name: Modify a GCE Instance Startup Script
