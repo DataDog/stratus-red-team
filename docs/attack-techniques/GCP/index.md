@@ -13,6 +13,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   
   - [Grant IAP Tunnel Access to an External Identity](./gcp.execution.iap-tunnel-session.md)
   
+  - [Modify a GCE Instance Startup Script](./gcp.execution.modify-gce-startup-script.md)
+  
 
 ## Persistence
   
@@ -28,6 +30,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   
 
 ## Privilege Escalation
+  
+  - [Modify a GCE Instance Startup Script](./gcp.execution.modify-gce-startup-script.md)
   
   - [Create an Admin GCP Service Account](./gcp.persistence.create-admin-service-account.md)
   

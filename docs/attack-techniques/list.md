@@ -78,6 +78,7 @@ This page contains the list of all Stratus Attack Techniques.
 | [Read GCE Instance Metadata via the Compute API](./GCP/gcp.discovery.download-instance-metadata.md) | [GCP](./GCP/index.md) | Discovery |
 | [Enumerate Permissions of a GCP Service Account](./GCP/gcp.discovery.enumerate-permissions.md) | [GCP](./GCP/index.md) | Discovery |
 | [Grant IAP Tunnel Access to an External Identity](./GCP/gcp.execution.iap-tunnel-session.md) | [GCP](./GCP/index.md) | Execution, Lateral Movement |
+| [Modify a GCE Instance Startup Script](./GCP/gcp.execution.modify-gce-startup-script.md) | [GCP](./GCP/index.md) | Execution, Privilege Escalation |
 | [Exfiltrate Compute Disk by sharing it](./GCP/gcp.exfiltration.share-compute-disk.md) | [GCP](./GCP/index.md) | Exfiltration |
 | [Exfiltrate Compute Image by sharing it](./GCP/gcp.exfiltration.share-compute-image.md) | [GCP](./GCP/index.md) | Exfiltration |
 | [Exfiltrate Compute Disk by sharing a snapshot](./GCP/gcp.exfiltration.share-compute-snapshot.md) | [GCP](./GCP/index.md) | Exfiltration |
