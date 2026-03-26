@@ -603,6 +603,13 @@ GCP:
           platform: GCP
           isIdempotent: true
     Discovery:
+        - id: gcp.discovery.download-instance-metadata
+          name: Read GCE Instance Metadata via the Compute API
+          isSlow: false
+          mitreAttackTactics:
+            - Discovery
+          platform: GCP
+          isIdempotent: true
         - id: gcp.discovery.enumerate-permissions
           name: Enumerate Permissions of a GCP Service Account
           isSlow: false

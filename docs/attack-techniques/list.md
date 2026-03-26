@@ -77,6 +77,7 @@ This page contains the list of all Stratus Attack Techniques.
 | [Disable Data Access Audit Logs for a GCP Service](./GCP/gcp.defense-evasion.disable-audit-logs.md) | [GCP](./GCP/index.md) | Defense Evasion |
 | [Attempt to Remove a GCP Project from its Organization](./GCP/gcp.defense-evasion.remove-project-from-organization.md) | [GCP](./GCP/index.md) | Defense Evasion |
 | [Disable VPC Flow Logs on a Subnet](./GCP/gcp.defense-evasion.remove-vpc-flow-logs.md) | [GCP](./GCP/index.md) | Defense Evasion |
+| [Read GCE Instance Metadata via the Compute API](./GCP/gcp.discovery.download-instance-metadata.md) | [GCP](./GCP/index.md) | Discovery |
 | [Enumerate Permissions of a GCP Service Account](./GCP/gcp.discovery.enumerate-permissions.md) | [GCP](./GCP/index.md) | Discovery |
 | [Exfiltrate Compute Disk by sharing it](./GCP/gcp.exfiltration.share-compute-disk.md) | [GCP](./GCP/index.md) | Exfiltration |
 | [Exfiltrate Compute Image by sharing it](./GCP/gcp.exfiltration.share-compute-image.md) | [GCP](./GCP/index.md) | Exfiltration |
