@@ -57,6 +57,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 ## Discovery
   
+  - [Read GCE Instance Metadata via the Compute API](./gcp.discovery.download-instance-metadata.md)
+  
   - [Enumerate Permissions of a GCP Service Account](./gcp.discovery.enumerate-permissions.md)
   
 
