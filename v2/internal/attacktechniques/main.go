@@ -77,6 +77,7 @@ import (
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/execution/modify-vertex-notebook-startup"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/execution/os-config-run-command"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/exfiltration/backdoor-gcs-bucket"
+	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/exfiltration/open-port-22-ingress"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/exfiltration/share-compute-disk"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/exfiltration/share-compute-image"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/exfiltration/share-compute-snapshot"

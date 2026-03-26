@@ -86,6 +86,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 ## Exfiltration
   
+  - [Open Ingress Port 22 on a Firewall Rule](./gcp.exfiltration.open-port-22-ingress.md)
+  
   - [Exfiltrate Compute Disk by sharing it](./gcp.exfiltration.share-compute-disk.md)
   
   - [Exfiltrate Compute Image by sharing it](./gcp.exfiltration.share-compute-image.md)
