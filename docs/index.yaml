@@ -560,6 +560,13 @@ GCP:
             - Defense Evasion
           platform: GCP
           isIdempotent: false
+        - id: gcp.defense-evasion.delete-logging-sink
+          name: Delete a GCP Log Sink
+          isSlow: false
+          mitreAttackTactics:
+            - Defense Evasion
+          platform: GCP
+          isIdempotent: false
     Discovery:
         - id: gcp.discovery.enumerate-permissions
           name: Enumerate Permissions of a GCP Service Account
