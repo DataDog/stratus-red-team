@@ -6,8 +6,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/datadog/stratus-red-team/v2/internal/config"
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/config"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/useragent"
 	"github.com/google/uuid"
 	authv1 "k8s.io/api/authorization/v1"
@@ -118,7 +118,11 @@ func (m *K8sProvider) IsAuthenticated() bool {
 // ApplyPodConfig applies configuration from the config file to a pod spec. Modifies the pod in place.
 func (m *K8sProvider) ApplyPodConfig(techniqueID string, pod *v1.Pod) {
 	cfg, err := config.LoadConfig()
-	if err != nil || cfg == nil {
+	if err != nil {
+		log.Println("Warning: unable to load config, pod configuration will not be applied: " + err.Error())
+		return
+	}
+	if cfg == nil {
 		return
 	}
 

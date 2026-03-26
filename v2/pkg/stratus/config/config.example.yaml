@@ -17,7 +17,7 @@ kubernetes:
           operator: "Equal"
           value: "security"
           effect: "NoSchedule"
-      nodeSelector:
+      node_selector:
         team: "security"
 
   # Per-technique configuration overrides
@@ -33,7 +33,7 @@ kubernetes:
             operator: "Equal"
             value: "privileged-testing"
             effect: "NoSchedule"
-        securityContext:
+        security_context:
           privileged: true
 
     "k8s.privilege-escalation.hostpath-volume":

@@ -20,12 +20,49 @@ type KubernetesConfigImpl struct {
 var _ KubernetesConfig = &KubernetesConfigImpl{}
 
 // populateViperOverride creates a kubernetes config object from a source viper config.
-// It picks the default settings and overrides them with the technique-specific values, if they exist.
+// It deep-merges the default settings with technique-specific overrides. Technique values
+// take precedence, but unset keys fall through to the default.
 func (k *KubernetesConfigImpl) populateViperOverride(src *viper.Viper, dst *viper.Viper, techniqueID string) {
-	dst.SetDefault("kubernetes", src.Get("kubernetes.default"))
-	if techniqueConfig := src.Get("kubernetes.techniques." + techniqueID); techniqueConfig != nil {
-		dst.Set("kubernetes", techniqueConfig)
+	defaultRaw := src.Get("kubernetes.default")
+	if defaultRaw == nil {
+		return
 	}
+
+	merged := toStringMap(defaultRaw)
+	if techniqueRaw := src.Get("kubernetes.techniques." + techniqueID); techniqueRaw != nil {
+		deepMerge(merged, toStringMap(techniqueRaw))
+	}
+
+	dst.Set("kubernetes", merged)
+}
+
+// deepMerge recursively merges src into dst. Values in src take precedence.
+// Maps are merged recursively; all other types are replaced.
+func deepMerge(dst, src map[string]any) {
+	for key, srcVal := range src {
+		dstVal, exists := dst[key]
+		if !exists {
+			dst[key] = srcVal
+			continue
+		}
+
+		dstMap, dstIsMap := dstVal.(map[string]any)
+		srcMap, srcIsMap := srcVal.(map[string]any)
+		if dstIsMap && srcIsMap {
+			deepMerge(dstMap, srcMap)
+		} else {
+			dst[key] = srcVal
+		}
+	}
+}
+
+// toStringMap converts a value to map[string]any. Returns an empty map if the
+// conversion fails (e.g. the value is nil or not a map).
+func toStringMap(v any) map[string]any {
+	if m, ok := v.(map[string]any); ok {
+		return m
+	}
+	return make(map[string]any)
 }
 
 // GetTechniquePodConfig returns the merged pod configuration for a specific technique.
@@ -50,10 +87,8 @@ type K8sPodConfig struct {
 	Image       string            `yaml:"image"`
 	Labels      map[string]string `yaml:"labels"`
 	Tolerations []v1.Toleration   `yaml:"tolerations"`
-	// mapstructure tags are used by Viper's Unmarshal; node_selector uses a tag because
-	// the default (all-lowercase field name "nodeselector") differs from the YAML key.
-	NodeSelector    map[string]string   `yaml:"node_selector" mapstructure:"node_selector"`
-	SecurityContext *v1.SecurityContext `yaml:"securityContext"`
+	NodeSelector    map[string]string   `yaml:"node_selector"`
+	SecurityContext *v1.SecurityContext `yaml:"security_context"`
 }
 
 // ApplyToPod applies the configuration to a pod spec, modifying it in place.

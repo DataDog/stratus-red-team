@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	configmocks "github.com/datadog/stratus-red-team/v2/internal/config/mocks"
+	configmocks "github.com/datadog/stratus-red-team/v2/pkg/stratus/config/mocks"
 	statemocks "github.com/datadog/stratus-red-team/v2/internal/state/mocks"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/runner/mocks"

@@ -7,19 +7,6 @@ terraform {
   }
 }
 
-variable "config" {
-  type = object({
-    kubernetes = object({
-      namespace = string
-    })
-  })
-  default = {
-    kubernetes = {
-      namespace = ""
-    }
-  }
-}
-
 locals {
   kubeconfig_path   = pathexpand("~/.kube/config")
   create_namespace  = var.config.kubernetes.namespace == ""

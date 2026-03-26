@@ -82,7 +82,6 @@ Sample event (shortened):
 }
 ` + codeBlock,
 		PrerequisitesTerraformCode: tf,
-		TerraformOverrideConfig:    []string{"kubernetes.namespace"},
 		Detonate:                   detonate,
 		Revert:                     revert,
 	})

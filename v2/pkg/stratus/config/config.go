@@ -2,6 +2,7 @@ package config
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -22,7 +23,7 @@ const (
 // directly in the technique code.
 type Config interface {
 	GetKubernetesConfig() KubernetesConfig
-	GetTerraformVariables(techniqueID string, overrides []string) map[string]string
+	GetTerraformVariables(techniqueID string) map[string]string
 }
 
 type ConfigImpl struct {
@@ -37,6 +38,14 @@ func LoadConfig() (Config, error) {
 	v := viper.New()
 	configPath := getConfigPath()
 	if configPath != "" {
+		rawYAML, err := os.ReadFile(configPath)
+		if err != nil {
+			return nil, fmt.Errorf("reading config file: %w", err)
+		}
+		if err := validateConfig(rawYAML); err != nil {
+			return nil, err
+		}
+
 		v.SetConfigFile(configPath)
 		if err := v.ReadInConfig(); err != nil {
 			return nil, err
@@ -92,41 +101,18 @@ func (c *ConfigImpl) buildMergedViper(techniqueID string) *viper.Viper {
 	return v
 }
 
-// GetTerraformVariables returns a map of key/values pairs to be used as Terraform variables.
-// The keys are the variable names, and the values are the variable values.
-// Returns nil if overrides is empty.
-//
-// If the config contains information that is matched by the overrides, the return map will contain
-// an entry "config" with a JSON object whose keys are the overrides strings, dot separated.
-//
-// Example:
-//
-//	overrides := []string{"kubernetes.namespace", "kubernetes.pod.image"}
-//	tfVars := c.GetTerraformVariables(techniqueID, overrides)
-//	// the 'reconstructed' object would be:
-//	// config: '{
-//	//   "kubernetes": {
-//	//     "namespace": "ns-set-in-config",
-//	//     "pod": {
-//	//       "image": "image-set-in-config"
-//	//     }
-//	//   }'
-//	// }
-func (c *ConfigImpl) GetTerraformVariables(techniqueID string, overrides []string) map[string]string {
-	if c == nil || len(overrides) == 0 {
+// GetTerraformVariables returns the full merged config (defaults + technique overrides)
+// as a Terraform variable. The returned map contains a single key "config" whose value is
+// a JSON object that Terraform can decode into its variable "config" type.
+// Returns nil if no config is loaded.
+func (c *ConfigImpl) GetTerraformVariables(techniqueID string) map[string]string {
+	if c == nil {
 		return nil
 	}
 
 	merged := c.buildMergedViper(techniqueID)
-	output := viper.New()
-	for _, path := range overrides {
-		output.Set(path, merged.Get(path))
-	}
-
-	settings := output.AllSettings()
+	settings := merged.AllSettings()
 	if len(settings) == 0 {
-		// Returning nil, otherwise it would return { "config": {} } and Terraform would complain
-		// that the config doesn't contain the expected keys
 		return nil
 	}
 

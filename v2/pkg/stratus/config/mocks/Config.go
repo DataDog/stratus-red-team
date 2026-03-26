@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	config "github.com/datadog/stratus-red-team/v2/internal/config"
+	config "github.com/datadog/stratus-red-team/v2/pkg/stratus/config"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -32,17 +32,17 @@ func (_m *Config) GetKubernetesConfig() config.KubernetesConfig {
 	return r0
 }
 
-// GetTerraformVariables provides a mock function with given fields: techniqueID, overrides
-func (_m *Config) GetTerraformVariables(techniqueID string, overrides []string) map[string]string {
-	ret := _m.Called(techniqueID, overrides)
+// GetTerraformVariables provides a mock function with given fields: techniqueID
+func (_m *Config) GetTerraformVariables(techniqueID string) map[string]string {
+	ret := _m.Called(techniqueID)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetTerraformVariables")
 	}
 
 	var r0 map[string]string
-	if rf, ok := ret.Get(0).(func(string, []string) map[string]string); ok {
-		r0 = rf(techniqueID, overrides)
+	if rf, ok := ret.Get(0).(func(string) map[string]string); ok {
+		r0 = rf(techniqueID)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(map[string]string)

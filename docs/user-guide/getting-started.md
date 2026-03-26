@@ -191,37 +191,43 @@ Tested with Minikube and AWS EKS.
 
 ## Configuration File
 
-You can create a configuration file at `~/.stratus-red-team/config.yaml` to customize behavior:
+You can create a configuration file at `~/.stratus-red-team/config.yaml` (or use the `STRATUS_CONFIG_PATH` env var) to customize how Stratus Red Team creates resources. The configuration file is validated at startup.
 
 ```yaml
 kubernetes:
+  # Default configuration applied to all Kubernetes techniques
   default:
-    namespace: "security-testing" # Namespace for k8s techniques, for instance if your user is not allowed to create a namespace
-    # You can add labels that can help you find the generated IoCs, attribute the pod, etc.
-    labels:
-      app: "stratus-red-team"
-      team: "your-team-name"
-    tolerations: # Tolerations, in case your cluster requires this kind of information to schedule pods correctly
-      - key: "dedicated"
-        operator: "Equal"
-        value: "security"
-        effect: "NoSchedule"
-    nodeSelector:
-      team: "security"
+    namespace: "security-testing"
+    pod:
+      image: "your-registry.example.com/busybox:stable"
+      labels:
+        app: "stratus-red-team"
+        team: "your-team-name"
+      tolerations:
+        - key: "dedicated"
+          operator: "Equal"
+          value: "security"
+          effect: "NoSchedule"
+      node_selector:
+        team: "security"
+
+  # Per-technique overrides (merged on top of defaults)
   techniques:
     "k8s.privilege-escalation.privileged-pod":
-      image: "your-registry/busybox:stable"
-      tolerations: ...
+      pod:
+        image: "your-registry.example.com/busybox:stable"
+        tolerations: ...
 ```
 
-This is currently only used in some Kubernetes attacks and allows you to:
-- Add labels to your pods (Attribution, CNP policy selectors, monitoring...)
-- Use a specific namespace instead of creating one (if you don't want to give permissions to create namespaces)
-- Override container images (useful when there are restrictions to use only images from private registries)
-- Add tolerations and node selectors for pod scheduling
-- Use a custom SecurityContext
+This is currently used for Kubernetes techniques and allows you to:
 
-The kubernetes configuration has a default subsection. This subsection is applied to all techniques and can be overridden key by key in the techniques.attack-id subsection.
+- **Use a specific namespace** instead of creating one, when your user cannot create namespaces
+- **Override container images**, when only images from private registries are allowed
+- **Add labels** to pods (for attribution, CNP policy selectors, monitoring, etc.)
+- **Add tolerations and node selectors** for pod scheduling
+- **Set a security context** on containers
+
+The `default` section applies to all techniques. The `techniques` section allows per-technique overrides, keyed by technique ID. Overrides are merged on top of defaults, you only need to specify the keys you want to change.
 
 !!! note
 

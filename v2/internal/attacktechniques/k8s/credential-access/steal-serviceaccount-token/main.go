@@ -79,7 +79,6 @@ Sample event (shortened):
 ` + codeBlock + `
 `,
 		PrerequisitesTerraformCode: tf,
-		TerraformOverrideConfig:    []string{"kubernetes.namespace", "kubernetes.pod.image", "kubernetes.pod.labels", "kubernetes.pod.node_selector", "kubernetes.pod.tolerations"},
 		Detonate:                   detonate,
 	})
 }

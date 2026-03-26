@@ -6,9 +6,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/datadog/stratus-red-team/v2/internal/config"
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/config"
 )
 
 const StratusStateTerraformOutputsFileName = ".terraform-outputs"
@@ -97,7 +97,17 @@ func (m *FileSystemStateManager) ExtractTechnique() error {
 	terraformDirectory := m.getTechniqueStateDirectory()
 	terraformFile := filepath.Join(terraformDirectory, StratusStateTerraformFileName)
 
-	return m.FileSystem.WriteFile(terraformFile, m.Technique.PrerequisitesTerraformCode, 0644)
+	if err := m.FileSystem.WriteFile(terraformFile, m.Technique.PrerequisitesTerraformCode, 0644); err != nil {
+		return err
+	}
+
+	// Inject the shared config variable definition alongside the technique's main.tf
+	configFile := filepath.Join(terraformDirectory, "config.tf")
+	if err := m.FileSystem.WriteFile(configFile, config.SharedTerraformConfigVariable, 0644); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (m *FileSystemStateManager) CleanupTechnique() error {

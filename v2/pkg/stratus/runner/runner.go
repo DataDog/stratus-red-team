@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/datadog/stratus-red-team/v2/internal/config"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/config"
 	"github.com/datadog/stratus-red-team/v2/internal/state"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/useragent"
@@ -285,7 +285,7 @@ func (m *runnerImpl) GetUniqueExecutionId() string {
 
 // getTerraformVariablesFromConfig returns the terraform variables to use from the config file
 func (m *runnerImpl) getTerraformVariablesFromConfig() map[string]string {
-	return m.Config.GetTerraformVariables(m.Technique.ID, m.Technique.TerraformOverrideConfig)
+	return m.Config.GetTerraformVariables(m.Technique.ID)
 }
 
 // Utility function to display better error messages than the Terraform ones
