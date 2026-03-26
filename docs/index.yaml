@@ -671,6 +671,13 @@ GCP:
             - Exfiltration
           platform: GCP
           isIdempotent: true
+        - id: gcp.exfiltration.backdoor-gcs-bucket
+          name: Backdoor a GCS Bucket via Overly Permissive IAM Policy
+          isSlow: false
+          mitreAttackTactics:
+            - Exfiltration
+          platform: GCP
+          isIdempotent: true
     Impact:
         - id: gcp.impact.create-gpu-vm
           name: Create a GCE GPU Virtual Machine

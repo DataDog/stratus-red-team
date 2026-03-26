@@ -92,6 +92,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   
   - [Exfiltrate Compute Disk by sharing a snapshot](./gcp.exfiltration.share-compute-snapshot.md)
   
+  - [Backdoor a GCS Bucket via Overly Permissive IAM Policy](./gcp.exfiltration.backdoor-gcs-bucket.md)
+  
 
 ## Impact
   

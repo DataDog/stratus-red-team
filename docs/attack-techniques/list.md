@@ -104,3 +104,4 @@ This page contains the list of all Stratus Attack Techniques.
 | [Inject a Malicious Startup Script into a Vertex AI Workbench Instance](./GCP/gcp.execution.modify-vertex-notebook-startup.md) | [GCP](./GCP/index.md) | Execution, Privilege Escalation |
 | [Execute Commands on GCE Instances via OS Config Agent](./GCP/gcp.execution.os-config-run-command.md) | [GCP](./GCP/index.md) | Execution |
 | [Reduce Log Retention Period on a Cloud Logging Sink Bucket](./GCP/gcp.defense-evasion.reduce-sink-log-retention.md) | [GCP](./GCP/index.md) | Defense Evasion |
+| [Backdoor a GCS Bucket via Overly Permissive IAM Policy](./GCP/gcp.exfiltration.backdoor-gcs-bucket.md) | [GCP](./GCP/index.md) | Exfiltration |
