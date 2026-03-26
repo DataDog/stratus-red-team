@@ -101,3 +101,5 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   
   - [Invoke a Vertex AI Model](./gcp.impact.invoke-vertex-ai-model.md)
   
+  - [Ransomware Simulation — Delete All GCS Objects in Batch](./gcp.impact.ransomware-gcs-batch-deletion.md)
+  
