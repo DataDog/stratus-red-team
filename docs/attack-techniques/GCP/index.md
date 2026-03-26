@@ -39,6 +39,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   
   - [Delete a GCP Log Sink](./gcp.defense-evasion.delete-logging-sink.md)
   
+  - [Disable a GCP Log Sink](./gcp.defense-evasion.disable-logging-sink.md)
+  
 
 ## Credential Access
   
