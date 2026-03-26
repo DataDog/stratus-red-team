@@ -86,6 +86,7 @@ This page contains the list of all Stratus Attack Techniques.
 | [Exfiltrate Compute Disk by sharing a snapshot](./GCP/gcp.exfiltration.share-compute-snapshot.md) | [GCP](./GCP/index.md) | Exfiltration |
 | [Create a GCE GPU Virtual Machine](./GCP/gcp.impact.create-gpu-vm.md) | [GCP](./GCP/index.md) | Impact |
 | [Create GCE Instances in Multiple Zones](./GCP/gcp.impact.create-instances-in-multiple-zones.md) | [GCP](./GCP/index.md) | Impact |
+| [Invoke a Vertex AI Model](./GCP/gcp.impact.invoke-vertex-ai-model.md) | [GCP](./GCP/index.md) | Impact |
 | [Steal and Use the GCE Default Service Account Token from Outside Google Cloud](./GCP/gcp.initial-access.use-compute-sa-outside-gcp.md) | [GCP](./GCP/index.md) | Credential Access, Initial Access |
 | [Register SSH public key to instance metadata](./GCP/gcp.lateral-movement.add-sshkey-instance-metadata.md) | [GCP](./GCP/index.md) | Lateral Movement, Persistence |
 | [Backdoor a GCP Service Account through its IAM Policy](./GCP/gcp.persistence.backdoor-service-account-policy.md) | [GCP](./GCP/index.md) | Persistence |
