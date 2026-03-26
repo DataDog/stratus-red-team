@@ -560,6 +560,13 @@ GCP:
             - Defense Evasion
           platform: GCP
           isIdempotent: false
+        - id: gcp.defense-evasion.disable-audit-logs
+          name: Disable Data Access Audit Logs for a GCP Service
+          isSlow: false
+          mitreAttackTactics:
+            - Defense Evasion
+          platform: GCP
+          isIdempotent: false
         - id: gcp.defense-evasion.delete-logging-sink
           name: Delete a GCP Log Sink
           isSlow: false
