@@ -74,6 +74,7 @@ import (
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/defense-evasion/remove-vpc-flow-logs"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/discovery/download-instance-metadata"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/discovery/enumerate-permissions"
+	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/execution/modify-gce-startup-script"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/exfiltration/share-compute-disk"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/exfiltration/share-compute-image"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/exfiltration/share-compute-snapshot"
