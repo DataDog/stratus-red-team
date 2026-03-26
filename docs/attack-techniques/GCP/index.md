@@ -31,6 +31,11 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   - [Impersonate GCP Service Accounts](./gcp.privilege-escalation.impersonate-service-accounts.md)
   
 
+## Defense Evasion
+  
+  - [Delete a Cloud DNS Logging Policy](./gcp.defense-evasion.delete-dns-logs.md)
+  
+
 ## Credential Access
   
   - [Retrieve a High Number of Secret Manager secrets](./gcp.credential-access.secretmanager-retrieve-secrets.md)

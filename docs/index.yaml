@@ -552,6 +552,14 @@ GCP:
             - Initial Access
           platform: GCP
           isIdempotent: true
+    Defense Evasion:
+        - id: gcp.defense-evasion.delete-dns-logs
+          name: Delete a Cloud DNS Logging Policy
+          isSlow: false
+          mitreAttackTactics:
+            - Defense Evasion
+          platform: GCP
+          isIdempotent: false
     Discovery:
         - id: gcp.discovery.enumerate-permissions
           name: Enumerate Permissions of a GCP Service Account

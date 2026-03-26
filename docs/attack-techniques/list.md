@@ -71,6 +71,7 @@ This page contains the list of all Stratus Attack Techniques.
 | [Create Application](./entra-id/entra-id.persistence.new-application.md) | [Entra ID](./entra-id/index.md) | Persistence, Privilege Escalation |
 | [Create Sticky Backdoor User Through Restricted Management AU](./entra-id/entra-id.persistence.restricted-au.md) | [Entra ID](./entra-id/index.md) | Persistence |
 | [Retrieve a High Number of Secret Manager secrets](./GCP/gcp.credential-access.secretmanager-retrieve-secrets.md) | [GCP](./GCP/index.md) | Credential Access |
+| [Delete a Cloud DNS Logging Policy](./GCP/gcp.defense-evasion.delete-dns-logs.md) | [GCP](./GCP/index.md) | Defense Evasion |
 | [Enumerate Permissions of a GCP Service Account](./GCP/gcp.discovery.enumerate-permissions.md) | [GCP](./GCP/index.md) | Discovery |
 | [Exfiltrate Compute Disk by sharing it](./GCP/gcp.exfiltration.share-compute-disk.md) | [GCP](./GCP/index.md) | Exfiltration |
 | [Exfiltrate Compute Image by sharing it](./GCP/gcp.exfiltration.share-compute-image.md) | [GCP](./GCP/index.md) | Exfiltration |
