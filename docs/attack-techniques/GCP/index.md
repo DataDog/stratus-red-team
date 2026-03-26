@@ -37,6 +37,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   
   - [Disable Data Access Audit Logs for a GCP Service](./gcp.defense-evasion.disable-audit-logs.md)
   
+  - [Attempt to Remove a GCP Project from its Organization](./gcp.defense-evasion.remove-project-from-organization.md)
+  
   - [Delete a GCP Log Sink](./gcp.defense-evasion.delete-logging-sink.md)
   
   - [Disable a GCP Log Sink](./gcp.defense-evasion.disable-logging-sink.md)

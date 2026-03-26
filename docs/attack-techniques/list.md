@@ -73,6 +73,7 @@ This page contains the list of all Stratus Attack Techniques.
 | [Retrieve a High Number of Secret Manager secrets](./GCP/gcp.credential-access.secretmanager-retrieve-secrets.md) | [GCP](./GCP/index.md) | Credential Access |
 | [Delete a Cloud DNS Logging Policy](./GCP/gcp.defense-evasion.delete-dns-logs.md) | [GCP](./GCP/index.md) | Defense Evasion |
 | [Disable Data Access Audit Logs for a GCP Service](./GCP/gcp.defense-evasion.disable-audit-logs.md) | [GCP](./GCP/index.md) | Defense Evasion |
+| [Attempt to Remove a GCP Project from its Organization](./GCP/gcp.defense-evasion.remove-project-from-organization.md) | [GCP](./GCP/index.md) | Defense Evasion |
 | [Enumerate Permissions of a GCP Service Account](./GCP/gcp.discovery.enumerate-permissions.md) | [GCP](./GCP/index.md) | Discovery |
 | [Exfiltrate Compute Disk by sharing it](./GCP/gcp.exfiltration.share-compute-disk.md) | [GCP](./GCP/index.md) | Exfiltration |
 | [Exfiltrate Compute Image by sharing it](./GCP/gcp.exfiltration.share-compute-image.md) | [GCP](./GCP/index.md) | Exfiltration |
