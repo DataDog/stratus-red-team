@@ -617,6 +617,15 @@ GCP:
             - Discovery
           platform: GCP
           isIdempotent: true
+    Execution:
+        - id: gcp.execution.iap-tunnel-session
+          name: Grant IAP Tunnel Access to an External Identity
+          isSlow: true
+          mitreAttackTactics:
+            - Execution
+            - Lateral Movement
+          platform: GCP
+          isIdempotent: true
     Exfiltration:
         - id: gcp.exfiltration.share-compute-disk
           name: Exfiltrate Compute Disk by sharing it
@@ -664,6 +673,14 @@ GCP:
           platform: GCP
           isIdempotent: true
     Lateral Movement:
+        - id: gcp.execution.iap-tunnel-session
+          name: Grant IAP Tunnel Access to an External Identity
+          isSlow: true
+          mitreAttackTactics:
+            - Execution
+            - Lateral Movement
+          platform: GCP
+          isIdempotent: true
         - id: gcp.lateral-movement.add-sshkey-instance-metadata
           name: Register SSH public key to instance metadata
           isSlow: false
