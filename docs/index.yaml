@@ -581,6 +581,13 @@ GCP:
             - Defense Evasion
           platform: GCP
           isIdempotent: true
+        - id: gcp.defense-evasion.reduce-sink-log-retention
+          name: Reduce Log Retention Period on a Cloud Logging Sink Bucket
+          isSlow: false
+          mitreAttackTactics:
+            - Defense Evasion
+          platform: GCP
+          isIdempotent: true
     Discovery:
         - id: gcp.discovery.enumerate-permissions
           name: Enumerate Permissions of a GCP Service Account

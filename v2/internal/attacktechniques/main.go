@@ -67,6 +67,7 @@ import (
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/defense-evasion/delete-logging-sink"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/defense-evasion/disable-audit-logs"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/defense-evasion/disable-logging-sink"
+	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/defense-evasion/reduce-sink-log-retention"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/discovery/enumerate-permissions"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/exfiltration/share-compute-disk"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/exfiltration/share-compute-image"
