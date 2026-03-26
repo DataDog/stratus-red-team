@@ -41,6 +41,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   
   - [Disable a GCP Log Sink](./gcp.defense-evasion.disable-logging-sink.md)
   
+  - [Reduce Log Retention Period on a Cloud Logging Sink Bucket](./gcp.defense-evasion.reduce-sink-log-retention.md)
+  
 
 ## Credential Access
   
