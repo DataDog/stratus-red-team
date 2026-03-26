@@ -685,6 +685,13 @@ GCP:
             - Exfiltration
           platform: GCP
           isIdempotent: true
+        - id: gcp.exfiltration.share-cloud-sql-backup
+          name: Exfiltrate a Cloud SQL Database via GCS Export
+          isSlow: true
+          mitreAttackTactics:
+            - Exfiltration
+          platform: GCP
+          isIdempotent: false
     Impact:
         - id: gcp.impact.create-gpu-vm
           name: Create a GCE GPU Virtual Machine
