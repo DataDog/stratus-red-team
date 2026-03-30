@@ -55,6 +55,8 @@ References:
 
 - https://cloud.google.com/compute/docs/os-configuration-management
 - https://cloud.google.com/compute/docs/osconfig/rest/v1/projects.locations.osPolicyAssignments
+- https://blog.raphael.karger.is/articles/2022-08/GCP-OS-Patching
+- https://cloud.hacktricks.xyz/pentesting-cloud/gcp-security/gcp-privilege-escalation/gcp-compute-privesc
 `,
 		Detection: `
 <b>Note:</b> GCP does not emit Admin Activity audit logs for the OS Config API
