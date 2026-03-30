@@ -53,6 +53,9 @@ References:
 
 - https://cloud.google.com/compute/docs/instances/startup-scripts/linux
 - https://cloud.google.com/compute/docs/reference/rest/v1/instances/setMetadata
+- https://unit42.paloaltonetworks.com/cloud-virtual-machine-attack-vectors/
+- https://cloud.hacktricks.xyz/pentesting-cloud/gcp-security/gcp-privilege-escalation/gcp-compute-privesc
+- https://about.gitlab.com/blog/plundering-gcp-escalating-privileges-in-google-cloud-platform/
 `,
 		Detection: `
 Identify when a GCE instance's startup script is modified by monitoring for
