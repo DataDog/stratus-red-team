@@ -43,6 +43,9 @@ References:
 
 - https://cloud.google.com/logging/docs/audit/configure-data-access
 - https://cloud.google.com/resource-manager/reference/rest/v3/projects/setIamPolicy
+- https://attack.mitre.org/techniques/T1562/008/
+- https://redcanary.com/threat-detection-report/trends/cloud-attacks/
+- https://www.sysdig.com/blog/suspicious-activity-gcp-audit-logs
 `,
 		Detection: `
 Identify when Data Access audit log configuration is removed from the project IAM policy
