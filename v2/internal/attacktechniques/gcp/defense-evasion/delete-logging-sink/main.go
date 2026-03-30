@@ -35,6 +35,8 @@ References:
 
 - https://cloud.google.com/logging/docs/export/configure_export_v2
 - https://www.trendmicro.com/cloudoneconformity/knowledge-base/gcp/CloudLogging/logging-sink.html
+- https://attack.mitre.org/techniques/T1562/008/
+- https://redcanary.com/threat-detection-report/trends/cloud-attacks/
 `,
 		Detection: `
 Identify when a log sink is deleted using the GCP Admin Activity audit log event
