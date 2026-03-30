@@ -67,6 +67,8 @@ References:
 
 - https://cloud.google.com/functions/docs/deploying
 - https://cloud.google.com/functions/docs/reference/rest/v2/projects.locations.functions/patch
+- https://cloud.hacktricks.xyz/pentesting-cloud/gcp-security/gcp-privilege-escalation/gcp-cloudfunctions-privesc
+- https://www.tenable.com/blog/confusedfunction-a-privilege-escalation-vulnerability-impacting-gcp-cloud-functions
 `,
 		Detection: `
 Identify unexpected Cloud Function source updates by monitoring for
