@@ -36,6 +36,8 @@ References:
 
 - https://cloud.google.com/dns/docs/monitoring
 - https://cloud.google.com/dns/docs/reference/v1/policies/delete
+- https://attack.mitre.org/techniques/T1562/008/
+- https://redcanary.com/threat-detection-report/trends/cloud-attacks/
 `,
 		Detection: `
 Identify when a Cloud DNS policy is deleted by monitoring for
