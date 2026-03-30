@@ -44,6 +44,8 @@ References:
 
 - https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/inference
 - https://cloud.google.com/vertex-ai/docs/reference/rest/v1/projects.locations.endpoints/generateContent
+- https://sysdig.com/blog/llmjacking-stolen-cloud-credentials-used-in-new-ai-attack/
+- https://unit42.paloaltonetworks.com/privilege-escalation-llm-model-exfil-vertex-ai/
 `,
 		Detection: `
 Identify unexpected Vertex AI model invocations by monitoring for
