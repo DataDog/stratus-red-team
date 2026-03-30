@@ -41,6 +41,8 @@ References:
 
 - https://cloud.google.com/storage/docs/access-control/iam
 - https://cloud.google.com/storage/docs/json_api/v1/buckets/setIamPolicy
+- https://rhinosecuritylabs.com/gcp/google-cloud-platform-gcp-bucket-enumeration/
+- https://www.praetorian.com/blog/cloud-data-exfiltration-via-gcp-storage-buckets-and-how-to-prevent-it/
 `,
 		Detection: `
 Identify when a GCS bucket IAM policy is modified to grant access to
