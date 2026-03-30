@@ -44,6 +44,8 @@ References:
 
 - https://cloud.google.com/vpc/docs/firewalls
 - https://cloud.google.com/compute/docs/reference/rest/v1/firewalls/insert
+- https://unit42.paloaltonetworks.com/cloud-virtual-machine-attack-vectors/
+- https://www.trendmicro.com/cloudoneconformity/knowledge-base/gcp/CloudVPC/unrestricted-ssh-access.html
 `,
 		Detection: `
 Identify when a firewall rule opening a sensitive port to the world is created by
