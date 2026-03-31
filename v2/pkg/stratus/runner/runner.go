@@ -8,9 +8,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/datadog/stratus-red-team/v2/pkg/stratus/config"
 	"github.com/datadog/stratus-red-team/v2/internal/state"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/config"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/useragent"
 	"github.com/google/uuid"
 )
@@ -19,6 +19,36 @@ const StratusRunnerForce = true
 const StratusRunnerNoForce = false
 
 const EnvVarStratusRedTeamDetonationId = "STRATUS_RED_TEAM_DETONATION_ID"
+
+// RunnerOption configures optional dependencies on a Runner.
+// When no options are provided, the runner uses its default implementations
+// (filesystem state, bundled Terraform, default cloud provider credentials).
+type RunnerOption func(*runnerImpl)
+
+// WithStateManager overrides the default filesystem-based state manager.
+func WithStateManager(sm state.StateManager) RunnerOption {
+	return func(r *runnerImpl) { r.StateManager = sm }
+}
+
+// WithTerraformManager overrides the default Terraform manager.
+func WithTerraformManager(tm TerraformManager) RunnerOption {
+	return func(r *runnerImpl) { r.TerraformManager = tm }
+}
+
+// WithProviderFactory overrides the default cloud provider factory.
+func WithProviderFactory(pf stratus.CloudProviders) RunnerOption {
+	return func(r *runnerImpl) { r.ProviderFactory = pf }
+}
+
+// WithConfig overrides the default config loaded from disk.
+func WithConfig(cfg config.Config) RunnerOption {
+	return func(r *runnerImpl) { r.Config = cfg }
+}
+
+// WithCorrelationID sets an explicit correlation ID instead of generating one.
+func WithCorrelationID(id uuid.UUID) RunnerOption {
+	return func(r *runnerImpl) { r.UniqueCorrelationID = id }
+}
 
 type runnerImpl struct {
 	Technique           *stratus.AttackTechnique
@@ -44,42 +74,65 @@ type Runner interface {
 
 var _ Runner = &runnerImpl{}
 
-func NewRunner(technique *stratus.AttackTechnique, force bool) Runner {
-	return NewRunnerWithContext(context.Background(), technique, force)
+func NewRunner(technique *stratus.AttackTechnique, force bool, opts ...RunnerOption) Runner {
+	return NewRunnerWithContext(context.Background(), technique, force, opts...)
 }
 
-func NewRunnerWithContext(ctx context.Context, technique *stratus.AttackTechnique, force bool) Runner {
-	config, err := config.LoadConfig()
-	if err != nil {
-		log.Fatalf("error loading config: %s", err)
-	}
-	stateManager := state.NewFileSystemStateManager(technique)
-
-	var correlationId = uuid.New()
-	if grimoireDetonationId := os.Getenv("STRATUS_RED_TEAM_DETONATION_ID"); grimoireDetonationId != "" {
-		log.Println("STRATUS_RED_TEAM_DETONATION_ID is set, using it as the correlation ID")
-		correlationId, err = uuid.Parse(grimoireDetonationId)
-		if err != nil {
-			log.Println("STRATUS_RED_TEAM_DETONATION_ID is not a valid UUID, falling back to a randomly-generated one: " + err.Error())
-			correlationId = uuid.New()
-		}
-	}
-
+func NewRunnerWithContext(ctx context.Context, technique *stratus.AttackTechnique, force bool, opts ...RunnerOption) Runner {
 	runner := &runnerImpl{
-		Technique:           technique,
-		ShouldForce:         force,
-		StateManager:        stateManager,
-		UniqueCorrelationID: correlationId,
-		Config:              config,
-		TerraformManager: NewTerraformManagerWithContext(
-			ctx, filepath.Join(stateManager.GetRootDirectory(), "terraform"), useragent.GetStratusUserAgentForUUID(correlationId),
-		),
-		Context: ctx,
+		Technique:   technique,
+		ShouldForce: force,
+		Context:     ctx,
+	}
+
+	// Apply caller-provided overrides before filling defaults, to skip expensive initialization
+	// (Terraform download, config loading) for dependencies the caller already supplies.
+	for _, opt := range opts {
+		opt(runner)
+	}
+
+	if runner.UniqueCorrelationID == uuid.Nil {
+		runner.UniqueCorrelationID = resolveCorrelationID()
+	}
+
+	if runner.Config == nil {
+		cfg, err := config.LoadConfig()
+		if err != nil {
+			log.Fatalf("error loading config: %s", err)
+		}
+		runner.Config = cfg
+	}
+
+	if runner.StateManager == nil {
+		runner.StateManager = state.NewFileSystemStateManager(technique)
+	}
+
+	if runner.TerraformManager == nil {
+		runner.TerraformManager = NewTerraformManagerWithContext(
+			ctx,
+			filepath.Join(runner.StateManager.GetRootDirectory(), "terraform"),
+			useragent.GetStratusUserAgentForUUID(runner.UniqueCorrelationID),
+		)
 	}
 
 	runner.initialize()
 
 	return runner
+}
+
+// resolveCorrelationID returns the correlation ID from the environment variable
+// STRATUS_RED_TEAM_DETONATION_ID if set and valid, otherwise generates a new one.
+func resolveCorrelationID() uuid.UUID {
+	if raw := os.Getenv(EnvVarStratusRedTeamDetonationId); raw != "" {
+		log.Printf("%s is set, using it as the correlation ID", EnvVarStratusRedTeamDetonationId)
+		parsed, err := uuid.Parse(raw)
+		if err != nil {
+			log.Printf("%s is not a valid UUID, falling back to a randomly-generated one: %w", EnvVarStratusRedTeamDetonationId, err)
+			return uuid.New()
+		}
+		return parsed
+	}
+	return uuid.New()
 }
 
 func (m *runnerImpl) initialize() {
@@ -88,7 +141,10 @@ func (m *runnerImpl) initialize() {
 	if m.TechniqueState == "" {
 		m.TechniqueState = stratus.AttackTechniqueStatusCold
 	}
-	m.ProviderFactory = stratus.CloudProvidersImpl{UniqueCorrelationID: m.UniqueCorrelationID}
+	// Only set default provider factory if not already injected
+	if m.ProviderFactory == nil {
+		m.ProviderFactory = stratus.CloudProvidersImpl{UniqueCorrelationID: m.UniqueCorrelationID}
+	}
 }
 
 func (m *runnerImpl) WarmUp() (map[string]string, error) {
