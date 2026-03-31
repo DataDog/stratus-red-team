@@ -127,7 +127,7 @@ func resolveCorrelationID() uuid.UUID {
 		log.Printf("%s is set, using it as the correlation ID", EnvVarStratusRedTeamDetonationId)
 		parsed, err := uuid.Parse(raw)
 		if err != nil {
-			log.Printf("%s is not a valid UUID, falling back to a randomly-generated one: %w", EnvVarStratusRedTeamDetonationId, err)
+			log.Printf("%s is not a valid UUID, falling back to a randomly-generated one: %s", EnvVarStratusRedTeamDetonationId, err.Error())
 			return uuid.New()
 		}
 		return parsed
