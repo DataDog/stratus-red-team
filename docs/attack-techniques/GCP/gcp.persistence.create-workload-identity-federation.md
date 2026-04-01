@@ -53,6 +53,7 @@ References:
 
 - https://cloud.google.com/iam/docs/workload-identity-federation-with-x509-certificates
 - https://cloud.google.com/iam/docs/reference/rest/v1/projects.locations.workloadIdentityPools
+- https://www.tenable.com/blog/how-attackers-can-exploit-gcps-multicloud-workload-solution
 
 
 ## Instructions

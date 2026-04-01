@@ -66,7 +66,6 @@ References:
 - https://cloud.google.com/iam/docs/workload-identity-federation-with-x509-certificates
 - https://cloud.google.com/iam/docs/reference/rest/v1/projects.locations.workloadIdentityPools
 - https://www.tenable.com/blog/how-attackers-can-exploit-gcps-multicloud-workload-solution
-- https://cloud.hacktricks.xyz/pentesting-cloud/gcp-security/gcp-basic-information/gcp-federation-abuse
 `,
 		Detection: `
 Identify when a Workload Identity Federation pool or provider is created by
