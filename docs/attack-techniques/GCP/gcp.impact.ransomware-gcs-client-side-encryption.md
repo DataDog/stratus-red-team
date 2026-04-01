@@ -44,6 +44,8 @@ References:
 
 - https://cloud.google.com/storage/docs/encryption
 - https://cloud.google.com/storage/docs/json_api/v1/objects
+- https://panther.com/blog/detecting-and-hunting-for-cloud-ransomware-part-2-gcp-gcs
+- https://www.paloaltonetworks.com/blog/prisma-cloud/ransomware-data-protection-cloud/
 
 
 ## Instructions

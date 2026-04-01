@@ -109,3 +109,4 @@ This page contains the list of all Stratus Attack Techniques.
 | [Reduce Log Retention Period on a Cloud Logging Sink Bucket](./GCP/gcp.defense-evasion.reduce-sink-log-retention.md) | [GCP](./GCP/index.md) | Defense Evasion |
 | [Backdoor a GCS Bucket via Overly Permissive IAM Policy](./GCP/gcp.exfiltration.backdoor-gcs-bucket.md) | [GCP](./GCP/index.md) | Exfiltration |
 | [Ransomware Simulation — Delete All GCS Objects in Batch](./GCP/gcp.impact.ransomware-gcs-batch-deletion.md) | [GCP](./GCP/index.md) | Impact |
+| [Ransomware Simulation — Encrypt GCS Objects Client-Side](./GCP/gcp.impact.ransomware-gcs-client-side-encryption.md) | [GCP](./GCP/index.md) | Impact |
