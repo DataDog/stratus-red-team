@@ -48,6 +48,7 @@ References:
 
 - https://cloud.google.com/compute/docs/os-configuration-management
 - https://cloud.google.com/compute/docs/osconfig/rest/v1/projects.locations.osPolicyAssignments
+- https://blog.raphael.karger.is/articles/2022-08/GCP-OS-Patching
 
 
 ## Instructions
