@@ -29,10 +29,6 @@ resource "google_sql_database_instance" "instance" {
 
   settings {
     tier = "db-f1-micro"
-
-    backup_configuration {
-      enabled = true
-    }
   }
 }
 

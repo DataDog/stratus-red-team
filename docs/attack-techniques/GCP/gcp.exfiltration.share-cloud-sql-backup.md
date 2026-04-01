@@ -42,6 +42,8 @@ References:
 - https://cloud.google.com/sql/docs/mysql/import-export/exporting
 - https://cloud.google.com/sql/docs/mysql/admin-api/rest/v1/instances/export
 - https://cloud.google.com/storage/docs/access-control/iam
+- https://securitylabs.datadoghq.com/articles/google-cloud-threat-detection/
+- https://www.praetorian.com/blog/cloud-data-exfiltration-via-gcp-storage-buckets-and-how-to-prevent-it/
 
 
 ## Instructions

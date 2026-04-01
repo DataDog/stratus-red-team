@@ -44,7 +44,6 @@ References:
 - https://cloud.google.com/sql/docs/mysql/import-export/exporting
 - https://cloud.google.com/sql/docs/mysql/admin-api/rest/v1/instances/export
 - https://cloud.google.com/storage/docs/access-control/iam
-- https://cloud.hacktricks.xyz/pentesting-cloud/gcp-security/gcp-post-exploitation/gcp-cloud-sql-post-exploitation
 - https://securitylabs.datadoghq.com/articles/google-cloud-threat-detection/
 - https://www.praetorian.com/blog/cloud-data-exfiltration-via-gcp-storage-buckets-and-how-to-prevent-it/
 `,
@@ -62,22 +61,6 @@ destination bucket, which indicates the exported data is being made publicly acc
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,
 	})
-}
-
-func newSQLAdminService(ctx context.Context, providers stratus.CloudProviders) (*sqladmin.Service, error) {
-	svc, err := sqladmin.NewService(ctx, providers.GCP().Options())
-	if err != nil {
-		return nil, fmt.Errorf("failed to create Cloud SQL Admin client: %w", err)
-	}
-	return svc, nil
-}
-
-func newStorageService(ctx context.Context, providers stratus.CloudProviders) (*storagev1.Service, error) {
-	svc, err := storagev1.NewService(ctx, providers.GCP().Options())
-	if err != nil {
-		return nil, fmt.Errorf("failed to create Storage client: %w", err)
-	}
-	return svc, nil
 }
 
 // waitForSQLOperation polls a Cloud SQL long-running operation until it completes.
@@ -110,9 +93,9 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	bucketName := params["bucket_name"]
 	ctx := context.Background()
 
-	sqlSvc, err := newSQLAdminService(ctx, providers)
+	sqlSvc, err := sqladmin.NewService(ctx, providers.GCP().Options())
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to create Cloud SQL Admin client: %w", err)
 	}
 
 	exportURI := "gs://" + bucketName + "/export.sql"
@@ -135,9 +118,9 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	}
 	log.Printf("Cloud SQL export to %s completed successfully\n", exportURI)
 
-	storageSvc, err := newStorageService(ctx, providers)
+	storageSvc, err := storagev1.NewService(ctx, providers.GCP().Options())
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to create Storage client: %w", err)
 	}
 
 	policy, err := storageSvc.Buckets.GetIamPolicy(bucketName).Context(ctx).Do()
