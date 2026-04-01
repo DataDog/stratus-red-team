@@ -89,7 +89,6 @@ Sample event:
 
 References:
 
-- https://cloud.hacktricks.wiki/en/pentesting-cloud/gcp-security/gcp-services/gcp-secrets-manager-enum.html
 
 
 
