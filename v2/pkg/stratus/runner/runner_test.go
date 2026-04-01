@@ -1,6 +1,7 @@
 package runner
 
 import (
+	"context"
 	"errors"
 	"testing"
 
@@ -8,6 +9,7 @@ import (
 	statemocks "github.com/datadog/stratus-red-team/v2/internal/state/mocks"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/runner/mocks"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -465,4 +467,82 @@ func TestRunnerCleanup(t *testing.T) {
 		err := runner.CleanUp()
 		t.Run(scenario[i].Name, func(t *testing.T) { scenario[i].CheckExpectations(t, terraform, state, err) })
 	}
+}
+
+// TestNewRunnerWithOptions verifies that injected dependencies are used
+// instead of the defaults (filesystem state, downloaded Terraform, etc.).
+func TestNewRunnerWithOptions(t *testing.T) {
+	stateMock := new(statemocks.StateManager)
+	tfMock := new(mocks.TerraformManager)
+	configMock := new(configmocks.Config)
+	correlationID := uuid.MustParse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee")
+
+	stateMock.On("GetRootDirectory").Return("/custom/root")
+	stateMock.On("GetTechniqueState").Return(stratus.AttackTechniqueState(stratus.AttackTechniqueStatusCold))
+
+	technique := &stratus.AttackTechnique{ID: "test.technique"}
+
+	r := NewRunnerWithContext(
+		context.Background(),
+		technique,
+		false,
+		WithStateManager(stateMock),
+		WithTerraformManager(tfMock),
+		WithConfig(configMock),
+		WithCorrelationID(correlationID),
+	)
+
+	assert.Equal(t, stratus.AttackTechniqueState(stratus.AttackTechniqueStatusCold), r.GetState())
+	assert.Equal(t, correlationID.String(), r.GetUniqueExecutionId())
+
+	// Verify the injected state manager was actually called during init
+	stateMock.AssertCalled(t, "GetRootDirectory")
+	stateMock.AssertCalled(t, "GetTechniqueState")
+}
+
+// TestNewRunnerWithProviderFactory verifies that an injected provider factory
+// is preserved and not overwritten by the default.
+func TestNewRunnerWithProviderFactory(t *testing.T) {
+	stateMock := new(statemocks.StateManager)
+	tfMock := new(mocks.TerraformManager)
+	configMock := new(configmocks.Config)
+
+	stateMock.On("GetRootDirectory").Return("/root")
+	stateMock.On("GetTechniqueState").Return(stratus.AttackTechniqueState(stratus.AttackTechniqueStatusCold))
+
+	customProviders := stratus.CloudProvidersImpl{
+		UniqueCorrelationID: uuid.MustParse("11111111-2222-3333-4444-555555555555"),
+	}
+
+	technique := &stratus.AttackTechnique{
+		ID:                         "test.provider-injection",
+		PrerequisitesTerraformCode: []byte("resource {}"),
+		Detonate: func(params map[string]string, pf stratus.CloudProviders) error {
+			// Verify we got the injected provider, not a default one
+			assert.Equal(t, customProviders, pf)
+			return nil
+		},
+	}
+
+	stateMock.On("ExtractTechnique").Return(nil)
+	stateMock.On("GetTerraformOutputs").Return(map[string]string{}, nil)
+	stateMock.On("SetTechniqueState", mock.Anything).Return(nil)
+	stateMock.On("WriteTerraformOutputs", mock.Anything).Return(nil)
+	configMock.On("GetTerraformVariables", mock.Anything).Return(map[string]string{})
+	tfMock.On("TerraformInitAndApply", mock.Anything, mock.Anything).Return(map[string]string{}, nil)
+
+	r := NewRunnerWithContext(
+		context.Background(),
+		technique,
+		false,
+		WithStateManager(stateMock),
+		WithTerraformManager(tfMock),
+		WithConfig(configMock),
+		WithProviderFactory(customProviders),
+	)
+
+	// Detonate calls the technique's Detonate function, which asserts
+	// that the injected provider factory was passed through.
+	err := r.Detonate()
+	assert.Nil(t, err)
 }
