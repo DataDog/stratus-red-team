@@ -40,6 +40,8 @@ References:
 
 - https://cloud.google.com/vpc/docs/using-flow-logs
 - https://cloud.google.com/compute/docs/reference/rest/v1/subnetworks/patch
+- https://github.com/GoogleCloudPlatform/security-analytics/blob/main/src/3.02/3.02.md
+- https://securitylabs.datadoghq.com/cloud-security-atlas/attacks/removing-vpc-flow-logs/
 
 
 ## Instructions
