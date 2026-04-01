@@ -40,6 +40,7 @@ References:
 
 - https://cloud.google.com/resource-manager/docs/creating-managing-projects
 - https://cloud.google.com/resource-manager/reference/rest/v3/projects/move
+- https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1666.A002.html
 
 
 ## Instructions
