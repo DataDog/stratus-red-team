@@ -44,6 +44,7 @@ References:
 
 - https://cloud.google.com/storage/docs/lifecycle
 - https://www.justice.gov/usao-sdny/press-release/file/1452706/download
+- https://attack.mitre.org/techniques/T1562/008/
 
 
 ## Instructions
