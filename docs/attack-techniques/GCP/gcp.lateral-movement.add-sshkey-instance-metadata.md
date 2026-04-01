@@ -36,7 +36,6 @@ Note that you need to save the private key for login.
 
 Reference:
 - https://cloud.google.com/sdk/gcloud/reference/compute/instances/add-metadata
-- https://cloud.hacktricks.wiki/en/pentesting-cloud/gcp-security/gcp-privilege-escalation/gcp-compute-privesc/gcp-add-custom-ssh-metadata.html
 
 
 ## Instructions
