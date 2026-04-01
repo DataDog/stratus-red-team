@@ -26,18 +26,21 @@ Cloud Logging.
 
 <span style="font-variant: small-caps;">Warm-up</span>:
 
-- Enable Data Access audit logs (DATA_READ and DATA_WRITE) for <code>storage.googleapis.com</code>
-  by adding an <code>auditConfig</code> entry to the project IAM policy
+- Snapshot the current project IAM policy (including any pre-existing audit config
+  for <code>storage.googleapis.com</code>) so it can be restored on revert
 
 <span style="font-variant: small-caps;">Detonation</span>:
 
+- Set a DATA_READ and DATA_WRITE <code>auditConfig</code> entry for
+  <code>storage.googleapis.com</code> (overwriting any existing config)
 - Remove the <code>auditConfig</code> entry for <code>storage.googleapis.com</code> from the
   project IAM policy via the Cloud Resource Manager API
 
 Revert:
 
-- Re-add the <code>auditConfig</code> entry for <code>storage.googleapis.com</code> with DATA_READ
-  and DATA_WRITE log types
+- Restore the exact <code>auditConfig</code> that existed before detonation (including
+  any custom log types or exempted members), or leave the config absent if it was
+  not present before
 
 References:
 

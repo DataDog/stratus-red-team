@@ -7,27 +7,27 @@ terraform {
   }
 }
 
-# Enable Data Access audit logs for Cloud Storage so we have something
-# to remove during detonation.
-resource "google_project_iam_audit_config" "storage_audit" {
-  project = data.google_project.current.project_id
-  service = "storage.googleapis.com"
+data "google_project" "current" {}
 
-  audit_log_config {
-    log_type = "DATA_READ"
-  }
-
-  audit_log_config {
-    log_type = "DATA_WRITE"
-  }
+# Snapshot the current project IAM policy before detonation so we can
+# restore the original audit config during revert. The external data
+# source runs before any resource is applied, capturing the pre-stratus
+# state. All parsing happens in Go — we just pass the raw JSON through.
+data "external" "original_policy" {
+  program = [
+    "bash", "-c",
+    "policy=$(gcloud projects get-iam-policy ${data.google_project.current.project_id} --format=json) || { echo 'ERROR: gcloud auth may have expired — run: gcloud auth application-default login' >&2; exit 1; }; echo \"$policy\" | jq '{policy_b64: . | @base64}'"
+  ]
 }
 
-data "google_project" "current" {}
+output "original_policy_b64" {
+  value = data.external.original_policy.result.policy_b64
+}
 
 output "service" {
   value = "storage.googleapis.com"
 }
 
 output "display" {
-  value = "Data Access audit logs (DATA_READ, DATA_WRITE) enabled for storage.googleapis.com"
+  value = "Captured original audit config for storage.googleapis.com"
 }
