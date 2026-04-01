@@ -50,6 +50,7 @@ References:
 
 - https://cloud.google.com/functions/docs/deploying
 - https://cloud.google.com/functions/docs/reference/rest/v2/projects.locations.functions/patch
+- https://www.tenable.com/blog/confusedfunction-a-privilege-escalation-vulnerability-impacting-gcp-cloud-functions
 
 
 ## Instructions
