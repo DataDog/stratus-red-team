@@ -40,6 +40,8 @@ References:
 
 - https://cloud.google.com/logging/docs/export/configure_export_v2
 - https://cloud.google.com/logging/docs/reference/v2/rest/v2/projects.sinks/update
+- https://attack.mitre.org/techniques/T1562/008/
+- https://redcanary.com/threat-detection-report/trends/cloud-attacks/
 
 
 ## Instructions
