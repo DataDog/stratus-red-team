@@ -2,6 +2,8 @@ module github.com/datadog/stratus-red-team/example/runner-options
 
 go 1.23.0
 
+toolchain go1.26.1
+
 replace github.com/datadog/stratus-red-team/v2 => ../../v2
 
 require github.com/datadog/stratus-red-team/v2 v2.0.0-00010101000000-000000000000
