@@ -47,6 +47,8 @@ References:
 
 - https://cloud.google.com/compute/docs/instances/startup-scripts/linux
 - https://cloud.google.com/compute/docs/reference/rest/v1/instances/setMetadata
+- https://unit42.paloaltonetworks.com/cloud-virtual-machine-attack-vectors/
+- https://about.gitlab.com/blog/plundering-gcp-escalating-privileges-in-google-cloud-platform/
 
 
 ## Instructions

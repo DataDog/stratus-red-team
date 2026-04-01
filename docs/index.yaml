@@ -617,6 +617,15 @@ GCP:
             - Discovery
           platform: GCP
           isIdempotent: true
+    Execution:
+        - id: gcp.execution.modify-gce-startup-script
+          name: Modify a GCE Instance Startup Script
+          isSlow: true
+          mitreAttackTactics:
+            - Execution
+            - Privilege Escalation
+          platform: GCP
+          isIdempotent: true
     Exfiltration:
         - id: gcp.exfiltration.share-compute-disk
           name: Exfiltrate Compute Disk by sharing it
@@ -712,6 +721,14 @@ GCP:
           platform: GCP
           isIdempotent: true
     Privilege Escalation:
+        - id: gcp.execution.modify-gce-startup-script
+          name: Modify a GCE Instance Startup Script
+          isSlow: true
+          mitreAttackTactics:
+            - Execution
+            - Privilege Escalation
+          platform: GCP
+          isIdempotent: true
         - id: gcp.persistence.create-admin-service-account
           name: Create an Admin GCP Service Account
           isSlow: false
