@@ -45,6 +45,8 @@ References:
 
 - https://cloud.google.com/vertex-ai/docs/workbench/user-managed/manage-notebooks-introduction
 - https://cloud.google.com/vertex-ai/docs/workbench/reference/rest/v2/projects.locations.instances/patch
+- https://sra.io/blog/privilege-escalation-in-aws-and-gcp-machine-learning-instances/
+- https://unit42.paloaltonetworks.com/privilege-escalation-llm-model-exfil-vertex-ai/
 
 
 ## Instructions
