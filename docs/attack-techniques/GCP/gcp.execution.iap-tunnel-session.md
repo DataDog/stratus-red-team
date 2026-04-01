@@ -45,6 +45,7 @@ References:
 
 - https://cloud.google.com/iap/docs/using-tcp-forwarding
 - https://cloud.google.com/iap/docs/reference/rest/v1/V1/setIamPolicy
+- https://unit42.paloaltonetworks.com/cloud-virtual-machine-attack-vectors/
 
 
 ## Instructions
