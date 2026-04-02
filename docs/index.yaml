@@ -761,6 +761,14 @@ Azure:
           platform: Azure
           isIdempotent: true
     Persistence:
+        - id: azure.persistence.backdoor-managed-identity-fic
+          name: Backdoor Azure Managed Identity with Federated Identity Credential (FIC)
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: Azure
+          isIdempotent: false
         - id: azure.persistence.create-bastion-shareable-link
           name: Create Azure VM Bastion shareable link
           isSlow: true
@@ -769,6 +777,14 @@ Azure:
           platform: Azure
           isIdempotent: false
     Privilege Escalation:
+        - id: azure.persistence.backdoor-managed-identity-fic
+          name: Backdoor Azure Managed Identity with Federated Identity Credential (FIC)
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: Azure
+          isIdempotent: false
         - id: azure.privilege-escalation.root-user-access-administrator
           name: Elevate to User Access Administrator at Root Scope
           isSlow: false
@@ -778,6 +794,14 @@ Azure:
           isIdempotent: false
 Entra ID:
     Persistence:
+        - id: entra-id.persistence.backdoor-application-fic
+          name: Backdoor Entra ID application with Federated Identity Credential (FIC)
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: Entra ID
+          isIdempotent: false
         - id: entra-id.persistence.backdoor-application-sp
           name: Backdoor Entra ID application through service principal
           isSlow: false
@@ -824,6 +848,14 @@ Entra ID:
           platform: Entra ID
           isIdempotent: false
     Privilege Escalation:
+        - id: entra-id.persistence.backdoor-application-fic
+          name: Backdoor Entra ID application with Federated Identity Credential (FIC)
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: Entra ID
+          isIdempotent: false
         - id: entra-id.persistence.backdoor-application-sp
           name: Backdoor Entra ID application through service principal
           isSlow: false

@@ -78,8 +78,8 @@ Detonation:
 - Generate a keypair to use for OIDC
 - Upload OIDC discovery document and JWKS to the storage account
 - Add a Federated Identity Credential (FIC) to the victim application that trusts tokens issued by the malicious OIDC provider
-- Mint a JWT signed by the attacker's OIDC private key
-- Exchange the attacker's token for a victim application token using the FIC
+- Create a token signed by the attacker's OIDC private key to exchange for a token as the victim application
+- Exchange the attacker's token for a Microsoft Graph token as the victim application using the FIC
 - Display the victim application's access token to the user
 
 References:
@@ -172,7 +172,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	}
 
 	log.Println("Obtained victim application access token via malicious OIDC FIC backdoor")
-	log.Println("\nVictim application Microsoft Graph token:")
+	log.Println("Victim application Microsoft Graph token:")
 	log.Println(victimToken)
 
 	log.Println("\nYou can now use this token to access Microsoft Graph API as the victim application:")

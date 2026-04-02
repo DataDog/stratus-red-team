@@ -60,6 +60,7 @@ type jwkSet struct {
 }
 
 func init() {
+	const codeBlock = "```"
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
 		ID:           "azure.persistence.backdoor-managed-identity-fic",
 		FriendlyName: "Backdoor Azure Managed Identity with Federated Identity Credential (FIC)",
@@ -90,6 +91,25 @@ References:
 `,
 		Detection: `
 Using [Azure Activity Logs](https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/activity-log) with the operation name <code>Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials/write</code>.
+
+Sample Azure Activity Log event to monitor:
+
+` + codeBlock + `json hl_lines="2 10"
+{
+    "operationName": {
+        "value": "Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials/write",
+        "localizedValue": "Add or update Federated Identity Credential"
+    },
+    "properties": {
+        "statusCode": "Created",
+        "serviceRequestId": null,
+        "eventCategory": "Administrative",
+        "entity": "/subscriptions/[SUBSCRIPTION-ID]/stratus-fic-mi-3qbu/providers/Microsoft.ManagedIdentity/userAssignedIdentities/stratus-victim-mi-3qbu/federatedIdentityCredentials/stratus-red-team-oidc-fic",
+        "message": "Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials/write",
+        "hierarchy": "[REMOVED]"
+    }
+}
+` + codeBlock + `
 `,
 		Platform:                   stratus.Azure,
 		IsIdempotent:               false,
@@ -181,7 +201,9 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	log.Println("\nVictim managed identity Microsoft Graph token:")
 	log.Println(victimToken)
 
-	log.Println("\nYou can now use this token to access Microsoft Graph API as the victim managed identity.")
+	log.Println("\nYou can now use this token to access Microsoft Graph API as the victim managed identity:")
+	log.Println("\nWARNING: Using this command in your current CLI session will change your Azure context. You will need to LOG IN AGAIN to clean up this technique.")
+	log.Println("\naz login --service-principal --allow-no-subscriptions --tenant " + tenantId + " --username " + managedIdentityClientId + " --federated-token \"" + oidcToken + "\"")
 
 	return nil
 }

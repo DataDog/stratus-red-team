@@ -60,10 +60,12 @@ This page contains the list of all Stratus Attack Techniques.
 | [Azure Blob Storage ransomware through Encryption Scope using client-managed Key Vault key](./azure/azure.impact.blob-ransomware-client-encryption-scope.md) | [Azure](./azure/index.md) | Impact |
 | [Azure ransomware via Storage Account Blob deletion](./azure/azure.impact.blob-ransomware-individual-file-deletion.md) | [Azure](./azure/index.md) | Impact |
 | [Delete Azure resource lock](./azure/azure.impact.resource-lock.md) | [Azure](./azure/index.md) | Impact |
+| [Backdoor Azure Managed Identity with Federated Identity Credential (FIC)](./azure/azure.persistence.backdoor-managed-identity-fic.md) | [Azure](./azure/index.md) | Persistence, Privilege Escalation |
 | [Create Azure VM Bastion shareable link](./azure/azure.persistence.create-bastion-shareable-link.md) | [Azure](./azure/index.md) | Persistence |
 | [Elevate to User Access Administrator at Root Scope](./azure/azure.privilege-escalation.root-user-access-administrator.md) | [Azure](./azure/index.md) | Privilege Escalation |
 | [Create Admin EKS Access Entry](./EKS/eks.lateral-movement.create-access-entry.md) | [EKS](./EKS/index.md) | Lateral Movement |
 | [Backdoor aws-auth EKS ConfigMap](./EKS/eks.persistence.backdoor-aws-auth-configmap.md) | [EKS](./EKS/index.md) | Persistence, Privilege Escalation |
+| [Backdoor Entra ID application with Federated Identity Credential (FIC)](./entra-id/entra-id.persistence.backdoor-application-fic.md) | [Entra ID](./entra-id/index.md) | Persistence, Privilege Escalation |
 | [Backdoor Entra ID application through service principal](./entra-id/entra-id.persistence.backdoor-application-sp.md) | [Entra ID](./entra-id/index.md) | Persistence, Privilege Escalation |
 | [Backdoor Entra ID application](./entra-id/entra-id.persistence.backdoor-application.md) | [Entra ID](./entra-id/index.md) | Persistence, Privilege Escalation |
 | [Create Guest User](./entra-id/entra-id.persistence.guest-user.md) | [Entra ID](./entra-id/index.md) | Persistence |

@@ -71,16 +71,8 @@ resource "azurerm_role_assignment" "storage_blob_data_contributor" {
   principal_id         = data.azuread_client_config.current.object_id
 }
 
-output "managed_identity_id" {
-  value = azurerm_user_assigned_identity.victim.id
-}
-
 output "managed_identity_client_id" {
   value = azurerm_user_assigned_identity.victim.client_id
-}
-
-output "managed_identity_principal_id" {
-  value = azurerm_user_assigned_identity.victim.principal_id
 }
 
 output "managed_identity_name" {
@@ -93,10 +85,6 @@ output "resource_group_name" {
 
 output "storage_account_name" {
   value = azurerm_storage_account.oidc.name
-}
-
-output "storage_resource_group_name" {
-  value = azurerm_resource_group.oidc.name
 }
 
 output "blob_service_url" {
