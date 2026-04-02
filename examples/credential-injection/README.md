@@ -10,7 +10,7 @@ Authenticate as an admin in the target account, then create a role with the perm
 
 ```bash
 # Authenticate as admin
-aws-vault exec sso-sbx-ase-futz-account-admin
+aws-vault exec sso-<your-rest-account>
 
 # Get your current account ID
 ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
