@@ -35,6 +35,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   
   - [Delete a Cloud DNS Logging Policy](./gcp.defense-evasion.delete-dns-logs.md)
   
+  - [Disable Data Access Audit Logs for a GCP Service](./gcp.defense-evasion.disable-audit-logs.md)
+  
   - [Delete a GCP Log Sink](./gcp.defense-evasion.delete-logging-sink.md)
   
 
