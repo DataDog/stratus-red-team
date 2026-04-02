@@ -62,6 +62,7 @@ import (
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/entra-id/persistence/hidden-au"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/entra-id/persistence/new-application"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/entra-id/persistence/restricted-au"
+	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/entra-id/persistence/backdoor-application-fic"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/credential-access/secretmanager-retrieve-secrets"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/defense-evasion/delete-dns-logs"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/defense-evasion/delete-logging-sink"
