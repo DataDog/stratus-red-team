@@ -59,7 +59,7 @@ resource "azurerm_storage_account" "oidc" {
   allow_nested_items_to_be_public = true
 }
 
-# Assign Storage Blob Data Contributor to the current user for data plane access (upload blobs)
+# Assign Storage Blob Data Contributor to the current user for data plane access (so Go can use RBAC operations)
 resource "azurerm_role_assignment" "storage_blob_data_contributor" {
   scope                = azurerm_storage_account.oidc.id
   role_definition_name = "Storage Blob Data Contributor"

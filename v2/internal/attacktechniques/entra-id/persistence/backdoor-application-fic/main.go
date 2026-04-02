@@ -176,7 +176,8 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	log.Println(victimToken)
 
 	log.Println("\nYou can now use this token to access Microsoft Graph API as the victim application:")
-	log.Println("\naz login --service-principal --allow-no-subscriptions --tenant " + tenantId + " --username " + victimAppId " --federated-token \"" + oidcToken + "\"")
+	log.Println("\nWARNING: Using this command in your current CLI session will change your Azure context. You will need to LOG IN AGAIN to clean up this technique.")
+	log.Println("\naz login --service-principal --allow-no-subscriptions --tenant " + tenantId + " --username " + victimAppId + " --federated-token \"" + oidcToken + "\"")
 	return nil
 }
 
