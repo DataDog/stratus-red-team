@@ -2,10 +2,86 @@ package stratus
 
 import (
 	"errors"
-	"github.com/google/uuid"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
 	"github.com/datadog/stratus-red-team/v2/internal/providers"
+	"github.com/datadog/stratus-red-team/v2/internal/utils"
+	"github.com/google/uuid"
+	"k8s.io/client-go/rest"
 )
+
+// Re-exported provider option types so external consumers can use them
+// without importing the internal providers package.
+type (
+	AWSProviderOption     = providers.AWSProviderOption
+	GCPProviderOption     = providers.GCPProviderOption
+	AzureProviderOption   = providers.AzureProviderOption
+	EntraIdProviderOption = providers.EntraIdProviderOption
+	K8sProviderOption     = providers.K8sProviderOption
+	EKSProviderOption     = providers.EKSProviderOption
+)
+
+// AWS provider options
+
+func WithAWSConfig(cfg aws.Config) AWSProviderOption { return providers.WithAWSConfig(cfg) }
+
+// GCP provider options
+
+func WithGCPProjectID(projectId string) GCPProviderOption { return providers.WithGCPProjectID(projectId) }
+
+// Azure provider options
+
+func WithAzureCredentials(cred azcore.TokenCredential) AzureProviderOption {
+	return providers.WithAzureCredentials(cred)
+}
+func WithAzureSubscriptionID(id string) AzureProviderOption {
+	return providers.WithAzureSubscriptionID(id)
+}
+
+// Entra ID provider options
+
+func WithEntraIdCredentials(cred azcore.TokenCredential) EntraIdProviderOption {
+	return providers.WithEntraIdCredentials(cred)
+}
+
+// Kubernetes provider options
+
+func WithK8sRestConfig(cfg *rest.Config) K8sProviderOption { return providers.WithK8sRestConfig(cfg) }
+
+// EKS provider options
+
+func WithEKSAWSProvider(p *providers.AWSProvider) EKSProviderOption {
+	return providers.WithEKSAWSProvider(p)
+}
+func WithEKSK8sProvider(p *providers.K8sProvider) EKSProviderOption {
+	return providers.WithEKSK8sProvider(p)
+}
+
+// Provider factory functions — delegate to internal constructors.
+
+func NewAWSProvider(correlationId uuid.UUID, opts ...AWSProviderOption) *providers.AWSProvider {
+	return providers.NewAWSProvider(correlationId, opts...)
+}
+func NewGCPProvider(correlationId uuid.UUID, opts ...GCPProviderOption) *providers.GCPProvider {
+	return providers.NewGCPProvider(correlationId, opts...)
+}
+func NewAzureProvider(correlationId uuid.UUID, opts ...AzureProviderOption) *providers.AzureProvider {
+	return providers.NewAzureProvider(correlationId, opts...)
+}
+func NewEntraIdProvider(correlationId uuid.UUID, opts ...EntraIdProviderOption) *providers.EntraIdProvider {
+	return providers.NewEntraIdProvider(correlationId, opts...)
+}
+func NewK8sProvider(correlationId uuid.UUID, opts ...K8sProviderOption) *providers.K8sProvider {
+	return providers.NewK8sProvider(correlationId, opts...)
+}
+func NewEKSProvider(correlationId uuid.UUID, opts ...EKSProviderOption) *providers.EKSProvider {
+	return providers.NewEKSProvider(correlationId, opts...)
+}
+
+// AWSConfigFromCredentials builds an aws.Config with explicit static
+// credentials. Re-exported from internal/utils for external consumers.
+var AWSConfigFromCredentials = utils.AwsConfigFromCredentials
 
 // CloudProviders provides a unified interface to access the various cloud providers SDKs
 type CloudProviders interface {

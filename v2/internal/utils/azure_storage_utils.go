@@ -4,16 +4,16 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/arm"
-	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
+	"github.com/Azure/azure-sdk-for-go/sdk/azcore/to"
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/storage/armstorage"
 	"github.com/Azure/azure-sdk-for-go/sdk/storage/azblob"
-	"github.com/Azure/azure-sdk-for-go/sdk/azcore/to"
 
 	"io"
 )
 
-func GetAzureBlobClient(serviceURL string, subscriptionID string, defaultCredentials *azidentity.DefaultAzureCredential, clientOptions *arm.ClientOptions, params map[string]string) (*azblob.Client, error) {
+func GetAzureBlobClient(serviceURL string, subscriptionID string, defaultCredentials azcore.TokenCredential, clientOptions *arm.ClientOptions, params map[string]string) (*azblob.Client, error) {
 	account := params["storage_account_name"]
 	//Gets storage account keys to enable data-plan permissions
 	armClient, err := armstorage.NewAccountsClient(subscriptionID, defaultCredentials, clientOptions)

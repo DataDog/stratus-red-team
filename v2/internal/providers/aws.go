@@ -16,12 +16,30 @@ type AWSProvider struct {
 	UniqueCorrelationId uuid.UUID // unique value injected in the user-agent, to differentiate Stratus Red Team executions
 }
 
-func NewAWSProvider(uuid uuid.UUID) *AWSProvider {
-	cfg, err := config.LoadDefaultConfig(context.Background(), utils.CustomUserAgentApiOptions(uuid))
-	if err != nil {
-		log.Fatalf("unable to load AWS configuration, %v", err)
+// AWSProviderOption configures optional overrides on an AWSProvider.
+type AWSProviderOption func(*AWSProvider)
+
+// WithAWSConfig overrides the default credential chain with an explicit
+// aws.Config. Use utils.AwsConfigFromCredentials to build one from static
+// credentials.
+func WithAWSConfig(cfg aws.Config) AWSProviderOption {
+	return func(p *AWSProvider) { p.awsConfig = &cfg }
+}
+
+func NewAWSProvider(correlationId uuid.UUID, opts ...AWSProviderOption) *AWSProvider {
+	p := &AWSProvider{UniqueCorrelationId: correlationId}
+	for _, opt := range opts {
+		opt(p)
 	}
-	return &AWSProvider{UniqueCorrelationId: uuid, awsConfig: &cfg}
+	// Load default config only if no explicit config was injected
+	if p.awsConfig == nil {
+		cfg, err := config.LoadDefaultConfig(context.Background(), utils.CustomUserAgentApiOptions(correlationId))
+		if err != nil {
+			log.Fatalf("unable to load AWS configuration, %v", err)
+		}
+		p.awsConfig = &cfg
+	}
+	return p
 }
 func (m *AWSProvider) GetConnection() aws.Config {
 	return *m.awsConfig
