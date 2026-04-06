@@ -44,18 +44,18 @@ resource "azuread_directory_role_assignment" "role" {
 
 # Resource group for the OIDC storage account
 resource "azurerm_resource_group" "oidc" {
-  name     = "stratus-fic-oidc-${random_string.suffix.result}"
-  location = "eastus"
+  name     = "stratus-fic-app-${random_string.suffix.result}"
+  location = "westus"
 }
 
 # Storage account to host the malicious OIDC provider metadata
 resource "azurerm_storage_account" "oidc" {
-  name                          = "stratusoidc${random_string.suffix.result}"
-  resource_group_name           = azurerm_resource_group.oidc.name
-  location                      = azurerm_resource_group.oidc.location
-  account_tier                  = "Standard"
-  account_replication_type      = "LRS"
-  min_tls_version               = "TLS1_2"
+  name                            = "stratusficapp${random_string.suffix.result}"
+  resource_group_name             = azurerm_resource_group.oidc.name
+  location                        = azurerm_resource_group.oidc.location
+  account_tier                    = "Standard"
+  account_replication_type        = "LRS"
+  min_tls_version                 = "TLS1_2"
   allow_nested_items_to_be_public = true
 }
 
@@ -87,7 +87,7 @@ output "blob_service_url" {
 }
 
 output "random_suffix" {
-  value = random_string.suffix
+  value = random_string.suffix.result
 }
 
 output "display" {

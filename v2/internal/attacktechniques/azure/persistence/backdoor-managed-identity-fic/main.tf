@@ -24,17 +24,17 @@ resource "random_string" "suffix" {
   upper   = false
 }
 
-# Resource group for the managed identity
-resource "azurerm_resource_group" "mi" {
+# Resource group for the OIDC storage account
+resource "azurerm_resource_group" "oidc" {
   name     = "stratus-fic-mi-${random_string.suffix.result}"
-  location = "eastus"
+  location = "westus"
 }
 
 # Victim user-assigned managed identity
 resource "azurerm_user_assigned_identity" "victim" {
   name                = "stratus-victim-mi-${random_string.suffix.result}"
-  resource_group_name = azurerm_resource_group.mi.name
-  location            = azurerm_resource_group.mi.location
+  resource_group_name = azurerm_resource_group.oidc.name
+  location            = azurerm_resource_group.oidc.location
 }
 
 # Assign Directory Readers role to the managed identity at tenant level
@@ -47,15 +47,9 @@ resource "azuread_directory_role_assignment" "role" {
   principal_object_id = azurerm_user_assigned_identity.victim.principal_id
 }
 
-# Resource group for the OIDC storage account
-resource "azurerm_resource_group" "oidc" {
-  name     = "stratus-fic-oidc-${random_string.suffix.result}"
-  location = "eastus"
-}
-
 # Storage account to host the malicious OIDC provider metadata
 resource "azurerm_storage_account" "oidc" {
-  name                            = "stratusoidc${random_string.suffix.result}"
+  name                            = "stratusficmi${random_string.suffix.result}"
   resource_group_name             = azurerm_resource_group.oidc.name
   location                        = azurerm_resource_group.oidc.location
   account_tier                    = "Standard"
@@ -80,7 +74,7 @@ output "managed_identity_name" {
 }
 
 output "resource_group_name" {
-  value = azurerm_resource_group.mi.name
+  value = azurerm_resource_group.oidc.name
 }
 
 output "storage_account_name" {
@@ -92,7 +86,7 @@ output "blob_service_url" {
 }
 
 output "random_suffix" {
-  value = random_string.suffix
+  value = random_string.suffix.result
 }
 
 output "display" {

