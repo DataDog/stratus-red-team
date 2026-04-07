@@ -59,6 +59,7 @@ type jwkSet struct {
 }
 
 func init() {
+	const codeBlock = "```"
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
 		ID:           "entra-id.persistence.backdoor-application-fic",
 		FriendlyName: "Backdoor Entra ID application with Federated Identity Credential (FIC)",
