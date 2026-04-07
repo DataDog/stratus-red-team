@@ -89,7 +89,40 @@ References:
 
 `,
 		Detection: `
-Using [Entra ID audit logs](https://learn.microsoft.com/en-us/entra/identity/monitoring-health/concept-audit-logs) with the activity type <code>Update application</code>, where <code>ModifiedProperties</code> contains a <code>displayName</code> of <code>Included Updated Properties</code> and a value of <code>FederatedIdentityCredentials</code>.
+Using [Entra ID audit logs](https://learn.microsoft.com/en-us/entra/identity/monitoring-health/concept-audit-logs) with the activity type <code>Update application</code>, where <code>modifiedProperties</code> contains <code>FederatedIdentityCredentials</code>.
+
+Sample Entra ID audit log event to monitor:
+
+` + codeBlock + `json hl_lines="3 15 22"
+{
+  "category": "ApplicationManagement",
+  "result": "success",
+  "activityDisplayName": "Update application",
+  "loggedByService": "Core Directory",
+  "operationType": "Update",
+  "targetResources": [
+    {
+      "id": "[REMOVED]",
+      "displayName": "Stratus Red Team FIC application ly1h",
+      "type": "Application",
+      "userPrincipalName": null,
+      "groupType": null,
+      "modifiedProperties": [
+        {
+          "displayName": "FederatedIdentityCredentials",
+          "oldValue": "[]",
+          "newValue": "[{\"Name\":\"stratus-red-team-oidc-fic-ly1h\",\"Issuer\":\"https://stratusficapply1h.blob.core.windows.net/oidc\",\"Subject\":\"stratus-red-team-oidc\",\"Id\":\"[REMOVED]\",\"Description\":\"stratus-red-team-oidc-fic-ly1h\",\"Audiences\":[\"api://AzureADTokenExchange\"],\"ClaimsMatchingExpressionValue\":null,\"ClaimsMatchingExpressionLanguageVersion\":0,\"EncodingVersion\":2,\"TrustedIssuer\":null}]"
+        },
+        {
+          "displayName": "Included Updated Properties",
+          "oldValue": null,
+          "newValue": "\"FederatedIdentityCredentials\""
+        }
+      ]
+    }
+  ]
+}
+` + codeBlock + `
 `,
 		Platform:                   stratus.EntraID,
 		IsIdempotent:               false,
