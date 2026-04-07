@@ -13,10 +13,14 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 ## Persistence
   
+  - [Backdoor Azure Managed Identity with Federated Identity Credential (FIC)](./azure.persistence.backdoor-managed-identity-fic.md)
+  
   - [Create Azure VM Bastion shareable link](./azure.persistence.create-bastion-shareable-link.md)
   
 
 ## Privilege Escalation
+  
+  - [Backdoor Azure Managed Identity with Federated Identity Credential (FIC)](./azure.persistence.backdoor-managed-identity-fic.md)
   
   - [Elevate to User Access Administrator at Root Scope](./azure.privilege-escalation.root-user-access-administrator.md)
   
