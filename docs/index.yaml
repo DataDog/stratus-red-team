@@ -574,6 +574,13 @@ GCP:
             - Defense Evasion
           platform: GCP
           isIdempotent: false
+        - id: gcp.defense-evasion.disable-logging-sink
+          name: Disable a GCP Log Sink
+          isSlow: false
+          mitreAttackTactics:
+            - Defense Evasion
+          platform: GCP
+          isIdempotent: true
     Discovery:
         - id: gcp.discovery.enumerate-permissions
           name: Enumerate Permissions of a GCP Service Account

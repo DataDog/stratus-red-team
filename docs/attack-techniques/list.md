@@ -97,3 +97,4 @@ This page contains the list of all Stratus Attack Techniques.
 | [Run a Privileged Pod](./kubernetes/k8s.privilege-escalation.privileged-pod.md) | [Kubernetes](./kubernetes/index.md) | Privilege Escalation |
 | [Impersonate GCP Service Accounts](./GCP/gcp.privilege-escalation.impersonate-service-accounts.md) | [GCP](./GCP/index.md) | Privilege Escalation |
 | [Delete a GCP Log Sink](./GCP/gcp.defense-evasion.delete-logging-sink.md) | [GCP](./GCP/index.md) | Defense Evasion |
+| [Disable a GCP Log Sink](./GCP/gcp.defense-evasion.disable-logging-sink.md) | [GCP](./GCP/index.md) | Defense Evasion |
