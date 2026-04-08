@@ -21,8 +21,15 @@ const (
 //
 // It is used to override techniques specifications. It can set variables in Terraform, or be called
 // directly in the technique code.
+// StateConfig holds remote state backend configuration from the config file.
+type StateConfig struct {
+	Bucket string `yaml:"bucket"`
+	Region string `yaml:"region"`
+}
+
 type Config interface {
 	GetKubernetesConfig() KubernetesConfig
+	GetStateConfig() StateConfig
 	GetTerraformVariables(techniqueID string) map[string]string
 }
 
@@ -87,6 +94,16 @@ func fileExists(path string) bool {
 
 func (c *ConfigImpl) GetKubernetesConfig() KubernetesConfig {
 	return c.kubernetes
+}
+
+func (c *ConfigImpl) GetStateConfig() StateConfig {
+	if c == nil || c.v == nil {
+		return StateConfig{}
+	}
+	return StateConfig{
+		Bucket: c.v.GetString("state.bucket"),
+		Region: c.v.GetString("state.region"),
+	}
 }
 
 // buildMergedViper produces a Viper containing the merged technique config.
