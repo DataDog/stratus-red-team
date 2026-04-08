@@ -574,6 +574,13 @@ GCP:
             - Defense Evasion
           platform: GCP
           isIdempotent: true
+        - id: gcp.defense-evasion.remove-vpc-flow-logs
+          name: Disable VPC Flow Logs on a Subnet
+          isSlow: false
+          mitreAttackTactics:
+            - Defense Evasion
+          platform: GCP
+          isIdempotent: true
         - id: gcp.defense-evasion.delete-logging-sink
           name: Delete a GCP Log Sink
           isSlow: false
