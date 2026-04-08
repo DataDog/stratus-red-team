@@ -46,7 +46,13 @@ func NewTerraformManagerWithContext(ctx context.Context, terraformBinaryPath str
 }
 
 func (m *TerraformManagerImpl) Initialize() {
-	// Ensure the appropriate version of Terraform is installed locally in the Stratus Red Team folder
+	if utils.FileExists(m.terraformBinaryPath) {
+		if m.existingBinaryVersionSufficient() {
+			return
+		}
+		log.Printf("Terraform binary at %s is below required version %s, downloading the correct version", m.terraformBinaryPath, m.terraformVersion)
+	}
+
 	terraformInstaller := &releases.ExactVersion{
 		Product:                  product.Terraform,
 		Version:                  version.Must(version.NewVersion(TerraformVersion)),
@@ -117,4 +123,28 @@ func (m *TerraformManagerImpl) TerraformDestroy(directory string, variables map[
 		destroyOptions = append(destroyOptions, tfexec.Var(key+"="+value))
 	}
 	return terraform.Destroy(m.context, destroyOptions...)
+}
+
+// existingBinaryVersionSufficient checks whether the terraform binary at terraformBinaryPath has a
+// version >= TerraformVersion. Returns false if the version cannot be determined.
+func (m *TerraformManagerImpl) existingBinaryVersionSufficient() bool {
+	// tfexec needs a working directory
+	tmpDir, err := os.MkdirTemp("", "stratus-tf-version-check")
+	if err != nil {
+		return false
+	}
+	defer os.RemoveAll(tmpDir)
+
+	tf, err := tfexec.NewTerraform(tmpDir, m.terraformBinaryPath)
+	if err != nil {
+		return false
+	}
+
+	installedVersion, _, err := tf.Version(m.context, true)
+	if err != nil {
+		return false
+	}
+
+	requiredVersion := version.Must(version.NewVersion(m.terraformVersion))
+	return installedVersion.GreaterThanOrEqual(requiredVersion)
 }
