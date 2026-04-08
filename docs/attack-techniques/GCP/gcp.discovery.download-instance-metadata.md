@@ -44,9 +44,7 @@ References:
 
 - https://cloud.google.com/compute/docs/metadata/overview
 - https://cloud.google.com/compute/docs/reference/rest/v1/instances/get
-- https://cloud.google.com/blog/topics/threat-intelligence/cloud-metadata-abuse-unc2903/
-- https://attack.mitre.org/techniques/T1552/005/
-- https://securitylabs.datadoghq.com/articles/google-cloud-threat-detection/
+- https://github.com/six2dez/pentest-book/blob/fef2fe741876d7bd6552f93ca10998fbfa7070c7/enumeration/cloud/gcp.md#attacks
 
 
 ## Instructions
