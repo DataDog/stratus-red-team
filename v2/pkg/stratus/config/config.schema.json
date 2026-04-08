@@ -5,7 +5,8 @@
     "type": "object",
     "additionalProperties": false,
     "properties": {
-        "kubernetes": { "$ref": "#/$defs/kubernetes" }
+        "kubernetes": { "$ref": "#/$defs/kubernetes" },
+        "state": { "$ref": "#/$defs/stateConfig" }
     },
     "$defs": {
         "kubernetes": {
@@ -25,6 +26,20 @@
             "properties": {
                 "namespace": { "type": "string" },
                 "pod": { "$ref": "#/$defs/podConfig" }
+            }
+        },
+        "stateConfig": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "bucket": {
+                    "type": "string",
+                    "description": "S3 bucket name for remote state storage"
+                },
+                "region": {
+                    "type": "string",
+                    "description": "AWS region of the state bucket"
+                }
             }
         },
         "podConfig": {
