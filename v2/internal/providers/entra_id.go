@@ -13,40 +13,54 @@ import (
 )
 
 type EntraIdProvider struct {
-	Credentials     *azidentity.DefaultAzureCredential
+	Credentials     azcore.TokenCredential
 	ClientOptions   *arm.ClientOptions
 	GraphClient     *graph.GraphServiceClient
 	BetaGraphClient *betagraph.GraphServiceClient
 }
 
-func NewEntraIdProvider(uuid uuid.UUID) *EntraIdProvider {
-	creds, err := azidentity.NewDefaultAzureCredential(nil)
-	if err != nil {
-		log.Fatalf("failed to pull the result: %v", err)
+// EntraIdProviderOption configures optional overrides on an EntraIdProvider.
+type EntraIdProviderOption func(*EntraIdProvider)
+
+// WithEntraIdCredentials overrides the default credential chain with an
+// explicit azcore.TokenCredential.
+func WithEntraIdCredentials(cred azcore.TokenCredential) EntraIdProviderOption {
+	return func(p *EntraIdProvider) { p.Credentials = cred }
+}
+
+func NewEntraIdProvider(correlationId uuid.UUID, opts ...EntraIdProviderOption) *EntraIdProvider {
+	p := &EntraIdProvider{}
+	for _, opt := range opts {
+		opt(p)
 	}
 
-	var DefaultClientOptions = arm.ClientOptions{
+	if p.Credentials == nil {
+		creds, err := azidentity.NewDefaultAzureCredential(nil)
+		if err != nil {
+			log.Fatalf("failed to pull the result: %v", err)
+		}
+		p.Credentials = creds
+	}
+
+	p.ClientOptions = &arm.ClientOptions{
 		ClientOptions: azcore.ClientOptions{
-			Telemetry: policy.TelemetryOptions{ApplicationID: uuid.String(), Disabled: false},
+			Telemetry: policy.TelemetryOptions{ApplicationID: correlationId.String(), Disabled: false},
 		},
 	}
 
-	graphClient, err := graph.NewGraphServiceClientWithCredentials(creds, nil)
+	graphClient, err := graph.NewGraphServiceClientWithCredentials(p.Credentials, nil)
 	if err != nil {
 		log.Fatalf("could initialize Entra ID Graph client: %v", err)
 	}
+	p.GraphClient = graphClient
 
-	betaGraphClient, err := betagraph.NewGraphServiceClientWithCredentials(creds, nil)
+	betaGraphClient, err := betagraph.NewGraphServiceClientWithCredentials(p.Credentials, nil)
 	if err != nil {
 		log.Fatalf("could initialize Entra ID Beta Graph client: %v", err)
 	}
+	p.BetaGraphClient = betaGraphClient
 
-	return &EntraIdProvider{
-		Credentials:     creds,
-		ClientOptions:   &DefaultClientOptions,
-		GraphClient:     graphClient,
-		BetaGraphClient: betaGraphClient,
-	}
+	return p
 }
 
 func (m *EntraIdProvider) GetGraphClient() *graph.GraphServiceClient {

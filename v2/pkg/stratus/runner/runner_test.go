@@ -5,9 +5,10 @@ import (
 	"errors"
 	"testing"
 
-	configmocks "github.com/datadog/stratus-red-team/v2/pkg/stratus/config/mocks"
+	"github.com/aws/aws-sdk-go-v2/aws"
 	statemocks "github.com/datadog/stratus-red-team/v2/internal/state/mocks"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	configmocks "github.com/datadog/stratus-red-team/v2/pkg/stratus/config/mocks"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/runner/mocks"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
@@ -545,4 +546,74 @@ func TestNewRunnerWithProviderFactory(t *testing.T) {
 	// that the injected provider factory was passed through.
 	err := r.Detonate()
 	assert.Nil(t, err)
+}
+
+// TestProviderCredentialInjection demonstrates the full credential injection
+// flow: build providers with explicit credentials, pre-populate
+// CloudProvidersImpl, and pass it to the runner via WithProviderFactory.
+// This is the pattern Cumulus uses to run techniques with per-execution
+// credentials instead of relying on environment variables.
+func TestProviderCredentialInjection(t *testing.T) {
+	stateMock := new(statemocks.StateManager)
+	tfMock := new(mocks.TerraformManager)
+	configMock := new(configmocks.Config)
+	correlationID := uuid.New()
+
+	stateMock.On("GetRootDirectory").Return("/root")
+	stateMock.On("GetTechniqueState").Return(stratus.AttackTechniqueState(stratus.AttackTechniqueStatusCold))
+	stateMock.On("ExtractTechnique").Return(nil)
+	stateMock.On("GetTerraformOutputs").Return(map[string]string{}, nil)
+	stateMock.On("SetTechniqueState", mock.Anything).Return(nil)
+	stateMock.On("WriteTerraformOutputs", mock.Anything).Return(nil)
+	configMock.On("GetTerraformVariables", mock.Anything).Return(map[string]string{})
+	tfMock.On("TerraformInitAndApply", mock.Anything, mock.Anything).Return(map[string]string{}, nil)
+
+	// Build an AWS provider with explicit static credentials using the
+	// public API (same functions available to external consumers)
+	awsCfg := stratus.AWSConfigFromCredentials(
+		"AKIAIOSFODNN7EXAMPLE",
+		"wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+		"",
+		&correlationID,
+	)
+	awsProvider := stratus.NewAWSProvider(correlationID, stratus.WithAWSConfig(awsCfg))
+
+	// Pre-populate CloudProvidersImpl with the explicitly-credentialed
+	// provider. Other providers (K8s, Azure, etc.) are left nil and would
+	// be lazily initialized from defaults if a technique needed them.
+	customFactory := stratus.CloudProvidersImpl{
+		UniqueCorrelationID: correlationID,
+		AWSProvider:         awsProvider,
+	}
+
+	var receivedConfig aws.Config
+	technique := &stratus.AttackTechnique{
+		ID:                         "test.credential-injection",
+		PrerequisitesTerraformCode: []byte("resource {}"),
+		Detonate: func(params map[string]string, pf stratus.CloudProviders) error {
+			receivedConfig = pf.AWS().GetConnection()
+			return nil
+		},
+	}
+
+	r := NewRunnerWithContext(
+		context.Background(),
+		technique,
+		false,
+		WithStateManager(stateMock),
+		WithTerraformManager(tfMock),
+		WithConfig(configMock),
+		WithProviderFactory(customFactory),
+	)
+
+	err := r.Detonate()
+	assert.Nil(t, err)
+
+	// Verify the injected credentials made it through to the Detonate
+	// function — the provider should use our explicit config, not the
+	// default credential chain.
+	creds, err := receivedConfig.Credentials.Retrieve(context.Background())
+	assert.Nil(t, err)
+	assert.Equal(t, "AKIAIOSFODNN7EXAMPLE", creds.AccessKeyID)
+	assert.Equal(t, "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY", creds.SecretAccessKey)
 }

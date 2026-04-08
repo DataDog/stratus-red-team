@@ -34,26 +34,38 @@ var (
 	kubeConfigPathWasResolved bool
 )
 
-func NewK8sProvider(uuid uuid.UUID) *K8sProvider {
-	kubeconfig := GetKubeConfigPath()
+// K8sProviderOption configures optional overrides on a K8sProvider.
+type K8sProviderOption func(*K8sProvider)
 
-	// Will default to an in-cluster client config if kubeconfig path is not set
-	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
-	if err != nil {
-		log.Fatalf("unable to build kube config: %v", err)
+// WithK8sRestConfig overrides the default kubeconfig / in-cluster resolution
+// with an explicit rest.Config.
+func WithK8sRestConfig(cfg *rest.Config) K8sProviderOption {
+	return func(p *K8sProvider) { p.RestConfig = cfg }
+}
+
+func NewK8sProvider(correlationId uuid.UUID, opts ...K8sProviderOption) *K8sProvider {
+	p := &K8sProvider{UniqueCorrelationId: correlationId}
+	for _, opt := range opts {
+		opt(p)
 	}
-	restConfig := config
-	restConfig.UserAgent = useragent.GetStratusUserAgentForUUID(uuid)
-	k8sClient, err := kubernetes.NewForConfig(restConfig)
+
+	if p.RestConfig == nil {
+		kubeconfig := GetKubeConfigPath()
+		restConfig, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
+		if err != nil {
+			log.Fatalf("unable to build kube config: %v", err)
+		}
+		p.RestConfig = restConfig
+	}
+
+	p.RestConfig.UserAgent = useragent.GetStratusUserAgentForUUID(correlationId)
+	k8sClient, err := kubernetes.NewForConfig(p.RestConfig)
 	if err != nil {
 		log.Fatalf("unable to create kube client: %v", err)
 	}
+	p.k8sClient = k8sClient
 
-	return &K8sProvider{
-		UniqueCorrelationId: uuid,
-		RestConfig:          restConfig,
-		k8sClient:           k8sClient,
-	}
+	return p
 }
 
 // GetKubeConfigPath returns the path of the kubeconfig, with the following priority:
