@@ -6,6 +6,17 @@ We welcome pull requests, contributions and feedback! For any bug report or feed
 
 Stratus Red Team is opinionated in the attack techniques it packages - see [Philosophy](./attack-techniques/philosophy.md). Feel free to open an issue to discuss ideas about new attack techniques. You can see the current backlog using the GitHub issue label [`kind/new-technique`](https://github.com/DataDog/stratus-red-team/issues?q=is%3Aissue%20is%3Aopen%20label%3Akind%2Fnew-technique%20).
 
+Recent threat reports are also a good source of roadmap ideas. For example, the TraderTraitor / Safe{Wallet} report in issue #692 highlights a few cloud behaviors that are worth turning into future techniques or documentation:
+
+- S3-hosted frontend tampering and JavaScript injection for supply-chain compromise (`T1195.002`, `T1578.002`)
+- Valid cloud account abuse after workstation compromise (`T1078.004`)
+- IAM persistence attempts such as new users, roles, and MFA enrollment (`T1136.003`)
+- Cloud service discovery across S3, IAM, and CloudFront (`T1526`)
+- Log tampering and defense evasion through CloudTrail or object deletion (`T1562.008`)
+- Resource hijacking and downstream financial theft impact (`T1496`, `T1657`)
+
+These are good candidates for future coverage when deciding what to add next to the backlog.
+
 To create a new attack technique:
 
 1. Create a new folder under `v2/internal/attacktechniques/your-cloud/your-mitre-attack-tactic/your-attack-name`
