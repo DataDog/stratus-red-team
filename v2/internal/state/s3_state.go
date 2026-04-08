@@ -45,7 +45,9 @@ func NewS3StateManager(technique *stratus.AttackTechnique, cfg S3BackendConfig) 
 	homeDirectory, _ := os.UserHomeDir()
 	sm := &S3StateManager{
 		config:        cfg,
-		s3Client:      s3.NewFromConfig(cfg.AWSConfig),
+		s3Client: s3.NewFromConfig(cfg.AWSConfig, func(o *s3.Options) {
+			o.DisableLogOutputChecksumValidationSkipped = true
+		}),
 		technique:     technique,
 		rootDirectory: filepath.Join(homeDirectory, config.StratusBaseDirectoryName),
 		fileSystem:    &LocalFileSystem{},
