@@ -7,6 +7,7 @@ toolchain go1.24.2
 require (
 	cloud.google.com/go/compute v1.31.1
 	cloud.google.com/go/secretmanager v1.14.4
+	cloud.google.com/go/storage v1.43.0
 	cloud.google.com/go/vertexai v0.12.0
 	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.20.0
 	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.13.1
