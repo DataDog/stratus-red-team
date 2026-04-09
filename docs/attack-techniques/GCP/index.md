@@ -34,6 +34,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   
   - [Backdoor a Cloud Function by Granting Public Invoke Access](./gcp.persistence.backdoor-cloud-function.md)
   
+  - [Overwrite a Cloud Function with Malicious Source Code](./gcp.persistence.overwrite-cloud-function.md)
+  
 
 ## Privilege Escalation
   

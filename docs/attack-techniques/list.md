@@ -113,3 +113,4 @@ This page contains the list of all Stratus Attack Techniques.
 | [Ransomware Simulation — Delete All GCS Objects in Batch](./GCP/gcp.impact.ransomware-gcs-batch-deletion.md) | [GCP](./GCP/index.md) | Impact |
 | [Ransomware Simulation — Encrypt GCS Objects Client-Side](./GCP/gcp.impact.ransomware-gcs-client-side-encryption.md) | [GCP](./GCP/index.md) | Impact |
 | [Ransomware Simulation — Delete GCS Objects Individually](./GCP/gcp.impact.ransomware-gcs-individual-deletion.md) | [GCP](./GCP/index.md) | Impact |
+| [Overwrite a Cloud Function with Malicious Source Code](./GCP/gcp.persistence.overwrite-cloud-function.md) | [GCP](./GCP/index.md) | Persistence |
