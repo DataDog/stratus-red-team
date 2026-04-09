@@ -102,4 +102,5 @@ This page contains the list of all Stratus Attack Techniques.
 | [Impersonate GCP Service Accounts](./GCP/gcp.privilege-escalation.impersonate-service-accounts.md) | [GCP](./GCP/index.md) | Privilege Escalation |
 | [Delete a GCP Log Sink](./GCP/gcp.defense-evasion.delete-logging-sink.md) | [GCP](./GCP/index.md) | Defense Evasion |
 | [Disable a GCP Log Sink](./GCP/gcp.defense-evasion.disable-logging-sink.md) | [GCP](./GCP/index.md) | Defense Evasion |
+| [Inject a Malicious Startup Script into a Vertex AI Workbench Instance](./GCP/gcp.execution.modify-vertex-notebook-startup.md) | [GCP](./GCP/index.md) | Execution, Privilege Escalation |
 | [Reduce Log Retention Period on a Cloud Logging Sink Bucket](./GCP/gcp.defense-evasion.reduce-sink-log-retention.md) | [GCP](./GCP/index.md) | Defense Evasion |
