@@ -99,3 +99,5 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   
   - [Create GCE Instances in Multiple Zones](./gcp.impact.create-instances-in-multiple-zones.md)
   
+  - [Invoke a Vertex AI Model](./gcp.impact.invoke-vertex-ai-model.md)
+  
