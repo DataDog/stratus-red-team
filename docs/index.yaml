@@ -770,6 +770,13 @@ GCP:
             - Privilege Escalation
           platform: GCP
           isIdempotent: false
+        - id: gcp.persistence.create-workload-identity-federation
+          name: Create a Workload Identity Federation Pool and Provider
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+          platform: GCP
+          isIdempotent: false
         - id: gcp.persistence.invite-external-user
           name: Invite an External User to a GCP Project
           isSlow: false

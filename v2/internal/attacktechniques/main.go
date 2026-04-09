@@ -93,6 +93,7 @@ import (
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/persistence/backdoor-cloud-function"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/persistence/backdoor-service-account-policy"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/persistence/create-admin-service-account"
+	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/persistence/create-workload-identity-federation"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/persistence/create-service-account-key"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/persistence/invite-external-user"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/privilege-escalation/impersonate-service-accounts"
