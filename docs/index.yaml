@@ -777,6 +777,13 @@ GCP:
             - Persistence
           platform: GCP
           isIdempotent: true
+        - id: gcp.persistence.backdoor-cloud-function
+          name: Backdoor a Cloud Function by Granting Public Invoke Access
+          isSlow: true
+          mitreAttackTactics:
+            - Persistence
+          platform: GCP
+          isIdempotent: true
     Privilege Escalation:
         - id: gcp.execution.modify-gce-startup-script
           name: Modify a GCE Instance Startup Script

@@ -30,6 +30,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   
   - [Invite an External User to a GCP Project](./gcp.persistence.invite-external-user.md)
   
+  - [Backdoor a Cloud Function by Granting Public Invoke Access](./gcp.persistence.backdoor-cloud-function.md)
+  
 
 ## Privilege Escalation
   

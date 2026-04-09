@@ -90,6 +90,7 @@ import (
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/impact/ransomware-gcs-individual-deletion"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/initial-access/use-compute-sa-outside-gcp"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/lateral-movement/add-sshkey-instance-metadata"
+	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/persistence/backdoor-cloud-function"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/persistence/backdoor-service-account-policy"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/persistence/create-admin-service-account"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/persistence/create-service-account-key"
