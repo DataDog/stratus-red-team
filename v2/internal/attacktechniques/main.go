@@ -86,6 +86,7 @@ import (
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/impact/invoke-vertex-ai-model"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/impact/create-instances-in-multiple-zones"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/impact/ransomware-gcs-batch-deletion"
+	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/impact/ransomware-gcs-client-side-encryption"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/initial-access/use-compute-sa-outside-gcp"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/lateral-movement/add-sshkey-instance-metadata"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/gcp/persistence/backdoor-service-account-policy"

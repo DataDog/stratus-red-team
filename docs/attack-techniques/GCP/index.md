@@ -103,3 +103,5 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   
   - [Ransomware Simulation — Delete All GCS Objects in Batch](./gcp.impact.ransomware-gcs-batch-deletion.md)
   
+  - [Ransomware Simulation — Encrypt GCS Objects Client-Side](./gcp.impact.ransomware-gcs-client-side-encryption.md)
+  
