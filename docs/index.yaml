@@ -634,6 +634,13 @@ GCP:
             - Privilege Escalation
           platform: GCP
           isIdempotent: false
+        - id: gcp.execution.os-config-run-command
+          name: Execute Commands on GCE Instances via OS Config Agent
+          isSlow: true
+          mitreAttackTactics:
+            - Execution
+          platform: GCP
+          isIdempotent: false
     Exfiltration:
         - id: gcp.exfiltration.share-compute-disk
           name: Exfiltrate Compute Disk by sharing it

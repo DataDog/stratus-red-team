@@ -15,6 +15,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   
   - [Inject a Malicious Startup Script into a Vertex AI Workbench Instance](./gcp.execution.modify-vertex-notebook-startup.md)
   
+  - [Execute Commands on GCE Instances via OS Config Agent](./gcp.execution.os-config-run-command.md)
+  
 
 ## Persistence
   
