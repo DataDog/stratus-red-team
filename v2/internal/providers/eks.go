@@ -18,12 +18,31 @@ type EKSProvider struct {
 	UniqueCorrelationId uuid.UUID // unique value injected in the user-agent, to differentiate Stratus Red Team executions
 }
 
-func NewEKSProvider(uuid uuid.UUID) *EKSProvider {
-	return &EKSProvider{
-		awsProvider:         NewAWSProvider(uuid),
-		k8sProvider:         NewK8sProvider(uuid),
-		UniqueCorrelationId: uuid,
+// EKSProviderOption configures optional overrides on an EKSProvider.
+type EKSProviderOption func(*EKSProvider)
+
+// WithEKSAWSProvider overrides the default AWS provider.
+func WithEKSAWSProvider(p *AWSProvider) EKSProviderOption {
+	return func(e *EKSProvider) { e.awsProvider = p }
+}
+
+// WithEKSK8sProvider overrides the default K8s provider.
+func WithEKSK8sProvider(p *K8sProvider) EKSProviderOption {
+	return func(e *EKSProvider) { e.k8sProvider = p }
+}
+
+func NewEKSProvider(correlationId uuid.UUID, opts ...EKSProviderOption) *EKSProvider {
+	p := &EKSProvider{UniqueCorrelationId: correlationId}
+	for _, opt := range opts {
+		opt(p)
 	}
+	if p.awsProvider == nil {
+		p.awsProvider = NewAWSProvider(correlationId)
+	}
+	if p.k8sProvider == nil {
+		p.k8sProvider = NewK8sProvider(correlationId)
+	}
+	return p
 }
 
 func (m *EKSProvider) GetAWSConnection() aws.Config {

@@ -33,11 +33,24 @@ type GCPProvider struct {
 	ProjectId           string
 }
 
-func NewGCPProvider(uuid uuid.UUID) *GCPProvider {
-	return &GCPProvider{
-		UniqueCorrelationId: uuid,
+// GCPProviderOption configures optional overrides on a GCPProvider.
+type GCPProviderOption func(*GCPProvider)
+
+// WithGCPProjectID overrides the project ID instead of reading it from
+// environment variables.
+func WithGCPProjectID(projectId string) GCPProviderOption {
+	return func(p *GCPProvider) { p.ProjectId = projectId }
+}
+
+func NewGCPProvider(correlationId uuid.UUID, opts ...GCPProviderOption) *GCPProvider {
+	p := &GCPProvider{
+		UniqueCorrelationId: correlationId,
 		ProjectId:           getProjectId(),
 	}
+	for _, opt := range opts {
+		opt(p)
+	}
+	return p
 }
 
 func (m *GCPProvider) Options() option.ClientOption {
