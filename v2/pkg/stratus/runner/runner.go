@@ -20,6 +20,9 @@ const StratusRunnerNoForce = false
 
 const EnvVarStratusRedTeamDetonationId = "STRATUS_RED_TEAM_DETONATION_ID"
 
+// Use an existing terraform binary path instead of letting the runner download it.
+const EnvVarStratusTerraformBinaryPath = "STRATUS_TERRAFORM_BINARY_PATH"
+
 // RunnerOption configures optional dependencies on a Runner.
 // When no options are provided, the runner uses its default implementations
 // (filesystem state, bundled Terraform, default cloud provider credentials).
@@ -108,9 +111,13 @@ func NewRunnerWithContext(ctx context.Context, technique *stratus.AttackTechniqu
 	}
 
 	if runner.TerraformManager == nil {
+		terraformBinaryPath := filepath.Join(runner.StateManager.GetRootDirectory(), "terraform")
+		if envPath := os.Getenv(EnvVarStratusTerraformBinaryPath); envPath != "" {
+			terraformBinaryPath = envPath
+		}
 		runner.TerraformManager = NewTerraformManagerWithContext(
 			ctx,
-			filepath.Join(runner.StateManager.GetRootDirectory(), "terraform"),
+			terraformBinaryPath,
 			useragent.GetStratusUserAgentForUUID(runner.UniqueCorrelationID),
 		)
 	}
