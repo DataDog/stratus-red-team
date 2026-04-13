@@ -15,6 +15,10 @@ import (
 	"github.com/google/uuid"
 )
 
+// S3BackendConfig is re-exported for external consumers that cannot import
+// internal/state directly.
+type S3BackendConfig = state.S3BackendConfig
+
 const StratusRunnerForce = true
 const StratusRunnerNoForce = false
 
@@ -53,17 +57,29 @@ func WithCorrelationID(id uuid.UUID) RunnerOption {
 	return func(r *runnerImpl) { r.UniqueCorrelationID = id }
 }
 
+// WithS3Backend configures the runner to store both Terraform state and
+// Stratus internal state in an S3 bucket. Replaces the default filesystem
+// state manager and injects backend credentials into the TerraformManager.
+func WithS3Backend(cfg state.S3BackendConfig) RunnerOption {
+	return func(r *runnerImpl) {
+		s3State := state.NewS3StateManager(r.Technique, cfg)
+		r.StateManager = s3State
+		r.terraformBackendConfigs = s3State.BackendConfigs()
+	}
+}
+
 type runnerImpl struct {
-	Technique           *stratus.AttackTechnique
-	TechniqueState      stratus.AttackTechniqueState
-	TerraformDir        string
-	ShouldForce         bool
-	Config              config.Config
-	TerraformManager    TerraformManager
-	StateManager        state.StateManager
-	ProviderFactory     stratus.CloudProviders
-	UniqueCorrelationID uuid.UUID
-	Context             context.Context
+	Technique               *stratus.AttackTechnique
+	TechniqueState          stratus.AttackTechniqueState
+	TerraformDir            string
+	ShouldForce             bool
+	Config                  config.Config
+	TerraformManager        TerraformManager
+	StateManager            state.StateManager
+	ProviderFactory         stratus.CloudProviders
+	UniqueCorrelationID     uuid.UUID
+	Context                 context.Context
+	terraformBackendConfigs map[string]string
 }
 
 type Runner interface {
@@ -115,10 +131,15 @@ func NewRunnerWithContext(ctx context.Context, technique *stratus.AttackTechniqu
 		if envPath := os.Getenv(EnvVarStratusTerraformBinaryPath); envPath != "" {
 			terraformBinaryPath = envPath
 		}
+		var tfOpts []TerraformManagerOption
+		if len(runner.terraformBackendConfigs) > 0 {
+			tfOpts = append(tfOpts, WithBackendConfigs(runner.terraformBackendConfigs))
+		}
 		runner.TerraformManager = NewTerraformManagerWithContext(
 			ctx,
 			terraformBinaryPath,
 			useragent.GetStratusUserAgentForUUID(runner.UniqueCorrelationID),
+			tfOpts...,
 		)
 	}
 
@@ -301,8 +322,13 @@ func (m *runnerImpl) CleanUp() error {
 
 	// Nuke prerequisites
 	if m.Technique.PrerequisitesTerraformCode != nil {
-		// Load persisted Terraform variables from filesystem. We don't use the variables from the
-		// config file, that may have change since warmup, so we rely only on the persisted variables.
+		// Ensure TF files are on disk
+		if err := m.StateManager.ExtractTechnique(); err != nil {
+			return errors.New("unable to extract Terraform files for cleanup: " + err.Error())
+		}
+
+		// Load persisted Terraform variables. We don't use the variables from the config file, that
+		// may have changed since warmup, so we rely only on the persisted variables.
 		persistedVars, err := m.StateManager.GetTerraformVariables()
 		if err != nil {
 			log.Println("Warning: unable to load persisted Terraform variables: " + err.Error())
