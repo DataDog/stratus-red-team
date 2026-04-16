@@ -12,6 +12,7 @@ locals {
 
   base_labels = {
     "datadoghq.com/stratus-red-team" : true
+    "datadoghq.com/stratus-red-team-correlation-id" : var.correlation.id
   }
   custom_labels = var.config.kubernetes.pod.labels
   labels        = merge(local.base_labels, local.custom_labels)
@@ -55,7 +56,7 @@ resource "kubernetes_service_account" "serviceaccount" {
 
 resource "kubernetes_pod" "pod" {
   metadata {
-    name        = format("%s-pod", local.resource_prefix)
+    name        = format("%s-pod-%s", local.resource_prefix, var.correlation.id)
     labels      = local.labels
     annotations = var.config.kubernetes.pod.annotations
     namespace   = local.namespace

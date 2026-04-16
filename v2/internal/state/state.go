@@ -1,6 +1,7 @@
 package state
 
 import (
+	_ "embed"
 	"encoding/json"
 	"log"
 	"os"
@@ -10,6 +11,13 @@ import (
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/config"
 )
+
+// sharedCorrelationVariable is the shared Terraform variable "correlation",
+// injected alongside technique main.tf files at warmup time. Techniques can
+// use var.correlation.id to embed the correlation ID in resource names.
+//
+//go:embed correlation.tf
+var sharedCorrelationVariable []byte
 
 const StratusStateTerraformOutputsFileName = ".terraform-outputs"
 const StratusStateTerraformVariablesFileName = ".terraform-variables"
@@ -101,9 +109,14 @@ func (m *FileSystemStateManager) ExtractTechnique() error {
 		return err
 	}
 
-	// Inject the shared config variable definition alongside the technique's main.tf
+	// Inject shared variable definitions alongside the technique's main.tf
 	configFile := filepath.Join(terraformDirectory, "config.tf")
 	if err := m.FileSystem.WriteFile(configFile, config.SharedTerraformConfigVariable, 0644); err != nil {
+		return err
+	}
+
+	correlationFile := filepath.Join(terraformDirectory, "correlation.tf")
+	if err := m.FileSystem.WriteFile(correlationFile, sharedCorrelationVariable, 0644); err != nil {
 		return err
 	}
 

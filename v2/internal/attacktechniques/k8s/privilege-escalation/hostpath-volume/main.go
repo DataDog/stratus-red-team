@@ -4,6 +4,7 @@ import (
 	"context"
 	_ "embed"
 	"errors"
+	"fmt"
 	"log"
 
 	"github.com/aws/smithy-go/ptr"
@@ -51,7 +52,8 @@ Detonation:
 func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	client := providers.K8s().GetClient()
 	namespace := params["namespace"]
-	podSpec := basePodSpec(namespace)
+	correlationID := providers.K8s().UniqueCorrelationId.String()
+	podSpec := basePodSpec(namespace, correlationID)
 
 	// Apply configuration overrides (image, tolerations, nodeSelector, securityContext)
 	providers.K8s().ApplyPodConfig(techniqueID, podSpec)
@@ -69,7 +71,8 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 func revert(params map[string]string, providers stratus.CloudProviders) error {
 	client := providers.K8s().GetClient()
 	namespace := params["namespace"]
-	podSpec := basePodSpec(namespace)
+	correlationID := providers.K8s().UniqueCorrelationId.String()
+	podSpec := basePodSpec(namespace, correlationID)
 
 	log.Println("Removing malicious pod " + podSpec.ObjectMeta.Name)
 	deleteOptions := metav1.DeleteOptions{GracePeriodSeconds: ptr.Int64(0)}
@@ -81,10 +84,10 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 	return nil
 }
 
-func basePodSpec(namespace string) *v1.Pod {
+func basePodSpec(namespace string, correlationID string) *v1.Pod {
 	return &v1.Pod{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      techniqueID,
+			Name:      fmt.Sprintf("%s-%s", techniqueID, correlationID),
 			Namespace: namespace,
 		},
 		Spec: v1.PodSpec{

@@ -29,8 +29,11 @@ resource "random_string" "suffix" {
 resource "kubernetes_namespace" "namespace" {
   count = local.create_namespace ? 1 : 0
   metadata {
-    name   = local.generated_ns_name
-    labels = { "datadoghq.com/stratus-red-team" : true }
+    name = local.generated_ns_name
+    labels = {
+      "datadoghq.com/stratus-red-team" : true
+      "datadoghq.com/stratus-red-team-correlation-id" : var.correlation.id
+    }
   }
 }
 

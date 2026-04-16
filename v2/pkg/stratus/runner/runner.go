@@ -3,6 +3,7 @@ package runner
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -22,6 +23,9 @@ type S3BackendConfig = state.S3BackendConfig
 const StratusRunnerForce = true
 const StratusRunnerNoForce = false
 
+const EnvVarStratusRedTeamCorrelationId = "STRATUS_RED_TEAM_CORRELATION_ID"
+
+// Deprecated: Use EnvVarStratusRedTeamCorrelationId instead.
 const EnvVarStratusRedTeamDetonationId = "STRATUS_RED_TEAM_DETONATION_ID"
 
 // Use an existing terraform binary path instead of letting the runner download it.
@@ -149,13 +153,25 @@ func NewRunnerWithContext(ctx context.Context, technique *stratus.AttackTechniqu
 }
 
 // resolveCorrelationID returns the correlation ID from the environment variable
-// STRATUS_RED_TEAM_DETONATION_ID if set and valid, otherwise generates a new one.
+// STRATUS_RED_TEAM_CORRELATION_ID (or the deprecated STRATUS_RED_TEAM_DETONATION_ID)
+// if set and valid, otherwise generates a new one.
 func resolveCorrelationID() uuid.UUID {
-	if raw := os.Getenv(EnvVarStratusRedTeamDetonationId); raw != "" {
-		log.Printf("%s is set, using it as the correlation ID", EnvVarStratusRedTeamDetonationId)
+	raw := os.Getenv(EnvVarStratusRedTeamCorrelationId)
+	envName := EnvVarStratusRedTeamCorrelationId
+
+	if raw == "" {
+		raw = os.Getenv(EnvVarStratusRedTeamDetonationId)
+		envName = EnvVarStratusRedTeamDetonationId
+		if raw != "" {
+			log.Printf("WARNING: %s is deprecated, use %s instead", EnvVarStratusRedTeamDetonationId, EnvVarStratusRedTeamCorrelationId)
+		}
+	}
+
+	if raw != "" {
+		log.Printf("%s is set, using it as the correlation ID", envName)
 		parsed, err := uuid.Parse(raw)
 		if err != nil {
-			log.Printf("%s is not a valid UUID, falling back to a randomly-generated one: %s", EnvVarStratusRedTeamDetonationId, err.Error())
+			log.Printf("%s is not a valid UUID, falling back to a randomly-generated one: %s", envName, err.Error())
 			return uuid.New()
 		}
 		return parsed
@@ -379,9 +395,15 @@ func (m *runnerImpl) GetUniqueExecutionId() string {
 	return m.UniqueCorrelationID.String()
 }
 
-// getTerraformVariablesFromConfig returns the terraform variables to use from the config file
+// getTerraformVariablesFromConfig returns the terraform variables to use,
+// including the correlation metadata and any config-file overrides.
 func (m *runnerImpl) getTerraformVariablesFromConfig() map[string]string {
-	return m.Config.GetTerraformVariables(m.Technique.ID)
+	vars := m.Config.GetTerraformVariables(m.Technique.ID)
+	if vars == nil {
+		vars = make(map[string]string)
+	}
+	vars["correlation"] = fmt.Sprintf(`{"id":"%s"}`, m.UniqueCorrelationID.String())
+	return vars
 }
 
 // Utility function to display better error messages than the Terraform ones
