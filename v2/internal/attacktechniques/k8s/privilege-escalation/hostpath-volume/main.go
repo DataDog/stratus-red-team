@@ -89,6 +89,10 @@ func basePodSpec(namespace string, correlationID string) *v1.Pod {
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      fmt.Sprintf("%s-%s", techniqueID, correlationID),
 			Namespace: namespace,
+			Labels: map[string]string{
+				"datadoghq.com/stratus-red-team":                "true",
+				"datadoghq.com/stratus-red-team-correlation-id": correlationID,
+			},
 		},
 		Spec: v1.PodSpec{
 			Containers: []v1.Container{
