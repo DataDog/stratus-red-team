@@ -3,49 +3,69 @@ package runner
 import (
 	"context"
 	"errors"
+	"log"
+	"os"
+	"path"
+	"path/filepath"
+
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
 	"github.com/hashicorp/go-version"
 	"github.com/hashicorp/hc-install/product"
 	"github.com/hashicorp/hc-install/releases"
 	"github.com/hashicorp/terraform-exec/tfexec"
-	"log"
-	"os"
-	"path"
-	"path/filepath"
 )
 
-const TerraformVersion = "1.1.2"
+const TerraformVersion = "1.3.10"
 
 type TerraformManager interface {
 	Initialize()
-	TerraformInitAndApply(directory string) (map[string]string, error)
-	TerraformDestroy(directory string) error
+	TerraformInitAndApply(directory string, variables map[string]string) (map[string]string, error)
+	TerraformDestroy(directory string, variables map[string]string) error
 }
 
 type TerraformManagerImpl struct {
 	terraformBinaryPath string
 	terraformVersion    string
 	terraformUserAgent  string
+	backendConfigs      map[string]string
 	context             context.Context
 }
 
-func NewTerraformManager(terraformBinaryPath string, userAgent string) TerraformManager {
-	return NewTerraformManagerWithContext(context.Background(), terraformBinaryPath, userAgent)
+// TerraformManagerOption configures optional overrides on a TerraformManagerImpl.
+type TerraformManagerOption func(*TerraformManagerImpl)
+
+// WithBackendConfigs sets key=value pairs passed as -backend-config flags during terraform init.
+// Used to inject S3 backend credentials without writing them to disk.
+func WithBackendConfigs(configs map[string]string) TerraformManagerOption {
+	return func(m *TerraformManagerImpl) { m.backendConfigs = configs }
 }
 
-func NewTerraformManagerWithContext(ctx context.Context, terraformBinaryPath string, userAgent string) TerraformManager {
+func NewTerraformManager(terraformBinaryPath string, userAgent string, opts ...TerraformManagerOption) TerraformManager {
+	return NewTerraformManagerWithContext(context.Background(), terraformBinaryPath, userAgent, opts...)
+}
+
+func NewTerraformManagerWithContext(ctx context.Context, terraformBinaryPath string, userAgent string, opts ...TerraformManagerOption) TerraformManager {
 	manager := TerraformManagerImpl{
 		terraformVersion:    TerraformVersion,
 		terraformBinaryPath: terraformBinaryPath,
 		terraformUserAgent:  userAgent,
 		context:             ctx,
 	}
+	for _, opt := range opts {
+		opt(&manager)
+	}
 	manager.Initialize()
 	return &manager
 }
 
 func (m *TerraformManagerImpl) Initialize() {
-	// Ensure the appropriate version of Terraform is installed locally in the Stratus Red Team folder
+	if utils.FileExists(m.terraformBinaryPath) {
+		if m.existingBinaryVersionSufficient() {
+			return
+		}
+		log.Printf("Terraform binary at %s is below required version %s, downloading the correct version", m.terraformBinaryPath, m.terraformVersion)
+	}
+
 	terraformInstaller := &releases.ExactVersion{
 		Product:                  product.Terraform,
 		Version:                  version.Must(version.NewVersion(TerraformVersion)),
@@ -58,7 +78,7 @@ func (m *TerraformManagerImpl) Initialize() {
 	}
 }
 
-func (m *TerraformManagerImpl) TerraformInitAndApply(directory string) (map[string]string, error) {
+func (m *TerraformManagerImpl) TerraformInitAndApply(directory string, variables map[string]string) (map[string]string, error) {
 	terraform, err := tfexec.NewTerraform(directory, m.terraformBinaryPath)
 	if err != nil {
 		return map[string]string{}, errors.New("unable to instantiate Terraform: " + err.Error())
@@ -69,23 +89,16 @@ func (m *TerraformManagerImpl) TerraformInitAndApply(directory string) (map[stri
 		return map[string]string{}, errors.New("unable to configure Terraform: " + err.Error())
 	}
 
-	terraformInitializedFile := path.Join(directory, ".terraform-initialized")
-	if !utils.FileExists(terraformInitializedFile) {
-		log.Println("Initializing Terraform to spin up technique prerequisites")
-		err = terraform.Init(m.context)
-		if err != nil {
-			return nil, errors.New("unable to Initialize Terraform: " + err.Error())
-		}
-
-		_, err = os.Create(terraformInitializedFile)
-		if err != nil {
-			return nil, errors.New("unable to initialize Terraform: " + err.Error())
-		}
-
+	if err := m.ensureInitialized(terraform, directory); err != nil {
+		return nil, errors.New("unable to Initialize Terraform: " + err.Error())
 	}
 
 	log.Println("Applying Terraform to spin up technique prerequisites")
-	err = terraform.Apply(m.context, tfexec.Refresh(false))
+	applyOptions := []tfexec.ApplyOption{tfexec.Refresh(false)}
+	for key, value := range variables {
+		applyOptions = append(applyOptions, tfexec.Var(key+"="+value))
+	}
+	err = terraform.Apply(m.context, applyOptions...)
 	if err != nil {
 		return nil, errors.New("unable to apply Terraform: " + err.Error())
 	}
@@ -101,11 +114,65 @@ func (m *TerraformManagerImpl) TerraformInitAndApply(directory string) (map[stri
 	return outputs, nil
 }
 
-func (m *TerraformManagerImpl) TerraformDestroy(directory string) error {
+func (m *TerraformManagerImpl) TerraformDestroy(directory string, variables map[string]string) error {
 	terraform, err := tfexec.NewTerraform(directory, m.terraformBinaryPath)
 	if err != nil {
 		return err
 	}
 
-	return terraform.Destroy(m.context)
+	if err := m.ensureInitialized(terraform, directory); err != nil {
+		return errors.New("unable to initialize Terraform for destroy: " + err.Error())
+	}
+
+	destroyOptions := []tfexec.DestroyOption{}
+	for key, value := range variables {
+		destroyOptions = append(destroyOptions, tfexec.Var(key+"="+value))
+	}
+	return terraform.Destroy(m.context, destroyOptions...)
+}
+
+// existingBinaryVersionSufficient checks whether the terraform binary at terraformBinaryPath has a
+// version >= TerraformVersion. Returns false if the version cannot be determined.
+func (m *TerraformManagerImpl) existingBinaryVersionSufficient() bool {
+	// tfexec needs a working directory
+	tmpDir, err := os.MkdirTemp("", "stratus-tf-version-check")
+	if err != nil {
+		return false
+	}
+	defer os.RemoveAll(tmpDir)
+
+	tf, err := tfexec.NewTerraform(tmpDir, m.terraformBinaryPath)
+	if err != nil {
+		return false
+	}
+
+	installedVersion, _, err := tf.Version(m.context, true)
+	if err != nil {
+		return false
+	}
+
+	requiredVersion := version.Must(version.NewVersion(m.terraformVersion))
+	return installedVersion.GreaterThanOrEqual(requiredVersion)
+}
+
+// ensureInitialized runs terraform init if not already done in this working directory.
+// Backend config credentials are passed via -backend-config flags, keeping secrets off disk.
+func (m *TerraformManagerImpl) ensureInitialized(tf *tfexec.Terraform, directory string) error {
+	markerFile := path.Join(directory, ".terraform-initialized")
+	if utils.FileExists(markerFile) {
+		return nil
+	}
+
+	log.Println("Initializing Terraform")
+	var initOpts []tfexec.InitOption
+	for key, value := range m.backendConfigs {
+		initOpts = append(initOpts, tfexec.BackendConfig(key+"="+value))
+	}
+
+	if err := tf.Init(m.context, initOpts...); err != nil {
+		return err
+	}
+
+	_, err := os.Create(markerFile)
+	return err
 }

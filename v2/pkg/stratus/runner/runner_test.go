@@ -1,13 +1,18 @@
 package runner
 
 import (
+	"context"
 	"errors"
+	"testing"
+
+	"github.com/aws/aws-sdk-go-v2/aws"
 	statemocks "github.com/datadog/stratus-red-team/v2/internal/state/mocks"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	configmocks "github.com/datadog/stratus-red-team/v2/pkg/stratus/config/mocks"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/runner/mocks"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"testing"
 )
 
 func TestRunnerWarmUp(t *testing.T) {
@@ -46,7 +51,7 @@ func TestRunnerWarmUp(t *testing.T) {
 			TerraformOutputs:      map[string]string{"myoutput": "new"},
 			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, outputs map[string]string, err error) {
 				state.AssertCalled(t, "ExtractTechnique")
-				terraform.AssertCalled(t, "TerraformInitAndApply", "/root/foo")
+				terraform.AssertCalled(t, "TerraformInitAndApply", "/root/foo", map[string]string{})
 				state.AssertCalled(t, "WriteTerraformOutputs", map[string]string{"myoutput": "new"})
 				state.AssertCalled(t, "SetTechniqueState", stratus.AttackTechniqueState(stratus.AttackTechniqueStatusWarm))
 
@@ -74,7 +79,7 @@ func TestRunnerWarmUp(t *testing.T) {
 			InitialTechniqueState: stratus.AttackTechniqueStatusWarm,
 			TerraformOutputs:      map[string]string{"myoutput": "old"},
 			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, outputs map[string]string, err error) {
-				terraform.AssertCalled(t, "TerraformInitAndApply", "/root/foo")
+				terraform.AssertCalled(t, "TerraformInitAndApply", "/root/foo", map[string]string{})
 				assert.Nil(t, err)
 				assert.Len(t, outputs, 1)
 				assert.Equal(t, "old", outputs["myoutput"])
@@ -98,8 +103,8 @@ func TestRunnerWarmUp(t *testing.T) {
 			InitialTechniqueState: stratus.AttackTechniqueStatusCold,
 			Error:                 errors.New("error during init and apply"),
 			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, outputs map[string]string, err error) {
-				terraform.AssertCalled(t, "TerraformInitAndApply", "/root/foo")
-				terraform.AssertCalled(t, "TerraformDestroy", "/root/foo")
+				terraform.AssertCalled(t, "TerraformInitAndApply", "/root/foo", map[string]string{})
+				terraform.AssertCalled(t, "TerraformDestroy", "/root/foo", map[string]string{})
 				assert.NotNil(t, err)
 				assert.Len(t, outputs, 0)
 			},
@@ -107,21 +112,24 @@ func TestRunnerWarmUp(t *testing.T) {
 	}
 
 	for i := range scenario {
+		config := new(configmocks.Config)
 		state := new(statemocks.StateManager)
 		terraform := new(mocks.TerraformManager)
 
+		config.On("GetTerraformVariables", mock.Anything, mock.Anything).Return(map[string]string{})
 		state.On("GetRootDirectory").Return("/root")
 		state.On("ExtractTechnique").Return(nil)
 		state.On("GetTechniqueState", mock.Anything).Return(scenario[i].InitialTechniqueState, nil)
 		state.On("GetTerraformOutputs").Return(scenario[i].PersistedOutputs, nil)
-		terraform.On("TerraformInitAndApply", mock.Anything).Return(scenario[i].TerraformOutputs, scenario[i].Error)
-		terraform.On("TerraformDestroy", mock.Anything).Return(nil)
+		terraform.On("TerraformInitAndApply", mock.Anything, mock.Anything).Return(scenario[i].TerraformOutputs, scenario[i].Error)
+		terraform.On("TerraformDestroy", mock.Anything, mock.Anything).Return(nil)
 		state.On("WriteTerraformOutputs", mock.Anything).Return(nil)
 		state.On("SetTechniqueState", mock.Anything).Return(nil)
 
 		runner := runnerImpl{
 			Technique:        scenario[i].Technique,
 			ShouldForce:      scenario[i].ShouldForce,
+			Config:           config,
 			TerraformManager: terraform,
 			StateManager:     state,
 		}
@@ -199,13 +207,15 @@ func TestRunnerDetonate(t *testing.T) {
 
 	for i := range scenario {
 		t.Run(scenario[i].Name, func(t *testing.T) {
+			config := new(configmocks.Config)
 			state := new(statemocks.StateManager)
 			terraform := new(mocks.TerraformManager)
 
+			config.On("GetTerraformVariables", mock.Anything, mock.Anything).Return(map[string]string{})
 			state.On("GetRootDirectory").Return("/root")
 			state.On("ExtractTechnique").Return(nil)
 			state.On("GetTechniqueState", mock.Anything).Return(scenario[i].TechniqueState, nil)
-			terraform.On("TerraformInitAndApply", mock.Anything).Return(map[string]string{}, nil)
+			terraform.On("TerraformInitAndApply", mock.Anything, mock.Anything).Return(map[string]string{}, nil)
 			state.On("WriteTerraformOutputs", mock.Anything).Return(nil)
 			state.On("GetTerraformOutputs").Return(map[string]string{}, nil)
 			state.On("SetTechniqueState", mock.Anything).Return(nil)
@@ -221,6 +231,7 @@ func TestRunnerDetonate(t *testing.T) {
 					IsIdempotent: scenario[i].IsIdempotent,
 				},
 				ShouldForce:      scenario[i].Force,
+				Config:           config,
 				TerraformManager: terraform,
 				StateManager:     state,
 			}
@@ -369,7 +380,7 @@ func TestRunnerCleanup(t *testing.T) {
 			ShouldForce:           true,
 			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, err error) {
 				assert.Nil(t, err)
-				terraform.AssertCalled(t, "TerraformDestroy", mock.Anything)
+				terraform.AssertCalled(t, "TerraformDestroy", mock.Anything, mock.Anything)
 				state.AssertCalled(t, "CleanupTechnique")
 			},
 		},
@@ -379,7 +390,7 @@ func TestRunnerCleanup(t *testing.T) {
 			InitialTechniqueState: stratus.AttackTechniqueStatusWarm,
 			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, err error) {
 				assert.Nil(t, err)
-				terraform.AssertCalled(t, "TerraformDestroy", mock.Anything)
+				terraform.AssertCalled(t, "TerraformDestroy", mock.Anything, mock.Anything)
 				state.AssertCalled(t, "CleanupTechnique")
 				state.AssertCalled(t, "SetTechniqueState", stratus.AttackTechniqueState(stratus.AttackTechniqueStatusCold))
 			},
@@ -430,6 +441,7 @@ func TestRunnerCleanup(t *testing.T) {
 		state := new(statemocks.StateManager)
 		terraform := new(mocks.TerraformManager)
 
+		state.On("GetTerraformVariables").Return(map[string]string{}, nil)
 		state.On("GetRootDirectory").Return("/root")
 		state.On("ExtractTechnique").Return(nil)
 		state.On("GetTechniqueState", mock.Anything).Return(scenario[i].InitialTechniqueState, nil)
@@ -437,9 +449,9 @@ func TestRunnerCleanup(t *testing.T) {
 		state.On("CleanupTechnique").Return(nil)
 		state.On("GetTerraformOutputs").Return(map[string]string{}, nil)
 		if scenario[i].TerraformDestroyFails {
-			terraform.On("TerraformDestroy", mock.Anything).Return(errors.New("nope"))
+			terraform.On("TerraformDestroy", mock.Anything, mock.Anything).Return(errors.New("nope"))
 		} else {
-			terraform.On("TerraformDestroy", mock.Anything).Return(nil)
+			terraform.On("TerraformDestroy", mock.Anything, mock.Anything).Return(nil)
 		}
 		if scenario[i].RevertFails {
 			scenario[i].Technique.Revert = func(map[string]string, stratus.CloudProviders) error {
@@ -456,4 +468,152 @@ func TestRunnerCleanup(t *testing.T) {
 		err := runner.CleanUp()
 		t.Run(scenario[i].Name, func(t *testing.T) { scenario[i].CheckExpectations(t, terraform, state, err) })
 	}
+}
+
+// TestNewRunnerWithOptions verifies that injected dependencies are used
+// instead of the defaults (filesystem state, downloaded Terraform, etc.).
+func TestNewRunnerWithOptions(t *testing.T) {
+	stateMock := new(statemocks.StateManager)
+	tfMock := new(mocks.TerraformManager)
+	configMock := new(configmocks.Config)
+	correlationID := uuid.MustParse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee")
+
+	stateMock.On("GetRootDirectory").Return("/custom/root")
+	stateMock.On("GetTechniqueState").Return(stratus.AttackTechniqueState(stratus.AttackTechniqueStatusCold))
+
+	technique := &stratus.AttackTechnique{ID: "test.technique"}
+
+	r := NewRunnerWithContext(
+		context.Background(),
+		technique,
+		false,
+		WithStateManager(stateMock),
+		WithTerraformManager(tfMock),
+		WithConfig(configMock),
+		WithCorrelationID(correlationID),
+	)
+
+	assert.Equal(t, stratus.AttackTechniqueState(stratus.AttackTechniqueStatusCold), r.GetState())
+	assert.Equal(t, correlationID.String(), r.GetUniqueExecutionId())
+
+	// Verify the injected state manager was actually called during init
+	stateMock.AssertCalled(t, "GetRootDirectory")
+	stateMock.AssertCalled(t, "GetTechniqueState")
+}
+
+// TestNewRunnerWithProviderFactory verifies that an injected provider factory
+// is preserved and not overwritten by the default.
+func TestNewRunnerWithProviderFactory(t *testing.T) {
+	stateMock := new(statemocks.StateManager)
+	tfMock := new(mocks.TerraformManager)
+	configMock := new(configmocks.Config)
+
+	stateMock.On("GetRootDirectory").Return("/root")
+	stateMock.On("GetTechniqueState").Return(stratus.AttackTechniqueState(stratus.AttackTechniqueStatusCold))
+
+	customProviders := stratus.CloudProvidersImpl{
+		UniqueCorrelationID: uuid.MustParse("11111111-2222-3333-4444-555555555555"),
+	}
+
+	technique := &stratus.AttackTechnique{
+		ID:                         "test.provider-injection",
+		PrerequisitesTerraformCode: []byte("resource {}"),
+		Detonate: func(params map[string]string, pf stratus.CloudProviders) error {
+			// Verify we got the injected provider, not a default one
+			assert.Equal(t, customProviders, pf)
+			return nil
+		},
+	}
+
+	stateMock.On("ExtractTechnique").Return(nil)
+	stateMock.On("GetTerraformOutputs").Return(map[string]string{}, nil)
+	stateMock.On("SetTechniqueState", mock.Anything).Return(nil)
+	stateMock.On("WriteTerraformOutputs", mock.Anything).Return(nil)
+	configMock.On("GetTerraformVariables", mock.Anything).Return(map[string]string{})
+	tfMock.On("TerraformInitAndApply", mock.Anything, mock.Anything).Return(map[string]string{}, nil)
+
+	r := NewRunnerWithContext(
+		context.Background(),
+		technique,
+		false,
+		WithStateManager(stateMock),
+		WithTerraformManager(tfMock),
+		WithConfig(configMock),
+		WithProviderFactory(customProviders),
+	)
+
+	// Detonate calls the technique's Detonate function, which asserts
+	// that the injected provider factory was passed through.
+	err := r.Detonate()
+	assert.Nil(t, err)
+}
+
+// TestProviderCredentialInjection demonstrates the full credential injection
+// flow: build providers with explicit credentials, pre-populate
+// CloudProvidersImpl, and pass it to the runner via WithProviderFactory.
+// This is the pattern Cumulus uses to run techniques with per-execution
+// credentials instead of relying on environment variables.
+func TestProviderCredentialInjection(t *testing.T) {
+	stateMock := new(statemocks.StateManager)
+	tfMock := new(mocks.TerraformManager)
+	configMock := new(configmocks.Config)
+	correlationID := uuid.New()
+
+	stateMock.On("GetRootDirectory").Return("/root")
+	stateMock.On("GetTechniqueState").Return(stratus.AttackTechniqueState(stratus.AttackTechniqueStatusCold))
+	stateMock.On("ExtractTechnique").Return(nil)
+	stateMock.On("GetTerraformOutputs").Return(map[string]string{}, nil)
+	stateMock.On("SetTechniqueState", mock.Anything).Return(nil)
+	stateMock.On("WriteTerraformOutputs", mock.Anything).Return(nil)
+	configMock.On("GetTerraformVariables", mock.Anything).Return(map[string]string{})
+	tfMock.On("TerraformInitAndApply", mock.Anything, mock.Anything).Return(map[string]string{}, nil)
+
+	// Build an AWS provider with explicit static credentials using the
+	// public API (same functions available to external consumers)
+	awsCfg := stratus.AWSConfigFromCredentials(
+		"AKIAIOSFODNN7EXAMPLE",
+		"wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+		"",
+		&correlationID,
+	)
+	awsProvider := stratus.NewAWSProvider(correlationID, stratus.WithAWSConfig(awsCfg))
+
+	// Pre-populate CloudProvidersImpl with the explicitly-credentialed
+	// provider. Other providers (K8s, Azure, etc.) are left nil and would
+	// be lazily initialized from defaults if a technique needed them.
+	customFactory := stratus.CloudProvidersImpl{
+		UniqueCorrelationID: correlationID,
+		AWSProvider:         awsProvider,
+	}
+
+	var receivedConfig aws.Config
+	technique := &stratus.AttackTechnique{
+		ID:                         "test.credential-injection",
+		PrerequisitesTerraformCode: []byte("resource {}"),
+		Detonate: func(params map[string]string, pf stratus.CloudProviders) error {
+			receivedConfig = pf.AWS().GetConnection()
+			return nil
+		},
+	}
+
+	r := NewRunnerWithContext(
+		context.Background(),
+		technique,
+		false,
+		WithStateManager(stateMock),
+		WithTerraformManager(tfMock),
+		WithConfig(configMock),
+		WithProviderFactory(customFactory),
+	)
+
+	err := r.Detonate()
+	assert.Nil(t, err)
+
+	// Verify the injected credentials made it through to the Detonate
+	// function — the provider should use our explicit config, not the
+	// default credential chain.
+	creds, err := receivedConfig.Credentials.Retrieve(context.Background())
+	assert.Nil(t, err)
+	assert.Equal(t, "AKIAIOSFODNN7EXAMPLE", creds.AccessKeyID)
+	assert.Equal(t, "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY", creds.SecretAccessKey)
 }

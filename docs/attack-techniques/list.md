@@ -26,6 +26,7 @@ This page contains the list of all Stratus Attack Techniques.
 | [Enumerate SES](./AWS/aws.discovery.ses-enumerate.md) | [AWS](./AWS/index.md) | Discovery |
 | [Launch Unusual EC2 instances](./AWS/aws.execution.ec2-launch-unusual-instances.md) | [AWS](./AWS/index.md) | Execution |
 | [Execute Commands on EC2 Instance via User Data](./AWS/aws.execution.ec2-user-data.md) | [AWS](./AWS/index.md) | Execution, Privilege Escalation |
+| [Execute Commands on SageMaker Notebook Instance via Lifecycle Configuration](./AWS/aws.execution.sagemaker-update-lifecycle-config.md) | [AWS](./AWS/index.md) | Execution, Privilege Escalation |
 | [Usage of ssm:SendCommand on multiple instances](./AWS/aws.execution.ssm-send-command.md) | [AWS](./AWS/index.md) | Execution |
 | [Usage of ssm:StartSession on multiple instances](./AWS/aws.execution.ssm-start-session.md) | [AWS](./AWS/index.md) | Execution |
 | [Open Ingress Port 22 on a Security Group](./AWS/aws.exfiltration.ec2-security-group-open-port-22-ingress.md) | [AWS](./AWS/index.md) | Exfiltration |
@@ -54,9 +55,17 @@ This page contains the list of all Stratus Attack Techniques.
 | [Execute Command on Virtual Machine using Custom Script Extension](./azure/azure.execution.vm-custom-script-extension.md) | [Azure](./azure/index.md) | Execution |
 | [Execute Commands on Virtual Machine using Run Command](./azure/azure.execution.vm-run-command.md) | [Azure](./azure/index.md) | Execution |
 | [Export Disk Through SAS URL](./azure/azure.exfiltration.disk-export.md) | [Azure](./azure/index.md) | Exfiltration |
+| [Exfiltrate Azure Storage via public access](./azure/azure.exfiltration.storage-public-access.md) | [Azure](./azure/index.md) | Exfiltration |
+| [Exfiltrate Azure Storage through SAS URL](./azure/azure.exfiltration.storage-sas-export.md) | [Azure](./azure/index.md) | Exfiltration |
+| [Azure Blob Storage ransomware through Encryption Scope using client-managed Key Vault key](./azure/azure.impact.blob-ransomware-client-encryption-scope.md) | [Azure](./azure/index.md) | Impact |
+| [Azure ransomware via Storage Account Blob deletion](./azure/azure.impact.blob-ransomware-individual-file-deletion.md) | [Azure](./azure/index.md) | Impact |
+| [Delete Azure resource lock](./azure/azure.impact.resource-lock.md) | [Azure](./azure/index.md) | Impact |
+| [Backdoor Azure Managed Identity with Federated Identity Credential (FIC)](./azure/azure.persistence.backdoor-managed-identity-fic.md) | [Azure](./azure/index.md) | Persistence, Privilege Escalation |
 | [Create Azure VM Bastion shareable link](./azure/azure.persistence.create-bastion-shareable-link.md) | [Azure](./azure/index.md) | Persistence |
+| [Elevate to User Access Administrator at Root Scope](./azure/azure.privilege-escalation.root-user-access-administrator.md) | [Azure](./azure/index.md) | Privilege Escalation |
 | [Create Admin EKS Access Entry](./EKS/eks.lateral-movement.create-access-entry.md) | [EKS](./EKS/index.md) | Lateral Movement |
 | [Backdoor aws-auth EKS ConfigMap](./EKS/eks.persistence.backdoor-aws-auth-configmap.md) | [EKS](./EKS/index.md) | Persistence, Privilege Escalation |
+| [Backdoor Entra ID application with Federated Identity Credential (FIC)](./entra-id/entra-id.persistence.backdoor-application-fic.md) | [Entra ID](./entra-id/index.md) | Persistence, Privilege Escalation |
 | [Backdoor Entra ID application through service principal](./entra-id/entra-id.persistence.backdoor-application-sp.md) | [Entra ID](./entra-id/index.md) | Persistence, Privilege Escalation |
 | [Backdoor Entra ID application](./entra-id/entra-id.persistence.backdoor-application.md) | [Entra ID](./entra-id/index.md) | Persistence, Privilege Escalation |
 | [Create Guest User](./entra-id/entra-id.persistence.guest-user.md) | [Entra ID](./entra-id/index.md) | Persistence |
@@ -64,9 +73,19 @@ This page contains the list of all Stratus Attack Techniques.
 | [Create Application](./entra-id/entra-id.persistence.new-application.md) | [Entra ID](./entra-id/index.md) | Persistence, Privilege Escalation |
 | [Create Sticky Backdoor User Through Restricted Management AU](./entra-id/entra-id.persistence.restricted-au.md) | [Entra ID](./entra-id/index.md) | Persistence |
 | [Retrieve a High Number of Secret Manager secrets](./GCP/gcp.credential-access.secretmanager-retrieve-secrets.md) | [GCP](./GCP/index.md) | Credential Access |
+| [Delete a Cloud DNS Logging Policy](./GCP/gcp.defense-evasion.delete-dns-logs.md) | [GCP](./GCP/index.md) | Defense Evasion |
+| [Disable Data Access Audit Logs for a GCP Service](./GCP/gcp.defense-evasion.disable-audit-logs.md) | [GCP](./GCP/index.md) | Defense Evasion |
+| [Attempt to Remove a GCP Project from its Organization](./GCP/gcp.defense-evasion.remove-project-from-organization.md) | [GCP](./GCP/index.md) | Defense Evasion |
+| [Disable VPC Flow Logs on a Subnet](./GCP/gcp.defense-evasion.remove-vpc-flow-logs.md) | [GCP](./GCP/index.md) | Defense Evasion |
+| [Read GCE Instance Metadata via the Compute API](./GCP/gcp.discovery.download-instance-metadata.md) | [GCP](./GCP/index.md) | Discovery |
+| [Enumerate Permissions of a GCP Service Account](./GCP/gcp.discovery.enumerate-permissions.md) | [GCP](./GCP/index.md) | Discovery |
 | [Exfiltrate Compute Disk by sharing it](./GCP/gcp.exfiltration.share-compute-disk.md) | [GCP](./GCP/index.md) | Exfiltration |
 | [Exfiltrate Compute Image by sharing it](./GCP/gcp.exfiltration.share-compute-image.md) | [GCP](./GCP/index.md) | Exfiltration |
 | [Exfiltrate Compute Disk by sharing a snapshot](./GCP/gcp.exfiltration.share-compute-snapshot.md) | [GCP](./GCP/index.md) | Exfiltration |
+| [Create a GCE GPU Virtual Machine](./GCP/gcp.impact.create-gpu-vm.md) | [GCP](./GCP/index.md) | Impact |
+| [Create GCE Instances in Multiple Zones](./GCP/gcp.impact.create-instances-in-multiple-zones.md) | [GCP](./GCP/index.md) | Impact |
+| [Steal and Use the GCE Default Service Account Token from Outside Google Cloud](./GCP/gcp.initial-access.use-compute-sa-outside-gcp.md) | [GCP](./GCP/index.md) | Credential Access, Initial Access |
+| [Register SSH public key to instance metadata](./GCP/gcp.lateral-movement.add-sshkey-instance-metadata.md) | [GCP](./GCP/index.md) | Lateral Movement, Persistence |
 | [Backdoor a GCP Service Account through its IAM Policy](./GCP/gcp.persistence.backdoor-service-account-policy.md) | [GCP](./GCP/index.md) | Persistence |
 | [Create an Admin GCP Service Account](./GCP/gcp.persistence.create-admin-service-account.md) | [GCP](./GCP/index.md) | Persistence, Privilege Escalation |
 | [Create a GCP Service Account Key](./GCP/gcp.persistence.create-service-account-key.md) | [GCP](./GCP/index.md) | Persistence, Privilege Escalation |
@@ -80,3 +99,6 @@ This page contains the list of all Stratus Attack Techniques.
 | [Privilege escalation through node/proxy permissions](./kubernetes/k8s.privilege-escalation.nodes-proxy.md) | [Kubernetes](./kubernetes/index.md) | Privilege Escalation |
 | [Run a Privileged Pod](./kubernetes/k8s.privilege-escalation.privileged-pod.md) | [Kubernetes](./kubernetes/index.md) | Privilege Escalation |
 | [Impersonate GCP Service Accounts](./GCP/gcp.privilege-escalation.impersonate-service-accounts.md) | [GCP](./GCP/index.md) | Privilege Escalation |
+| [Delete a GCP Log Sink](./GCP/gcp.defense-evasion.delete-logging-sink.md) | [GCP](./GCP/index.md) | Defense Evasion |
+| [Disable a GCP Log Sink](./GCP/gcp.defense-evasion.disable-logging-sink.md) | [GCP](./GCP/index.md) | Defense Evasion |
+| [Reduce Log Retention Period on a Cloud Logging Sink Bucket](./GCP/gcp.defense-evasion.reduce-sink-log-retention.md) | [GCP](./GCP/index.md) | Defense Evasion |

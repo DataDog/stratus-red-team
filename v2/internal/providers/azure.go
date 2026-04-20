@@ -15,36 +15,57 @@ import (
 const azureSubscriptionIdEnvVarKey = "AZURE_SUBSCRIPTION_ID"
 
 type AzureProvider struct {
-	Credentials         *azidentity.DefaultAzureCredential
+	Credentials         azcore.TokenCredential
 	ClientOptions       *arm.ClientOptions
 	SubscriptionID      string
 	UniqueCorrelationId uuid.UUID // unique value injected in the user-agent, to differentiate Stratus Red Team executions
 }
 
-func NewAzureProvider(uuid uuid.UUID) *AzureProvider {
-	subscriptionID := os.Getenv(azureSubscriptionIdEnvVarKey)
-	if len(subscriptionID) == 0 {
-		log.Fatal(azureSubscriptionIdEnvVarKey + " is not set.")
-	}
-	creds, err := azidentity.NewDefaultAzureCredential(nil)
-	if err != nil {
-		log.Fatalf("failed to pull the result: %v", err)
-	}
+// AzureProviderOption configures optional overrides on an AzureProvider.
+type AzureProviderOption func(*AzureProvider)
 
-	var DefaultClientOptions = arm.ClientOptions{
-		ClientOptions: azcore.ClientOptions{
-			Telemetry: policy.TelemetryOptions{ApplicationID: uuid.String(), Disabled: false},
-		},
-	}
-	return &AzureProvider{
-		Credentials:         creds,
-		ClientOptions:       &DefaultClientOptions,
-		SubscriptionID:      subscriptionID,
-		UniqueCorrelationId: uuid,
-	}
+// WithAzureCredentials overrides the default credential chain with an explicit
+// azcore.TokenCredential.
+func WithAzureCredentials(cred azcore.TokenCredential) AzureProviderOption {
+	return func(p *AzureProvider) { p.Credentials = cred }
 }
 
-func (m *AzureProvider) GetCredentials() *azidentity.DefaultAzureCredential {
+// WithAzureSubscriptionID overrides the subscription ID instead of reading it
+// from the AZURE_SUBSCRIPTION_ID environment variable.
+func WithAzureSubscriptionID(subscriptionID string) AzureProviderOption {
+	return func(p *AzureProvider) { p.SubscriptionID = subscriptionID }
+}
+
+func NewAzureProvider(correlationId uuid.UUID, opts ...AzureProviderOption) *AzureProvider {
+	p := &AzureProvider{UniqueCorrelationId: correlationId}
+	for _, opt := range opts {
+		opt(p)
+	}
+
+	if p.SubscriptionID == "" {
+		p.SubscriptionID = os.Getenv(azureSubscriptionIdEnvVarKey)
+		if p.SubscriptionID == "" {
+			log.Fatal(azureSubscriptionIdEnvVarKey + " is not set.")
+		}
+	}
+
+	if p.Credentials == nil {
+		creds, err := azidentity.NewDefaultAzureCredential(nil)
+		if err != nil {
+			log.Fatalf("failed to pull the result: %v", err)
+		}
+		p.Credentials = creds
+	}
+
+	p.ClientOptions = &arm.ClientOptions{
+		ClientOptions: azcore.ClientOptions{
+			Telemetry: policy.TelemetryOptions{ApplicationID: correlationId.String(), Disabled: false},
+		},
+	}
+	return p
+}
+
+func (m *AzureProvider) GetCredentials() azcore.TokenCredential {
 	return m.Credentials
 }
 

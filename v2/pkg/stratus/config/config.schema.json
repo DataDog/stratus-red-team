@@ -1,0 +1,51 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Stratus Red Team Configuration",
+    "description": "Configuration file for Stratus Red Team (https://stratus-red-team.cloud)",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "kubernetes": { "$ref": "#/$defs/kubernetes" }
+    },
+    "$defs": {
+        "kubernetes": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "default": { "$ref": "#/$defs/techniqueConfig" },
+                "techniques": {
+                    "type": "object",
+                    "additionalProperties": { "$ref": "#/$defs/techniqueConfig" }
+                }
+            }
+        },
+        "techniqueConfig": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "namespace": { "type": "string" },
+                "pod": { "$ref": "#/$defs/podConfig" }
+            }
+        },
+        "podConfig": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "image": { "type": "string" },
+                "labels": {
+                    "type": "object",
+                    "additionalProperties": { "type": "string" }
+                },
+                "tolerations": {
+                    "type": "array",
+                    "items": { "type": "object" }
+                },
+                "node_selector": {
+                    "type": "object",
+                    "additionalProperties": { "type": "string" }
+                },
+                "security_context": { "type": "object" }
+            }
+        }
+    }
+}

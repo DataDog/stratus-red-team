@@ -65,7 +65,6 @@ func (p Platform) MarshalYAML() (interface{}, error) {
 // UnmarshalYAML implements the Marshaler interface from "gopkg.in/yaml.v3".
 // It does the reverse operation defined on MarshalYAML. It mutates Platform from "Azure" to "azure".
 func (p Platform) UnmarshalYAML(node *yaml.Node) error {
-	//lint:ignore SA4006 this is mutating the value of p rather than using it later.
-	p, err := PlatformFromString(node.Value)
+	_, err := PlatformFromString(node.Value)
 	return err
 }

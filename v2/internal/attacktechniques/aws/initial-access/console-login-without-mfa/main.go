@@ -42,7 +42,7 @@ References:
 - https://naikordian.github.io/blog/posts/brute-force-aws-console/
 `,
 		Detection: `
-Using CloudTrail <code>ConsoleLogin</code> event. The field <code>additionalEventData.MFAUser</code> is set to
+Using CloudTrail <code>ConsoleLogin</code> event. The field <code>additionalEventData.MFAUsed</code> is set to
 <code>No</code> when the authentication does not use MFA.
 
 Sample CloudTrail event (redacted for clarity):

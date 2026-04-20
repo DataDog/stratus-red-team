@@ -2,18 +2,21 @@ package providers
 
 import (
 	"context"
+	"log"
+	"os"
+	"path/filepath"
+
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/config"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/useragent"
 	"github.com/google/uuid"
 	authv1 "k8s.io/api/authorization/v1"
+	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/util/homedir"
-	"log"
-	"os"
-	"path/filepath"
 )
 
 const (
@@ -31,26 +34,38 @@ var (
 	kubeConfigPathWasResolved bool
 )
 
-func NewK8sProvider(uuid uuid.UUID) *K8sProvider {
-	kubeconfig := GetKubeConfigPath()
+// K8sProviderOption configures optional overrides on a K8sProvider.
+type K8sProviderOption func(*K8sProvider)
 
-	// Will default to an in-cluster client config if kubeconfig path is not set
-	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
-	if err != nil {
-		log.Fatalf("unable to build kube config: %v", err)
+// WithK8sRestConfig overrides the default kubeconfig / in-cluster resolution
+// with an explicit rest.Config.
+func WithK8sRestConfig(cfg *rest.Config) K8sProviderOption {
+	return func(p *K8sProvider) { p.RestConfig = cfg }
+}
+
+func NewK8sProvider(correlationId uuid.UUID, opts ...K8sProviderOption) *K8sProvider {
+	p := &K8sProvider{UniqueCorrelationId: correlationId}
+	for _, opt := range opts {
+		opt(p)
 	}
-	restConfig := config
-	restConfig.UserAgent = useragent.GetStratusUserAgentForUUID(uuid)
-	k8sClient, err := kubernetes.NewForConfig(restConfig)
+
+	if p.RestConfig == nil {
+		kubeconfig := GetKubeConfigPath()
+		restConfig, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
+		if err != nil {
+			log.Fatalf("unable to build kube config: %v", err)
+		}
+		p.RestConfig = restConfig
+	}
+
+	p.RestConfig.UserAgent = useragent.GetStratusUserAgentForUUID(correlationId)
+	k8sClient, err := kubernetes.NewForConfig(p.RestConfig)
 	if err != nil {
 		log.Fatalf("unable to create kube client: %v", err)
 	}
+	p.k8sClient = k8sClient
 
-	return &K8sProvider{
-		UniqueCorrelationId: uuid,
-		RestConfig:          restConfig,
-		k8sClient:           k8sClient,
-	}
+	return p
 }
 
 // GetKubeConfigPath returns the path of the kubeconfig, with the following priority:
@@ -110,4 +125,19 @@ func (m *K8sProvider) IsAuthenticated() bool {
 		metav1.CreateOptions{},
 	)
 	return err == nil || auth.Status.Allowed
+}
+
+// ApplyPodConfig applies configuration from the config file to a pod spec. Modifies the pod in place.
+func (m *K8sProvider) ApplyPodConfig(techniqueID string, pod *v1.Pod) {
+	cfg, err := config.LoadConfig()
+	if err != nil {
+		log.Println("Warning: unable to load config, pod configuration will not be applied: " + err.Error())
+		return
+	}
+	if cfg == nil {
+		return
+	}
+
+	techniqueConfig := cfg.GetKubernetesConfig().GetTechniquePodConfig(techniqueID)
+	techniqueConfig.ApplyToPod(pod)
 }

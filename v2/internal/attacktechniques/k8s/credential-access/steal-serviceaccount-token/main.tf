@@ -9,10 +9,19 @@ terraform {
 
 locals {
   kubeconfig_path = pathexpand("~/.kube/config")
-  namespace       = format("stratus-red-team-%s", random_string.suffix.result)
-  labels = {
+
+  base_labels = {
     "datadoghq.com/stratus-red-team" : true
   }
+  custom_labels = var.config.kubernetes.pod.labels
+  labels        = merge(local.base_labels, local.custom_labels)
+
+  create_namespace  = var.config.kubernetes.namespace == ""
+  generated_ns_name = format("stratus-red-team-%s", random_string.suffix.result)
+  namespace         = local.create_namespace ? local.generated_ns_name : var.config.kubernetes.namespace
+
+  image = var.config.kubernetes.pod.image != "" ? var.config.kubernetes.pod.image : "public.ecr.aws/docker/library/alpine:3.15.0"
+
   resource_prefix = "stratus-red-team-ssat" # stratus red team steal service account token
 }
 
@@ -29,8 +38,9 @@ resource "random_string" "suffix" {
 }
 
 resource "kubernetes_namespace" "namespace" {
+  count = local.create_namespace ? 1 : 0
   metadata {
-    name   = local.namespace
+    name   = local.generated_ns_name
     labels = local.labels
   }
 }
@@ -39,7 +49,7 @@ resource "kubernetes_service_account" "serviceaccount" {
   metadata {
     name      = format("%s-sa", local.resource_prefix)
     labels    = local.labels
-    namespace = kubernetes_namespace.namespace.metadata[0].name
+    namespace = local.namespace
   }
 }
 
@@ -51,17 +61,27 @@ resource "kubernetes_pod" "pod" {
   }
   spec {
     service_account_name = kubernetes_service_account.serviceaccount.metadata[0].name
+    node_selector        = var.config.kubernetes.pod.node_selector
     container {
-      image   = "public.ecr.aws/docker/library/alpine:3.15.0"
+      image   = local.image
       name    = "main-container"
       command = ["/bin/sh"]
       args    = ["-c", "while true; do sleep 3600; done"]
+    }
+    dynamic "toleration" {
+      for_each = var.config.kubernetes.pod.tolerations
+      content {
+        key      = toleration.value.key
+        operator = toleration.value.operator
+        value    = toleration.value.value
+        effect   = toleration.value.effect
+      }
     }
   }
 }
 
 output "namespace" {
-  value = kubernetes_namespace.namespace.metadata[0].name
+  value = local.namespace
 }
 
 output "pod_name" {
@@ -69,5 +89,5 @@ output "pod_name" {
 }
 
 output "display" {
-  value = format("Pod %s in namespace %s ready", kubernetes_pod.pod.metadata[0].name, kubernetes_namespace.namespace.metadata[0].name)
+  value = format("Pod %s in namespace %s ready", kubernetes_pod.pod.metadata[0].name, local.namespace)
 }

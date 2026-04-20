@@ -63,7 +63,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	if err != nil {
 		return errors.New("Unable to create service account key: " + err.Error())
 	}
-	log.Println("Service account ley successfully created!")
+	log.Println("Service account key successfully created!")
 	jsonKeyFile, _ := base64.StdEncoding.DecodeString(key.PrivateKeyData)
 
 	log.Println("Service account key data: \n" + string(jsonKeyFile))

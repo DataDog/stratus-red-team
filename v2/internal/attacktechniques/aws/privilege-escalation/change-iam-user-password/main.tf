@@ -9,7 +9,6 @@ terraform {
 provider "aws" {
   skip_region_validation      = true
   skip_credentials_validation = true
-  skip_get_ec2_platforms      = true
   default_tags {
     tags = {
       StratusRedTeam = true

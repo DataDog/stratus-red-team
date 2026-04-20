@@ -168,6 +168,14 @@ AWS:
             - Privilege Escalation
           platform: AWS
           isIdempotent: true
+        - id: aws.execution.sagemaker-update-lifecycle-config
+          name: Execute Commands on SageMaker Notebook Instance via Lifecycle Configuration
+          isSlow: true
+          mitreAttackTactics:
+            - Execution
+            - Privilege Escalation
+          platform: AWS
+          isIdempotent: true
         - id: aws.execution.ssm-send-command
           name: Usage of ssm:SendCommand on multiple instances
           isSlow: true
@@ -427,6 +435,14 @@ AWS:
             - Privilege Escalation
           platform: AWS
           isIdempotent: true
+        - id: aws.execution.sagemaker-update-lifecycle-config
+          name: Execute Commands on SageMaker Notebook Instance via Lifecycle Configuration
+          isSlow: true
+          mitreAttackTactics:
+            - Execution
+            - Privilege Escalation
+          platform: AWS
+          isIdempotent: true
         - id: aws.persistence.iam-backdoor-user
           name: Create an Access Key on an IAM User
           isSlow: false
@@ -528,6 +544,79 @@ GCP:
             - Credential Access
           platform: GCP
           isIdempotent: true
+        - id: gcp.initial-access.use-compute-sa-outside-gcp
+          name: Steal and Use the GCE Default Service Account Token from Outside Google Cloud
+          isSlow: true
+          mitreAttackTactics:
+            - Credential Access
+            - Initial Access
+          platform: GCP
+          isIdempotent: true
+    Defense Evasion:
+        - id: gcp.defense-evasion.delete-dns-logs
+          name: Delete a Cloud DNS Logging Policy
+          isSlow: false
+          mitreAttackTactics:
+            - Defense Evasion
+          platform: GCP
+          isIdempotent: false
+        - id: gcp.defense-evasion.disable-audit-logs
+          name: Disable Data Access Audit Logs for a GCP Service
+          isSlow: false
+          mitreAttackTactics:
+            - Defense Evasion
+          platform: GCP
+          isIdempotent: false
+        - id: gcp.defense-evasion.remove-project-from-organization
+          name: Attempt to Remove a GCP Project from its Organization
+          isSlow: false
+          mitreAttackTactics:
+            - Defense Evasion
+          platform: GCP
+          isIdempotent: true
+        - id: gcp.defense-evasion.remove-vpc-flow-logs
+          name: Disable VPC Flow Logs on a Subnet
+          isSlow: false
+          mitreAttackTactics:
+            - Defense Evasion
+          platform: GCP
+          isIdempotent: true
+        - id: gcp.defense-evasion.delete-logging-sink
+          name: Delete a GCP Log Sink
+          isSlow: false
+          mitreAttackTactics:
+            - Defense Evasion
+          platform: GCP
+          isIdempotent: false
+        - id: gcp.defense-evasion.disable-logging-sink
+          name: Disable a GCP Log Sink
+          isSlow: false
+          mitreAttackTactics:
+            - Defense Evasion
+          platform: GCP
+          isIdempotent: true
+        - id: gcp.defense-evasion.reduce-sink-log-retention
+          name: Reduce Log Retention Period on a Cloud Logging Sink Bucket
+          isSlow: false
+          mitreAttackTactics:
+            - Defense Evasion
+          platform: GCP
+          isIdempotent: true
+    Discovery:
+        - id: gcp.discovery.download-instance-metadata
+          name: Read GCE Instance Metadata via the Compute API
+          isSlow: false
+          mitreAttackTactics:
+            - Discovery
+          platform: GCP
+          isIdempotent: true
+        - id: gcp.discovery.enumerate-permissions
+          name: Enumerate Permissions of a GCP Service Account
+          isSlow: false
+          mitreAttackTactics:
+            - Discovery
+          platform: GCP
+          isIdempotent: true
     Exfiltration:
         - id: gcp.exfiltration.share-compute-disk
           name: Exfiltrate Compute Disk by sharing it
@@ -550,7 +639,48 @@ GCP:
             - Exfiltration
           platform: GCP
           isIdempotent: true
+    Impact:
+        - id: gcp.impact.create-gpu-vm
+          name: Create a GCE GPU Virtual Machine
+          isSlow: false
+          mitreAttackTactics:
+            - Impact
+          platform: GCP
+          isIdempotent: true
+        - id: gcp.impact.create-instances-in-multiple-zones
+          name: Create GCE Instances in Multiple Zones
+          isSlow: false
+          mitreAttackTactics:
+            - Impact
+          platform: GCP
+          isIdempotent: false
+    Initial Access:
+        - id: gcp.initial-access.use-compute-sa-outside-gcp
+          name: Steal and Use the GCE Default Service Account Token from Outside Google Cloud
+          isSlow: true
+          mitreAttackTactics:
+            - Credential Access
+            - Initial Access
+          platform: GCP
+          isIdempotent: true
+    Lateral Movement:
+        - id: gcp.lateral-movement.add-sshkey-instance-metadata
+          name: Register SSH public key to instance metadata
+          isSlow: false
+          mitreAttackTactics:
+            - Lateral Movement
+            - Persistence
+          platform: GCP
+          isIdempotent: true
     Persistence:
+        - id: gcp.lateral-movement.add-sshkey-instance-metadata
+          name: Register SSH public key to instance metadata
+          isSlow: false
+          mitreAttackTactics:
+            - Lateral Movement
+            - Persistence
+          platform: GCP
+          isIdempotent: true
         - id: gcp.persistence.backdoor-service-account-policy
           name: Backdoor a GCP Service Account through its IAM Policy
           isSlow: false
@@ -629,7 +759,51 @@ Azure:
             - Exfiltration
           platform: Azure
           isIdempotent: true
+        - id: azure.exfiltration.storage-public-access
+          name: Exfiltrate Azure Storage via public access
+          isSlow: false
+          mitreAttackTactics:
+            - Exfiltration
+          platform: Azure
+          isIdempotent: true
+        - id: azure.exfiltration.storage-sas-export
+          name: Exfiltrate Azure Storage through SAS URL
+          isSlow: false
+          mitreAttackTactics:
+            - Exfiltration
+          platform: Azure
+          isIdempotent: true
+    Impact:
+        - id: azure.impact.blob-ransomware-client-encryption-scope
+          name: Azure Blob Storage ransomware through Encryption Scope using client-managed Key Vault key
+          isSlow: false
+          mitreAttackTactics:
+            - Impact
+          platform: Azure
+          isIdempotent: false
+        - id: azure.impact.blob-ransomware-individual-file-deletion
+          name: Azure ransomware via Storage Account Blob deletion
+          isSlow: false
+          mitreAttackTactics:
+            - Impact
+          platform: Azure
+          isIdempotent: false
+        - id: azure.impact.resource-lock
+          name: Delete Azure resource lock
+          isSlow: true
+          mitreAttackTactics:
+            - Impact
+          platform: Azure
+          isIdempotent: true
     Persistence:
+        - id: azure.persistence.backdoor-managed-identity-fic
+          name: Backdoor Azure Managed Identity with Federated Identity Credential (FIC)
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: Azure
+          isIdempotent: false
         - id: azure.persistence.create-bastion-shareable-link
           name: Create Azure VM Bastion shareable link
           isSlow: true
@@ -637,8 +811,32 @@ Azure:
             - Persistence
           platform: Azure
           isIdempotent: false
+    Privilege Escalation:
+        - id: azure.persistence.backdoor-managed-identity-fic
+          name: Backdoor Azure Managed Identity with Federated Identity Credential (FIC)
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: Azure
+          isIdempotent: false
+        - id: azure.privilege-escalation.root-user-access-administrator
+          name: Elevate to User Access Administrator at Root Scope
+          isSlow: false
+          mitreAttackTactics:
+            - Privilege Escalation
+          platform: Azure
+          isIdempotent: false
 Entra ID:
     Persistence:
+        - id: entra-id.persistence.backdoor-application-fic
+          name: Backdoor Entra ID application with Federated Identity Credential (FIC)
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: Entra ID
+          isIdempotent: false
         - id: entra-id.persistence.backdoor-application-sp
           name: Backdoor Entra ID application through service principal
           isSlow: false
@@ -685,6 +883,14 @@ Entra ID:
           platform: Entra ID
           isIdempotent: false
     Privilege Escalation:
+        - id: entra-id.persistence.backdoor-application-fic
+          name: Backdoor Entra ID application with Federated Identity Credential (FIC)
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Privilege Escalation
+          platform: Entra ID
+          isIdempotent: false
         - id: entra-id.persistence.backdoor-application-sp
           name: Backdoor Entra ID application through service principal
           isSlow: false
