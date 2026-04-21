@@ -138,7 +138,7 @@ mkdocs serve
 
 ### Acknowledgments
 
-Maintainer: [@christophetd](https://twitter.com/christophetd)
+Core maintainers: Christophe Tafani-Dereeper ([@christophetd](https://twitter.com/christophetd)), Simon Maréchal ([@Minosity-VR](/https://github.com/Minosity-VR)).
 
 Similar projects (see [how Stratus Red Team compares](https://stratus-red-team.cloud/comparison/)):
 - [Atomic Red Team](https://github.com/redcanaryco/atomic-red-team) by Red Canary
