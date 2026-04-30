@@ -47,6 +47,14 @@ Detonation:
   <code>stratus-red-team=true</code> that runs a shell command writing system
   information to <code>/tmp/stratus-output.txt</code>
 
+Note: For commands to actually execute on targeted instances, OS Configuration
+Management must be enabled at the project level
+(see <a href="https://cloud.google.com/compute/docs/manage-os#enable-full-vmm">Enable VM Manager</a>).
+If it is not enabled, GCP rejects the API call with a
+<code>failedPrecondition</code> error. From a defensive standpoint, this still
+generates the <code>CreateOSPolicyAssignment</code> audit event when Data Access
+logging is enabled, so the attempt remains detectable even if execution fails.
+
 Revert:
 
 - Delete the <code>OSPolicyAssignment</code>
