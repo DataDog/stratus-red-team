@@ -13,6 +13,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   
   - [Modify a GCE Instance Startup Script](./gcp.execution.modify-gce-startup-script.md)
   
+  - [Inject a Malicious Startup Script into a Vertex AI Workbench Instance](./gcp.execution.modify-vertex-notebook-startup.md)
+  
 
 ## Persistence
   
@@ -36,6 +38,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   - [Create a GCP Service Account Key](./gcp.persistence.create-service-account-key.md)
   
   - [Impersonate GCP Service Accounts](./gcp.privilege-escalation.impersonate-service-accounts.md)
+  
+  - [Inject a Malicious Startup Script into a Vertex AI Workbench Instance](./gcp.execution.modify-vertex-notebook-startup.md)
   
 
 ## Defense Evasion
