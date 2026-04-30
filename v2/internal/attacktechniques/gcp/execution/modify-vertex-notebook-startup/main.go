@@ -34,6 +34,8 @@ Warm-up:
 
 - Create a Vertex AI Workbench instance (<code>e2-standard-2</code>, us-central1-a)
 
+Note: This technique requires the Notebooks API (<code>notebooks.googleapis.com</code>) to be enabled in your GCP project. If it is not enabled, the warm-up will fail with a 403 error pointing to the API enablement page.
+
 Detonation:
 
 - Patch the Workbench instance's GCE setup metadata to set
