@@ -5,7 +5,7 @@ title: Modify a GCE Instance Startup Script
 # Modify a GCE Instance Startup Script
 
  <span class="smallcaps w3-badge w3-orange w3-round w3-text-sand" title="This attack technique might be slow to warm up or detonate">slow</span> 
- <span class="smallcaps w3-badge w3-blue w3-round w3-text-white" title="This attack technique can be detonated multiple times">idempotent</span> 
+
 
 Platform: GCP
 
@@ -20,11 +20,10 @@ Platform: GCP
 ## Description
 
 
-Modifies the startup script of a stopped GCE instance to execute an attacker-controlled
-payload on the next boot. An attacker with <code>compute.instances.setMetadata</code>
-permission can use this technique to achieve persistent code execution and privilege
-escalation through the instance's service account, without needing direct access to
-the instance.
+Stops a GCE instance, modifies its startup script to execute an attacker-controlled payload on the
+next boot, and restarts it. An attacker with <code>compute.instances.setMetadata</code> permission
+can use this technique to achieve persistent code execution and privilege escalation through the
+instance's service account, without needing direct access to the instance.
 
 <span style="font-variant: small-caps;">Warm-up</span>:
 
@@ -35,12 +34,6 @@ the instance.
 - Stop the GCE instance and wait for it to reach <code>TERMINATED</code> state
 - Replace the <code>startup-script</code> metadata value with a command that fetches
   and executes a remote payload
-- Restart the instance
-
-Revert:
-
-- Stop the instance
-- Restore the original <code>startup-script</code> metadata value
 - Restart the instance
 
 References:

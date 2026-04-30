@@ -625,14 +625,6 @@ GCP:
             - Execution
             - Privilege Escalation
           platform: GCP
-          isIdempotent: true
-        - id: gcp.execution.modify-vertex-notebook-startup
-          name: Inject a Malicious Startup Script into a Vertex AI Workbench Instance
-          isSlow: true
-          mitreAttackTactics:
-            - Execution
-            - Privilege Escalation
-          platform: GCP
           isIdempotent: false
     Exfiltration:
         - id: gcp.exfiltration.share-compute-disk
@@ -736,7 +728,7 @@ GCP:
             - Execution
             - Privilege Escalation
           platform: GCP
-          isIdempotent: true
+          isIdempotent: false
         - id: gcp.persistence.create-admin-service-account
           name: Create an Admin GCP Service Account
           isSlow: false
@@ -760,14 +752,6 @@ GCP:
             - Privilege Escalation
           platform: GCP
           isIdempotent: true
-        - id: gcp.execution.modify-vertex-notebook-startup
-          name: Inject a Malicious Startup Script into a Vertex AI Workbench Instance
-          isSlow: true
-          mitreAttackTactics:
-            - Execution
-            - Privilege Escalation
-          platform: GCP
-          isIdempotent: false
 Azure:
     Execution:
         - id: azure.execution.vm-custom-script-extension
