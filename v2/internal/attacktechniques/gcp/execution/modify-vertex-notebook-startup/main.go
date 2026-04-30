@@ -96,14 +96,14 @@ func waitForNotebooksOperation(ctx context.Context, svc *notebooks.Service, opNa
 		}
 		if op.Done {
 			if op.Error != nil {
-				return fmt.Errorf("Notebooks operation %s failed: %s", opName, op.Error.Message)
+				return fmt.Errorf("notebooks operation %s failed: %s", opName, op.Error.Message)
 			}
 			return nil
 		}
 		log.Printf("Waiting for Notebooks patch operation to complete (attempt %d/%d)\n", attempt+1, maxAttempts)
 		time.Sleep(pollInterval)
 	}
-	return fmt.Errorf("Notebooks operation %s did not complete after %d attempts", opName, maxAttempts)
+	return fmt.Errorf("notebooks operation %s did not complete after %d attempts", opName, maxAttempts)
 }
 
 func setPostStartupScript(ctx context.Context, svc *notebooks.Service, projectId, location, instanceName, scriptURL string) error {
