@@ -211,6 +211,13 @@ func (m *runnerImpl) WarmUp() (map[string]string, error) {
 	if err != nil {
 		log.Println("Error during warm up. Cleaning up technique prerequisites with terraform destroy")
 		_ = m.TerraformManager.TerraformDestroy(m.TerraformDir, overrideVars)
+		// Drop the technique directory and any managed artifacts so a failed
+		// warm-up does not leak a terraform.tfstate: on warmup failure TF sets
+		// the `resource` key of the tfstate file to an empty array but doesn't
+		// delete it.
+		if cleanupErr := m.StateManager.CleanupTechnique(); cleanupErr != nil {
+			log.Println("Warning: failed to remove technique state after failed warm up: " + cleanupErr.Error())
+		}
 		if errors.Is(err, context.Canceled) {
 			return nil, err
 		}
