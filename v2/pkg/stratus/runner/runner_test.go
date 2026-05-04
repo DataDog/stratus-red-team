@@ -54,6 +54,7 @@ func TestRunnerWarmUp(t *testing.T) {
 				terraform.AssertCalled(t, "TerraformInitAndApply", "/root/foo", map[string]string{})
 				state.AssertCalled(t, "WriteTerraformOutputs", map[string]string{"myoutput": "new"})
 				state.AssertCalled(t, "SetTechniqueState", stratus.AttackTechniqueState(stratus.AttackTechniqueStatusWarm))
+				state.AssertNotCalled(t, "CleanupTechnique")
 
 				assert.Nil(t, err)
 				assert.Len(t, outputs, 1)
@@ -105,6 +106,7 @@ func TestRunnerWarmUp(t *testing.T) {
 			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, outputs map[string]string, err error) {
 				terraform.AssertCalled(t, "TerraformInitAndApply", "/root/foo", map[string]string{})
 				terraform.AssertCalled(t, "TerraformDestroy", "/root/foo", map[string]string{})
+				state.AssertCalled(t, "CleanupTechnique")
 				assert.NotNil(t, err)
 				assert.Len(t, outputs, 0)
 			},
@@ -125,6 +127,7 @@ func TestRunnerWarmUp(t *testing.T) {
 		terraform.On("TerraformDestroy", mock.Anything, mock.Anything).Return(nil)
 		state.On("WriteTerraformOutputs", mock.Anything).Return(nil)
 		state.On("SetTechniqueState", mock.Anything).Return(nil)
+		state.On("CleanupTechnique").Return(nil)
 
 		runner := runnerImpl{
 			Technique:        scenario[i].Technique,
