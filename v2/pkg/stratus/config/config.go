@@ -15,7 +15,17 @@ const (
 	StratusBaseDirectoryName = ".stratus-red-team"
 	ConfigFileName           = "config.yaml"
 	ConfigEnvVar             = "STRATUS_CONFIG_PATH"
+
+	// keyDelimiter is the Viper path separator. The default "." would split keys
+	// like "app.kubernetes.io/name" inside annotations/labels into nested maps.
+	keyDelimiter = "::"
 )
+
+// newViper returns a Viper instance configured with a non-dot key delimiter so
+// that keys containing dots (common in k8s annotations and labels) are not split.
+func newViper() *viper.Viper {
+	return viper.NewWithOptions(viper.KeyDelimiter(keyDelimiter))
+}
 
 // Config is the root configuration structure.
 //
@@ -35,7 +45,7 @@ var _ Config = &ConfigImpl{}
 
 // LoadConfig loads configuration from file.
 func LoadConfig() (Config, error) {
-	v := viper.New()
+	v := newViper()
 	configPath := getConfigPath()
 	if configPath != "" {
 		rawYAML, err := os.ReadFile(configPath)
@@ -92,7 +102,7 @@ func (c *ConfigImpl) GetKubernetesConfig() KubernetesConfig {
 // buildMergedViper produces a Viper containing the merged technique config.
 // Each provider populates its own subtree via populateViperOverride.
 func (c *ConfigImpl) buildMergedViper(techniqueID string) *viper.Viper {
-	v := viper.New()
+	v := newViper()
 	if c == nil || c.kubernetes == nil {
 		return v
 	}
