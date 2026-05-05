@@ -102,3 +102,5 @@ This page contains the list of all Stratus Attack Techniques.
 | [Delete a GCP Log Sink](./GCP/gcp.defense-evasion.delete-logging-sink.md) | [GCP](./GCP/index.md) | Defense Evasion |
 | [Disable a GCP Log Sink](./GCP/gcp.defense-evasion.disable-logging-sink.md) | [GCP](./GCP/index.md) | Defense Evasion |
 | [Reduce Log Retention Period on a Cloud Logging Sink Bucket](./GCP/gcp.defense-evasion.reduce-sink-log-retention.md) | [GCP](./GCP/index.md) | Defense Evasion |
+| [GCS Ransomware through client-side encryption](./GCP/gcp.impact.gcs-ransomware-client-side-encryption.md) | [GCP](./GCP/index.md) | Impact |
+| [GCS Ransomware through individual file deletion](./GCP/gcp.impact.gcs-ransomware-individual-deletion.md) | [GCP](./GCP/index.md) | Impact |
