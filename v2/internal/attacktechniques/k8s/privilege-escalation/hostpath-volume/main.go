@@ -4,7 +4,6 @@ import (
 	"context"
 	_ "embed"
 	"errors"
-	"fmt"
 	"log"
 
 	"github.com/aws/smithy-go/ptr"
@@ -87,7 +86,7 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 func basePodSpec(namespace string, correlationID string) *v1.Pod {
 	return &v1.Pod{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      fmt.Sprintf("%s-%s", techniqueID, correlationID),
+			Name:      techniqueID,
 			Namespace: namespace,
 			Labels: map[string]string{
 				"datadoghq.com/stratus-red-team":                "true",

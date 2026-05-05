@@ -56,7 +56,7 @@ resource "kubernetes_service_account" "serviceaccount" {
 
 resource "kubernetes_pod" "pod" {
   metadata {
-    name        = format("%s-pod-%s", local.resource_prefix, var.correlation.id)
+    name        = format("%s-pod", local.resource_prefix)
     labels      = local.labels
     annotations = var.config.kubernetes.pod.annotations
     namespace   = local.namespace
