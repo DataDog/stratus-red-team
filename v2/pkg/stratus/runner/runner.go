@@ -3,7 +3,6 @@ package runner
 import (
 	"context"
 	"errors"
-	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -158,25 +157,21 @@ func NewRunnerWithContext(ctx context.Context, technique *stratus.AttackTechniqu
 func resolveCorrelationID() uuid.UUID {
 	raw := os.Getenv(EnvVarStratusRedTeamCorrelationId)
 	envName := EnvVarStratusRedTeamCorrelationId
-
 	if raw == "" {
-		raw = os.Getenv(EnvVarStratusRedTeamDetonationId)
-		envName = EnvVarStratusRedTeamDetonationId
-		if raw != "" {
+		if raw = os.Getenv(EnvVarStratusRedTeamDetonationId); raw != "" {
+			envName = EnvVarStratusRedTeamDetonationId
 			log.Printf("WARNING: %s is deprecated, use %s instead", EnvVarStratusRedTeamDetonationId, EnvVarStratusRedTeamCorrelationId)
 		}
 	}
-
-	if raw != "" {
-		log.Printf("%s is set, using it as the correlation ID", envName)
-		parsed, err := uuid.Parse(raw)
-		if err != nil {
-			log.Printf("%s is not a valid UUID, falling back to a randomly-generated one: %s", envName, err.Error())
-			return uuid.New()
-		}
-		return parsed
+	if raw == "" {
+		return uuid.New()
 	}
-	return uuid.New()
+	parsed, err := uuid.Parse(raw)
+	if err != nil {
+		log.Printf("%s is not a valid UUID, using a random one: %s", envName, err.Error())
+		return uuid.New()
+	}
+	return parsed
 }
 
 func (m *runnerImpl) initialize() {
@@ -222,7 +217,7 @@ func (m *runnerImpl) WarmUp() (map[string]string, error) {
 	}
 
 	log.Println("Warming up " + m.Technique.ID)
-	overrideVars := m.getTerraformVariablesFromConfig()
+	overrideVars := m.buildTerraformVariables()
 	outputs, err := m.TerraformManager.TerraformInitAndApply(m.TerraformDir, overrideVars)
 	if err != nil {
 		log.Println("Error during warm up. Cleaning up technique prerequisites with terraform destroy")
@@ -395,14 +390,14 @@ func (m *runnerImpl) GetUniqueExecutionId() string {
 	return m.UniqueCorrelationID.String()
 }
 
-// getTerraformVariablesFromConfig returns the terraform variables to use,
+// buildTerraformVariables returns the terraform variables to use,
 // including the correlation metadata and any config-file overrides.
-func (m *runnerImpl) getTerraformVariablesFromConfig() map[string]string {
+func (m *runnerImpl) buildTerraformVariables() map[string]string {
 	vars := m.Config.GetTerraformVariables(m.Technique.ID)
 	if vars == nil {
 		vars = make(map[string]string)
 	}
-	vars["correlation"] = fmt.Sprintf(`{"id":"%s"}`, m.UniqueCorrelationID.String())
+	vars[state.TerraformCorrelationVarName] = state.MarshalCorrelation(m.UniqueCorrelationID.String())
 	return vars
 }
 

@@ -19,6 +19,27 @@ import (
 //go:embed correlation.tf
 var sharedCorrelationVariable []byte
 
+// TerraformCorrelationVarName is the key under which MarshalCorrelation's output
+// is passed to Terraform; matches the variable declared in correlation.tf.
+const TerraformCorrelationVarName = "correlation"
+
+// TerraformCorrelation mirrors the schema of the "correlation" Terraform variable
+// declared in correlation.tf. Keep the JSON tags in sync with that file.
+type TerraformCorrelation struct {
+	ID string `json:"id"`
+}
+
+// MarshalCorrelation returns the JSON-encoded value Terraform expects for var.correlation.
+func MarshalCorrelation(id string) string {
+	encoded, err := json.Marshal(TerraformCorrelation{ID: id})
+	if err != nil {
+		// json.Marshal of a struct with one string field cannot fail.
+		log.Println("unable to marshal correlation: " + err.Error())
+		return "{}"
+	}
+	return string(encoded)
+}
+
 const StratusStateTerraformOutputsFileName = ".terraform-outputs"
 const StratusStateTerraformVariablesFileName = ".terraform-variables"
 const StratusStateTechniqueStateFileName = ".state"
