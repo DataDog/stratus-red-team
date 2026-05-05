@@ -82,3 +82,7 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   
   - [Create GCE Instances in Multiple Zones](./gcp.impact.create-instances-in-multiple-zones.md)
   
+  - [GCS Ransomware through client-side encryption](./gcp.impact.gcs-ransomware-client-side-encryption.md)
+  
+  - [GCS Ransomware through individual file deletion](./gcp.impact.gcs-ransomware-individual-deletion.md)
+  
