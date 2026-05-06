@@ -132,6 +132,7 @@ func basePodSpec(namespace string, correlationID string) *v1.Pod {
 			Labels: map[string]string{
 				"datadoghq.com/stratus-red-team":                "true",
 				"datadoghq.com/stratus-red-team-correlation-id": correlationID,
+				"datadoghq.com/stratus-red-team-stage":          "detonation",
 			},
 		},
 		Spec: v1.PodSpec{

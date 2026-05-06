@@ -13,6 +13,7 @@ locals {
   base_labels = {
     "datadoghq.com/stratus-red-team" : true
     "datadoghq.com/stratus-red-team-correlation-id" : var.correlation.id
+    "datadoghq.com/stratus-red-team-stage" : "warmup"
   }
   custom_labels = var.config.kubernetes.pod.labels
   labels        = merge(local.base_labels, local.custom_labels)

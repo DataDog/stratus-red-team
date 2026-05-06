@@ -34,6 +34,7 @@ resource "kubernetes_namespace" "namespace" {
     labels = {
       "datadoghq.com/stratus-red-team" : true
       "datadoghq.com/stratus-red-team-correlation-id" : var.correlation.id
+      "datadoghq.com/stratus-red-team-stage" : "warmup"
     }
   }
 }
