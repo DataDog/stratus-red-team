@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/datadog/stratus-red-team/v2/internal/state"
 	statemocks "github.com/datadog/stratus-red-team/v2/internal/state/mocks"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	configmocks "github.com/datadog/stratus-red-team/v2/pkg/stratus/config/mocks"
@@ -14,6 +15,15 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
+
+const testCorrelationID = "11111111-2222-3333-4444-555555555555"
+
+func varsHaveCorrelation(id string) any {
+	expected := state.MarshalCorrelation(id)
+	return mock.MatchedBy(func(vars map[string]string) bool {
+		return vars[state.TerraformCorrelationVarName] == expected
+	})
+}
 
 func TestRunnerWarmUp(t *testing.T) {
 
@@ -51,7 +61,7 @@ func TestRunnerWarmUp(t *testing.T) {
 			TerraformOutputs:      map[string]string{"myoutput": "new"},
 			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, outputs map[string]string, err error) {
 				state.AssertCalled(t, "ExtractTechnique")
-				terraform.AssertCalled(t, "TerraformInitAndApply", "/root/foo", map[string]string{})
+				terraform.AssertCalled(t, "TerraformInitAndApply", "/root/foo", varsHaveCorrelation(testCorrelationID))
 				state.AssertCalled(t, "WriteTerraformOutputs", map[string]string{"myoutput": "new"})
 				state.AssertCalled(t, "SetTechniqueState", stratus.AttackTechniqueState(stratus.AttackTechniqueStatusWarm))
 				state.AssertNotCalled(t, "CleanupTechnique")
@@ -80,7 +90,7 @@ func TestRunnerWarmUp(t *testing.T) {
 			InitialTechniqueState: stratus.AttackTechniqueStatusWarm,
 			TerraformOutputs:      map[string]string{"myoutput": "old"},
 			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, outputs map[string]string, err error) {
-				terraform.AssertCalled(t, "TerraformInitAndApply", "/root/foo", map[string]string{})
+				terraform.AssertCalled(t, "TerraformInitAndApply", "/root/foo", varsHaveCorrelation(testCorrelationID))
 				assert.Nil(t, err)
 				assert.Len(t, outputs, 1)
 				assert.Equal(t, "old", outputs["myoutput"])
@@ -104,8 +114,8 @@ func TestRunnerWarmUp(t *testing.T) {
 			InitialTechniqueState: stratus.AttackTechniqueStatusCold,
 			Error:                 errors.New("error during init and apply"),
 			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, outputs map[string]string, err error) {
-				terraform.AssertCalled(t, "TerraformInitAndApply", "/root/foo", map[string]string{})
-				terraform.AssertCalled(t, "TerraformDestroy", "/root/foo", map[string]string{})
+				terraform.AssertCalled(t, "TerraformInitAndApply", "/root/foo", varsHaveCorrelation(testCorrelationID))
+				terraform.AssertCalled(t, "TerraformDestroy", "/root/foo", varsHaveCorrelation(testCorrelationID))
 				state.AssertCalled(t, "CleanupTechnique")
 				assert.NotNil(t, err)
 				assert.Len(t, outputs, 0)
@@ -126,15 +136,17 @@ func TestRunnerWarmUp(t *testing.T) {
 		terraform.On("TerraformInitAndApply", mock.Anything, mock.Anything).Return(scenario[i].TerraformOutputs, scenario[i].Error)
 		terraform.On("TerraformDestroy", mock.Anything, mock.Anything).Return(nil)
 		state.On("WriteTerraformOutputs", mock.Anything).Return(nil)
+		state.On("WriteTerraformVariables", mock.Anything).Return(nil)
 		state.On("SetTechniqueState", mock.Anything).Return(nil)
 		state.On("CleanupTechnique").Return(nil)
 
 		runner := runnerImpl{
-			Technique:        scenario[i].Technique,
-			ShouldForce:      scenario[i].ShouldForce,
-			Config:           config,
-			TerraformManager: terraform,
-			StateManager:     state,
+			Technique:           scenario[i].Technique,
+			ShouldForce:         scenario[i].ShouldForce,
+			Config:              config,
+			TerraformManager:    terraform,
+			StateManager:        state,
+			UniqueCorrelationID: uuid.MustParse(testCorrelationID),
 		}
 		runner.initialize()
 		outputs, err := runner.WarmUp()
@@ -220,11 +232,13 @@ func TestRunnerDetonate(t *testing.T) {
 			state.On("GetTechniqueState", mock.Anything).Return(scenario[i].TechniqueState, nil)
 			terraform.On("TerraformInitAndApply", mock.Anything, mock.Anything).Return(map[string]string{}, nil)
 			state.On("WriteTerraformOutputs", mock.Anything).Return(nil)
+			state.On("WriteTerraformVariables", mock.Anything).Return(nil)
 			state.On("GetTerraformOutputs").Return(map[string]string{}, nil)
 			state.On("SetTechniqueState", mock.Anything).Return(nil)
 
 			var wasDetonated = false
 			runner := runnerImpl{
+				UniqueCorrelationID: uuid.MustParse(testCorrelationID),
 				Technique: &stratus.AttackTechnique{
 					ID: "sample-technique",
 					Detonate: func(map[string]string, stratus.CloudProviders) error {
@@ -515,7 +529,7 @@ func TestNewRunnerWithProviderFactory(t *testing.T) {
 	stateMock.On("GetTechniqueState").Return(stratus.AttackTechniqueState(stratus.AttackTechniqueStatusCold))
 
 	customProviders := stratus.CloudProvidersImpl{
-		UniqueCorrelationID: uuid.MustParse("11111111-2222-3333-4444-555555555555"),
+		UniqueCorrelationID: uuid.MustParse(testCorrelationID),
 	}
 
 	technique := &stratus.AttackTechnique{
@@ -532,6 +546,7 @@ func TestNewRunnerWithProviderFactory(t *testing.T) {
 	stateMock.On("GetTerraformOutputs").Return(map[string]string{}, nil)
 	stateMock.On("SetTechniqueState", mock.Anything).Return(nil)
 	stateMock.On("WriteTerraformOutputs", mock.Anything).Return(nil)
+	stateMock.On("WriteTerraformVariables", mock.Anything).Return(nil)
 	configMock.On("GetTerraformVariables", mock.Anything).Return(map[string]string{})
 	tfMock.On("TerraformInitAndApply", mock.Anything, mock.Anything).Return(map[string]string{}, nil)
 
@@ -568,6 +583,7 @@ func TestProviderCredentialInjection(t *testing.T) {
 	stateMock.On("GetTerraformOutputs").Return(map[string]string{}, nil)
 	stateMock.On("SetTechniqueState", mock.Anything).Return(nil)
 	stateMock.On("WriteTerraformOutputs", mock.Anything).Return(nil)
+	stateMock.On("WriteTerraformVariables", mock.Anything).Return(nil)
 	configMock.On("GetTerraformVariables", mock.Anything).Return(map[string]string{})
 	tfMock.On("TerraformInitAndApply", mock.Anything, mock.Anything).Return(map[string]string{}, nil)
 

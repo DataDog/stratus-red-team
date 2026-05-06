@@ -90,7 +90,8 @@ Sample event (shortened):
 func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	client := providers.K8s().GetClient()
 	namespace := params["namespace"]
-	podSpec := basePodSpec(namespace)
+	correlationID := providers.K8s().UniqueCorrelationId.String()
+	podSpec := basePodSpec(namespace, correlationID)
 
 	// Apply configuration overrides (image, tolerations, nodeSelector, securityContext)
 	providers.K8s().ApplyPodConfig(techniqueID, podSpec)
@@ -110,7 +111,8 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 	// Param retrieved from the Terraform output. If a namespace was defined in the config, it will
 	// be passed through terraform, otherwise it's the created namespace.
 	namespace := params["namespace"]
-	podSpec := basePodSpec(namespace)
+	correlationID := providers.K8s().UniqueCorrelationId.String()
+	podSpec := basePodSpec(namespace, correlationID)
 
 	log.Println("Removing privileged pod " + podSpec.ObjectMeta.Name)
 	deleteOptions := metav1.DeleteOptions{GracePeriodSeconds: ptr.Int64(0)}
@@ -122,11 +124,16 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 	return nil
 }
 
-func basePodSpec(namespace string) *v1.Pod {
+func basePodSpec(namespace string, correlationID string) *v1.Pod {
 	return &v1.Pod{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      techniqueID,
 			Namespace: namespace,
+			Labels: map[string]string{
+				"datadoghq.com/stratus-red-team":                "true",
+				"datadoghq.com/stratus-red-team-correlation-id": correlationID,
+				"datadoghq.com/stratus-red-team-stage":          "detonation",
+			},
 		},
 		Spec: v1.PodSpec{
 			Containers: []v1.Container{{

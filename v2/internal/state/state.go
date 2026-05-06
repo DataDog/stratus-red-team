@@ -1,6 +1,7 @@
 package state
 
 import (
+	_ "embed"
 	"encoding/json"
 	"log"
 	"os"
@@ -10,6 +11,34 @@ import (
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/config"
 )
+
+// sharedCorrelationVariable is the shared Terraform variable "correlation",
+// injected alongside technique main.tf files at warmup time. Techniques can
+// use var.correlation.id to embed the correlation ID in resource names.
+//
+//go:embed correlation.tf
+var sharedCorrelationVariable []byte
+
+// TerraformCorrelationVarName is the key under which MarshalCorrelation's output
+// is passed to Terraform; matches the variable declared in correlation.tf.
+const TerraformCorrelationVarName = "correlation"
+
+// TerraformCorrelation mirrors the schema of the "correlation" Terraform variable
+// declared in correlation.tf. Keep the JSON tags in sync with that file.
+type TerraformCorrelation struct {
+	ID string `json:"id"`
+}
+
+// MarshalCorrelation returns the JSON-encoded value Terraform expects for var.correlation.
+func MarshalCorrelation(id string) string {
+	encoded, err := json.Marshal(TerraformCorrelation{ID: id})
+	if err != nil {
+		// json.Marshal of a struct with one string field cannot fail.
+		log.Println("unable to marshal correlation: " + err.Error())
+		return "{}"
+	}
+	return string(encoded)
+}
 
 const StratusStateTerraformOutputsFileName = ".terraform-outputs"
 const StratusStateTerraformVariablesFileName = ".terraform-variables"
@@ -101,9 +130,14 @@ func (m *FileSystemStateManager) ExtractTechnique() error {
 		return err
 	}
 
-	// Inject the shared config variable definition alongside the technique's main.tf
+	// Inject shared variable definitions alongside the technique's main.tf
 	configFile := filepath.Join(terraformDirectory, "config.tf")
 	if err := m.FileSystem.WriteFile(configFile, config.SharedTerraformConfigVariable, 0644); err != nil {
+		return err
+	}
+
+	correlationFile := filepath.Join(terraformDirectory, "correlation.tf")
+	if err := m.FileSystem.WriteFile(correlationFile, sharedCorrelationVariable, 0644); err != nil {
 		return err
 	}
 

@@ -22,6 +22,9 @@ type S3BackendConfig = state.S3BackendConfig
 const StratusRunnerForce = true
 const StratusRunnerNoForce = false
 
+const EnvVarStratusRedTeamCorrelationId = "STRATUS_RED_TEAM_CORRELATION_ID"
+
+// Deprecated: Use EnvVarStratusRedTeamCorrelationId instead.
 const EnvVarStratusRedTeamDetonationId = "STRATUS_RED_TEAM_DETONATION_ID"
 
 // Use an existing terraform binary path instead of letting the runner download it.
@@ -149,18 +152,26 @@ func NewRunnerWithContext(ctx context.Context, technique *stratus.AttackTechniqu
 }
 
 // resolveCorrelationID returns the correlation ID from the environment variable
-// STRATUS_RED_TEAM_DETONATION_ID if set and valid, otherwise generates a new one.
+// STRATUS_RED_TEAM_CORRELATION_ID (or the deprecated STRATUS_RED_TEAM_DETONATION_ID)
+// if set and valid, otherwise generates a new one.
 func resolveCorrelationID() uuid.UUID {
-	if raw := os.Getenv(EnvVarStratusRedTeamDetonationId); raw != "" {
-		log.Printf("%s is set, using it as the correlation ID", EnvVarStratusRedTeamDetonationId)
-		parsed, err := uuid.Parse(raw)
-		if err != nil {
-			log.Printf("%s is not a valid UUID, falling back to a randomly-generated one: %s", EnvVarStratusRedTeamDetonationId, err.Error())
-			return uuid.New()
+	raw := os.Getenv(EnvVarStratusRedTeamCorrelationId)
+	envName := EnvVarStratusRedTeamCorrelationId
+	if raw == "" {
+		if raw = os.Getenv(EnvVarStratusRedTeamDetonationId); raw != "" {
+			envName = EnvVarStratusRedTeamDetonationId
+			log.Printf("WARNING: %s is deprecated, use %s instead", EnvVarStratusRedTeamDetonationId, EnvVarStratusRedTeamCorrelationId)
 		}
-		return parsed
 	}
-	return uuid.New()
+	if raw == "" {
+		return uuid.New()
+	}
+	parsed, err := uuid.Parse(raw)
+	if err != nil {
+		log.Printf("%s is not a valid UUID, using a random one: %s", envName, err.Error())
+		return uuid.New()
+	}
+	return parsed
 }
 
 func (m *runnerImpl) initialize() {
@@ -206,7 +217,7 @@ func (m *runnerImpl) WarmUp() (map[string]string, error) {
 	}
 
 	log.Println("Warming up " + m.Technique.ID)
-	overrideVars := m.getTerraformVariablesFromConfig()
+	overrideVars := m.buildTerraformVariables()
 	outputs, err := m.TerraformManager.TerraformInitAndApply(m.TerraformDir, overrideVars)
 	if err != nil {
 		log.Println("Error during warm up. Cleaning up technique prerequisites with terraform destroy")
@@ -379,9 +390,15 @@ func (m *runnerImpl) GetUniqueExecutionId() string {
 	return m.UniqueCorrelationID.String()
 }
 
-// getTerraformVariablesFromConfig returns the terraform variables to use from the config file
-func (m *runnerImpl) getTerraformVariablesFromConfig() map[string]string {
-	return m.Config.GetTerraformVariables(m.Technique.ID)
+// buildTerraformVariables returns the terraform variables to use,
+// including the correlation metadata and any config-file overrides.
+func (m *runnerImpl) buildTerraformVariables() map[string]string {
+	vars := m.Config.GetTerraformVariables(m.Technique.ID)
+	if vars == nil {
+		vars = make(map[string]string)
+	}
+	vars[state.TerraformCorrelationVarName] = state.MarshalCorrelation(m.UniqueCorrelationID.String())
+	return vars
 }
 
 // Utility function to display better error messages than the Terraform ones
