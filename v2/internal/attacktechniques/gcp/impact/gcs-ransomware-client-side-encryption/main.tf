@@ -330,6 +330,11 @@ resource "google_storage_bucket" "bucket" {
   location                    = "US"
   force_destroy               = true
   uniform_bucket_level_access = true
+
+  # Disable soft delete so rewritten objects don't leave restorable pre-encryption copies.
+  soft_delete_policy {
+    retention_duration_seconds = 0
+  }
 }
 
 resource "random_integer" "fake_objects_size" {
