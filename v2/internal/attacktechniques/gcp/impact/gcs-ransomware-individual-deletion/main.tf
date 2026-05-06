@@ -334,6 +334,11 @@ resource "google_storage_bucket" "bucket" {
   versioning {
     enabled = true
   }
+
+  # Disable soft delete so deleted object versions are not restorable during a retention window.
+  soft_delete_policy {
+    retention_duration_seconds = 0
+  }
 }
 
 resource "random_integer" "fake_objects_size" {
