@@ -654,6 +654,20 @@ GCP:
             - Impact
           platform: GCP
           isIdempotent: false
+        - id: gcp.impact.gcs-ransomware-client-side-encryption
+          name: GCS Ransomware through client-side encryption
+          isSlow: false
+          mitreAttackTactics:
+            - Impact
+          platform: GCP
+          isIdempotent: false
+        - id: gcp.impact.gcs-ransomware-individual-deletion
+          name: GCS Ransomware through individual file deletion
+          isSlow: false
+          mitreAttackTactics:
+            - Impact
+          platform: GCP
+          isIdempotent: false
     Initial Access:
         - id: gcp.initial-access.use-compute-sa-outside-gcp
           name: Steal and Use the GCE Default Service Account Token from Outside Google Cloud
