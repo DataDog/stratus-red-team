@@ -58,7 +58,9 @@ This page contains the list of all Stratus Attack Techniques.
 | [Exfiltrate Azure Storage via public access](./azure/azure.exfiltration.storage-public-access.md) | [Azure](./azure/index.md) | Exfiltration |
 | [Exfiltrate Azure Storage through SAS URL](./azure/azure.exfiltration.storage-sas-export.md) | [Azure](./azure/index.md) | Exfiltration |
 | [Azure Blob Storage ransomware through Encryption Scope using client-managed Key Vault key](./azure/azure.impact.blob-ransomware-client-encryption-scope.md) | [Azure](./azure/index.md) | Impact |
+| [Azure Blob Storage ransomware through Customer-Provided Encryption Keys](./azure/azure.impact.blob-ransomware-cpek.md) | [Azure](./azure/index.md) | Impact |
 | [Azure ransomware via Storage Account Blob deletion](./azure/azure.impact.blob-ransomware-individual-file-deletion.md) | [Azure](./azure/index.md) | Impact |
+| [Azure Blob Storage ransomware through Customer-Managed Key Vault key and vault deletion](./azure/azure.impact.blob-ransomware-service-storage-cmk.md) | [Azure](./azure/index.md) | Impact |
 | [Delete Azure resource lock](./azure/azure.impact.resource-lock.md) | [Azure](./azure/index.md) | Impact |
 | [Backdoor Azure Managed Identity with Federated Identity Credential (FIC)](./azure/azure.persistence.backdoor-managed-identity-fic.md) | [Azure](./azure/index.md) | Persistence, Privilege Escalation |
 | [Create Azure VM Bastion shareable link](./azure/azure.persistence.create-bastion-shareable-link.md) | [Azure](./azure/index.md) | Persistence |
