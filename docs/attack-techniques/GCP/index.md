@@ -9,6 +9,11 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   - [Steal and Use the GCE Default Service Account Token from Outside Google Cloud](./gcp.initial-access.use-compute-sa-outside-gcp.md)
   
 
+## Execution
+  
+  - [Grant IAP Tunnel Access to an External Identity](./gcp.execution.iap-tunnel-session.md)
+  
+
 ## Persistence
   
   - [Register SSH public key to instance metadata](./gcp.lateral-movement.add-sshkey-instance-metadata.md)
@@ -63,6 +68,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   
 
 ## Lateral Movement
+  
+  - [Grant IAP Tunnel Access to an External Identity](./gcp.execution.iap-tunnel-session.md)
   
   - [Register SSH public key to instance metadata](./gcp.lateral-movement.add-sshkey-instance-metadata.md)
   
