@@ -79,6 +79,7 @@ This page contains the list of all Stratus Attack Techniques.
 | [Disable VPC Flow Logs on a Subnet](./GCP/gcp.defense-evasion.remove-vpc-flow-logs.md) | [GCP](./GCP/index.md) | Defense Evasion |
 | [Read GCE Instance Metadata via the Compute API](./GCP/gcp.discovery.download-instance-metadata.md) | [GCP](./GCP/index.md) | Discovery |
 | [Enumerate Permissions of a GCP Service Account](./GCP/gcp.discovery.enumerate-permissions.md) | [GCP](./GCP/index.md) | Discovery |
+| [Modify a GCE Instance Startup Script](./GCP/gcp.execution.modify-gce-startup-script.md) | [GCP](./GCP/index.md) | Execution, Privilege Escalation |
 | [Exfiltrate Compute Disk by sharing it](./GCP/gcp.exfiltration.share-compute-disk.md) | [GCP](./GCP/index.md) | Exfiltration |
 | [Exfiltrate Compute Image by sharing it](./GCP/gcp.exfiltration.share-compute-image.md) | [GCP](./GCP/index.md) | Exfiltration |
 | [Exfiltrate Compute Disk by sharing a snapshot](./GCP/gcp.exfiltration.share-compute-snapshot.md) | [GCP](./GCP/index.md) | Exfiltration |
@@ -101,4 +102,5 @@ This page contains the list of all Stratus Attack Techniques.
 | [Impersonate GCP Service Accounts](./GCP/gcp.privilege-escalation.impersonate-service-accounts.md) | [GCP](./GCP/index.md) | Privilege Escalation |
 | [Delete a GCP Log Sink](./GCP/gcp.defense-evasion.delete-logging-sink.md) | [GCP](./GCP/index.md) | Defense Evasion |
 | [Disable a GCP Log Sink](./GCP/gcp.defense-evasion.disable-logging-sink.md) | [GCP](./GCP/index.md) | Defense Evasion |
+| [Inject a Malicious Startup Script into a Vertex AI Workbench Instance](./GCP/gcp.execution.modify-vertex-notebook-startup.md) | [GCP](./GCP/index.md) | Execution, Privilege Escalation |
 | [Reduce Log Retention Period on a Cloud Logging Sink Bucket](./GCP/gcp.defense-evasion.reduce-sink-log-retention.md) | [GCP](./GCP/index.md) | Defense Evasion |
