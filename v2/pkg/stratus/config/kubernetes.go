@@ -86,6 +86,7 @@ func (k *KubernetesConfigImpl) GetTechniquePodConfig(techniqueID string) K8sPodC
 type K8sPodConfig struct {
 	Image           string              `yaml:"image"`
 	Labels          map[string]string   `yaml:"labels"`
+	Annotations     map[string]string   `yaml:"annotations"`
 	Tolerations     []v1.Toleration     `yaml:"tolerations"`
 	NodeSelector    map[string]string   `yaml:"node_selector"`
 	SecurityContext *v1.SecurityContext `yaml:"security_context"`
