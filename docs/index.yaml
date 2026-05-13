@@ -781,8 +781,22 @@ Azure:
             - Impact
           platform: Azure
           isIdempotent: false
+        - id: azure.impact.blob-ransomware-cpek
+          name: Azure Blob Storage ransomware through Customer-Provided Encryption Keys
+          isSlow: false
+          mitreAttackTactics:
+            - Impact
+          platform: Azure
+          isIdempotent: false
         - id: azure.impact.blob-ransomware-individual-file-deletion
           name: Azure ransomware via Storage Account Blob deletion
+          isSlow: false
+          mitreAttackTactics:
+            - Impact
+          platform: Azure
+          isIdempotent: false
+        - id: azure.impact.blob-ransomware-service-storage-cmk
+          name: Azure Blob Storage ransomware through Customer-Managed Key Vault key and vault deletion
           isSlow: false
           mitreAttackTactics:
             - Impact
