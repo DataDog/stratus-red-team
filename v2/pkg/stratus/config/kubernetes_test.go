@@ -118,8 +118,37 @@ kubernetes:
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			cfg := newTestConfig(tc.yaml)
-			actual := cfg.GetKubernetesConfig().GetTechniquePodConfig(tc.techniqueID)
+			actual := cfg.GetKubernetesConfig().GetTechniquePodConfig(tc.techniqueID, SubstitutionVars{})
 			assert.Equal(t, tc.expected, actual)
 		})
 	}
+}
+
+// TestGetTechniquePodConfig_TemplateSubstitution verifies that %%correlation_id%%
+// is resolved end-to-end (YAML → merged map → unmarshaled struct), that unknown
+// template variables (e.g. Datadog Agent's %%kube_namespace%%) survive untouched
+// for downstream resolution, and that substitution applies to any string value
+// not just annotations.
+func TestGetTechniquePodConfig_TemplateSubstitution(t *testing.T) {
+	yaml := `
+kubernetes:
+  default:
+    namespace: stratus-%%correlation_id%%
+    pod:
+      image: registry/img:%%correlation_id%%
+      labels:
+        team: red
+      annotations:
+        ad.datadoghq.com/tags: '{"detonation_id":"%%correlation_id%%","ns":"%%kube_namespace%%"}'
+`
+	cfg := newTestConfig(yaml)
+	vars := SubstitutionVars{CorrelationID: "abc-123"}
+	actual := cfg.GetKubernetesConfig().GetTechniquePodConfig("k8s.any.technique", vars)
+
+	assert.Equal(t, "registry/img:abc-123", actual.Image, "substitution applies to image")
+	assert.Equal(t, map[string]string{"team": "red"}, actual.Labels, "label without template untouched")
+	assert.Equal(t,
+		`{"detonation_id":"abc-123","ns":"%%kube_namespace%%"}`,
+		actual.Annotations["ad.datadoghq.com/tags"],
+		"correlation_id substituted, kube_namespace passed through for DD agent")
 }

@@ -226,8 +226,21 @@ This is currently used for Kubernetes techniques and allows you to:
 - **Add labels** to pods (for attribution, CNP policy selectors, monitoring, etc.)
 - **Add tolerations and node selectors** for pod scheduling
 - **Set a security context** on containers
+- **Reference the current detonation's correlation ID** in any string value via `%%correlation_id%%` (see [Template variables](#template-variables) below)
 
 The `default` section applies to all techniques. The `techniques` section allows per-technique overrides, keyed by technique ID. Overrides are merged on top of defaults, you only need to specify the keys you want to change.
+
+### Template variables
+
+Any string value in the config can reference the current detonation's correlation ID using `%%correlation_id%%`. The substitution is applied whenever Stratus reads the config to build a resource (at warmup for Terraform-built prerequisites, and at detonation for resources created directly by the technique's Go code):
+
+```yaml
+kubernetes:
+  default:
+    pod:
+      labels:
+        detonation_id: "%%correlation_id%%"
+```
 
 !!! note
 
@@ -235,6 +248,6 @@ The `default` section applies to all techniques. The `techniques` section allows
 
 Encountering issues? See our [troubleshooting](./troubleshooting.md) page, or [open an issue](https://github.com/DataDog/stratus-red-team/issues/new/choose).
 
-*[TTP]: Tactics, techniques and procedures
+\*[TTP]: Tactics, techniques and procedures
 
 [^1]: While Stratus Red Team uses Terraform under the hood, it doesn't mess with your current Terraform install nor does it require you to install Terraform as a prerequisite. Stratus Red Team will download its own Terraform binary in `$HOME/.stratus-red-team`.

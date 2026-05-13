@@ -33,7 +33,7 @@ func newViper() *viper.Viper {
 // directly in the technique code.
 type Config interface {
 	GetKubernetesConfig() KubernetesConfig
-	GetTerraformVariables(techniqueID string) map[string]string
+	GetTerraformVariables(techniqueID string, vars SubstitutionVars) map[string]string
 }
 
 type ConfigImpl struct {
@@ -101,12 +101,12 @@ func (c *ConfigImpl) GetKubernetesConfig() KubernetesConfig {
 
 // buildMergedViper produces a Viper containing the merged technique config.
 // Each provider populates its own subtree via populateViperOverride.
-func (c *ConfigImpl) buildMergedViper(techniqueID string) *viper.Viper {
+func (c *ConfigImpl) buildMergedViper(techniqueID string, vars SubstitutionVars) *viper.Viper {
 	v := newViper()
 	if c == nil || c.kubernetes == nil {
 		return v
 	}
-	c.kubernetes.populateViperOverride(c.v, v, techniqueID)
+	c.kubernetes.populateViperOverride(c.v, v, techniqueID, vars)
 	// Add here other providers config
 	return v
 }
@@ -114,13 +114,14 @@ func (c *ConfigImpl) buildMergedViper(techniqueID string) *viper.Viper {
 // GetTerraformVariables returns the full merged config (defaults + technique overrides)
 // as a Terraform variable. The returned map contains a single key "config" whose value is
 // a JSON object that Terraform can decode into its variable "config" type.
+// Template variables (e.g. %%correlation_id%%) in string values are substituted from vars.
 // Returns nil if no config is loaded.
-func (c *ConfigImpl) GetTerraformVariables(techniqueID string) map[string]string {
+func (c *ConfigImpl) GetTerraformVariables(techniqueID string, vars SubstitutionVars) map[string]string {
 	if c == nil {
 		return nil
 	}
 
-	merged := c.buildMergedViper(techniqueID)
+	merged := c.buildMergedViper(techniqueID, vars)
 	settings := merged.AllSettings()
 	if len(settings) == 0 {
 		return nil
