@@ -85,8 +85,8 @@ kubernetes:
 			},
 		},
 		{
-			name: "no-config",
-			yaml: ``,
+			name:        "no-config",
+			yaml:        ``,
 			techniqueID: "k8s.test.technique",
 			expected:    K8sPodConfig{},
 		},

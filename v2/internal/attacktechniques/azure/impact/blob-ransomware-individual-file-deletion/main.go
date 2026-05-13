@@ -175,7 +175,7 @@ func deleteBlobsWithFilter(client *azblob.Client, includeVersions bool) error {
 					_, err = versionedBlobClient.Delete(
 						context.Background(),
 						nil,
-				)
+					)
 				} else {
 					_, err = blobClient.Delete(
 						context.Background(),

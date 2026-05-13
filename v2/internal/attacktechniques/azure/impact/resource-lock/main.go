@@ -70,7 +70,6 @@ Sample Azure Activity Log event to monitor:
 	})
 }
 
-
 func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	ctx := context.Background()
 
@@ -82,14 +81,14 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 
 	locksClient, err := armlocks.NewManagementLocksClient(providers.Azure().SubscriptionID, providers.Azure().GetCredentials(), providers.Azure().ClientOptions)
 	if err != nil {
-	    return fmt.Errorf("unable to create management locks client: %w", err)
+		return fmt.Errorf("unable to create management locks client: %w", err)
 	}
 
 	// Delete the resource lock
 	log.Println("Deleting resource lock on resource group " + resourceGroup + " impacting storage account " + storageAccount)
 	_, err = locksClient.DeleteAtResourceGroupLevel(ctx, resourceGroup, lock, nil)
 	if err != nil {
-	    return fmt.Errorf("unable to delete resource lock: %w", err)
+		return fmt.Errorf("unable to delete resource lock: %w", err)
 	}
 	log.Println("Successfully deleted resource lock")
 
@@ -112,7 +111,7 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 	}
 
 	// Re-create the resource lock at ReadOnly level on the resource group
-	log.Println("Re-creating resource lock on resource group "  + resourceGroup + " impacting storage account " + storageAccount)
+	log.Println("Re-creating resource lock on resource group " + resourceGroup + " impacting storage account " + storageAccount)
 	_, err = locksClient.CreateOrUpdateAtResourceGroupLevel(ctx, resourceGroup, lock,
 		armlocks.ManagementLockObject{
 			Properties: &armlocks.ManagementLockProperties{
