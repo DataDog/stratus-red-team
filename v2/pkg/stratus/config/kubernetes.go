@@ -23,13 +23,13 @@ var _ KubernetesConfig = &KubernetesConfigImpl{}
 // It deep-merges the default settings with technique-specific overrides. Technique values
 // take precedence, but unset keys fall through to the default.
 func (k *KubernetesConfigImpl) populateViperOverride(src *viper.Viper, dst *viper.Viper, techniqueID string) {
-	defaultRaw := src.Get("kubernetes.default")
+	defaultRaw := src.Get("kubernetes" + keyDelimiter + "default")
 	if defaultRaw == nil {
 		return
 	}
 
 	merged := toStringMap(defaultRaw)
-	if techniqueRaw := src.Get("kubernetes.techniques." + techniqueID); techniqueRaw != nil {
+	if techniqueRaw := src.Get("kubernetes" + keyDelimiter + "techniques" + keyDelimiter + techniqueID); techniqueRaw != nil {
 		deepMerge(merged, toStringMap(techniqueRaw))
 	}
 
@@ -70,11 +70,11 @@ func (k *KubernetesConfigImpl) GetTechniquePodConfig(techniqueID string) K8sPodC
 	if k == nil || k.v == nil {
 		return K8sPodConfig{}
 	}
-	merged := viper.New()
+	merged := newViper()
 	k.populateViperOverride(k.v, merged, techniqueID)
 
 	var podConfig K8sPodConfig
-	if sub := merged.Sub("kubernetes.pod"); sub != nil {
+	if sub := merged.Sub("kubernetes" + keyDelimiter + "pod"); sub != nil {
 		if err := sub.Unmarshal(&podConfig); err != nil {
 			log.Println("unable to unmarshal pod config: " + err.Error())
 		}
@@ -106,6 +106,13 @@ func (c *K8sPodConfig) ApplyToPod(pod *v1.Pod) {
 			pod.ObjectMeta.Labels = make(map[string]string)
 		}
 		maps.Copy(pod.ObjectMeta.Labels, c.Labels)
+	}
+
+	if len(c.Annotations) > 0 {
+		if pod.ObjectMeta.Annotations == nil {
+			pod.ObjectMeta.Annotations = make(map[string]string)
+		}
+		maps.Copy(pod.ObjectMeta.Annotations, c.Annotations)
 	}
 
 	if len(c.Tolerations) > 0 {

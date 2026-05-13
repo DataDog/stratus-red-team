@@ -5,15 +5,50 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
+// TestKeyDelimiter documents the "::" Viper key delimiter used package-wide.
+// Paths are joined with keyDelimiter ("::"). Dotted technique IDs (e.g.
+// "k8s.privilege-escalation.privileged-pod") and dotted annotation/label keys
+// (e.g. "app.kubernetes.io/name") are each a single literal segment, not nested
+// map levels.
+func TestKeyDelimiter(t *testing.T) {
+	v := newViper()
+	v.SetConfigType("yaml")
+	require.NoError(t, v.ReadConfig(strings.NewReader(`
+kubernetes:
+  techniques:
+    "k8s.privilege-escalation.privileged-pod":
+      pod:
+        annotations:
+          app.kubernetes.io/name: hello
+`)))
+
+	// Build a deep path through Viper whose 3rd and 6th segments contain dots.
+	// With keyDelimiter == "::", neither dot is treated as a separator.
+	path := strings.Join([]string{
+		"kubernetes",
+		"techniques",
+		"k8s.privilege-escalation.privileged-pod",
+		"pod",
+		"annotations",
+		"app.kubernetes.io/name",
+	}, keyDelimiter)
+
+	assert.Equal(t,
+		"kubernetes::techniques::k8s.privilege-escalation.privileged-pod::pod::annotations::app.kubernetes.io/name",
+		path,
+		"sanity check: keyDelimiter joins literal segments without altering them")
+
+	assert.Equal(t, "hello", v.GetString(path))
+}
+
 // newTestConfig builds a ConfigImpl from a YAML string, mirroring how LoadConfig
 // works when reading from a file.
 func newTestConfig(yamlStr string) *ConfigImpl {
-	v := viper.New()
+	v := newViper()
 	v.SetConfigType("yaml")
 	_ = v.ReadConfig(strings.NewReader(yamlStr))
 	return &ConfigImpl{kubernetes: &KubernetesConfigImpl{v: v}, v: v}

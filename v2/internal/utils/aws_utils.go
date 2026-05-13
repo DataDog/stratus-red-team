@@ -35,15 +35,14 @@ func GetCurrentAccountId(cfg aws.Config) (string, error) {
 	return *result.Account, nil
 }
 
-func AwsConfigFromCredentials(accessKeyId string, secretAccessKey string, sessionToken string, detonationUid *uuid.UUID) aws.Config {
+func AwsConfigFromCredentials(accessKeyId string, secretAccessKey string, sessionToken string, correlationID *uuid.UUID) aws.Config {
 	options := []func(*config.LoadOptions) error{
 		config.WithCredentialsProvider(
 			credentials.NewStaticCredentialsProvider(accessKeyId, secretAccessKey, sessionToken),
 		),
 	}
-	if detonationUid != nil {
-		// propagate the detonation UID to the new provider
-		options = append(options, CustomUserAgentApiOptions(*detonationUid))
+	if correlationID != nil {
+		options = append(options, CustomUserAgentApiOptions(*correlationID))
 	}
 	cfg, err := config.LoadDefaultConfig(context.Background(), options...)
 

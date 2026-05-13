@@ -36,6 +36,8 @@ kubernetes:
       image: busybox:latest
       labels:
         app: stratus
+      annotations:
+        app.kubernetes.io/managed-by: stratus
       tolerations:
         - key: dedicated
           operator: Equal
@@ -54,6 +56,16 @@ kubernetes:
         image: custom.registry.io/custom-2:latest
 `,
 			wantError: false,
+		},
+		{
+			name: "wrong-type-for-annotations",
+			yaml: `
+kubernetes:
+  default:
+    pod:
+      annotations: "not-a-map"
+`,
+			wantError: true,
 		},
 		{
 			name: "unknown-top-level-key",

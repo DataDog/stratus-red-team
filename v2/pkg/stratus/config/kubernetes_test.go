@@ -53,6 +53,29 @@ kubernetes:
 			},
 		},
 		{
+			name: "annotations-merge-with-technique-override",
+			yaml: `
+kubernetes:
+  default:
+    pod:
+      annotations:
+        app.kubernetes.io/name: stratus
+        app.kubernetes.io/managed-by: default
+  techniques:
+    "k8s.test.technique":
+      pod:
+        annotations:
+          app.kubernetes.io/managed-by: technique
+`,
+			techniqueID: "k8s.test.technique",
+			expected: K8sPodConfig{
+				Annotations: map[string]string{
+					"app.kubernetes.io/name":       "stratus",
+					"app.kubernetes.io/managed-by": "technique",
+				},
+			},
+		},
+		{
 			name: "technique-override-merges-with-default",
 			yaml: `
 kubernetes:
