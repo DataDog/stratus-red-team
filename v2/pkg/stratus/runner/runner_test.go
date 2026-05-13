@@ -547,7 +547,7 @@ func TestNewRunnerWithProviderFactory(t *testing.T) {
 	stateMock.On("SetTechniqueState", mock.Anything).Return(nil)
 	stateMock.On("WriteTerraformOutputs", mock.Anything).Return(nil)
 	stateMock.On("WriteTerraformVariables", mock.Anything).Return(nil)
-	configMock.On("GetTerraformVariables", mock.Anything).Return(map[string]string{})
+	configMock.On("GetTerraformVariables", mock.Anything, mock.Anything).Return(map[string]string{})
 	tfMock.On("TerraformInitAndApply", mock.Anything, mock.Anything).Return(map[string]string{}, nil)
 
 	r := NewRunnerWithContext(
@@ -584,7 +584,7 @@ func TestProviderCredentialInjection(t *testing.T) {
 	stateMock.On("SetTechniqueState", mock.Anything).Return(nil)
 	stateMock.On("WriteTerraformOutputs", mock.Anything).Return(nil)
 	stateMock.On("WriteTerraformVariables", mock.Anything).Return(nil)
-	configMock.On("GetTerraformVariables", mock.Anything).Return(map[string]string{})
+	configMock.On("GetTerraformVariables", mock.Anything, mock.Anything).Return(map[string]string{})
 	tfMock.On("TerraformInitAndApply", mock.Anything, mock.Anything).Return(map[string]string{}, nil)
 
 	// Build an AWS provider with explicit static credentials using the
