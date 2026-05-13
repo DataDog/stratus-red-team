@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"log"
 	"math/big"
-	"strings"
 	"time"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/runtime"
@@ -26,10 +25,6 @@ import (
 var tf []byte
 
 const KeyName = "ransom-cmk-key"
-
-const RansomContainerName = "your-files-encrypted"
-const RansomNoteFilename = "FILES-ENCRYPTED.txt"
-const RansomNoteContents = "Your storage account encryption key has been wrapped with a Key Vault key, and the Key Vault has been deleted. All data in the storage account is now inaccessible. To negotiate for the recovery of your data, contact evil@hackerz.io. In 7 days, if we don't hear from you, that data will either be sold or published, and might no longer be recoverable."
 
 const CodeBlock = "```"
 
@@ -81,7 +76,6 @@ Detonation:
 - Attempt to purge the key (fails due to purge protection, but generates a log event)
 - Soft-delete the Key Vault
 - Attempt to purge the Key Vault (fails due to purge protection, but generates a log event)
-- Upload a ransom note
 
 References:
 
@@ -202,11 +196,6 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 
 	if err := attemptPurgeKeyVault(azureConfig, keyVaultName, vaultLocation); err != nil {
 		return fmt.Errorf("failed to attempt key vault purge: %w", err)
-	}
-
-	log.Println("Uploading ransom note...")
-	if err := utils.UploadBlob(blobClient, RansomContainerName, RansomNoteFilename, strings.NewReader(RansomNoteContents)); err != nil {
-		return fmt.Errorf("failed to upload ransom note: %w", err)
 	}
 
 	log.Println("Technique execution completed - storage account encryption key is now wrapped by a deleted Key Vault key")

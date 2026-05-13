@@ -3,8 +3,8 @@ package stratus
 import (
 	"errors"
 
-	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
 	"github.com/google/uuid"
@@ -28,7 +28,9 @@ func WithAWSConfig(cfg aws.Config) AWSProviderOption { return providers.WithAWSC
 
 // GCP provider options
 
-func WithGCPProjectID(projectId string) GCPProviderOption { return providers.WithGCPProjectID(projectId) }
+func WithGCPProjectID(projectId string) GCPProviderOption {
+	return providers.WithGCPProjectID(projectId)
+}
 
 // Azure provider options
 

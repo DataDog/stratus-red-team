@@ -3,8 +3,8 @@ package azure
 import (
 	"context"
 	_ "embed"
-	"fmt"
 	"encoding/json"
+	"fmt"
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/network/armnetwork/v6"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
@@ -155,7 +155,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	// Password needs to be unmarshaled, as the resulting string from Terraform has json.HTMLEscape applied. Unmarshal is the correct operation, but string needs to be correctly formatted to work (see above).
 	var adminPasswordDecoded string
 	err = json.Unmarshal([]byte(adminPassword), &adminPasswordDecoded)
-	if err != nil{
+	if err != nil {
 		return fmt.Errorf("failed to unmarshal password string: %v", err)
 	}
 	log.Println("Bastion password: " + adminPasswordDecoded)
