@@ -1,7 +1,6 @@
 package gcp
 
 import (
-	"bytes"
 	"context"
 	_ "embed"
 	"errors"
@@ -198,22 +197,9 @@ func decryptAllObjects(ctx context.Context, client *storage.Client, bucketName s
 			continue
 		}
 		src := bucket.Object(name).Key(EncryptionKey)
-		reader, err := src.NewReader(ctx)
-		if err != nil {
-			return fmt.Errorf("unable to read encrypted object %s: %w", name, err)
-		}
-		content, err := io.ReadAll(reader)
-		reader.Close()
-		if err != nil {
-			return fmt.Errorf("unable to download encrypted object %s: %w", name, err)
-		}
-
-		if err := bucket.Object(name).Delete(ctx); err != nil {
-			return fmt.Errorf("unable to delete encrypted object %s: %w", name, err)
-		}
-
-		if err := uploadObject(ctx, client, bucketName, name, bytes.NewReader(content)); err != nil {
-			return fmt.Errorf("unable to re-upload decrypted object %s: %w", name, err)
+		dst := bucket.Object(name)
+		if _, err := dst.CopierFrom(src).Run(ctx); err != nil {
+			return fmt.Errorf("unable to decrypt object %s: %w", name, err)
 		}
 	}
 	log.Println("Successfully decrypted all objects in the bucket")
