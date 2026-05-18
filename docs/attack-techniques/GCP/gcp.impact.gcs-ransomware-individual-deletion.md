@@ -52,7 +52,7 @@ You can detect ransomware activity by identifying abnormal patterns of objects b
 This can be done through GCS [Data Access audit logs](https://cloud.google.com/storage/docs/audit-logging) by monitoring for high volumes of <code>storage.objects.delete</code> events
 attributed to a single principal in a short time window.
 
-Note that GCS Data Access logs are not enabled by default and must be [explicitly enabled](https://cloud.google.com/storage/docs/audit-logging#enabling) at the project or organization level. The audit log does not surface the object generation/version that was deleted, so a defender cannot tell from logs alone whether noncurrent versions were also wiped — only that N independent delete operations occurred.
+Note that GCS Data Access logs are not enabled by default and must be [explicitly enabled](https://cloud.google.com/storage/docs/audit-logging#enabling) at the project or organization level.
 
 Sample audit log event for <code>storage.objects.delete</code>, shortened for readability:
 
