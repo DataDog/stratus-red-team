@@ -14,7 +14,9 @@ permissions:
 jobs:
   static-analysis:
     name: "Run Go static analysis"
-    runs-on: ubuntu-latest
+    runs-on:
+      group: Large Runner Shared Public
+      labels: ubuntu-16-core-latest
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@fa2e9d605c4eeb9fcad4c99c224cee0c6c7f3594
