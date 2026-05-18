@@ -39,7 +39,6 @@ Without the key, the blobs cannot be read.
 References:
 
 - https://learn.microsoft.com/en-us/azure/storage/blobs/encryption-customer-provided-keys
-- https://unit42.paloaltonetworks.com/large-scale-cloud-extortion-operation/
 
 
 ## Instructions

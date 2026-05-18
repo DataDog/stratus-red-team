@@ -21,9 +21,9 @@ Platform: Azure
 
 Simulates Azure Blob Storage ransomware activity that changes the storage account's server-side encryption to use a Customer-Managed Key (CMK) from a Key Vault that the attacker controls, then deletes the Key Vault to render all data in the storage account inaccessible.
 
-Unlike encryption scope-based ransomware, this technique operates at the storage account level — the attacker does not need to re-upload individual blobs. By rotating the storage account's encryption key to an attacker-controlled Key Vault key and then deleting the vault, all blobs in the account become inaccessible once the cached key expires.
+Unlike encryption scope-based ransomware, this technique operates at the storage account level — the attacker does not need to re-upload individual blobs. By rotating the storage account's encryption key to an attacker-controlled Key Vault key and then deleting the vault, all blobs in the account become inaccessible.
 
-Note that due to Azure's purge protection feature (enabled during detonation), the Key Vault and key remain soft-deleted and recoverable within the retention period.
+Note that due to Azure's purge protection feature (, the Key Vault and key remain soft-deleted and recoverable within the retention period.
 
 You will need to have the <code>Key Vault Administrator</code> role on your Azure subscription to correctly warmup the technique.
 
@@ -44,7 +44,6 @@ You will need to have the <code>Key Vault Administrator</code> role on your Azur
 - Attempt to purge the key (fails due to purge protection, but generates a log event)
 - Soft-delete the Key Vault
 - Attempt to purge the Key Vault (fails due to purge protection, but generates a log event)
-- Upload a ransom note
 
 References:
 
@@ -62,10 +61,9 @@ stratus detonate azure.impact.blob-ransomware-service-storage-cmk
 
 You can detect this ransomware activity by monitoring for:
 
-1. Storage account encryption configuration changes (<code>MICROSOFT.STORAGE/STORAGEACCOUNTS/WRITE</code>) switching key source to <code>Microsoft.Keyvault</code>.
+1. Storage account encryption configuration changes (<code>MICROSOFT.STORAGE/STORAGEACCOUNTS/WRITE</code>) where <code>properties.requestbody.properties.encryption.keySource</code> == <code>Microsoft.Keyvault</code>.
 2. Key Vault key creation followed by deletion (<code>KeyCreate</code>, <code>KeyDelete</code>).
 3. Key Vault deletion (<code>MICROSOFT.KEYVAULT/VAULTS/DELETE</code>) after being linked to a storage account's encryption.
-4. Enabling purge protection on a Key Vault (<code>MICROSOFT.KEYVAULT/VAULTS/WRITE</code>).
 
 Sample Azure Activity log event for storage account encryption update:
 
@@ -75,7 +73,21 @@ Sample Azure Activity log event for storage account encryption update:
   "category": "Administrative",
   "resultType": "Success",
   "properties": {
-    "entity": "/subscriptions/<subscription-id>/resourceGroups/<rg>/providers/Microsoft.Storage/storageAccounts/<storage-account-name>"
+    "entity": "/subscriptions/<subscription-id>/resourceGroups/<rg>/providers/Microsoft.Storage/storageAccounts/<storage-account-name>",
+	"requestbody": {
+		"properties": {
+			"encryption": {
+				"keySource": "Microsoft.Storage",
+				"services": {
+					"table": {
+						"keyType": "Service"
+					},
+					"queue": {
+						"keyType": "Service"
+					}
+				}
+			},
+	}
   }
 }
 ```
