@@ -32,6 +32,24 @@ func (_m *Config) GetKubernetesConfig() config.KubernetesConfig {
 	return r0
 }
 
+// GetStateConfig provides a mock function with no fields
+func (_m *Config) GetStateConfig() config.StateConfig {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetStateConfig")
+	}
+
+	var r0 config.StateConfig
+	if rf, ok := ret.Get(0).(func() config.StateConfig); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(config.StateConfig)
+	}
+
+	return r0
+}
+
 // GetTerraformVariables provides a mock function with given fields: techniqueID
 func (_m *Config) GetTerraformVariables(techniqueID string) map[string]string {
 	ret := _m.Called(techniqueID)

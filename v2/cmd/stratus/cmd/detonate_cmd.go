@@ -75,7 +75,7 @@ func doDetonateCmd(techniques []*stratus.AttackTechnique, cleanup bool) {
 
 func detonateCmdWorker(techniques <-chan *stratus.AttackTechnique, errors chan<- error) {
 	for technique := range techniques {
-		stratusRunner := runner.NewRunner(technique, detonateForce)
+		stratusRunner := runner.NewRunner(technique, detonateForce, buildRunnerOptions()...)
 		detonateErr := stratusRunner.Detonate()
 		if detonateCleanup {
 			cleanupErr := stratusRunner.CleanUp()

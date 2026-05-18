@@ -76,7 +76,7 @@ func doCleanupCmd(techniques []*stratus.AttackTechnique) {
 
 func cleanupCmdWorker(techniques <-chan *stratus.AttackTechnique, errors chan<- error) {
 	for technique := range techniques {
-		stratusRunner := runner.NewRunner(technique, flagForceCleanup)
+		stratusRunner := runner.NewRunner(technique, flagForceCleanup, buildRunnerOptions()...)
 		err := stratusRunner.CleanUp()
 		errors <- err
 	}

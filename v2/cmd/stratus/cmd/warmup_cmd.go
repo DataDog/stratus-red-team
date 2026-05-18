@@ -63,7 +63,7 @@ func doWarmupCmd(techniques []*stratus.AttackTechnique) {
 
 func warmupCmdWorker(techniques <-chan *stratus.AttackTechnique, errors chan<- error) {
 	for technique := range techniques {
-		stratusRunner := runner.NewRunner(technique, forceWarmup)
+		stratusRunner := runner.NewRunner(technique, forceWarmup, buildRunnerOptions()...)
 		_, err := stratusRunner.WarmUp()
 		errors <- err
 	}

@@ -97,6 +97,7 @@ nav:
           - detonate: user-guide/commands/detonate.md
           - revert: user-guide/commands/revert.md
           - cleanup: user-guide/commands/cleanup.md
+      - Remote State (S3): user-guide/remote-state.md
       - Troubleshooting: user-guide/troubleshooting.md
       - Programmatic Usage: user-guide/programmatic-usage.md
   - Attack Techniques Reference:

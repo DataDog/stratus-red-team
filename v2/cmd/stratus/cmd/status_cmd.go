@@ -35,7 +35,7 @@ func doStatusCmd(techniques []*stratus.AttackTechnique) {
 	t := GetDisplayTable()
 	t.AppendHeader(table.Row{"ID", "Name", "Status"})
 	for i := range techniques {
-		stateManager := state.NewFileSystemStateManager(techniques[i])
+		stateManager := resolveStateManager(techniques[i])
 		techniqueState := stateManager.GetTechniqueState()
 		if techniqueState == "" {
 			techniqueState = stratus.AttackTechniqueStatusCold
@@ -43,6 +43,15 @@ func doStatusCmd(techniques []*stratus.AttackTechnique) {
 		t.AppendRow(table.Row{techniques[i].ID, techniques[i].FriendlyName, colorState(techniqueState)})
 	}
 	t.Render()
+}
+
+// resolveStateManager returns the appropriate StateManager based on whether S3 remote state is configured
+func resolveStateManager(technique *stratus.AttackTechnique) state.StateManager {
+	s3Cfg := resolveS3BackendConfig()
+	if s3Cfg != nil {
+		return state.NewS3StateManager(technique, *s3Cfg)
+	}
+	return state.NewFileSystemStateManager(technique)
 }
 
 func colorState(state stratus.AttackTechniqueState) string {

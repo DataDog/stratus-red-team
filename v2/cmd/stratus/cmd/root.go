@@ -15,6 +15,9 @@ var RootCmd = &cobra.Command{
 func init() {
 	setupLogging()
 
+	RootCmd.PersistentFlags().StringVar(&flagStateBucket, "state-bucket", "", "(optional) S3 bucket for remote state storage")
+	RootCmd.PersistentFlags().StringVar(&flagStateBucketRegion, "state-bucket-region", "", "(optional) AWS region of the S3 state bucket")
+
 	listCmd := buildListCmd()
 	showCmd := buildShowCmd()
 	warmupCmd := buildWarmupCmd()

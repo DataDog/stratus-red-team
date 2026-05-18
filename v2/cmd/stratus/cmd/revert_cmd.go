@@ -75,7 +75,7 @@ func revertCmdWorker(techniques <-chan *stratus.AttackTechnique, errors chan<- e
 			errors <- nil
 			continue
 		}
-		stratusRunner := runner.NewRunner(technique, revertForce)
+		stratusRunner := runner.NewRunner(technique, revertForce, buildRunnerOptions()...)
 		err := stratusRunner.Revert()
 		errors <- err
 	}
