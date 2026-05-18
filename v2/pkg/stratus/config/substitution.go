@@ -1,56 +1,44 @@
 package config
 
-import "regexp"
+import (
+	"bytes"
+	"log"
+	"text/template"
+)
 
-// templateVarPattern matches %%name%% where name is lowercase letters and underscores.
-// The chosen syntax aligns with Datadog Agent's tag autodiscovery template variables
-// (e.g. %%kube_namespace%%).
-var templateVarPattern = regexp.MustCompile(`%%([a-z_]+)%%`)
-
-// SubstitutionVars holds the values Stratus substitutes into config string values.
-// Unknown names — and names whose value is empty — are left untouched (passed
-// through verbatim). Treating empty values as unknown prevents missing context
-// from silently collapsing %%correlation_id%% into "" downstream, which would
-// risk resource-name collisions across detonations.
+// SubstitutionVars holds values substituted into config string values. Users
+// reference each variable in YAML via Go's text/template syntax with <% %>
+// delimiters — e.g. <%.CorrelationID%>. Adding a new variable: add a field
+// below and have callers populate it; users reference it by the exported field
+// name.
+//
+// The non-default <% %> delimiters were chosen to avoid (a) YAML parsers
+// interpreting [[ ]] as nested flow sequences, and (b) some editors (VSCode,
+// Cursor) splitting the default {{ }} markers into "{ {" on save.
 type SubstitutionVars struct {
 	CorrelationID string
 }
 
-// varNameCorrelationID is the whitelisted name accepted in %%...%% markers for
-// the correlation ID. Kept as a constant so the whitelist string lives in exactly
-// one place alongside the SubstitutionVars field it resolves from.
-const varNameCorrelationID = "correlation_id"
-
-// lookup returns the substitution for a named variable and whether it should be
-// applied. See SubstitutionVars for the empty-value semantics.
-func (v SubstitutionVars) lookup(name string) (string, bool) {
-	switch name {
-	case varNameCorrelationID:
-		if v.CorrelationID == "" {
-			return "", false
-		}
-		return v.CorrelationID, true
-	default:
-		return "", false
-	}
-}
-
-// substitute replaces %%name%% occurrences whose name is in the whitelist; other
-// occurrences are returned verbatim.
+// substitute returns s with template expressions resolved from v. Parse or
+// execute errors (malformed delimiters, unknown field references) leave s
+// unchanged and log the cause so typos surface as literal <% %> markers in
+// the output rather than aborting warmup.
 func (v SubstitutionVars) substitute(s string) string {
-	return templateVarPattern.ReplaceAllStringFunc(s, func(match string) string {
-		// FindStringSubmatch keeps the name extraction tied to the regex; if the
-		// pattern is widened or its delimiters change, this code keeps working.
-		sub := templateVarPattern.FindStringSubmatch(match)
-		if value, ok := v.lookup(sub[1]); ok {
-			return value
-		}
-		return match
-	})
+	tmpl, err := template.New("").Delims("<%", "%>").Parse(s)
+	if err != nil {
+		log.Printf("config substitution: parse %q: %v", s, err)
+		return s
+	}
+	var buf bytes.Buffer
+	if err := tmpl.Execute(&buf, v); err != nil {
+		log.Printf("config substitution: execute %q: %v", s, err)
+		return s
+	}
+	return buf.String()
 }
 
-// substituteMap returns a new map with the same shape as m and all string leaves
-// substituted via vars. The caller's map is not mutated.
+// substituteMap returns a new map with the same shape as m and all string
+// leaves substituted via vars. The caller's map is not mutated.
 func substituteMap(m map[string]any, vars SubstitutionVars) map[string]any {
 	result := make(map[string]any, len(m))
 	for k, val := range m {

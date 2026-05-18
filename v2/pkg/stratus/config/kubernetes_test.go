@@ -124,22 +124,23 @@ kubernetes:
 	}
 }
 
-// TestGetTechniquePodConfig_TemplateSubstitution verifies that %%correlation_id%%
-// is resolved end-to-end (YAML → merged map → unmarshaled struct), that unknown
-// template variables (e.g. Datadog Agent's %%kube_namespace%%) survive untouched
-// for downstream resolution, and that substitution applies to any string value
-// not just annotations.
+// TestGetTechniquePodConfig_TemplateSubstitution verifies that <% .CorrelationID %>
+// is resolved end-to-end (YAML -> merged map -> unmarshaled struct), that content
+// that doesn't use Stratus's <% %> template syntax (e.g. Datadog Agent's
+// %%kube_namespace%% autodiscovery markers) survives untouched for downstream
+// resolution, and that substitution applies to any string value not just
+// annotations.
 func TestGetTechniquePodConfig_TemplateSubstitution(t *testing.T) {
 	yaml := `
 kubernetes:
   default:
-    namespace: stratus-%%correlation_id%%
+    namespace: stratus-<% .CorrelationID %>
     pod:
-      image: registry/img:%%correlation_id%%
+      image: registry/img:<%.CorrelationID%> # without spaces between delims and field
       labels:
         team: red
       annotations:
-        ad.datadoghq.com/tags: '{"detonation_id":"%%correlation_id%%","ns":"%%kube_namespace%%"}'
+        ad.datadoghq.com/tags: '{"detonation_id":"<% .CorrelationID %>","ns":"%%kube_namespace%%"}'
 `
 	cfg := newTestConfig(yaml)
 	vars := SubstitutionVars{CorrelationID: "abc-123"}
@@ -150,5 +151,5 @@ kubernetes:
 	assert.Equal(t,
 		`{"detonation_id":"abc-123","ns":"%%kube_namespace%%"}`,
 		actual.Annotations["ad.datadoghq.com/tags"],
-		"correlation_id substituted, kube_namespace passed through for DD agent")
+		"CorrelationID substituted, DD-Agent autodiscovery marker passed through")
 }
