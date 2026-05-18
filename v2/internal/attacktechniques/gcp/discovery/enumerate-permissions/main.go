@@ -14,7 +14,6 @@ import (
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
-	"golang.org/x/oauth2/google"
 	cloudresourcemanager "google.golang.org/api/cloudresourcemanager/v1"
 	"google.golang.org/api/googleapi"
 	"google.golang.org/api/option"
@@ -83,10 +82,6 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	}
 
 	ctx := context.Background()
-	creds, err := google.CredentialsFromJSON(ctx, saKeyJSON, "https://www.googleapis.com/auth/cloud-platform")
-	if err != nil {
-		return fmt.Errorf("failed to create credentials from service account key: %w", err)
-	}
 
 	testablePermissions := params["testable_permissions"]
 	if testablePermissions == "" {
@@ -100,7 +95,8 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 
 	crmService, err := cloudresourcemanager.NewService(
 		ctx,
-		option.WithTokenSource(creds.TokenSource),
+		option.WithCredentialsJSON(saKeyJSON),
+		option.WithScopes("https://www.googleapis.com/auth/cloud-platform"),
 		providers.GCP().Options(),
 	)
 	if err != nil {
