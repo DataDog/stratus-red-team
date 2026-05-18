@@ -9,6 +9,13 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   - [Steal and Use the GCE Default Service Account Token from Outside Google Cloud](./gcp.initial-access.use-compute-sa-outside-gcp.md)
   
 
+## Execution
+  
+  - [Modify a GCE Instance Startup Script](./gcp.execution.modify-gce-startup-script.md)
+  
+  - [Inject a Malicious Startup Script into a Vertex AI Workbench Instance](./gcp.execution.modify-vertex-notebook-startup.md)
+  
+
 ## Persistence
   
   - [Register SSH public key to instance metadata](./gcp.lateral-movement.add-sshkey-instance-metadata.md)
@@ -24,11 +31,15 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 ## Privilege Escalation
   
+  - [Modify a GCE Instance Startup Script](./gcp.execution.modify-gce-startup-script.md)
+  
   - [Create an Admin GCP Service Account](./gcp.persistence.create-admin-service-account.md)
   
   - [Create a GCP Service Account Key](./gcp.persistence.create-service-account-key.md)
   
   - [Impersonate GCP Service Accounts](./gcp.privilege-escalation.impersonate-service-accounts.md)
+  
+  - [Inject a Malicious Startup Script into a Vertex AI Workbench Instance](./gcp.execution.modify-vertex-notebook-startup.md)
   
 
 ## Defense Evasion
