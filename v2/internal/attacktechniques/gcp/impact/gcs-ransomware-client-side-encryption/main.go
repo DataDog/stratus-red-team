@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	_ "embed"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -123,7 +124,7 @@ func encryptAllObjects(ctx context.Context, client *storage.Client, bucketName s
 	var names []string
 	for {
 		attrs, err := it.Next()
-		if err == iterator.Done {
+		if errors.Is(err, iterator.Done) {
 			break
 		}
 		if err != nil {
@@ -178,7 +179,7 @@ func decryptAllObjects(ctx context.Context, client *storage.Client, bucketName s
 	var names []string
 	for {
 		attrs, err := it.Next()
-		if err == iterator.Done {
+		if errors.Is(err, iterator.Done) {
 			break
 		}
 		if err != nil {

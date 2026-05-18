@@ -3,6 +3,7 @@ package gcp
 import (
 	"context"
 	_ "embed"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -120,7 +121,7 @@ func downloadAllObjects(ctx context.Context, client *storage.Client, bucketName 
 	count := 0
 	for {
 		attrs, err := it.Next()
-		if err == iterator.Done {
+		if errors.Is(err, iterator.Done) {
 			break
 		}
 		if err != nil {
@@ -151,7 +152,7 @@ func removeAllObjects(ctx context.Context, client *storage.Client, bucketName st
 	var objects []versionedObject
 	for {
 		attrs, err := it.Next()
-		if err == iterator.Done {
+		if errors.Is(err, iterator.Done) {
 			break
 		}
 		if err != nil {
