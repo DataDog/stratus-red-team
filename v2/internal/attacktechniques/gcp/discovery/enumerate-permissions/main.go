@@ -95,7 +95,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 
 	crmService, err := cloudresourcemanager.NewService(
 		ctx,
-		option.WithCredentialsJSON(saKeyJSON),
+		option.WithAuthCredentialsJSON(option.ServiceAccount, saKeyJSON),
 		option.WithScopes("https://www.googleapis.com/auth/cloud-platform"),
 		providers.GCP().Options(),
 	)
