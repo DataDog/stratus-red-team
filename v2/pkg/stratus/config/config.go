@@ -114,7 +114,7 @@ func (c *ConfigImpl) buildMergedViper(techniqueID string, vars SubstitutionVars)
 // GetTerraformVariables returns the full merged config (defaults + technique overrides)
 // as a Terraform variable. The returned map contains a single key "config" whose value is
 // a JSON object that Terraform can decode into its variable "config" type.
-// Template variables (e.g. %%correlation_id%%) in string values are substituted from vars.
+// Template variables (e.g. <% .CorrelationID %>) in string values are substituted from vars.
 // Returns nil if no config is loaded.
 func (c *ConfigImpl) GetTerraformVariables(techniqueID string, vars SubstitutionVars) map[string]string {
 	if c == nil {

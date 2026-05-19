@@ -22,7 +22,7 @@ var _ KubernetesConfig = &KubernetesConfigImpl{}
 // populateViperOverride creates a kubernetes config object from a source viper config.
 // It deep-merges the default settings with technique-specific overrides. Technique values
 // take precedence, but unset keys fall through to the default. Template variables
-// (e.g. %%correlation_id%%) in string values are substituted before the result is stored.
+// (e.g. <% .CorrelationID %>) in string values are substituted before the result is stored.
 func (k *KubernetesConfigImpl) populateViperOverride(src *viper.Viper, dst *viper.Viper, techniqueID string, vars SubstitutionVars) {
 	defaultRaw := src.Get("kubernetes" + keyDelimiter + "default")
 	if defaultRaw == nil {
@@ -67,7 +67,7 @@ func toStringMap(v any) map[string]any {
 }
 
 // GetTechniquePodConfig returns the merged pod configuration for a specific technique,
-// with template variables (e.g. %%correlation_id%%) substituted from vars.
+// with template variables (e.g. <% .CorrelationID %>) substituted from vars.
 func (k *KubernetesConfigImpl) GetTechniquePodConfig(techniqueID string, vars SubstitutionVars) K8sPodConfig {
 	if k == nil || k.v == nil {
 		return K8sPodConfig{}
@@ -86,10 +86,10 @@ func (k *KubernetesConfigImpl) GetTechniquePodConfig(techniqueID string, vars Su
 
 // K8sPodConfig holds pod-level configuration that can be applied to k8s pods.
 type K8sPodConfig struct {
-	Image       string            `yaml:"image"`
-	Labels      map[string]string `yaml:"labels"`
-	Annotations map[string]string `yaml:"annotations"`
-	Tolerations []v1.Toleration   `yaml:"tolerations"`
+	Image           string              `yaml:"image"`
+	Labels          map[string]string   `yaml:"labels"`
+	Annotations     map[string]string   `yaml:"annotations"`
+	Tolerations     []v1.Toleration     `yaml:"tolerations"`
 	NodeSelector    map[string]string   `yaml:"node_selector"`
 	SecurityContext *v1.SecurityContext `yaml:"security_context"`
 }
