@@ -248,6 +248,6 @@ kubernetes:
 
 Encountering issues? See our [troubleshooting](./troubleshooting.md) page, or [open an issue](https://github.com/DataDog/stratus-red-team/issues/new/choose).
 
-\*[TTP]: Tactics, techniques and procedures
+*[TTP]: Tactics, techniques and procedures
 
 [^1]: While Stratus Red Team uses Terraform under the hood, it doesn't mess with your current Terraform install nor does it require you to install Terraform as a prerequisite. Stratus Red Team will download its own Terraform binary in `$HOME/.stratus-red-team`.
