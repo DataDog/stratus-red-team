@@ -9,7 +9,6 @@ import (
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
-	"github.com/microsoftgraph/msgraph-beta-sdk-go/models"
 	graphcore "github.com/microsoftgraph/msgraph-sdk-go-core"
 	graphmodels "github.com/microsoftgraph/msgraph-sdk-go/models"
 	"log"
@@ -165,7 +164,7 @@ func revert(_ map[string]string, providers stratus.CloudProviders) error {
 
 	// We need to paginate through the results
 	var userId string
-	iterator, err := graphcore.NewPageIterator[*graphmodels.User](userResult, graphClient.GetAdapter(), models.CreateUserCollectionResponseFromDiscriminatorValue)
+	iterator, err := graphcore.NewPageIterator[*graphmodels.User](userResult, graphClient.GetAdapter(), graphmodels.CreateUserCollectionResponseFromDiscriminatorValue)
 	if err != nil {
 		return errors.New("could not create users iterator: " + err.Error())
 	}
