@@ -138,6 +138,7 @@ func (m *K8sProvider) ApplyPodConfig(techniqueID string, pod *v1.Pod) {
 		return
 	}
 
-	techniqueConfig := cfg.GetKubernetesConfig().GetTechniquePodConfig(techniqueID)
+	vars := config.SubstitutionVars{CorrelationID: m.UniqueCorrelationId.String()}
+	techniqueConfig := cfg.GetKubernetesConfig().GetTechniquePodConfig(techniqueID, vars)
 	techniqueConfig.ApplyToPod(pod)
 }

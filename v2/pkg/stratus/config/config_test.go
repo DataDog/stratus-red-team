@@ -141,7 +141,7 @@ kubernetes:
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			cfg := newTestConfig(tc.yaml)
-			actual := cfg.GetTerraformVariables(tc.techniqueID)
+			actual := cfg.GetTerraformVariables(tc.techniqueID, SubstitutionVars{})
 
 			if tc.expected == nil {
 				assert.Nil(t, actual)

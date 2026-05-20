@@ -10,7 +10,7 @@ import (
 
 // KubernetesConfig holds Kubernetes-specific configuration
 type KubernetesConfig interface {
-	GetTechniquePodConfig(techniqueID string) K8sPodConfig
+	GetTechniquePodConfig(techniqueID string, vars SubstitutionVars) K8sPodConfig
 }
 
 type KubernetesConfigImpl struct {
@@ -21,8 +21,9 @@ var _ KubernetesConfig = &KubernetesConfigImpl{}
 
 // populateViperOverride creates a kubernetes config object from a source viper config.
 // It deep-merges the default settings with technique-specific overrides. Technique values
-// take precedence, but unset keys fall through to the default.
-func (k *KubernetesConfigImpl) populateViperOverride(src *viper.Viper, dst *viper.Viper, techniqueID string) {
+// take precedence, but unset keys fall through to the default. Template variables
+// (e.g. <% .CorrelationID %>) in string values are substituted before the result is stored.
+func (k *KubernetesConfigImpl) populateViperOverride(src *viper.Viper, dst *viper.Viper, techniqueID string, vars SubstitutionVars) {
 	defaultRaw := src.Get("kubernetes" + keyDelimiter + "default")
 	if defaultRaw == nil {
 		return
@@ -33,7 +34,7 @@ func (k *KubernetesConfigImpl) populateViperOverride(src *viper.Viper, dst *vipe
 		deepMerge(merged, toStringMap(techniqueRaw))
 	}
 
-	dst.Set("kubernetes", merged)
+	dst.Set("kubernetes", substituteMap(merged, vars))
 }
 
 // deepMerge recursively merges src into dst. Values in src take precedence.
@@ -65,13 +66,14 @@ func toStringMap(v any) map[string]any {
 	return make(map[string]any)
 }
 
-// GetTechniquePodConfig returns the merged pod configuration for a specific technique.
-func (k *KubernetesConfigImpl) GetTechniquePodConfig(techniqueID string) K8sPodConfig {
+// GetTechniquePodConfig returns the merged pod configuration for a specific technique,
+// with template variables (e.g. <% .CorrelationID %>) substituted from vars.
+func (k *KubernetesConfigImpl) GetTechniquePodConfig(techniqueID string, vars SubstitutionVars) K8sPodConfig {
 	if k == nil || k.v == nil {
 		return K8sPodConfig{}
 	}
 	merged := newViper()
-	k.populateViperOverride(k.v, merged, techniqueID)
+	k.populateViperOverride(k.v, merged, techniqueID, vars)
 
 	var podConfig K8sPodConfig
 	if sub := merged.Sub("kubernetes" + keyDelimiter + "pod"); sub != nil {
@@ -84,10 +86,10 @@ func (k *KubernetesConfigImpl) GetTechniquePodConfig(techniqueID string) K8sPodC
 
 // K8sPodConfig holds pod-level configuration that can be applied to k8s pods.
 type K8sPodConfig struct {
-	Image       string            `yaml:"image"`
-	Labels      map[string]string `yaml:"labels"`
-	Annotations map[string]string `yaml:"annotations"`
-	Tolerations []v1.Toleration   `yaml:"tolerations"`
+	Image           string              `yaml:"image"`
+	Labels          map[string]string   `yaml:"labels"`
+	Annotations     map[string]string   `yaml:"annotations"`
+	Tolerations     []v1.Toleration     `yaml:"tolerations"`
 	NodeSelector    map[string]string   `yaml:"node_selector"`
 	SecurityContext *v1.SecurityContext `yaml:"security_context"`
 }

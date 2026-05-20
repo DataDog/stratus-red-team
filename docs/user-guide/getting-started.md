@@ -226,8 +226,21 @@ This is currently used for Kubernetes techniques and allows you to:
 - **Add labels** to pods (for attribution, CNP policy selectors, monitoring, etc.)
 - **Add tolerations and node selectors** for pod scheduling
 - **Set a security context** on containers
+- **Reference the current detonation's correlation ID** in any string value via `<% .CorrelationID %>` (see [Template variables](#template-variables) below)
 
 The `default` section applies to all techniques. The `techniques` section allows per-technique overrides, keyed by technique ID. Overrides are merged on top of defaults, you only need to specify the keys you want to change.
+
+### Template variables
+
+Any string value in the config can reference the current detonation's correlation ID using `<%.CorrelationID%>`. The substitution is applied whenever Stratus reads the config to build a resource (at warmup for Terraform-built prerequisites, and at detonation for resources created directly by the technique's Go code):
+
+```yaml
+kubernetes:
+  default:
+    pod:
+      labels:
+        detonation_id: "<% .CorrelationID %>"
+```
 
 !!! note
 

@@ -32,17 +32,17 @@ func (_m *Config) GetKubernetesConfig() config.KubernetesConfig {
 	return r0
 }
 
-// GetTerraformVariables provides a mock function with given fields: techniqueID
-func (_m *Config) GetTerraformVariables(techniqueID string) map[string]string {
-	ret := _m.Called(techniqueID)
+// GetTerraformVariables provides a mock function with given fields: techniqueID, vars
+func (_m *Config) GetTerraformVariables(techniqueID string, vars config.SubstitutionVars) map[string]string {
+	ret := _m.Called(techniqueID, vars)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetTerraformVariables")
 	}
 
 	var r0 map[string]string
-	if rf, ok := ret.Get(0).(func(string) map[string]string); ok {
-		r0 = rf(techniqueID)
+	if rf, ok := ret.Get(0).(func(string, config.SubstitutionVars) map[string]string); ok {
+		r0 = rf(techniqueID, vars)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(map[string]string)

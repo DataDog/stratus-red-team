@@ -393,11 +393,12 @@ func (m *runnerImpl) GetUniqueExecutionId() string {
 // buildTerraformVariables returns the terraform variables to use,
 // including the correlation metadata and any config-file overrides.
 func (m *runnerImpl) buildTerraformVariables() map[string]string {
-	vars := m.Config.GetTerraformVariables(m.Technique.ID)
+	correlationID := m.UniqueCorrelationID.String()
+	vars := m.Config.GetTerraformVariables(m.Technique.ID, config.SubstitutionVars{CorrelationID: correlationID})
 	if vars == nil {
 		vars = make(map[string]string)
 	}
-	vars[state.TerraformCorrelationVarName] = state.MarshalCorrelation(m.UniqueCorrelationID.String())
+	vars[state.TerraformCorrelationVarName] = state.MarshalCorrelation(correlationID)
 	return vars
 }
 
