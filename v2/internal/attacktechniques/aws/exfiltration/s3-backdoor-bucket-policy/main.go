@@ -26,11 +26,11 @@ func init() {
 		Description: `
 Exfiltrates data from an S3 bucket by backdooring its Bucket Policy to allow access from an external, fictitious AWS account.
 
-Warm-up: 
+Warm-up:
 
-- Create an S3 bucket.
+- Create an S3 bucket
 
-Detonation: 
+Detonation:
 
 - Backdoor the S3 Bucket Policy by setting the following Bucket Policy:
 
@@ -41,9 +41,9 @@ Detonation:
 </pre>
 `,
 		Detection: `
-- Using CloudTrail's <code>PutBucketPolicy</code> event.
+- Using CloudTrail's <code>PutBucketPolicy</code> event
 
-- Through GuardDuty's [Policy:S3/BucketAnonymousAccessGranted](https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-types-s3.html#policy-s3-bucketanonymousaccessgranted) finding, 
+- Through GuardDuty's [Policy:S3/BucketAnonymousAccessGranted](https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-types-s3.html#policy-s3-bucketanonymousaccessgranted) finding,
 if the S3 bucket was made public (and not only shared with an attacker-controlled AWS account).
 
 - Through [IAM Access Analyzer](https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-analyzer.html),

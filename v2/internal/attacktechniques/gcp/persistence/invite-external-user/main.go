@@ -27,7 +27,7 @@ Detonation:
 
 !!! note
 
-	Since the target e-mail must exist for this attack simulation to work, Stratus Red Team grants the role to ` + gcp_utils.DefaultFictitiousAttackerEmail + ` by default.
+	Since the target email must exist for this attack simulation to work, Stratus Red Team grants the role to ` + gcp_utils.DefaultFictitiousAttackerEmail + ` by default.
 	This is a real Google account, owned by Stratus Red Team maintainers and that is not used for any other purpose than this attack simulation. However, you can override
 	this behavior by setting the environment variable <code>` + utils.AttackerEmailEnvVarKey + `</code>, for instance:
 
@@ -68,7 +68,7 @@ The Google Cloud Admin logs event <code>SetIamPolicy</code> is generated when a 
 }
 ` + codeBlock + `
 
-Although this attack technique does not simulate it, an attacker can also 
+Although this attack technique does not simulate it, an attacker can also
 <a href="https://support.google.com/googleapi/answer/6158846?hl=en">use the GCP console to invite an external user as owner</a> of a GCP project,
 which cannot be done through the SetIamPolicy API call. In that case, an <code>InsertProjectOwnershipInvite</code> event is generated:
 

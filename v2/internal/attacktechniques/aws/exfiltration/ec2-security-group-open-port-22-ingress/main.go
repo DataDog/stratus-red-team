@@ -36,13 +36,13 @@ func init() {
 		Description: `
 Opens ingress traffic on port 22 from the Internet (0.0.0.0/0).
 
-Warm-up: 
+Warm-up:
 
-- Create a VPC and a security group inside it.
+- Create a VPC and a security group inside it
 
-Detonation: 
+Detonation:
 
-- Call ec2:AuthorizeSecurityGroupIngress to allow ingress traffic on port 22 from 0.0.0.0/0.
+- Call ec2:AuthorizeSecurityGroupIngress to allow ingress traffic on port 22 from 0.0.0.0/0
 `,
 		Detection: `
 You can use the CloudTrail event <code>AuthorizeSecurityGroupIngress</code> when:

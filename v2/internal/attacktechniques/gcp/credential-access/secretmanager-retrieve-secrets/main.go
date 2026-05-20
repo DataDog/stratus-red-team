@@ -28,17 +28,17 @@ func init() {
 		Description: `
 Retrieves a high number of Secret Manager secrets in a short timeframe, through the AccessSecretVersion API.
 
-Warm-up: 
+Warm-up:
 
-- Create multiple secrets in Secret Manager.
+- Create multiple secrets in Secret Manager
 
-Detonation: 
+Detonation:
 
 - Enumerate the secrets through the ListSecrets API
 - Retrieve each secret value, one by one through the AccessSecretVersion API
 `,
-		Detection: `Cloud Audit Logs event corresponding to accessing a secret's value is <code>AccessSecretVersion</code>. 
-It is considered [data access event](https://cloud.google.com/secret-manager/docs/audit-logging), and needs to be explicitly enabled for the Secret Manager API. 
+		Detection: `Cloud Audit Logs event corresponding to accessing a secret's value is <code>AccessSecretVersion</code>.
+It is considered [data access event](https://cloud.google.com/secret-manager/docs/audit-logging), and needs to be explicitly enabled for the Secret Manager API.
 
 Sample event:
 

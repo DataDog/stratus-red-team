@@ -26,14 +26,14 @@ Platform: AWS
 
 Establishes persistence by generating new AWS temporary credentials through <code>sts:GetFederationToken</code>. The resulting credentials remain functional even if the original access keys are disabled.
 
-<span style="font-variant: small-caps;">Warm-up</span>: 
+<span style="font-variant: small-caps;">Warm-up</span>:
 
-- Create an IAM user and generate a pair of access keys.
+- Create an IAM user and generate a pair of access keys
 
-<span style="font-variant: small-caps;">Detonation</span>: 
+<span style="font-variant: small-caps;">Detonation</span>:
 
-- Use the access keys from the IAM user to request temporary security credentials via <code>sts:GetFederationToken</code>.
-- Call <code>sts:GetCallerIdentity</code> using these new credentials.
+- Use the access keys from the IAM user to request temporary security credentials via <code>sts:GetFederationToken</code>
+- Call <code>sts:GetCallerIdentity</code> using these new credentials
 
 References:
 

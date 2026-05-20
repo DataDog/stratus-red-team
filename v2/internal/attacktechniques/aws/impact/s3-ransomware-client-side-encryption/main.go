@@ -34,12 +34,12 @@ func init() {
 		FriendlyName: "S3 Ransomware through client-side encryption",
 		Description: `
 Simulates S3 ransomware activity that encrypts files in a bucket with a static key, through S3 [client-side encryption](https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingClientSideEncryption.html) feature.
-Warm-up: 
+Warm-up:
 
 - Create an S3 bucket
 - Create a number of files in the bucket, with random content and extensions
 
-Detonation: 
+Detonation:
 
 - List all objects in the bucket
 - Overwrite every file in the bucket with an encrypted version, using [S3 client-side encryption](https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingClientSideEncryption.html)
@@ -53,7 +53,7 @@ References:
 - https://unit42.paloaltonetworks.com/shinyhunters-ransomware-extortion/
 `,
 		Detection: `
-You can detect ransomware activity by identifying abnormal patterns of objects being downloaded or deleted in the bucket. 
+You can detect ransomware activity by identifying abnormal patterns of objects being downloaded or deleted in the bucket.
 In general, this can be done through [CloudTrail S3 data events](https://docs.aws.amazon.com/AmazonS3/latest/userguide/cloudtrail-logging-s3-info.html#cloudtrail-object-level-tracking) (<code>DeleteObject</code>, <code>DeleteObjects</code>, <code>GetObject</code>, <code>CopyObject</code>),
 [CloudWatch metrics](https://docs.aws.amazon.com/AmazonS3/latest/userguide/metrics-dimensions.html#s3-request-cloudwatch-metrics) (<code>NumberOfObjects</code>),
 or [GuardDuty findings](https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-types-active.html) (<code>[Exfiltration:S3/AnomalousBehavior](https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-types-s3.html#exfiltration-s3-anomalousbehavior)</code>, <code>[Impact:S3/AnomalousBehavior.Delete](https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-types-s3.html#impact-s3-anomalousbehavior-delete)</code>).

@@ -31,7 +31,7 @@ Exfiltrates a Compute Disk by sharing with a fictitious attacker account. The at
 
 !!! note
 
-	Since the target e-mail must exist for this attack simulation to work, Stratus Red Team grants the role to stratusredteam@gmail.com by default.
+	Since the target email must exist for this attack simulation to work, Stratus Red Team grants the role to stratusredteam@gmail.com by default.
 	This is a real Google account, owned by Stratus Red Team maintainers and that is not used for any other purpose than this attack simulation. However, you can override
 	this behavior by setting the environment variable <code>STRATUS_RED_TEAM_ATTACKER_EMAIL</code>, for instance:
 
@@ -89,7 +89,7 @@ gcloud compute snapshots create stolen-snapshot \
 	--source-disk https://www.googleapis.com/compute/v1/projects/victim-project/zones/us-central1-a/disks/stratus-red-team-victim-disk
 ```
 
-When they do so, a GCP Admin Activity event <code>v1.compute.snapshots.insert</code> is generated in the victim project, 
+When they do so, a GCP Admin Activity event <code>v1.compute.snapshots.insert</code> is generated in the victim project,
 indicating that the attacker has not only shared but also actively stolen data from the disk (sample event shortened below):
 
 ```json hl_lines="5 6 14 16"
@@ -125,7 +125,7 @@ Based on these events, detection strategies may include:
 protoPayload.methodName="v1.compute.disks.setIamPolicy"
 ```
 
-- Alerting when someone with an unexpected e-mail domain creates a snapshot of a Compute Disk. Sample GCP Logs Explorer query:
+- Alerting when someone with an unexpected email domain creates a snapshot of a Compute Disk. Sample GCP Logs Explorer query:
 
 ```sql
 protoPayload.methodName="v1.compute.snapshots.insert"

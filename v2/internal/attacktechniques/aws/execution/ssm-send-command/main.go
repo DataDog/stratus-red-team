@@ -30,11 +30,11 @@ Simulates an attacker utilizing AWS Systems Manager (SSM) to execute commands th
 
 Warm-up:
 
-- Create multiple EC2 instances and a VPC (takes a few minutes).
+- Create multiple EC2 instances and a VPC (takes a few minutes)
 
-Detonation: 
+Detonation:
 
-- Runs <code>ssm:SendCommand</code> on several EC2 instances, to execute the command <code>` + commandToExecute + `</code> on each of them.
+- Runs <code>ssm:SendCommand</code> on several EC2 instances, to execute the command <code>` + commandToExecute + `</code> on each of them
 
 References:
 

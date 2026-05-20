@@ -26,13 +26,13 @@ Platform: AWS
 
 Exfiltrates an EBS snapshot by sharing it with an external AWS account.
 
-<span style="font-variant: small-caps;">Warm-up</span>: 
+<span style="font-variant: small-caps;">Warm-up</span>:
 
-- Create an EBS volume and a snapshot.
+- Create an EBS volume and a snapshot
 
-<span style="font-variant: small-caps;">Detonation</span>: 
+<span style="font-variant: small-caps;">Detonation</span>:
 
-- Call ec2:ModifySnapshotAttribute to share the snapshot with an external, fictitious AWS account.
+- Call ec2:ModifySnapshotAttribute to share the snapshot with an external, fictitious AWS account
 
 
 ## Instructions
@@ -56,10 +56,10 @@ that the EBS snapshot was shared with a new or unknown AWS account, such as:
   }
 }</code></pre>
 
-An attacker can also make an EBS snapshot completely public. In this case, the <code>item</code> entry 
-will look like <code>{"groups":"all"}</code>. 
+An attacker can also make an EBS snapshot completely public. In this case, the <code>item</code> entry
+will look like <code>{"groups":"all"}</code>.
 
-When an attacker copies the snapshot to their own AWS account or creates an EBS volume for it, the <code>SharedSnapshotCopyInitiated</code> (respectively <code>SharedSnapshotVolumeCreated</code>) event is logged (see [AWS docs](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-modifying-snapshot-permissions.html#shared-snapshot-cloudtrail-logging)). 
+When an attacker copies the snapshot to their own AWS account or creates an EBS volume for it, the <code>SharedSnapshotCopyInitiated</code> (respectively <code>SharedSnapshotVolumeCreated</code>) event is logged (see [AWS docs](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-modifying-snapshot-permissions.html#shared-snapshot-cloudtrail-logging)).
 In that case, <code>userIdentity.accountId</code> contains the attacker's account ID and <code>recipientAccountId</code> contains the victim's account ID where the snapshot was originally created.
 
 <pre><code>{
@@ -84,7 +84,7 @@ In that case, <code>userIdentity.accountId</code> contains the attacker's accoun
   "recipientAccountId": "111111111111"
  }
  </code></pre>
- 
+
  Note that detonating this attack technique with Stratus Red Team does *not* simulate an attacker accessing the snapshot from their account (only sharing it publicly from your account).
 
 

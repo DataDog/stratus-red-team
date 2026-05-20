@@ -28,7 +28,7 @@ Creates a Service Account bound to a cluster administrator role.
 
 Warm-up: None
 
-Detonation: 
+Detonation:
 
 - Create a Cluster Role with administrative permissions
 - Create a Service Account (in the ` + namespace + ` namespace)

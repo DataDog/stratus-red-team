@@ -21,15 +21,15 @@ func init() {
 		IsIdempotent:       false, // can't remove VPC flow logs once they have already been removed
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.DefenseEvasion},
 		Description: `
-Removes a VPC Flog Logs configuration from a VPC.
+Removes a VPC Flow Logs configuration from a VPC.
 
-Warm-up: 
+Warm-up:
 
-- Create a VPC with a VPC Flow Logs configuration.
+- Create a VPC with a VPC Flow Logs configuration
 
-Detonation: 
+Detonation:
 
-- Remove the VPC Flow Logs configuration.
+- Remove the VPC Flow Logs configuration
 `,
 		Detection: `
 Using CloudTrail's <code>DeleteFlowLogs</code> event.

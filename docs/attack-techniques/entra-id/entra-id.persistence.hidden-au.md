@@ -32,7 +32,7 @@ Creates an [Administrative Unit (AU)](https://learn.microsoft.com/en-us/graph/ap
 - Add the target (victim) user to the administrative unit
 - Assign the backdoor user with Privileged Administration Administrator rights over the administrative unit
 
-This simulates an attacker that indirectly persists their access. 
+This simulates an attacker that indirectly persists their access.
 The backdoor user can now perform privileged operations over any user in the administrative unit, which can be used to escalate privileges or maintain access, for instance by resetting the target user's password.
 
 References:

@@ -21,13 +21,13 @@ Platform: AWS
 
 Exfiltrates an AMI by sharing it with an external AWS account.
 
-<span style="font-variant: small-caps;">Warm-up</span>: 
+<span style="font-variant: small-caps;">Warm-up</span>:
 
-- Create an AMI.
+- Create an AMI
 
-<span style="font-variant: small-caps;">Detonation</span>: 
+<span style="font-variant: small-caps;">Detonation</span>:
 
-- Share the AMI with an external, fictitious AWS account.
+- Share the AMI with an external, fictitious AWS account
 
 
 ## Instructions
@@ -51,8 +51,8 @@ that the AMI was shared with a new or unknown AWS account, such as:
   "imageId": "ami-0b87ea1d007078d18"
 }</code></pre>
 
-An attacker can also make an AMI completely public. In this case, the <code>item</code> entry 
-will look like <code>{"groups":"all"}</code>. 
+An attacker can also make an AMI completely public. In this case, the <code>item</code> entry
+will look like <code>{"groups":"all"}</code>.
 
 
 

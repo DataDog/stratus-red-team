@@ -37,7 +37,7 @@ Detonation:
 - Create an access entry for the IAM role
 - Associate the access entry with the ` + ClusterAccessPolicyName + ` access policy
 
-References: 
+References:
 
 - https://securitylabs.datadoghq.com/articles/eks-cluster-access-management-deep-dive/
 - https://docs.aws.amazon.com/eks/latest/userguide/access-entries.html

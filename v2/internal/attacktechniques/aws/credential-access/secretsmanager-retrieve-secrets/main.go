@@ -22,11 +22,11 @@ func init() {
 		Description: `
 Retrieves a high number of Secrets Manager secrets, through secretsmanager:GetSecretValue.
 
-Warm-up: 
+Warm-up:
 
-- Create multiple secrets in Secrets Manager.
+- Create multiple secrets in Secrets Manager
 
-Detonation: 
+Detonation:
 
 - Enumerate the secrets through secretsmanager:ListSecrets
 - Retrieve each secret value, one by one through secretsmanager:GetSecretValue

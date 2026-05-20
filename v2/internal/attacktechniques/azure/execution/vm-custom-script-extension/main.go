@@ -31,11 +31,11 @@ References:
 - https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/custom-script-windows
 - https://microsoft.github.io/Azure-Threat-Research-Matrix/Execution/AZT301/AZT301-2/
 
-Warm-up: 
+Warm-up:
 
 - Create a virtual machine
 
-Detonation: 
+Detonation:
 
 - Configure a custom script extension for the virtual machine
 `,

@@ -19,13 +19,13 @@ func init() {
 		Description: `
 Establishes persistence by creating an access key on an existing IAM user.
 
-Warm-up: 
+Warm-up:
 
-- Create an IAM user.
+- Create an IAM user
 
-Detonation: 
+Detonation:
 
-- Create an IAM access key on the user.
+- Create an IAM access key on the user
 
 References:
 

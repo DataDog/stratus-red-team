@@ -27,15 +27,15 @@ func init() {
 		Description: `
 Register a public key to the instance's metadata to allow login and gain access to the instance.
 
-Warm-up: 
+Warm-up:
 
 - Create a compute instance (Linux)
 
 Detonation:
 
 - Create RSA key-pair (private key and public key)
-- Register public key to instance's metadata.
-- Print private key to stdout. 
+- Register public key to instance's metadata
+- Print private key to stdout
 
 Note that you need to save the private key for login.
 

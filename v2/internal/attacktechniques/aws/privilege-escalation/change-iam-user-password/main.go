@@ -19,14 +19,14 @@ func init() {
 		ID:           "aws.privilege-escalation.iam-update-user-login-profile",
 		FriendlyName: "Change IAM user password",
 		Description: `
-Establishes persistence by updating a Login Profile on an existing IAM user to change its password. This allows an attacker to hijack 
+Establishes persistence by updating a Login Profile on an existing IAM user to change its password. This allows an attacker to hijack
 an IAM user with an existing login profile.
 
 Warm-up:
 
 - Create an IAM user with a login profile
 
-Detonation: 
+Detonation:
 
 - Update the user's login profile to change its password
 

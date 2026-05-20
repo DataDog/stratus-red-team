@@ -21,13 +21,13 @@ Platform: Kubernetes
 
 Steals a service account token from a running pod, by executing a command in the pod and reading /var/run/secrets/kubernetes.io/serviceaccount/token
 
-<span style="font-variant: small-caps;">Warm-up</span>: 
+<span style="font-variant: small-caps;">Warm-up</span>:
 
 - Create the Stratus Red Team namespace
 - Create a Service Account
 - Create a Pod running under this service account
 
-<span style="font-variant: small-caps;">Detonation</span>: 
+<span style="font-variant: small-caps;">Detonation</span>:
 
 - Execute <code>cat /var/run/secrets/kubernetes.io/serviceaccount/token</code> into the pod to steal its service account token
 

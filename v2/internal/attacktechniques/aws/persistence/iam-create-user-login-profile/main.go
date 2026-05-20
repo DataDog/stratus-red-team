@@ -20,13 +20,13 @@ func init() {
 		FriendlyName: "Create a Login Profile on an IAM User",
 		Description: `
 Establishes persistence by creating a Login Profile on an existing IAM user. This allows an attacker to access an IAM
-user intended to be used programmatically through the AWS console usual login process. 
+user intended to be used programmatically through the AWS console usual login process.
 
 Warm-up:
 
 - Create an IAM user
 
-Detonation: 
+Detonation:
 
 - Create an IAM Login Profile on the user
 

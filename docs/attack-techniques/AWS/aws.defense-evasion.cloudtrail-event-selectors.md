@@ -28,11 +28,11 @@ Disrupt CloudTrail Logging by creating an event selector on the Trail, filtering
 
 Reference: https://github.com/RhinoSecurityLabs/Cloud-Security-Research/tree/master/AWS/cloudtrail_guardduty_bypass
 
-<span style="font-variant: small-caps;">Warm-up</span>: 
+<span style="font-variant: small-caps;">Warm-up</span>:
 
-- Create a CloudTrail trail.
+- Create a CloudTrail trail
 
-<span style="font-variant: small-caps;">Detonation</span>: 
+<span style="font-variant: small-caps;">Detonation</span>:
 
 - Create a CloudTrail event selector to disable management events, through cloudtrail:PutEventSelectors
 

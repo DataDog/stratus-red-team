@@ -40,7 +40,7 @@ Detonation:
 - Wait for the CSR to be picked up and return a certificate
 - Print the client-side certificate and private key
 
-Note: This attack technique does not succeed on AWS EKS. Due to apparent [undocumented behavior](https://github.com/aws/containers-roadmap/issues/1604), 
+Note: This attack technique does not succeed on AWS EKS. Due to apparent [undocumented behavior](https://github.com/aws/containers-roadmap/issues/1604),
 the managed EKS control plane does not issue a certificate for the certificate signing request (CSR), even when approved. However, it is still relevant
 to simulate attacker behavior.
 
@@ -48,7 +48,7 @@ Note: The certificate is issued to <code>` + commonName + `</code> because it ex
 which includes privileged permissions, such as access all secrets of the cluster and create tokens for any service account.
 `,
 		Detection: `
-Using Kubernetes API server audit logs. In particular, look for creation and approval of CSR objects, which do 
+Using Kubernetes API server audit logs. In particular, look for creation and approval of CSR objects, which do
 not relate to standard cluster operation (e.g. Kubelet certificate issuance).
 `,
 		Detonate: detonate,

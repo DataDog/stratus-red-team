@@ -33,7 +33,7 @@ Detonation:
 
 - Add an entry to the aws-auth ConfigMap to grant administrator access to the cluster to the role
 
-References: 
+References:
 
 - https://securitylabs.datadoghq.com/articles/amazon-eks-attacking-securing-cloud-identities/#authorization-the-aws-auth-configmap-deprecated
 - https://docs.aws.amazon.com/eks/latest/userguide/auth-configmap.html

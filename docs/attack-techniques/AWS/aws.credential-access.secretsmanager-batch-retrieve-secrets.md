@@ -19,17 +19,17 @@ Platform: AWS
 ## Description
 
 
-Retrieves a high number of Secrets Manager secrets by batch, through <code>secretsmanager:BatchGetSecretValue</code> (released Novemeber 2023). 
+Retrieves a high number of Secrets Manager secrets by batch, through <code>secretsmanager:BatchGetSecretValue</code> (released November 2023).
 An attacker may attempt to retrieve a high number of secrets by batch, to avoid detection and generate fewer calls. Note that the batch size is limited to 20 secrets.
 
 
-<span style="font-variant: small-caps;">Warm-up</span>: 
+<span style="font-variant: small-caps;">Warm-up</span>:
 
-- Create multiple secrets in Secrets Manager.
+- Create multiple secrets in Secrets Manager
 
-<span style="font-variant: small-caps;">Detonation</span>: 
+<span style="font-variant: small-caps;">Detonation</span>:
 
-- Dump all secrets by batch of 10, using <code>secretsmanager:BatchGetSecretValue</code>.
+- Dump all secrets by batch of 10, using <code>secretsmanager:BatchGetSecretValue</code>
 
 References:
 
@@ -94,7 +94,7 @@ Although <code>BatchGetSecretValue</code> requires a list of secret IDs or a fil
 }
 ```
 
-The following may be use to tune the detection, or validate findings:
+The following may be used to tune the detection, or validate findings:
 
 - Principals who do not usually call GetBatchSecretValue
 - Attempts to call GetBatchSecretValue resulting in access denied errors

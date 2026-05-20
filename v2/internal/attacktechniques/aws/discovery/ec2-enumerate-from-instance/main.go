@@ -42,11 +42,11 @@ The commands will be run under the identity of the EC2 instance role, simulating
 
 Warm-up:
 
-- Create the prerequisite EC2 instance and VPC (takes a few minutes).
+- Create the prerequisite EC2 instance and VPC (takes a few minutes)
 
-Detonation: 
+Detonation:
 
-- Run the discovery commands, over SSM. The commands will be run under the identity of the EC2 instance role.
+- Run the discovery commands, over SSM. The commands will be run under the identity of the EC2 instance role
 `,
 		Detection: `
 Identify when an EC2 instance performs unusual enumeration calls.

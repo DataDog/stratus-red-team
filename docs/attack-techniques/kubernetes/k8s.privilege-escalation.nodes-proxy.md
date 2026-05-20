@@ -20,14 +20,14 @@ Platform: Kubernetes
 
 
 Uses the node proxy API to proxy a Kubelet request through a worker node. This is a vector of privilege escalation, allowing
-any principal with the `nodes/proxy` permission to escalate their privilege to cluster administrator, 
+any principal with the `nodes/proxy` permission to escalate their privilege to cluster administrator,
 bypassing at the same time admission control checks and logging of the API server.
 
 <span style="font-variant: small-caps;">Warm-up</span>:
 
 - Create a namespace
 - Create a service account in this namespace
-- Create a cluster role with `nodes/proxy` permissions 
+- Create a cluster role with `nodes/proxy` permissions
 - Bind the cluster role to the service account
 
 <span style="font-variant: small-caps;">Detonation</span>:
@@ -76,7 +76,7 @@ Sample event (shortened):
 }
 ```
 
-Under normal operating conditions, it's not expected that this API is used frequently. 
+Under normal operating conditions, it's not expected that this API is used frequently.
 Consequently, alerting on `objectRef.resource == "nodes" && objectRef.subresource == "proxy"` should yield minimal false positives.
 
 Additionally, looking at the Kubelet API path that was proxied can help identify malicious activity (/runningpods in this example).

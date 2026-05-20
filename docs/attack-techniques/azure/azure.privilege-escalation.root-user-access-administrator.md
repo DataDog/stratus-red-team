@@ -74,7 +74,7 @@ Sample Entra ID Audit Log entry:
     }
   }
 }
-  
+
 ```
 
 Sample Azure Activity Log entry:

@@ -24,16 +24,16 @@ func init() {
 		FriendlyName: "Usage of EC2 Instance Connect on multiple instances",
 		IsSlow:       true,
 		Description: `
-Simulates an attacker pushing an SSH public key to multiple EC2 instances, which then will allow anyone with the corresponding private key to 
+Simulates an attacker pushing an SSH public key to multiple EC2 instances, which will allow anyone with the corresponding private key to
 connect directly to the systems via SSH.
 
 Warm-up:
 
-- Create multiple EC2 instances and a VPC (takes a few minutes).
+- Create multiple EC2 instances and a VPC (takes a few minutes)
 
-Detonation: 
+Detonation:
 
-- Adds a public SSH key to the EC2 for 60 seconds.
+- Adds a public SSH key to the EC2 for 60 seconds
 
 References:
 

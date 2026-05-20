@@ -35,7 +35,7 @@ References:
 
 !!! note
 
-	By default, Stratus Red Team invites the e-mail <code>stratus-red-team@example.com</code>. However, you can override
+	By default, Stratus Red Team invites the email <code>stratus-red-team@example.com</code>. However, you can override
 	this behavior by setting the environment variable <code>STRATUS_RED_TEAM_ATTACKER_EMAIL</code>, for instance:
 
 	```bash
@@ -58,7 +58,7 @@ Using [Entra ID audit logs](https://learn.microsoft.com/en-us/entra/identity/mon
 - <code>Invite external user</code>
 - <code>Add user sponsor</code>
 
-When the invited user accepts the invite, an additional event <code>Redeem external user invite</code> is logged. 
+When the invited user accepts the invite, an additional event <code>Redeem external user invite</code> is logged.
 
 Sample events, shortened for clarity:
 

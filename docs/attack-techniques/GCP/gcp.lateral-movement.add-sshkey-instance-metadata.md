@@ -22,15 +22,15 @@ Platform: GCP
 
 Register a public key to the instance's metadata to allow login and gain access to the instance.
 
-<span style="font-variant: small-caps;">Warm-up</span>: 
+<span style="font-variant: small-caps;">Warm-up</span>:
 
 - Create a compute instance (Linux)
 
 <span style="font-variant: small-caps;">Detonation</span>:
 
 - Create RSA key-pair (private key and public key)
-- Register public key to instance's metadata.
-- Print private key to stdout. 
+- Register public key to instance's metadata
+- Print private key to stdout
 
 Note that you need to save the private key for login.
 

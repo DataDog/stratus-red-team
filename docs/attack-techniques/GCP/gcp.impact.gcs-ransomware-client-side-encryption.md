@@ -29,7 +29,7 @@ Simulates GCS ransomware activity that encrypts files in a Cloud Storage bucket 
 <span style="font-variant: small-caps;">Detonation</span>:
 
 - List all objects in the bucket
-- Rewrite every object in place with a customer-supplied AES-256 encryption key, using [objects.rewrite](https://cloud.google.com/storage/docs/json_api/v1/objects/rewrite). Once encrypted, the object can no longer be read without supplying the same key.
+- Rewrite every object in place with a customer-supplied AES-256 encryption key, using [objects.rewrite](https://cloud.google.com/storage/docs/json_api/v1/objects/rewrite). Once encrypted, the object can no longer be read without supplying the same key
 - Upload a ransom note to the bucket
 
 References:

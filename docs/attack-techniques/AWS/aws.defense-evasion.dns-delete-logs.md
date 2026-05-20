@@ -23,7 +23,7 @@ Deletes a Route53 DNS Resolver query logging configuration. Simulates an attacke
 
 <span style="font-variant: small-caps;">Warm-up</span>:
 
-- Create a DNS logging configuration.
+- Create a DNS logging configuration
 
 <span style="font-variant: small-caps;">Detonation</span>:
 

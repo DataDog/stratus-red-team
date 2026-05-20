@@ -23,11 +23,11 @@ Simulates an attacker utilizing AWS Systems Manager (SSM) StartSession to gain u
 
 <span style="font-variant: small-caps;">Warm-up</span>:
 
-- Create multiple EC2 instances and a VPC (takes a few minutes).
+- Create multiple EC2 instances and a VPC (takes a few minutes)
 
-<span style="font-variant: small-caps;">Detonation</span>: 
+<span style="font-variant: small-caps;">Detonation</span>:
 
-- Initiates a connection to the EC2 for a Session Manager session.
+- Initiates a connection to the EC2 for a Session Manager session
 
 References:
 

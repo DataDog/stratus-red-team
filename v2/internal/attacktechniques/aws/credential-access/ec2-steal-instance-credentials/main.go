@@ -29,11 +29,11 @@ Simulates the theft of EC2 instance credentials from the Instance Metadata Servi
 
 Warm-up:
 
-- Create the prerequisite EC2 instance and VPC (takes a few minutes).
+- Create the prerequisite EC2 instance and VPC (takes a few minutes)
 
 Detonation:
 
-- Execute a SSM command on the instance to retrieve temporary credentials
+- Execute an SSM command on the instance to retrieve temporary credentials
 - Use these credentials locally (outside the instance) to run the following commands:
 	- sts:GetCallerIdentity
 	- ec2:DescribeInstances
@@ -41,7 +41,7 @@ Detonation:
 		Detection: `
 GuardDuty provides two findings to identify stolen EC2 instance credentials.
 
-- [InstanceCredentialExfiltration.OutsideAWS](https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-types-iam.html#unauthorizedaccess-iam-instancecredentialexfiltrationoutsideaws) identifies EC2 instance credentials used from outside an AWS account.
+- [InstanceCredentialExfiltration.OutsideAWS](https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-types-iam.html#unauthorizedaccess-iam-instancecredentialexfiltrationoutsideaws) identifies EC2 instance credentials used from outside an AWS account
 - [InstanceCredentialExfiltration.InsideAWS
 ](https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-types-iam.html#unauthorizedaccess-iam-instancecredentialexfiltrationinsideaws) identifies EC2 instance credentials used from a different AWS account than the one of the EC2 instance.
 

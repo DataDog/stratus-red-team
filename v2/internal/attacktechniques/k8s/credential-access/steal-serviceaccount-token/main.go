@@ -39,13 +39,13 @@ func init() {
 		Description: `
 Steals a service account token from a running pod, by executing a command in the pod and reading ` + file + `
 
-Warm-up: 
+Warm-up:
 
 - Create the Stratus Red Team namespace
 - Create a Service Account
 - Create a Pod running under this service account
 
-Detonation: 
+Detonation:
 
 - Execute <code>` + command + `</code> into the pod to steal its service account token
 `,
