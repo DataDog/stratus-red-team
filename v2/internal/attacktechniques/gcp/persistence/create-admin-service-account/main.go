@@ -22,7 +22,7 @@ func init() {
 		ID:           "gcp.persistence.create-admin-service-account",
 		FriendlyName: "Create an Admin GCP Service Account",
 		Description: `
-Establishes persistence by creating a new service account and assigning it 
+Establishes persistence by creating a new service account and assigning it
 <code>owner</code> permissions inside the current GCP project.
 
 Warm-up: None

@@ -35,14 +35,14 @@ func init() {
 		ID:           "aws.execution.sagemaker-update-lifecycle-config",
 		FriendlyName: "Execute Commands on SageMaker Notebook Instance via Lifecycle Configuration",
 		Description: `
-An attacker with permissions to stop, update, and start a SageMaker Notebook instance can execute code inside this instance by attaching a malicious lifecycle configuration script to a stopped instance. When the instance is restarted, this script executes automatically, allowing the attacker execute arbitrary commands, for instance to exfiltrate the instance's IAM execution role credentials.
+An attacker with permissions to stop, update, and start a SageMaker Notebook instance can execute code inside this instance by attaching a malicious lifecycle configuration script to a stopped instance. When the instance is restarted, this script executes automatically, allowing the attacker to execute arbitrary commands, for instance to exfiltrate the instance's IAM execution role credentials.
 
 Warm-up:
 
-- Create a SageMaker Notebook Instance with an IAM Execution Role that possesses sensitive privileges (the victim role). 
-- Create an Attacker IAM Identity with only the permissions to stop, update, and start the notebook and to inject a malicious lifecycle configuration script.
+- Create a SageMaker Notebook Instance with an IAM Execution Role that possesses sensitive privileges (the victim role)
+- Create an Attacker IAM Identity with only the permissions to stop, update, and start the notebook and to inject a malicious lifecycle configuration script
 
-Detonation: 
+Detonation:
 
 - Update the lifecycle configuration script via a Stop-Update-Start API sequence
 - Execute malicious code
@@ -52,8 +52,8 @@ References:
 - https://www.plerion.com/blog/privilege-escalation-with-sagemaker-and-execution-roles
 `,
 		Detection: `
-Through CloudTrail's <code>UpdateNotebookInstance</code> events. 
-You can also watch for suspicious sequences of <code>StopNotebookInstance</code> and <code>StopNotebookInstance</code> events correlated with <code>UpdateNotebookInstance</code> events. 
+Through CloudTrail's <code>UpdateNotebookInstance</code> events.
+You can also watch for suspicious sequences of <code>StopNotebookInstance</code> and <code>StopNotebookInstance</code> events correlated with <code>UpdateNotebookInstance</code> events.
 `,
 		Platform:                   stratus.AWS,
 		IsSlow:                     true,

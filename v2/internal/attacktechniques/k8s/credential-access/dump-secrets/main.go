@@ -20,12 +20,12 @@ func init() {
 		IsIdempotent:       true,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.CredentialAccess},
 		Description: `
-Dumps all Secrets from a Kubernetes cluster. 
+Dumps all Secrets from a Kubernetes cluster.
 This allow an attacker with the right permissions to trivially access all secrets in the cluster.
 
 Warm-up: None
 
-Detonation: 
+Detonation:
 
 - Dump secrets using the **LIST /api/v1/secrets** API
 - This returns all secrets in the K8s clusters, no matter their namespace

@@ -19,12 +19,12 @@ Platform: Kubernetes
 ## Description
 
 
-Dumps all Secrets from a Kubernetes cluster. 
+Dumps all Secrets from a Kubernetes cluster.
 This allow an attacker with the right permissions to trivially access all secrets in the cluster.
 
 <span style="font-variant: small-caps;">Warm-up</span>: None
 
-<span style="font-variant: small-caps;">Detonation</span>: 
+<span style="font-variant: small-caps;">Detonation</span>:
 
 - Dump secrets using the **LIST /api/v1/secrets** API
 - This returns all secrets in the K8s clusters, no matter their namespace

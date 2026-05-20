@@ -19,16 +19,16 @@ Platform: AWS
 ## Description
 
 
-Simulates an attacker pushing an SSH public key to multiple EC2 instances, which then will allow anyone with the corresponding private key to 
+Simulates an attacker pushing an SSH public key to multiple EC2 instances, which will allow anyone with the corresponding private key to
 connect directly to the systems via SSH.
 
 <span style="font-variant: small-caps;">Warm-up</span>:
 
-- Create multiple EC2 instances and a VPC (takes a few minutes).
+- Create multiple EC2 instances and a VPC (takes a few minutes)
 
-<span style="font-variant: small-caps;">Detonation</span>: 
+<span style="font-variant: small-caps;">Detonation</span>:
 
-- Adds a public SSH key to the EC2 for 60 seconds.
+- Adds a public SSH key to the EC2 for 60 seconds
 
 References:
 

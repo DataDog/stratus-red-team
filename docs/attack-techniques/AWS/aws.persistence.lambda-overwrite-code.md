@@ -19,16 +19,16 @@ Platform: AWS
 ## Description
 
 
-Establishes persistence by overwriting a Lambda function's code. 
+Establishes persistence by overwriting a Lambda function's code.
 A further, more advanced, use-case could be updating the code to exfiltrate the data processed by the Lambda function at runtime.
 
-<span style="font-variant: small-caps;">Warm-up</span>: 
+<span style="font-variant: small-caps;">Warm-up</span>:
 
-- Create a Lambda function.
+- Create a Lambda function
 
-<span style="font-variant: small-caps;">Detonation</span>: 
+<span style="font-variant: small-caps;">Detonation</span>:
 
-- Update the Lambda function code.
+- Update the Lambda function code
 
 References:
 

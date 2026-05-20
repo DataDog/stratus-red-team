@@ -22,16 +22,16 @@ func init() {
 		ID:           "aws.persistence.lambda-overwrite-code",
 		FriendlyName: "Overwrite Lambda Function Code",
 		Description: `
-Establishes persistence by overwriting a Lambda function's code. 
+Establishes persistence by overwriting a Lambda function's code.
 A further, more advanced, use-case could be updating the code to exfiltrate the data processed by the Lambda function at runtime.
 
-Warm-up: 
+Warm-up:
 
-- Create a Lambda function.
+- Create a Lambda function
 
-Detonation: 
+Detonation:
 
-- Update the Lambda function code.
+- Update the Lambda function code
 
 References:
 

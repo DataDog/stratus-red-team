@@ -29,17 +29,17 @@ func init() {
 		ID:           "aws.credential-access.secretsmanager-batch-retrieve-secrets",
 		FriendlyName: "Retrieve a High Number of Secrets Manager secrets (Batch)",
 		Description: `
-Retrieves a high number of Secrets Manager secrets by batch, through <code>secretsmanager:BatchGetSecretValue</code> (released Novemeber 2023). 
+Retrieves a high number of Secrets Manager secrets by batch, through <code>secretsmanager:BatchGetSecretValue</code> (released November 2023).
 An attacker may attempt to retrieve a high number of secrets by batch, to avoid detection and generate fewer calls. Note that the batch size is limited to 20 secrets.
 
 
-Warm-up: 
+Warm-up:
 
-- Create multiple secrets in Secrets Manager.
+- Create multiple secrets in Secrets Manager
 
-Detonation: 
+Detonation:
 
-- Dump all secrets by batch of ` + strconv.Itoa(BatchSize) + `, using <code>secretsmanager:BatchGetSecretValue</code>.
+- Dump all secrets by batch of ` + strconv.Itoa(BatchSize) + `, using <code>secretsmanager:BatchGetSecretValue</code>
 
 References:
 
@@ -96,7 +96,7 @@ Although <code>BatchGetSecretValue</code> requires a list of secret IDs or a fil
 }
 ` + code + `
 
-The following may be use to tune the detection, or validate findings:
+The following may be used to tune the detection, or validate findings:
 
 - Principals who do not usually call GetBatchSecretValue
 - Attempts to call GetBatchSecretValue resulting in access denied errors

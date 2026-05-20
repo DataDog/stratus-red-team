@@ -47,10 +47,10 @@ Simulates an attacker enumerating Bedrock models and then invoking the ` + Bedro
 
 Warm-up: None.
 
-Detonation: 
+Detonation:
 
 - If ` + BedrockModelFullName + ` is not enabled, attempt to enable it using <code>PutUseCaseForModelAccess</code>, <code>ListFoundationModelAgreementOffers</code>, <code>CreateFoundationModelAgreement</code>, <code>PutFoundationModelEntitlement</code>
-- Call <code>bedrock:InvokeModel</code> to run inference using the model.
+- Call <code>bedrock:InvokeModel</code> to run inference using the model
 
 References:
 

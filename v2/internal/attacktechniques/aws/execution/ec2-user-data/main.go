@@ -34,7 +34,7 @@ References:
 
 Warm-up:
 
-- Create the prerequisite EC2 instance and VPC (takes a few minutes).
+- Create the prerequisite EC2 instance and VPC (takes a few minutes)
 
 Detonation:
 
@@ -49,7 +49,7 @@ Identify when the following sequence of CloudTrail events occur in a short perio
 1. <code>StopInstances</code> (necessary, because the user data of an instance cannot be changed when it's running)
 2. <code>ModifyInstanceAttribute</code> with <code>requestParameters.userData</code> non-empty
 
-When not possible to perform such correlation, alerting on the second event only is an option. It's generally not 
+When not possible to perform such correlation, alerting on the second event only is an option. It's generally not
 expected that the user data of an EC2 instance changes often, especially with the popularity of immutable machine images,
 provisioned before instantiation.
 `,

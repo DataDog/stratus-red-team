@@ -23,10 +23,10 @@ Simulates an attacker enumerating Bedrock models and then invoking the Anthropic
 
 <span style="font-variant: small-caps;">Warm-up</span>: None.
 
-<span style="font-variant: small-caps;">Detonation</span>: 
+<span style="font-variant: small-caps;">Detonation</span>:
 
 - If Anthropic Claude 3 Sonnet is not enabled, attempt to enable it using <code>PutUseCaseForModelAccess</code>, <code>ListFoundationModelAgreementOffers</code>, <code>CreateFoundationModelAgreement</code>, <code>PutFoundationModelEntitlement</code>
-- Call <code>bedrock:InvokeModel</code> to run inference using the model.
+- Call <code>bedrock:InvokeModel</code> to run inference using the model
 
 References:
 

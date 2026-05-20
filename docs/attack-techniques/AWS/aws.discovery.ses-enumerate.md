@@ -23,12 +23,12 @@ Simulates an attacker enumerating SES. Attackers frequently use this enumeration
 
 <span style="font-variant: small-caps;">Warm-up</span>: None.
 
-<span style="font-variant: small-caps;">Detonation</span>: 
+<span style="font-variant: small-caps;">Detonation</span>:
 
-- Perform <code>ses:GetAccountSendingEnabled</code> to check if SES sending is enabled.
-- Perform <code>ses:GetSendQuota</code> to discover the current [email sending quotas](https://docs.aws.amazon.com/ses/latest/APIReference/API_GetSendQuota.html).
-- Perform <code>ses:ListIdentities</code> to discover the list of [identities](https://docs.aws.amazon.com/ses/latest/APIReference/API_ListIdentities.html) in the account.
-- If identities are found, use <code>ses:GetIdentityVerificationAttributes</code> (only once) to discover [verification status](https://docs.aws.amazon.com/ses/latest/APIReference/API_GetIdentityVerificationAttributes.html) of each identity.
+- Perform <code>ses:GetAccountSendingEnabled</code> to check if SES sending is enabled
+- Perform <code>ses:GetSendQuota</code> to discover the current [email sending quotas](https://docs.aws.amazon.com/ses/latest/APIReference/API_GetSendQuota.html)
+- Perform <code>ses:ListIdentities</code> to discover the list of [identities](https://docs.aws.amazon.com/ses/latest/APIReference/API_ListIdentities.html) in the account
+- If identities are found, use <code>ses:GetIdentityVerificationAttributes</code> (only once) to discover [verification status](https://docs.aws.amazon.com/ses/latest/APIReference/API_GetIdentityVerificationAttributes.html) of each identity
 
 References:
 
@@ -47,7 +47,7 @@ stratus detonate aws.discovery.ses-enumerate
 ## Detection
 
 
-Through CloudTrail's <code>GetAccountSendingEnabled</code>, <code>GetSendQuota</code> and <code>ListIdentities</code> events. 
+Through CloudTrail's <code>GetAccountSendingEnabled</code>, <code>GetSendQuota</code> and <code>ListIdentities</code> events.
 These can be considered suspicious especially when performed by a long-lived access key, or when the calls span across multiple regions.
 
 

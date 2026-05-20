@@ -19,16 +19,16 @@ Platform: AWS
 ## Description
 
 
-Simulates an attacker using EC2 Instance Connect to push an SSH public key to multiple EC2 instances, using <code>SendSerialConsoleSSHPublicKey</code>. This allows anyone 
+Simulates an attacker using EC2 Instance Connect to push an SSH public key to multiple EC2 instances, using <code>SendSerialConsoleSSHPublicKey</code>. This allows anyone
 with the corresponding private key to connect directly to the systems via SSH, assuming they have appropriate network connectivity.
 
 <span style="font-variant: small-caps;">Warm-up</span>:
 
-- Create multiple EC2 instances and a VPC (takes a few minutes).
+- Create multiple EC2 instances and a VPC (takes a few minutes)
 
 <span style="font-variant: small-caps;">Detonation</span>:
 
-- Adds a public SSH key to the EC2 instances using <code>SendSerialConsoleSSHPublicKey</code>.
+- Adds a public SSH key to the EC2 instances using <code>SendSerialConsoleSSHPublicKey</code>
 
 References:
 

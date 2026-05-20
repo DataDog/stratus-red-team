@@ -25,13 +25,13 @@ retrieve RDP passwords on a high number of Windows EC2 instances.
 
 See https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_GetPasswordData.html
 
-Warm-up: 
+Warm-up:
 
 - Create an IAM role without permissions to run ec2:GetPasswordData
 
-Detonation: 
+Detonation:
 
-- Assume the role 
+- Assume the role
 - Run a number of ec2:GetPasswordData calls (which will be denied) using fictitious instance IDs
 `,
 		Detection:                  "Identify principals making a large number of ec2:GetPasswordData calls, using CloudTrail's GetPasswordData event",

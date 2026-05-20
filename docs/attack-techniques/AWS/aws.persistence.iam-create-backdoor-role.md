@@ -24,12 +24,12 @@ Platform: AWS
 ## Description
 
 
-Establishes persistence by creating a new backdoor role with a trust policy allowing it to be assumed from 
+Establishes persistence by creating a new backdoor role with a trust policy allowing it to be assumed from
 an external, fictitious attack AWS account.
 
 <span style="font-variant: small-caps;">Warm-up</span>: None.
 
-<span style="font-variant: small-caps;">Detonation</span>: 
+<span style="font-variant: small-caps;">Detonation</span>:
 
 - Create a new IAM role with the following trust policy:
 
@@ -48,7 +48,7 @@ an external, fictitious attack AWS account.
 }
 ```
 
-- Attach the 'AdministratorAccess' managed IAM policy to it. 
+- Attach the 'AdministratorAccess' managed IAM policy to it
 
 *Note: For safety reasons, the detonation code makes sure that this role has no real effective permissions, by attaching a permissions boundary denying all actions. This could also be achieved with an inline role policy, but using a permissions boundary allows us to use a single API call (CreateRole).*
 
@@ -66,10 +66,10 @@ stratus detonate aws.persistence.iam-create-backdoor-role
 ## Detection
 
 
-- Through [IAM Access Analyzer](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-resources.html#access-analyzer-iam-role), 
+- Through [IAM Access Analyzer](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-resources.html#access-analyzer-iam-role),
 which generates a finding when a role can be assumed from a new AWS account or publicly.
 
-- Identify a call to <code>CreateRole</code> closely followed by <code>AttachRolePolicy</code> with an administrator policy.
+- Identify a call to <code>CreateRole</code> closely followed by <code>AttachRolePolicy</code> with an administrator policy
 
 - Identify a call to <code>CreateRole</code> that contains an assumeRolePolicyDocument in the requestParameters that allows access from an external AWS account. Sample event:
 

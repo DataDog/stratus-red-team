@@ -53,7 +53,7 @@ stratus detonate gcp.privilege-escalation.impersonate-service-accounts
 ## Detection
 
 
-Using GCP Admin Activity audit logs event <code>GenerateAccessToken</code>. 
+Using GCP Admin Activity audit logs event <code>GenerateAccessToken</code>.
 To get this event, you need to [enable IAM audit logs for data access activity](https://cloud.google.com/iam/docs/audit-logging#enabling_audit_logging).
 More specifically, you need to enable <code>DATA_READ</code> for your GCP project, e.g. using Terraform:
 
@@ -114,7 +114,7 @@ When impersonation fails, the generated event **does not contain** the identity 
 [GCP documentation](https://cloud.google.com/logging/docs/audit#user-id):
 
 > Audit logging doesn't redact the caller's principal email address for any access that succeeds or for any write operation.
-> For read-only operations that fail with a "permission denied" error, Audit Logging might redact the caller's principal 
+> For read-only operations that fail with a "permission denied" error, Audit Logging might redact the caller's principal
 > email address unless the caller is a service account.
 
 Sample **unsuccessful** event (shortened for clarity):
@@ -165,7 +165,7 @@ Sample **unsuccessful** event (shortened for clarity):
 Some detection strategies may include:
 
 * Alerting on unsuccessful impersonation attempts
-* Alerting when the same IP address / user-agent attempts to impersonate several service accounts in a 
+* Alerting when the same IP address / user-agent attempts to impersonate several service accounts in a
 short amount of time (successfully or not)
 
 

@@ -24,9 +24,9 @@ Establishes persistence by creating a new IAM user with administrative permissio
 
 Warm-up: None.
 
-Detonation: 
+Detonation:
 
-- Create the IAM user and attach the 'AdministratorAccess' managed IAM policy to it.
+- Create the IAM user and attach the 'AdministratorAccess' managed IAM policy to it
 
 References:
 
@@ -44,9 +44,9 @@ Through CloudTrail's <code>CreateUser</code>, <code>AttachUserPolicy</code> and 
 While matching on these events may be impractical and prone to false positives in most environments, the following
 can help to craft more precise detections:
 
-- Identify a call to <code>CreateUser</code> closely followed by <code>AttachUserPolicy</code> with an administrator policy.
+- Identify a call to <code>CreateUser</code> closely followed by <code>AttachUserPolicy</code> with an administrator policy
 
-- Identify a call to <code>CreateUser</code> resulting in an access denied error.
+- Identify a call to <code>CreateUser</code> resulting in an access denied error
 `,
 		Platform:           stratus.AWS,
 		IsIdempotent:       false, // cannot create twice an IAM user with the same name

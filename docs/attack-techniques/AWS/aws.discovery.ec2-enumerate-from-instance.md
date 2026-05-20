@@ -35,11 +35,11 @@ The commands will be run under the identity of the EC2 instance role, simulating
 
 <span style="font-variant: small-caps;">Warm-up</span>:
 
-- Create the prerequisite EC2 instance and VPC (takes a few minutes).
+- Create the prerequisite EC2 instance and VPC (takes a few minutes)
 
-<span style="font-variant: small-caps;">Detonation</span>: 
+<span style="font-variant: small-caps;">Detonation</span>:
 
-- Run the discovery commands, over SSM. The commands will be run under the identity of the EC2 instance role.
+- Run the discovery commands, over SSM. The commands will be run under the identity of the EC2 instance role
 
 
 ## Instructions

@@ -19,14 +19,14 @@ Platform: AWS
 ## Description
 
 
-Establishes persistence by updating a Login Profile on an existing IAM user to change its password. This allows an attacker to hijack 
+Establishes persistence by updating a Login Profile on an existing IAM user to change its password. This allows an attacker to hijack
 an IAM user with an existing login profile.
 
 <span style="font-variant: small-caps;">Warm-up</span>:
 
 - Create an IAM user with a login profile
 
-<span style="font-variant: small-caps;">Detonation</span>: 
+<span style="font-variant: small-caps;">Detonation</span>:
 
 - Update the user's login profile to change its password
 

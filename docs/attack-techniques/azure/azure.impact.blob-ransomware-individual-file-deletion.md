@@ -21,19 +21,19 @@ Platform: Azure
 
 Simulates Azure Storage ransomware activity that empties a storage account through individual Blob deletion, then uploads a ransom note.
 
-<span style="font-variant: small-caps;">Warm-up</span>: 
+<span style="font-variant: small-caps;">Warm-up</span>:
 
 - Create an Azure Storage Account, with versioning enabled
 - Create Storage Containers in the Storage Account, each with a large number blobs with random content and extensions
 
-<span style="font-variant: small-caps;">Detonation</span>: 
+<span style="font-variant: small-caps;">Detonation</span>:
 
 - List all available storage containers and their blobs and their versions in the bucket
 - Delete all blobs in each container one by one, using [DeleteBlob](https://learn.microsoft.com/en-us/rest/api/storageservices/delete-blob?tabs=microsoft-entra-id)
 - List and delete all blobs _again_ to delete any backups created by versioning
 - Upload a ransom note to the storage account
 
-Note: The attack does not need to disable versioning, which does not protect against ransomware. This attack removes all versions of the objects in the bucket. 
+Note: The attack does not need to disable versioning, which does not protect against ransomware. This attack removes all versions of the objects in the bucket.
 
 References:
 [Storm-0501’s evolving techniques lead to cloud-based ransomware](https://www.microsoft.com/en-us/security/blog/2025/08/27/storm-0501s-evolving-techniques-lead-to-cloud-based-ransomware/)
@@ -49,7 +49,7 @@ stratus detonate azure.impact.blob-ransomware-individual-file-deletion
 ## Detection
 
 
-You can detect ransomware activity by identifying abnormal patterns of blobs being downloaded or deleted in a storage account. 
+You can detect ransomware activity by identifying abnormal patterns of blobs being downloaded or deleted in a storage account.
 In general, this can be done through [Blob storage events](https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-event-overview).
 Blob storage events are resource logs, which require [configuring diagnostic settings to enable](https://learn.microsoft.com/en-us/azure/storage/blobs/monitor-blob-storage?tabs=azure-portal#azure-monitor-resource-logs).
 

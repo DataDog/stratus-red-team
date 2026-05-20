@@ -24,11 +24,11 @@ func init() {
 		Description: `
 Establishes persistence by backdooring an existing IAM role, allowing it to be assumed from an external AWS account.
 
-Warm-up: 
+Warm-up:
 
-- Create an IAM role.
+- Create an IAM role
 
-Detonation: 
+Detonation:
 
 - Update the assume role policy of the IAM role to backdoor it, making it accessible from an external, fictitious AWS account:
 
@@ -39,9 +39,9 @@ Detonation:
 </pre>
 `,
 		Detection: `
-- Using CloudTrail's <code>UpdateAssumeRolePolicy</code> event.
+- Using CloudTrail's <code>UpdateAssumeRolePolicy</code> event
 
-- Through [IAM Access Analyzer](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-resources.html#access-analyzer-iam-role), 
+- Through [IAM Access Analyzer](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-resources.html#access-analyzer-iam-role),
 which generates a finding when a role can be assumed from a new AWS account or publicly.
 `,
 		Platform:                   stratus.AWS,

@@ -26,13 +26,13 @@ Platform: AWS
 
 Stops a CloudTrail Trail from logging. Simulates an attacker disrupting CloudTrail logging.
 
-<span style="font-variant: small-caps;">Warm-up</span>: 
+<span style="font-variant: small-caps;">Warm-up</span>:
 
-- Create a CloudTrail Trail.
+- Create a CloudTrail Trail
 
-<span style="font-variant: small-caps;">Detonation</span>: 
+<span style="font-variant: small-caps;">Detonation</span>:
 
-- Call cloudtrail:StopLogging to stop CloudTrail logging.
+- Call cloudtrail:StopLogging to stop CloudTrail logging
 
 
 ## Instructions

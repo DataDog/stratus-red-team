@@ -19,7 +19,7 @@ Platform: Kubernetes
 ## Description
 
 
-Creates a token with a large expiration for a service account. An attacker can create such a long-lived token to easily gain 
+Creates a token with a large expiration for a service account. An attacker can create such a long-lived token to easily gain
 persistence on a compromised cluster.
 
 

@@ -21,11 +21,11 @@ Platform: GCP
 
 Retrieves a high number of Secret Manager secrets in a short timeframe, through the AccessSecretVersion API.
 
-<span style="font-variant: small-caps;">Warm-up</span>: 
+<span style="font-variant: small-caps;">Warm-up</span>:
 
-- Create multiple secrets in Secret Manager.
+- Create multiple secrets in Secret Manager
 
-<span style="font-variant: small-caps;">Detonation</span>: 
+<span style="font-variant: small-caps;">Detonation</span>:
 
 - Enumerate the secrets through the ListSecrets API
 - Retrieve each secret value, one by one through the AccessSecretVersion API
@@ -38,8 +38,8 @@ stratus detonate gcp.credential-access.secretmanager-retrieve-secrets
 ```
 ## Detection
 
-Cloud Audit Logs event corresponding to accessing a secret's value is <code>AccessSecretVersion</code>. 
-It is considered [data access event](https://cloud.google.com/secret-manager/docs/audit-logging), and needs to be explicitly enabled for the Secret Manager API. 
+Cloud Audit Logs event corresponding to accessing a secret's value is <code>AccessSecretVersion</code>.
+It is considered [data access event](https://cloud.google.com/secret-manager/docs/audit-logging), and needs to be explicitly enabled for the Secret Manager API.
 
 Sample event:
 

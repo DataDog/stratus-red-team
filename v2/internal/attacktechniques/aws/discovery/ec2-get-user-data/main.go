@@ -23,17 +23,17 @@ func init() {
 Runs ec2:DescribeInstanceAttribute on several instances. This simulates an attacker attempting to
 retrieve Instance User Data that may include installation scripts and hard-coded secrets for deployment.
 
-See: 
+See:
 
 - https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html
 - https://hackingthe.cloud/aws/general-knowledge/introduction_user_data/
 - https://github.com/RhinoSecurityLabs/pacu/blob/master/pacu/modules/ec2__download_userdata/main.py
 
-Warm-up: 
+Warm-up:
 
 - Create an IAM role without permissions to run ec2:DescribeInstanceAttribute
 
-Detonation: 
+Detonation:
 
 - Run ec2:DescribeInstanceAttribute on multiple fictitious instance IDs
 - These calls will result in access denied errors

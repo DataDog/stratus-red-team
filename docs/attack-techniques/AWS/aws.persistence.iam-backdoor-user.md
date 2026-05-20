@@ -27,13 +27,13 @@ Platform: AWS
 
 Establishes persistence by creating an access key on an existing IAM user.
 
-<span style="font-variant: small-caps;">Warm-up</span>: 
+<span style="font-variant: small-caps;">Warm-up</span>:
 
-- Create an IAM user.
+- Create an IAM user
 
-<span style="font-variant: small-caps;">Detonation</span>: 
+<span style="font-variant: small-caps;">Detonation</span>:
 
-- Create an IAM access key on the user.
+- Create an IAM access key on the user
 
 References:
 

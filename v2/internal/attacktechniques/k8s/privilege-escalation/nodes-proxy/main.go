@@ -35,14 +35,14 @@ func init() {
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.PrivilegeEscalation},
 		Description: `
 Uses the node proxy API to proxy a Kubelet request through a worker node. This is a vector of privilege escalation, allowing
-any principal with the ` + code + `nodes/proxy` + code + ` permission to escalate their privilege to cluster administrator, 
+any principal with the ` + code + `nodes/proxy` + code + ` permission to escalate their privilege to cluster administrator,
 bypassing at the same time admission control checks and logging of the API server.
 
 Warm-up:
 
 - Create a namespace
 - Create a service account in this namespace
-- Create a cluster role with ` + code + `nodes/proxy` + code + ` permissions 
+- Create a cluster role with ` + code + `nodes/proxy` + code + ` permissions
 - Bind the cluster role to the service account
 
 Detonation:
@@ -83,7 +83,7 @@ Sample event (shortened):
 }
 ` + codeBlock + `
 
-Under normal operating conditions, it's not expected that this API is used frequently. 
+Under normal operating conditions, it's not expected that this API is used frequently.
 Consequently, alerting on ` + code + `objectRef.resource == "nodes" && objectRef.subresource == "proxy"` + code + ` should yield minimal false positives.
 
 Additionally, looking at the Kubelet API path that was proxied can help identify malicious activity (/runningpods in this example).

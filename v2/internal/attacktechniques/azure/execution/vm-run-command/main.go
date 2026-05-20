@@ -24,8 +24,8 @@ func init() {
 		Description: `
 By utilizing the 'RunCommand' feature on a Virtual Machine, an attacker can pass:
 
-- Windows: PowerShell commands to the VM as SYSTEM.
-- Linux: Shell commands to the VM as root.
+- Windows: PowerShell commands to the VM as SYSTEM
+- Linux: Shell commands to the VM as root
 
 References:
 
@@ -35,16 +35,16 @@ References:
 - https://go.crowdstrike.com/rs/281-OBQ-266/images/report-crowdstrike-2023-threat-hunting-report.pdf (page 34)
 - https://cloud.google.com/blog/topics/threat-intelligence/russian-targeting-gov-business
 
-Warm-up: 
+Warm-up:
 
 - Create a virtual machine
 
-Detonation: 
+Detonation:
 
 - Invoke a RunCommand on the target virtual machine
 `,
 		Detection: `
-Identify <code>Microsoft.Compute/virtualMachines/runCommand/action</code> 
+Identify <code>Microsoft.Compute/virtualMachines/runCommand/action</code>
 and <code>Microsoft.Compute/virtualMachines/runCommands/write</code> events in Azure Activity logs.
 
 Sample event (redacted for clarity):

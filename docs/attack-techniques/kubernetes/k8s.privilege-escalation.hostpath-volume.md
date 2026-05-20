@@ -26,13 +26,13 @@ References:
 - https://attack.mitre.org/techniques/T1611/
 - https://www.youtube.com/watch?v=gtaaONq-XGY
 
-<span style="font-variant: small-caps;">Warm-up</span>: 
+<span style="font-variant: small-caps;">Warm-up</span>:
 
 - Creates the Stratus Red Team namespace
 
-<span style="font-variant: small-caps;">Detonation</span>: 
+<span style="font-variant: small-caps;">Detonation</span>:
 
-- Create a privileged busybox pod with the node root filesystem mounted at "/host" 
+- Create a privileged busybox pod with the node root filesystem mounted at "/host"
 	that reads "/etc/passwd" from the host filesystem
 
 

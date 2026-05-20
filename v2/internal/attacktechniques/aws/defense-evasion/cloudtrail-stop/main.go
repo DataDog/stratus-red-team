@@ -34,13 +34,13 @@ func init() {
 		Description: `
 Stops a CloudTrail Trail from logging. Simulates an attacker disrupting CloudTrail logging.
 
-Warm-up: 
+Warm-up:
 
-- Create a CloudTrail Trail.
+- Create a CloudTrail Trail
 
-Detonation: 
+Detonation:
 
-- Call cloudtrail:StopLogging to stop CloudTrail logging.
+- Call cloudtrail:StopLogging to stop CloudTrail logging
 `,
 		Detection: `
 Identify when a CloudTrail trail is disabled, through CloudTrail's <code>StopLogging</code> event.

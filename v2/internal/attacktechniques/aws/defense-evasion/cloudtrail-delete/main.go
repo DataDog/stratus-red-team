@@ -34,13 +34,13 @@ func init() {
 		Description: `
 Delete a CloudTrail trail. Simulates an attacker disrupting CloudTrail logging.
 
-Warm-up: 
+Warm-up:
 
-- Create a CloudTrail trail.
+- Create a CloudTrail trail
 
-Detonation: 
+Detonation:
 
-- Delete the CloudTrail trail.
+- Delete the CloudTrail trail
 `,
 		Detection: `
 Identify when a CloudTrail trail is deleted, through CloudTrail's <code>DeleteTrail</code> event.

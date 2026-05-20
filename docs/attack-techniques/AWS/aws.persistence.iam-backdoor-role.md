@@ -21,11 +21,11 @@ Platform: AWS
 
 Establishes persistence by backdooring an existing IAM role, allowing it to be assumed from an external AWS account.
 
-<span style="font-variant: small-caps;">Warm-up</span>: 
+<span style="font-variant: small-caps;">Warm-up</span>:
 
-- Create an IAM role.
+- Create an IAM role
 
-<span style="font-variant: small-caps;">Detonation</span>: 
+<span style="font-variant: small-caps;">Detonation</span>:
 
 - Update the assume role policy of the IAM role to backdoor it, making it accessible from an external, fictitious AWS account:
 
@@ -62,9 +62,9 @@ stratus detonate aws.persistence.iam-backdoor-role
 ## Detection
 
 
-- Using CloudTrail's <code>UpdateAssumeRolePolicy</code> event.
+- Using CloudTrail's <code>UpdateAssumeRolePolicy</code> event
 
-- Through [IAM Access Analyzer](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-resources.html#access-analyzer-iam-role), 
+- Through [IAM Access Analyzer](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-resources.html#access-analyzer-iam-role),
 which generates a finding when a role can be assumed from a new AWS account or publicly.
 
 

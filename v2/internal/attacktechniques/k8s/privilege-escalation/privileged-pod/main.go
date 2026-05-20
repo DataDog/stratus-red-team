@@ -34,11 +34,11 @@ Resources:
 - https://www.cncf.io/blog/2020/10/16/hack-my-mis-configured-kubernetes-privileged-pods/
 - https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
 
-Warm-up: 
+Warm-up:
 
 - Creates the Stratus Red Team namespace
 
-Detonation: 
+Detonation:
 
 - Create a privileged busybox pod
 `,

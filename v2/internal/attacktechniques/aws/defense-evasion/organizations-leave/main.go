@@ -35,21 +35,21 @@ func init() {
 			},
 		},
 		Description: `
-Attempts to leave the AWS Organization (unsuccessfully - will hit an AccessDenied error). 
-Security configurations are often defined at the organization level (GuardDuty, SecurityHub, CloudTrail...). 
+Attempts to leave the AWS Organization (unsuccessfully - will hit an AccessDenied error).
+Security configurations are often defined at the organization level (GuardDuty, SecurityHub, CloudTrail...).
 Leaving the organization can disrupt or totally shut down these controls.
 
 
-Warm-up: 
+Warm-up:
 
 - Create an IAM role without permissions to run organizations:LeaveOrganization
 
-Detonation: 
+Detonation:
 
-- Call organization:LeaveOrganization to simulate an attempt to leave the AWS Organization.
+- Call organization:LeaveOrganization to simulate an attempt to leave the AWS Organization
 `,
 		Detection: `
-Any attempts from a child account to leave its AWS Organization should be considered suspicious. 
+Any attempts from a child account to leave its AWS Organization should be considered suspicious.
 
 Use the CloudTrail event <code>LeaveOrganization</code>.`,
 		PrerequisitesTerraformCode: tf,

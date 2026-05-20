@@ -20,7 +20,7 @@ Platform: GCP
 ## Description
 
 
-Establishes persistence by creating a new service account and assigning it 
+Establishes persistence by creating a new service account and assigning it
 <code>owner</code> permissions inside the current GCP project.
 
 <span style="font-variant: small-caps;">Warm-up</span>: None

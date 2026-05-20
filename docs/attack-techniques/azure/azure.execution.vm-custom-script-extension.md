@@ -26,11 +26,11 @@ References:
 - https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/custom-script-windows
 - https://microsoft.github.io/Azure-Threat-Research-Matrix/Execution/AZT301/AZT301-2/
 
-<span style="font-variant: small-caps;">Warm-up</span>: 
+<span style="font-variant: small-caps;">Warm-up</span>:
 
 - Create a virtual machine
 
-<span style="font-variant: small-caps;">Detonation</span>: 
+<span style="font-variant: small-caps;">Detonation</span>:
 
 - Configure a custom script extension for the virtual machine
 

@@ -24,12 +24,12 @@ Platform: AWS
 ## Description
 
 
-Shares a RDS Snapshot with an external AWS account to simulate an attacker exfiltrating a database.
+Shares an RDS Snapshot with an external AWS account to simulate an attacker exfiltrating a database.
 
 <span style="font-variant: small-caps;">Warm-up</span>:
 
-- Create a RDS Instance (slow, around 10 minutes)
-- Create a RDS Snapshot
+- Create an RDS Instance (slow, around 10 minutes)
+- Create an RDS Snapshot
 
 <span style="font-variant: small-caps;">Detonation</span>:
 
@@ -55,7 +55,7 @@ Through CloudTrail's <code>ModifyDBSnapshotAttribute</code> event, when both:
   "valuesToAdd": ["193672423079"],
 }</code></pre>
 
-An attacker can also make an RDS snapshot completely public. In this case, the value of <code>valuesToAdd</code> is <code>["all"]</code>. 
+An attacker can also make an RDS snapshot completely public. In this case, the value of <code>valuesToAdd</code> is <code>["all"]</code>.
 
 
 

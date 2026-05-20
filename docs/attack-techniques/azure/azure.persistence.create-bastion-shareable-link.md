@@ -27,14 +27,14 @@ References:
 - https://learn.microsoft.com/en-us/azure/bastion/shareable-link
 - https://microsoft.github.io/Azure-Threat-Research-Matrix/Persistence/AZT509/AZT509/
 
-<span style="font-variant: small-caps;">Warm-up</span>: 
+<span style="font-variant: small-caps;">Warm-up</span>:
 
 - Create a VM and VNet
 - Create an Azure Bastion host with access to the VM, and shareable links enabled
 
 NOTE: Warm-up and cleanup can each take 10-15 minutes to create and destroy the Azure Bastion instance
 
-<span style="font-variant: small-caps;">Detonation</span>: 
+<span style="font-variant: small-caps;">Detonation</span>:
 
 - Create an Azure Bastion shareable link with access to the VM
 

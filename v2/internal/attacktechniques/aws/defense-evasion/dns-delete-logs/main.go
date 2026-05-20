@@ -25,7 +25,7 @@ Deletes a Route53 DNS Resolver query logging configuration. Simulates an attacke
 
 Warm-up:
 
-- Create a DNS logging configuration.
+- Create a DNS logging configuration
 
 Detonation:
 

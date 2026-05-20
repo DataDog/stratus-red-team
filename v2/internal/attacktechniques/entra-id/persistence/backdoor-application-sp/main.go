@@ -29,9 +29,9 @@ Detonation:
 
 - Backdoor the Entra ID application by creating a new credential on the associated service principal
 
-Notes: The warm-up mimics what happens when you create an App Registration through the Azure portal. 
-When you use the Azure portal, creating an App Registration automatically creates an associated service principal. 
-When using the Microsoft Graph API, the service principal needs to be created separately. 
+Notes: The warm-up mimics what happens when you create an App Registration through the Azure portal.
+When you use the Azure portal, creating an App Registration automatically creates an associated service principal.
+When using the Microsoft Graph API, the service principal needs to be created separately.
 
 References:
 
