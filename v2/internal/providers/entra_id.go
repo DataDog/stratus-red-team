@@ -7,16 +7,14 @@ import (
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/policy"
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 	"github.com/google/uuid"
-	betagraph "github.com/microsoftgraph/msgraph-beta-sdk-go"
 	graph "github.com/microsoftgraph/msgraph-sdk-go"
 	"log"
 )
 
 type EntraIdProvider struct {
-	Credentials     azcore.TokenCredential
-	ClientOptions   *arm.ClientOptions
-	GraphClient     *graph.GraphServiceClient
-	BetaGraphClient *betagraph.GraphServiceClient
+	Credentials   azcore.TokenCredential
+	ClientOptions *arm.ClientOptions
+	GraphClient   *graph.GraphServiceClient
 }
 
 // EntraIdProviderOption configures optional overrides on an EntraIdProvider.
@@ -54,21 +52,11 @@ func NewEntraIdProvider(correlationId uuid.UUID, opts ...EntraIdProviderOption) 
 	}
 	p.GraphClient = graphClient
 
-	betaGraphClient, err := betagraph.NewGraphServiceClientWithCredentials(p.Credentials, nil)
-	if err != nil {
-		log.Fatalf("could initialize Entra ID Beta Graph client: %v", err)
-	}
-	p.BetaGraphClient = betaGraphClient
-
 	return p
 }
 
 func (m *EntraIdProvider) GetGraphClient() *graph.GraphServiceClient {
 	return m.GraphClient
-}
-
-func (m *EntraIdProvider) GetBetaGraphClient() *betagraph.GraphServiceClient {
-	return m.BetaGraphClient
 }
 
 func (m *EntraIdProvider) GetTenantId() (string, error) {

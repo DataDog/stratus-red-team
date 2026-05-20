@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
-	betagraphmodels "github.com/microsoftgraph/msgraph-beta-sdk-go/models"
 	graphmodels "github.com/microsoftgraph/msgraph-sdk-go/models"
 	"log"
 	"strings"
@@ -60,11 +59,10 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	backdoorUserName := params["backdoor_user_name"]
 	suffix := params["suffix"]
 
-	betaGraphClient := providers.EntraId().GetBetaGraphClient()
 	graphClient := providers.EntraId().GetGraphClient()
 
 	// 1. Create Restricted AU
-	requestBodyAU := betagraphmodels.NewAdministrativeUnit()
+	requestBodyAU := graphmodels.NewAdministrativeUnit()
 	displayName := fmt.Sprintf("Stratus Red Team Restricted AU - %s", suffix)
 	requestBodyAU.SetDisplayName(&displayName)
 	description := "Restricted management AU created from Stratus Red Team"
@@ -72,7 +70,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	restricted := true
 	requestBodyAU.SetIsMemberManagementRestricted(&restricted)
 
-	auResult, err := betaGraphClient.Directory().AdministrativeUnits().Post(context.Background(), requestBodyAU, nil)
+	auResult, err := graphClient.Directory().AdministrativeUnits().Post(context.Background(), requestBodyAU, nil)
 
 	if err != nil {
 		return errors.New("could not create AU: " + err.Error())

@@ -46,7 +46,6 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/hashicorp/terraform-exec v0.21.0
 	github.com/jedib0t/go-pretty/v6 v6.4.0
-	github.com/microsoftgraph/msgraph-beta-sdk-go v0.108.0
 	github.com/microsoftgraph/msgraph-sdk-go-core v1.2.1
 	github.com/santhosh-tekuri/jsonschema/v6 v6.0.2
 	github.com/spf13/cobra v1.6.0
@@ -182,7 +181,7 @@ require (
 	github.com/hashicorp/go-version v1.9.0
 	github.com/hashicorp/hc-install v0.9.4
 	github.com/hashicorp/terraform-json v0.22.1 // indirect
-	github.com/microsoftgraph/msgraph-sdk-go v1.47.0
+	github.com/microsoftgraph/msgraph-sdk-go v1.51.0
 	github.com/zclconf/go-cty v1.14.4 // indirect
 	golang.org/x/crypto v0.49.0
 	golang.org/x/sys v0.42.0 // indirect
