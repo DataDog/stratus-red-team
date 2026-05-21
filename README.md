@@ -6,7 +6,7 @@
   <img src="./docs/logo.png" alt="Stratus Red Team" width="300" />
 </p>
 
-Stratus Red Team is "[Atomic Red Team](https://github.com/redcanaryco/atomic-red-team)™" for the cloud, allowing to emulate offensive attack techniques in a granular and self-contained manner.
+Stratus Red Team is "[Atomic Red Team](https://github.com/redcanaryco/atomic-red-team)™" for the cloud, providing granular and self-contained emulation of offensive attack techniques.
 
 <p align="center">
   <a href="https://github.com/DataDog/stratus-red-team/raw/main/docs/demo.gif">
@@ -14,7 +14,7 @@ Stratus Red Team is "[Atomic Red Team](https://github.com/redcanaryco/atomic-red
   </a>
 </p>
 
-Read the announcement blog posts:
+Announcement blog posts:
 - https://www.datadoghq.com/blog/cyber-attack-simulation-with-stratus-red-team/
 - https://blog.christophetd.fr/introducing-stratus-red-team-an-adversary-emulation-tool-for-the-cloud/
 
@@ -24,9 +24,7 @@ Stratus Red Team is a self-contained Go binary.
 
 See the documentation at **[stratus-red-team.cloud](https://stratus-red-team.cloud/)**:
 - [Stratus Red Team Concepts](https://stratus-red-team.cloud/user-guide/getting-started/#concepts)
-
-- [Installing Stratus Red Team](https://stratus-red-team.cloud/user-guide/getting-started/#installation) - Homebrew formula, Docker image and pre-built binaries available
-
+- [Installing Stratus Red Team](https://stratus-red-team.cloud/user-guide/getting-started/#installation) - Homebrew formula, Docker image, and pre-built binaries available
 - [Available Attack Techniques](https://stratus-red-team.cloud/attack-techniques/list/), mapped to MITRE ATT&CK
 
 ## Installation
@@ -48,7 +46,7 @@ brew install datadog/stratus-red-team/stratus-red-team
 
 ### Pre-built binaries
 
-For Linux / Windows / Mac OS: download one of the [pre-built binaries](https://github.com/datadog/stratus-red-team/releases).
+For Linux, Windows, and macOS: download one of the [pre-built binaries](https://github.com/datadog/stratus-red-team/releases).
 
 ### Docker
 
@@ -59,7 +57,7 @@ alias stratus="docker run --rm -v $HOME/.stratus-red-team/:/root/.stratus-red-te
 
 ### asdf
 
-You can install specific versions (or latest) of stratus-red-team using [asdf](https://asdf-vm.com/) and this [stratus-red-team plugin](https://github.com/asdf-community/asdf-stratus-red-team):
+Install specific versions of stratus-red-team using [asdf](https://asdf-vm.com/) and the [stratus-red-team plugin](https://github.com/asdf-community/asdf-stratus-red-team):
 
 ```bash
 asdf plugin add stratus-red-team https://github.com/asdf-community/asdf-stratus-red-team.git
@@ -68,12 +66,11 @@ asdf install stratus-red-team latest
 
 ## Community
 
-The following section lists posts and projects from the community leveraging Stratus Red Team.
+Posts and projects from the community:
 
 Open-source projects:
 - [Threatest](https://github.com/DataDog/threatest)
 - [AWS Threat Detection with Stratus Red Team](https://github.com/sbasu7241/AWS-Threat-Simulation-and-Detection)
-
 
 Videos:
 - [Reproducing common attacks in the cloud with Stratus Red Team](https://www.youtube.com/watch?v=M5DGXWF2ld0)
@@ -83,7 +80,7 @@ Videos:
 Blog posts:
 - [AWS threat emulation and detection validation with Stratus Red Team and Datadog Cloud SIEM](https://www.datadoghq.com/blog/aws-threat-emulation-detection-validation-datadog/)
 - [Adversary emulation on AWS with Stratus Red Team and Wazuh](https://wazuh.com/blog/adversary-emulation-on-aws-with-stratus-red-team-and-wazuh/)
-- [Sky’s the Limit: Stratus Red Team for Azure](https://blog.detect.dev/posts/azure_for_stratus.html)
+- [Sky's the Limit: Stratus Red Team for Azure](https://blog.detect.dev/posts/azure_for_stratus.html)
 - [Detecting realistic AWS cloud-attacks using Azure Sentinel](https://medium.com/falconforce/falconfriday-detecting-realistic-aws-cloud-attacks-using-azure-sentinel-0xff1c-b62fd45c87dc)
 - [A Data Driven Comparison of Open Source Adversary Emulation Tools](https://www.picussecurity.com/resource/blog/data-driven-comparison-between-open-source-adversary-emulation-tools)
 - [Making Security Relevant in the Cloud](https://www.cloudreach.com/en/technical-blog/making-security-relevant-in-the-cloud/)
@@ -94,7 +91,7 @@ Blog posts:
 - [AWS Cloud Detection Lab: Cloud Pen-testing with Stratus Red Team](https://medium.com/@goodycyb/aws-cloud-detection-lab-1%EF%B8%8F%E2%83%A3-%EF%B8%8F-cloud-pen-testing-with-stratus-red-team-tool-69b4fab24743)
 
 Talks:
-- [Purple Teaming & Adversary Emulation in the Cloud with Stratus Red Team, DEF CON Cloud Village 2022](https://www.youtube.com/watch?v=rXFFuYbkntU) (recorded after the event as the talks were not recorded)
+- [Purple Teaming & Adversary Emulation in the Cloud with Stratus Red Team, DEF CON Cloud Village 2022](https://www.youtube.com/watch?v=rXFFuYbkntU)
 - [Threat-Driven Development with Stratus Red Team](https://www.youtube.com/watch?v=AbWwcqLwcYI) by Ryan Marcotte Cobb
 - [Cloudy With a Chance of Purple Rain: Leveraging Stratus Red Team - BSides Portland 2022](https://www.youtube.com/watch?v=Oq9ObzATZDI)
 
@@ -138,7 +135,7 @@ mkdocs serve
 
 ### Acknowledgments
 
-Core maintainers: Christophe Tafani-Dereeper ([@christophetd](https://twitter.com/christophetd)), Simon Maréchal ([@Minosity-VR](/https://github.com/Minosity-VR)).
+Core maintainers: Christophe Tafani-Dereeper ([@christophetd](https://twitter.com/christophetd)), Simon Maréchal ([@Minosity-VR](https://github.com/Minosity-VR)).
 
 Similar projects (see [how Stratus Red Team compares](https://stratus-red-team.cloud/comparison/)):
 - [Atomic Red Team](https://github.com/redcanaryco/atomic-red-team) by Red Canary
@@ -151,3 +148,11 @@ Inspiration and relevant resources:
 - https://expel.io/blog/mind-map-for-aws-investigations/
 - https://rhinosecuritylabs.com/aws/aws-privilege-escalation-methods-mitigation/
 - https://github.com/elastic/detection-rules/tree/main/rules/integrations/aws
+
+## Skills
+
+The following [agent skills](https://agentskills.io/home) are available in this repository:
+
+- **[create-attack-technique](.claude/skills/create-attack-technique/)** - Scaffolds and reviews new attack techniques for AWS, Azure, GCP, Entra ID, and Kubernetes, following the project's style and structure guidelines.
+- **[test-attack-technique](.claude/skills/test-attack-technique/)** - Runs warmup, detonation, and cleanup phases for a given technique ID, validates cloud credentials, and produces an HTML report of results.
+- **[map-threat-intel-coverage](.claude/skills/map-threat-intel-coverage/)** - Fetches a threat-intelligence report, extracts cloud TTPs, classifies each against existing Stratus Red Team coverage, and drafts GitHub issues for gaps.
