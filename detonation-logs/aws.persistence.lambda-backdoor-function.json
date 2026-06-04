@@ -1,0 +1,40 @@
+[
+   {
+      "awsRegion": "ca-centralnorth-1r",
+      "eventCategory": "Management",
+      "eventID": "b67a9bba-d9da-4980-bf74-baed881b117d",
+      "eventName": "AddPermission20150331v2",
+      "eventSource": "lambda.amazonaws.com",
+      "eventTime": "2024-08-01T13:47:16Z",
+      "eventType": "AwsApiCall",
+      "eventVersion": "1.08",
+      "managementEvent": true,
+      "readOnly": false,
+      "recipientAccountId": "880896431042",
+      "requestID": "c84f1436-60be-4ad8-a6f7-f3c44d47df3a",
+      "requestParameters": {
+         "action": "lambda:InvokeFunction",
+         "functionName": "stratus-red-team-backdoor-f-func",
+         "principal": "*",
+         "statementId": "backdoor"
+      },
+      "responseElements": {
+         "statement": "{\"Sid\":\"backdoor\",\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":\"lambda:InvokeFunction\",\"Resource\":\"arn:aws:lambda:ca-centralnorth-1r:880896431042:function:stratus-red-team-backdoor-f-func\"}"
+      },
+      "sourceIPAddress": "151.236.251.251",
+      "tlsDetails": {
+         "cipherSuite": "TLS_AES_128_GCM_SHA256",
+         "clientProvidedHostHeader": "lambda.ca-centralnorth-1r.amazonaws.com",
+         "tlsVersion": "TLSv1.3"
+      },
+      "userAgent": "stratus-red-team_a5b48423-fe4e-446d-a058-0f2b624cdfb1",
+      "userIdentity": {
+         "accessKeyId": "AKIAYALJGCQ7J893JO5I",
+         "accountId": "880896431042",
+         "arn": "arn:aws:iam::880896431042:user/christophe",
+         "principalId": "AIDAC4Q0BJF2SN7BSHFO",
+         "type": "IAMUser",
+         "userName": "christophe"
+      }
+   }
+]
