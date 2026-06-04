@@ -25,7 +25,9 @@ Unlike encryption scope-based ransomware, this technique operates at the storage
 
 Note that due to Azure's purge protection feature (, the Key Vault and key remain soft-deleted and recoverable within the retention period.
 
-You will need to have the <code>Key Vault Administrator</code> role on your Azure subscription to correctly warmup the technique.
+!!! warning
+
+	This technique requires the <code>Key Vault Administrator</code> role on your Azure subscription in addition to any other roles (e.g. <code>Contributor</code>). Without it, the detonation will fail with a 403 error when attempting to delete the Key Vault key.
 
 <span style="font-variant: small-caps;">Warm-up</span>:
 

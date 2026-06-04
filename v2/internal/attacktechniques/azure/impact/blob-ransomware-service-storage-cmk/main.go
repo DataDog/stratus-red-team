@@ -4,11 +4,13 @@ import (
 	"context"
 	"crypto/rand"
 	_ "embed"
+	"errors"
 	"fmt"
 	"log"
 	"math/big"
 	"time"
 
+	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/runtime"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/to"
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/keyvault/armkeyvault"
@@ -57,7 +59,9 @@ Unlike encryption scope-based ransomware, this technique operates at the storage
 
 Note that due to Azure's purge protection feature (, the Key Vault and key remain soft-deleted and recoverable within the retention period.
 
-You will need to have the <code>Key Vault Administrator</code> role on your Azure subscription to correctly warmup the technique.
+!!! warning
+
+	This technique requires the <code>Key Vault Administrator</code> role on your Azure subscription in addition to any other roles (e.g. <code>Contributor</code>). Without it, the detonation will fail with a 403 error when attempting to delete the Key Vault key.
 
 Warm-up:
 
@@ -334,6 +338,10 @@ func deleteKeyVaultKey(azure *providers.AzureProvider, keyVaultName string) erro
 	log.Printf("Soft-deleting key: %s from vault: %s", KeyName, keyVaultName)
 	_, err = keysClient.DeleteKey(context.Background(), KeyName, nil)
 	if err != nil {
+		var respErr *azcore.ResponseError
+		if errors.As(err, &respErr) && respErr.StatusCode == 403 {
+			return fmt.Errorf("failed to delete key: got 403 Forbidden. This technique requires the 'Key Vault Administrator' role on your Azure subscription (not just 'Contributor'). Assign this role and re-run the technique")
+		}
 		return fmt.Errorf("failed to delete key: %w", err)
 	}
 
