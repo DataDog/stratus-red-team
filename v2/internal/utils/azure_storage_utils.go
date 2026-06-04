@@ -34,9 +34,9 @@ func GetAzureBlobClient(serviceURL string, subscriptionID string, defaultCredent
 		return nil, err
 	}
 
-	return azblob.NewClientWithSharedKeyCredential(serviceURL, cred, 
+	return azblob.NewClientWithSharedKeyCredential(serviceURL, cred,
 		to.Ptr(azblob.ClientOptions{
-			ClientOptions : clientOptions.ClientOptions,
+			ClientOptions: clientOptions.ClientOptions,
 		}))
 
 }
