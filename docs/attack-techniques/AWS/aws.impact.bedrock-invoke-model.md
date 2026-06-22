@@ -15,6 +15,11 @@ Platform: AWS
     - Impact
 
 
+- MITRE ATLAS:
+  
+    - [Cost Harvesting](https://atlas.mitre.org/techniques/AML.T0034) (AML.T0034)
+  
+
 
 ## Description
 

@@ -250,6 +250,12 @@ AWS:
           isSlow: false
           mitreAttackTactics:
             - Impact
+          frameworkmappings:
+            - framework: MITRE ATLAS
+              techniques:
+                - name: Cost Harvesting
+                  id: AML.T0034
+                  url: https://atlas.mitre.org/techniques/AML.T0034
           platform: AWS
           isIdempotent: true
         - id: aws.impact.s3-ransomware-batch-deletion
