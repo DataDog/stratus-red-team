@@ -35,6 +35,10 @@ Warm-up:
 Detonation:
 
 - Call the ` + "`listPublishingProfileXMLWithSecrets`" + ` action on the App Service to retrieve the publishing profile containing FTP and Web Deploy credentials
+
+References:
+
+- https://www.microsoft.com/en-us/security/blog/2026/05/18/storm-2949-turned-compromised-identity-into-cloud-wide-breach/
 `,
 		Detection: `
 Identify the <code>Microsoft.Web/sites/publishxml/action</code> operation in Azure Activity logs.
