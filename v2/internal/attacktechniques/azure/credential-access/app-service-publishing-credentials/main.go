@@ -3,7 +3,7 @@ package azure
 import (
 	"context"
 	_ "embed"
-	"errors"
+	"fmt"
 	"io"
 	"log"
 
@@ -78,7 +78,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 
 	webAppsClient, err := getAzureWebAppsClient(providers.Azure())
 	if err != nil {
-		return errors.New("unable to instantiate Azure web apps client: " + err.Error())
+		return fmt.Errorf("unable to instantiate Azure web apps client: %w", err)
 	}
 
 	log.Println("Retrieving publishing credentials for App Service " + appServiceName)
@@ -90,13 +90,13 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 		nil,
 	)
 	if err != nil {
-		return errors.New("unable to retrieve App Service publishing credentials: " + err.Error())
+		return fmt.Errorf("unable to retrieve App Service publishing credentials: %w", err)
 	}
 	defer response.Body.Close()
 
 	publishingProfile, err := io.ReadAll(response.Body)
 	if err != nil {
-		return errors.New("unable to read App Service publishing profile: " + err.Error())
+		return fmt.Errorf("unable to read App Service publishing profile: %w", err)
 	}
 
 	_ = publishingProfile // contains the FTP and Web Deploy credentials in cleartext
