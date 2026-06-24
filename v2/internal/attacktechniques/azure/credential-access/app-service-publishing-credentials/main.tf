@@ -27,7 +27,10 @@ resource "azurerm_service_plan" "plan" {
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   os_type             = "Linux"
-  sku_name            = "B1"
+  # Free tier: runs on shared infrastructure, so it does not draw from the
+  # subscription's regional vCPU quota. The technique only needs the App
+  # Service to exist to read its publishing credentials, not dedicated compute.
+  sku_name            = "F1"
 }
 
 resource "azurerm_linux_web_app" "app" {
@@ -36,7 +39,11 @@ resource "azurerm_linux_web_app" "app" {
   location            = azurerm_service_plan.plan.location
   service_plan_id     = azurerm_service_plan.plan.id
 
-  site_config {}
+  site_config {
+    # always_on is not supported on the Free tier and defaults to true for
+    # Linux web apps, so it must be disabled explicitly.
+    always_on = false
+  }
 }
 
 output "app_service_name" {
