@@ -99,8 +99,8 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 		return fmt.Errorf("unable to read App Service publishing profile: %w", err)
 	}
 
-	_ = publishingProfile // contains the FTP and Web Deploy credentials in cleartext
 	log.Println("Successfully retrieved publishing credentials for App Service " + appServiceName)
+	log.Println("Publishing profile (contains FTP and Web Deploy credentials in cleartext):\n" + string(publishingProfile))
 	return nil
 }
 
