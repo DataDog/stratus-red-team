@@ -67,6 +67,6 @@ Sample event (redacted for clarity):
 }
 ```
 
-Note that this operation is logged even when the App Service has only basic (publishing) authentication disabled, since the action is evaluated before authentication settings are honored.
+Note that this operation is logged even when the App Service has only basic (publishing) authentication disabled.
 
 

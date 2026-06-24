@@ -62,7 +62,7 @@ Sample event (redacted for clarity):
 }
 ` + codeBlock + `
 
-Note that this operation is logged even when the App Service has only basic (publishing) authentication disabled, since the action is evaluated before authentication settings are honored.
+Note that this operation is logged even when the App Service has only basic (publishing) authentication disabled.
 `,
 		Platform:                   stratus.Azure,
 		IsIdempotent:               true,
