@@ -25,6 +25,11 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   - [Elevate to User Access Administrator at Root Scope](./azure.privilege-escalation.root-user-access-administrator.md)
   
 
+## Credential Access
+  
+  - [Retrieve App Service Publishing Credentials](./azure.credential-access.app-service-publishing-credentials.md)
+  
+
 ## Exfiltration
   
   - [Export Disk Through SAS URL](./azure.exfiltration.disk-export.md)
