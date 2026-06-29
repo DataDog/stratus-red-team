@@ -6,6 +6,9 @@ type Framework string
 const (
 	// ThreatTechniqueCatalogAWS is the Threat Technique Catalog for AWS
 	ThreatTechniqueCatalogAWS Framework = "Threat Technique Catalog for AWS"
+
+	// MitreAtlas is the MITRE ATLAS framework for adversarial threats against AI systems
+	MitreAtlas Framework = "MITRE ATLAS"
 )
 
 // TechniqueMapping represents a mapping to a specific technique in a framework.

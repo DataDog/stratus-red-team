@@ -88,7 +88,19 @@ References:
 		Platform:           stratus.AWS,
 		IsIdempotent:       true,
 		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Impact},
-		Detonate:           detonate,
+		FrameworkMappings: []stratus.FrameworkMappings{
+			{
+				Framework: stratus.MitreAtlas,
+				Techniques: []stratus.TechniqueMapping{
+					{
+						Name: "Cost Harvesting",
+						ID:   "AML.T0034",
+						URL:  "https://atlas.mitre.org/techniques/AML.T0034",
+					},
+				},
+			},
+		},
+		Detonate: detonate,
 	})
 }
 
