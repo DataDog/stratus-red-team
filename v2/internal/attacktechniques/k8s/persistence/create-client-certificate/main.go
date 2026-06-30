@@ -10,7 +10,7 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
-	"log"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 	"time"
 
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"

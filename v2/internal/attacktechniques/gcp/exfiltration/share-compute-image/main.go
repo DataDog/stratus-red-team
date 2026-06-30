@@ -5,7 +5,7 @@ import (
 	"cloud.google.com/go/compute/apiv1/computepb"
 	"context"
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
-	"log"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 
 	_ "embed"
 	"fmt"

@@ -5,8 +5,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 	"io"
-	"log"
 	"os"
 	"path/filepath"
 
