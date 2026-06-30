@@ -23,8 +23,7 @@ import (
 	"sync/atomic"
 )
 
-// current holds the active logger. It is read on every log call and swapped
-// atomically by SetLogger, so concurrent callers never observe a torn pointer.
+// current holds the active logger.
 var current atomic.Pointer[slog.Logger]
 
 func init() {
@@ -47,12 +46,7 @@ func SetLogger(logger *slog.Logger) {
 	current.Store(logger)
 }
 
-// Logger returns the active logger. It is never nil.
-//
-// The result is a point-in-time snapshot: a caller that holds onto it will not
-// observe a subsequent SetLogger. Code that must always log through the current
-// logger should call the package-level helpers (which re-read the global on
-// every call) rather than caching this value.
+// Logger returns the active logger.
 func Logger() *slog.Logger {
 	return current.Load()
 }
@@ -63,9 +57,7 @@ func Disable() {
 	current.Store(slog.New(slog.DiscardHandler))
 }
 
-// emit writes msg at info level after trimming a single trailing newline:
-// fmt.Sprintln always appends one and a Printf format may include one, but slog
-// records carry no trailing newline (the handler appends it).
+// emit writes msg at info level.
 func emit(msg string) {
 	current.Load().Info(strings.TrimSuffix(msg, "\n"))
 }

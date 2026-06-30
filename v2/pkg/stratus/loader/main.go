@@ -6,10 +6,7 @@ import (
 )
 
 func init() {
-	// Silence Stratus by default for programmatic usage; embedders opt back in
-	// via log.SetLogger. This preserves the long-standing contract that merely
-	// importing the loader (to register attack techniques) produces no log
-	// output, so it stays in init() rather than becoming a separate call the
-	// embedder must remember.
+	// Silence Stratus by default for programmatic usage.
+	// Users can opt back in via log.SetLogger.
 	log.Disable()
 }

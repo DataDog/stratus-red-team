@@ -41,10 +41,7 @@ func decode(t *testing.T, buffer *bytes.Buffer) map[string]any {
 
 // TestLegacyHandlerMatchesStdlibLog treats the standard library logger as the
 // oracle: the LegacyHandler exists only to reproduce its default format, so we
-// diff against the real thing rather than a transcribed format string. The
-// stdlib logger formats time.Now() with no injectable clock, so we mask digits
-// in both outputs before comparing -- that pins the timestamp's shape and the
-// message rendering against stdlib without depending on the wall clock.
+// diff against the real thing rather than a transcribed format string.
 func TestLegacyHandlerMatchesStdlibLog(t *testing.T) {
 	const message = "Warming up aws.defense-evasion.cloudtrail-delete"
 
@@ -52,6 +49,8 @@ func TestLegacyHandlerMatchesStdlibLog(t *testing.T) {
 	stdlog.New(&stdlibOutput, "", stdlog.LstdFlags).Println(message)
 	slog.New(NewLegacyHandler(&ourOutput)).Info(message)
 
+	// stdlib logger formats time.Now() with no injectable clock, so we mask digits
+	// in both outputs before comparing.
 	maskDigits := func(line string) string {
 		return strings.Map(func(r rune) rune {
 			if r >= '0' && r <= '9' {
