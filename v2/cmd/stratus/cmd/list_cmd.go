@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"log"
+	"os"
 	"strings"
 
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
@@ -49,6 +50,14 @@ func doListCmd(mitreAttackTactic string, platform string) {
 		filter.Tactic = tactic
 	}
 	techniques := stratus.GetRegistry().GetAttackTechniques(&filter)
+
+	if isJSONOutput() {
+		if err := outputJSON(os.Stdout, toTechniqueListJSON(techniques)); err != nil {
+			log.Fatal(err)
+		}
+		return
+	}
+
 	t := GetDisplayTable()
 	t.AppendHeader(table.Row{"Technique ID", "Technique name", "Platform", "MITRE ATT&CK Tactic"})
 

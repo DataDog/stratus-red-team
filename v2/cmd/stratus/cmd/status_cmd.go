@@ -1,6 +1,9 @@
 package cmd
 
 import (
+	"log"
+	"os"
+
 	"github.com/datadog/stratus-red-team/v2/internal/state"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/fatih/color"
@@ -32,17 +35,37 @@ func buildStatusCmd() *cobra.Command {
 }
 
 func doStatusCmd(techniques []*stratus.AttackTechnique) {
+	if isJSONOutput() {
+		items := make([]techniqueStatusJSON, 0, len(techniques))
+		for i := range techniques {
+			items = append(items, techniqueStatusJSON{
+				ID:    techniques[i].ID,
+				Name:  techniques[i].FriendlyName,
+				State: string(resolveTechniqueState(techniques[i])),
+			})
+		}
+		if err := outputJSON(os.Stdout, items); err != nil {
+			log.Fatal(err)
+		}
+		return
+	}
+
 	t := GetDisplayTable()
 	t.AppendHeader(table.Row{"ID", "Name", "Status"})
 	for i := range techniques {
-		stateManager := state.NewFileSystemStateManager(techniques[i])
-		techniqueState := stateManager.GetTechniqueState()
-		if techniqueState == "" {
-			techniqueState = stratus.AttackTechniqueStatusCold
-		}
-		t.AppendRow(table.Row{techniques[i].ID, techniques[i].FriendlyName, colorState(techniqueState)})
+		t.AppendRow(table.Row{techniques[i].ID, techniques[i].FriendlyName, colorState(resolveTechniqueState(techniques[i]))})
 	}
 	t.Render()
+}
+
+// resolveTechniqueState returns the persisted state of a technique, defaulting
+// to COLD when no state has been recorded yet.
+func resolveTechniqueState(technique *stratus.AttackTechnique) stratus.AttackTechniqueState {
+	techniqueState := state.NewFileSystemStateManager(technique).GetTechniqueState()
+	if techniqueState == "" {
+		return stratus.AttackTechniqueStatusCold
+	}
+	return techniqueState
 }
 
 func colorState(state stratus.AttackTechniqueState) string {
