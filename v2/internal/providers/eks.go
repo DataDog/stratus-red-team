@@ -2,9 +2,9 @@ package providers
 
 import (
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 	"github.com/google/uuid"
 	"k8s.io/client-go/kubernetes"
-	"log"
 	"net/url"
 	"os"
 	"strings"

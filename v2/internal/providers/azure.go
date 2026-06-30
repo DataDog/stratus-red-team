@@ -1,7 +1,7 @@
 package providers
 
 import (
-	"log"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 	"os"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore"

@@ -8,8 +8,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/iam"
 	"github.com/aws/aws-sdk-go-v2/service/iam/types"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
-	"log"
 )
 
 var userName = aws.String("malicious-iam-user")

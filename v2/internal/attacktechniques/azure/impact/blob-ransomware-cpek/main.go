@@ -7,8 +7,8 @@ import (
 	_ "embed"
 	"encoding/base64"
 	"fmt"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 	"io"
-	"log"
 	"strings"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/to"

@@ -6,7 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
-	"log"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 
 	gcp_utils "github.com/datadog/stratus-red-team/v2/internal/utils/gcp"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"

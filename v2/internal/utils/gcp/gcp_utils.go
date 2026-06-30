@@ -10,10 +10,10 @@ import (
 	"fmt"
 	"github.com/datadog/stratus-red-team/v2/internal/providers"
 	utils "github.com/datadog/stratus-red-team/v2/internal/utils"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 	"golang.org/x/crypto/ssh"
 	"google.golang.org/api/cloudresourcemanager/v1"
 	"google.golang.org/api/compute/v1"
-	"log"
 	"os"
 	"strings"
 )

@@ -2,7 +2,7 @@ package providers
 
 import (
 	"context"
-	"log"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 	"os"
 	"path/filepath"
 

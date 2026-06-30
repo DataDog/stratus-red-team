@@ -5,7 +5,7 @@ import (
 	_ "embed"
 	"errors"
 	"fmt"
-	"log"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 	"strconv"
 	"sync"
 

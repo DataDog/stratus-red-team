@@ -6,9 +6,9 @@ import (
 	"fmt"
 	gcp_utils "github.com/datadog/stratus-red-team/v2/internal/utils/gcp"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"google.golang.org/api/compute/v1"
-	"log"
 	"strings"
 )
 

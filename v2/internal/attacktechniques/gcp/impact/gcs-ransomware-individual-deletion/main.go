@@ -5,8 +5,8 @@ import (
 	_ "embed"
 	"errors"
 	"fmt"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 	"io"
-	"log"
 	"strings"
 
 	"cloud.google.com/go/storage"
