@@ -3,6 +3,8 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"log"
+	"os"
 
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/spf13/cobra"
@@ -31,6 +33,17 @@ func buildShowCmd() *cobra.Command {
 }
 
 func doShowCmd(techniques []*stratus.AttackTechnique) {
+	if isJSONOutput() {
+		details := make([]techniqueDetailJSON, 0, len(techniques))
+		for i := range techniques {
+			details = append(details, toTechniqueDetailJSON(techniques[i]))
+		}
+		if err := outputJSON(os.Stdout, details); err != nil {
+			log.Fatal(err)
+		}
+		return
+	}
+
 	for i := range techniques {
 		fmt.Println(techniques[i].Description)
 	}

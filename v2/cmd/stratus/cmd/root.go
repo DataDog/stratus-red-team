@@ -10,10 +10,17 @@ import (
 
 var RootCmd = &cobra.Command{
 	Use: "stratus",
+	// Validate the global output format early, before any subcommand runs.
+	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+		return validateOutputFormat(outputFormat)
+	},
 }
 
 func init() {
 	setupLogging()
+
+	RootCmd.PersistentFlags().StringVarP(&outputFormat, "output", "o", OutputFormatTable,
+		"Output format: "+OutputFormatTable+" or "+OutputFormatJSON)
 
 	listCmd := buildListCmd()
 	showCmd := buildShowCmd()

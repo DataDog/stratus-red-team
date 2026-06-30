@@ -25,3 +25,24 @@ stratus status
 | aws.persistence.iam-backdoor-user                          | Create an Access Key on an IAM User                    | DETONATED   |
 +------------------------------------------------------------+--------------------------------------------------------+-------------+
 ```
+
+### JSON output
+
+```bash title="Output technique states as JSON"
+stratus status --output json
+```
+
+```json
+[
+  {
+    "id": "aws.defense-evasion.cloudtrail-stop",
+    "name": "Stop a CloudTrail Trail",
+    "state": "WARM"
+  },
+  {
+    "id": "aws.persistence.iam-backdoor-user",
+    "name": "Create an Access Key on an IAM User",
+    "state": "DETONATED"
+  }
+]
+```
