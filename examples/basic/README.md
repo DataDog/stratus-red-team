@@ -1,4 +1,4 @@
-# Example: programatically detonating a Stratus Red Team attack technique
+# Example: programmatically detonating a Stratus Red Team attack technique
 
 ```
 go get github.com/datadog/stratus-red-team
