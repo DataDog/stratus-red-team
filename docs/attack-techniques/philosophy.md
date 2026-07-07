@@ -27,7 +27,7 @@ Examples:
     - While attackers might use this API call, it is in no way indicative of attacker activity, as it's used by many services and client applications.
     - It isn't emulating activity that could reasonably be thought to be malicious.
 
-Stratus Red Team's goal is *not* to re-implement all AWS API calls that may be used by an attacker, neither to emulate all possible theoritical attack vectors.
+Stratus Red Team's goal is *not* to re-implement all AWS API calls that may be used by an attacker, neither to emulate all possible theoretical attack vectors.
 
 ## Be Self-Sufficient
 
