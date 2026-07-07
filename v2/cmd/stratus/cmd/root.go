@@ -1,10 +1,12 @@
 package cmd
 
 import (
-	"log"
+	stdlog "log"
+	"log/slog"
 	"os"
 
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 	"github.com/spf13/cobra"
 )
 
@@ -35,5 +37,8 @@ func init() {
 }
 
 func setupLogging() {
-	log.SetOutput(os.Stdout)
+	// Keep the historical CLI format on stdout.
+	log.SetLogger(slog.New(log.NewLegacyHandler(os.Stdout)))
+	// Keep stdlib-log output (e.g. custom CLI extensions) on stdout too.
+	stdlog.SetOutput(os.Stdout)
 }

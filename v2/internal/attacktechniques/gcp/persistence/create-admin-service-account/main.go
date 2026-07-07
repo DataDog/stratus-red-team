@@ -11,7 +11,7 @@ import (
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	iam "google.golang.org/api/iam/v1"
 
-	"log"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 )
 
 //go:embed main.tf

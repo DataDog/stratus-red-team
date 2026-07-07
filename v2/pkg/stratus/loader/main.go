@@ -2,11 +2,11 @@ package loader
 
 import (
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques" // Required for programmatic usage
-	"io"
-	"log"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 )
 
 func init() {
-	// Disable logging for programmatic usage
-	log.SetOutput(io.Discard)
+	// Silence Stratus by default for programmatic usage.
+	// Users can opt back in via log.SetLogger.
+	log.Disable()
 }

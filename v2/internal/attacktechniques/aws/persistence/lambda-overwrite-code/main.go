@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"github.com/aws/aws-sdk-go-v2/service/lambda"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"io"
-	"log"
 	"strings"
 )
 

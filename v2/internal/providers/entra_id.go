@@ -6,9 +6,9 @@ import (
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/arm"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/policy"
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 	"github.com/google/uuid"
 	graph "github.com/microsoftgraph/msgraph-sdk-go"
-	"log"
 )
 
 type EntraIdProvider struct {

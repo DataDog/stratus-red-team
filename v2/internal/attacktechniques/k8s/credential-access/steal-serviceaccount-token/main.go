@@ -3,7 +3,7 @@ package kubernetes
 import (
 	_ "embed"
 	"errors"
-	"log"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 	"strings"
 
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"

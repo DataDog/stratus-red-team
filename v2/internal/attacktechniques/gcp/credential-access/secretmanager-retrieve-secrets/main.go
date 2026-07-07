@@ -5,7 +5,7 @@ import (
 	_ "embed"
 	"errors"
 	"fmt"
-	"log"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 
 	secretmanager "cloud.google.com/go/secretmanager/apiv1"
 	secretmanagerpb "cloud.google.com/go/secretmanager/apiv1/secretmanagerpb"

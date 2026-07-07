@@ -6,8 +6,8 @@ import (
 	_ "embed"
 	"errors"
 	"fmt"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 	"io"
-	"log"
 	"net/http"
 	"strconv"
 

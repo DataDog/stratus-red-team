@@ -4,7 +4,7 @@ import (
 	"context"
 	_ "embed"
 	"fmt"
-	"log"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 	"strings"
 
 	compute "cloud.google.com/go/compute/apiv1"

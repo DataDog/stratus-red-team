@@ -4,8 +4,8 @@ import (
 	"context"
 	_ "embed"
 	"fmt"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 	"io"
-	"log"
 	"net/http"
 	"time"
 

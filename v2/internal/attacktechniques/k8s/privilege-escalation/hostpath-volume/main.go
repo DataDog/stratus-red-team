@@ -4,7 +4,7 @@ import (
 	"context"
 	_ "embed"
 	"errors"
-	"log"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 
 	"github.com/aws/smithy-go/ptr"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"

@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/network/armnetwork/v6"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
-	"log"
 )
 
 //go:embed main.tf

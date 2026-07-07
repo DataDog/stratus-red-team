@@ -1,7 +1,7 @@
 package config
 
 import (
-	"log"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 	"maps"
 
 	"github.com/spf13/viper"

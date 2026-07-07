@@ -4,7 +4,7 @@ import (
 	"context"
 	_ "embed"
 	"errors"
-	"log"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 
 	"github.com/aws/aws-sdk-go-v2/service/route53resolver"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"

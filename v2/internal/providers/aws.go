@@ -6,8 +6,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 	"github.com/google/uuid"
-	"log"
 	"os"
 )
 
