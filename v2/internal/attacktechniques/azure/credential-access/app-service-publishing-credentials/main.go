@@ -1,8 +1,10 @@
 package azure
 
 import (
+	"bytes"
 	"context"
 	_ "embed"
+	"encoding/xml"
 	"fmt"
 	"io"
 	"log"
@@ -102,8 +104,39 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	}
 
 	log.Println("Successfully retrieved publishing credentials for App Service " + appServiceName)
-	log.Println("Publishing profile (contains FTP and Web Deploy credentials in cleartext):\n" + string(publishingProfile))
+
+	prettyProfile, err := indentXML(publishingProfile)
+	if err != nil {
+		prettyProfile = string(publishingProfile)
+	}
+	log.Println("Publishing profile (contains FTP and Web Deploy credentials in cleartext):\n" + prettyProfile)
 	return nil
+}
+
+// indentXML re-encodes the publishing profile with indentation. The ARM API
+// returns it as a single line, which is unreadable when printed as-is.
+func indentXML(raw []byte) (string, error) {
+	decoder := xml.NewDecoder(bytes.NewReader(raw))
+	var buf bytes.Buffer
+	encoder := xml.NewEncoder(&buf)
+	encoder.Indent("", "  ")
+
+	for {
+		token, err := decoder.Token()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return "", err
+		}
+		if err := encoder.EncodeToken(token); err != nil {
+			return "", err
+		}
+	}
+	if err := encoder.Flush(); err != nil {
+		return "", err
+	}
+	return buf.String(), nil
 }
 
 func getAzureWebAppsClient(azure *providers.AzureProvider) (*armappservice.WebAppsClient, error) {
