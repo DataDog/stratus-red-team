@@ -1,0 +1,71 @@
+[
+   {
+      "awsRegion": "cn-northsouth-2r",
+      "eventCategory": "Management",
+      "eventID": "c2a89408-340a-42f0-8ace-75d9f5769393",
+      "eventName": "PutEventSelectors",
+      "eventSource": "cloudtrail.amazonaws.com",
+      "eventTime": "2024-07-31T12:50:02Z",
+      "eventType": "AwsApiCall",
+      "eventVersion": "1.10",
+      "managementEvent": true,
+      "readOnly": false,
+      "recipientAccountId": "958312252124",
+      "requestID": "5176273c-0497-47e9-8f4c-840b62e7fc9a",
+      "requestParameters": {
+         "eventSelectors": [
+            {
+               "dataResources": [
+                  {
+                     "type": "AWS::S3::Object",
+                     "values": []
+                  },
+                  {
+                     "type": "AWS::Lambda::Function",
+                     "values": []
+                  }
+               ],
+               "excludeManagementEventSources": [],
+               "includeManagementEvents": false,
+               "readWriteType": "ReadOnly"
+            }
+         ],
+         "trailName": "stratus-red-team-ctes-trail-khlvciwdor"
+      },
+      "responseElements": {
+         "eventSelectors": [
+            {
+               "dataResources": [
+                  {
+                     "type": "AWS::S3::Object",
+                     "values": []
+                  },
+                  {
+                     "type": "AWS::Lambda::Function",
+                     "values": []
+                  }
+               ],
+               "excludeManagementEventSources": [],
+               "includeManagementEvents": false,
+               "readWriteType": "ReadOnly"
+            }
+         ],
+         "trailARN": "arn:aws:cloudtrail:cn-northsouth-2r:958312252124:trail/stratus-red-team-ctes-trail-khlvciwdor"
+      },
+      "sourceIPAddress": "221.254.191.250",
+      "tlsDetails": {
+         "cipherSuite": "TLS_AES_128_GCM_SHA256",
+         "clientProvidedHostHeader": "cloudtrail.cn-northsouth-2r.amazonaws.com",
+         "tlsVersion": "TLSv1.3"
+      },
+      "userAgent": "stratus-red-team_ce507fbd-078a-4e4c-975d-d80cb80df469",
+      "userIdentity": {
+         "accessKeyId": "AKIA2I0BSXU5LNRWIN0K",
+         "accountId": "958312252124",
+         "arn": "arn:aws:iam::958312252124:user/christophe",
+         "principalId": "AIDA3JXGLTFY4HTLVVO7",
+         "type": "IAMUser",
+         "userName": "christophe"
+      }
+   }
+]
