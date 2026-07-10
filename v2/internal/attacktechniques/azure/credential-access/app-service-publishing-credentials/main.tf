@@ -19,7 +19,10 @@ resource "random_string" "suffix" {
 
 resource "azurerm_resource_group" "rg" {
   name     = "stratus-red-team-asp-cred-rg-${random_string.suffix.result}"
-  location = "West US"
+  # West US 2 is used instead of West US: App Service plan quota in smaller
+  # regions such as West US is frequently 0, causing deployment failures.
+  # Larger regions like West US 2 have more spare capacity.
+  location = "West US 2"
 }
 
 resource "azurerm_service_plan" "plan" {

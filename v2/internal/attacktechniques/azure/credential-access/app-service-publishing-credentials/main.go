@@ -30,7 +30,9 @@ This technique was observed in the STORM-2949 intrusion, where the threat actor 
 
 Warm-up:
 
-- Create an Azure App Service (Linux Web App)
+- Create an Azure App Service (Linux Web App) in the West US 2 region
+
+Note: This technique deploys to West US 2 rather than West US. App Service plan quota in smaller regions such as West US is frequently 0, which causes the deployment to fail. Larger regions like West US 2 have more spare capacity.
 
 Detonation:
 
