@@ -767,6 +767,14 @@ GCP:
           platform: GCP
           isIdempotent: false
 Azure:
+    Credential Access:
+        - id: azure.credential-access.app-service-publishing-credentials
+          name: Retrieve App Service Publishing Credentials
+          isSlow: false
+          mitreAttackTactics:
+            - Credential Access
+          platform: Azure
+          isIdempotent: true
     Execution:
         - id: azure.execution.vm-custom-script-extension
           name: Execute Command on Virtual Machine using Custom Script Extension
