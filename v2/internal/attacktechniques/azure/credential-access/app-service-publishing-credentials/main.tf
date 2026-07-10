@@ -18,7 +18,7 @@ resource "random_string" "suffix" {
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "stratus-red-team-asp-cred-rg-${random_string.suffix.result}"
+  name = "stratus-red-team-asp-cred-rg-${random_string.suffix.result}"
   # West US 2 is used instead of West US: App Service plan quota in smaller
   # regions such as West US is frequently 0, causing deployment failures.
   # Larger regions like West US 2 have more spare capacity.
@@ -39,7 +39,9 @@ resource "azurerm_linux_web_app" "app" {
   location            = azurerm_service_plan.plan.location
   service_plan_id     = azurerm_service_plan.plan.id
 
-  site_config {}
+  site_config {
+    ftps_state = "FtpsOnly"
+  }
 }
 
 output "app_service_name" {
