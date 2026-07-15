@@ -17,6 +17,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   
   - [Create Azure VM Bastion shareable link](./azure.persistence.create-bastion-shareable-link.md)
   
+  - [Enable Local Authentication and Exfiltrate Azure AI Foundry API Keys](./azure.persistence.exfiltrate-foundry-key.md)
+  
 
 ## Privilege Escalation
   
@@ -28,6 +30,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 ## Credential Access
   
   - [Retrieve App Service Publishing Credentials](./azure.credential-access.app-service-publishing-credentials.md)
+  
+  - [Enable Local Authentication and Exfiltrate Azure AI Foundry API Keys](./azure.persistence.exfiltrate-foundry-key.md)
   
 
 ## Exfiltration
