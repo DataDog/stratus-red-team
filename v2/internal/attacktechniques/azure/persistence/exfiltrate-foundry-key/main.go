@@ -30,6 +30,7 @@ Warm-up:
 
 Detonation:
 
+- Call ` + "`ListKeys`" + ` while local authentication is disabled (expected to fail)
 - Update the account to set ` + "`properties.disableLocalAuth`" + ` to ` + "`false`" + `
 - Call ` + "`ListKeys`" + ` to retrieve the account's API keys
 
@@ -111,6 +112,14 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	client, err := getCognitiveServicesClient(providers)
 	if err != nil {
 		return err
+	}
+
+	log.Println("Attempting to list keys while local authentication is disabled on account " + accountName)
+	_, err = client.ListKeys(context.Background(), resourceGroup, accountName, nil)
+	if err != nil {
+		log.Println("ListKeys failed as expected (local auth is disabled): " + err.Error())
+	} else {
+		log.Println("Warning: ListKeys unexpectedly succeeded while local auth should be disabled")
 	}
 
 	log.Println("Re-enabling local authentication on Cognitive Services account " + accountName)
