@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strings"
 
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
 	"github.com/hashicorp/go-version"
@@ -84,6 +85,10 @@ func (m *TerraformManagerImpl) TerraformInitAndApply(directory string, variables
 		return map[string]string{}, errors.New("unable to instantiate Terraform: " + err.Error())
 	}
 
+	if err := propagateAzureSubscriptionEnv(terraform); err != nil {
+		return map[string]string{}, errors.New("unable to configure Terraform environment: " + err.Error())
+	}
+
 	err = terraform.SetAppendUserAgent(m.terraformUserAgent)
 	if err != nil {
 		return map[string]string{}, errors.New("unable to configure Terraform: " + err.Error())
@@ -120,6 +125,10 @@ func (m *TerraformManagerImpl) TerraformDestroy(directory string, variables map[
 		return err
 	}
 
+	if err := propagateAzureSubscriptionEnv(terraform); err != nil {
+		return errors.New("unable to configure Terraform environment: " + err.Error())
+	}
+
 	if err := m.ensureInitialized(terraform, directory); err != nil {
 		return errors.New("unable to initialize Terraform for destroy: " + err.Error())
 	}
@@ -153,6 +162,28 @@ func (m *TerraformManagerImpl) existingBinaryVersionSufficient() bool {
 
 	requiredVersion := version.Must(version.NewVersion(m.terraformVersion))
 	return installedVersion.GreaterThanOrEqual(requiredVersion)
+}
+
+// propagateAzureSubscriptionEnv ensures ARM_SUBSCRIPTION_ID is set for Terraform
+// when the user has only set AZURE_SUBSCRIPTION_ID (used by the Go Azure SDK).
+func propagateAzureSubscriptionEnv(tf *tfexec.Terraform) error {
+	if os.Getenv("ARM_SUBSCRIPTION_ID") != "" {
+		return nil
+	}
+	azureSub := os.Getenv("AZURE_SUBSCRIPTION_ID")
+	if azureSub == "" {
+		return nil
+	}
+
+	env := map[string]string{}
+	for _, entry := range os.Environ() {
+		parts := strings.SplitN(entry, "=", 2)
+		if len(parts) == 2 {
+			env[parts[0]] = parts[1]
+		}
+	}
+	env["ARM_SUBSCRIPTION_ID"] = azureSub
+	return tf.SetEnv(env)
 }
 
 // ensureInitialized runs terraform init if not already done in this working directory.
