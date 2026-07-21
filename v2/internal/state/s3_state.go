@@ -78,15 +78,8 @@ func (m *S3StateManager) GetRootDirectory() string {
 func (m *S3StateManager) ExtractTechnique() error {
 	dir := m.techniqueDir()
 
-	// Write main.tf (same as FileSystemStateManager)
-	mainTf := filepath.Join(dir, StratusStateTerraformFileName)
-	if err := m.fileSystem.WriteFile(mainTf, m.technique.PrerequisitesTerraformCode, 0644); err != nil {
-		return err
-	}
-
-	// Write shared config.tf (same as FileSystemStateManager)
-	configTf := filepath.Join(dir, "config.tf")
-	if err := m.fileSystem.WriteFile(configTf, config.SharedTerraformConfigVariable, 0644); err != nil {
+	// Write the shared scaffolding common to every backend.
+	if err := writeSharedTerraformFiles(m.fileSystem, dir, m.technique); err != nil {
 		return err
 	}
 
