@@ -775,6 +775,14 @@ Azure:
             - Credential Access
           platform: Azure
           isIdempotent: true
+        - id: azure.persistence.exfiltrate-foundry-key
+          name: Enable Local Authentication and Exfiltrate Azure AI Foundry API Keys
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Credential Access
+          platform: Azure
+          isIdempotent: true
     Execution:
         - id: azure.execution.vm-custom-script-extension
           name: Execute Command on Virtual Machine using Custom Script Extension
@@ -864,6 +872,14 @@ Azure:
             - Persistence
           platform: Azure
           isIdempotent: false
+        - id: azure.persistence.exfiltrate-foundry-key
+          name: Enable Local Authentication and Exfiltrate Azure AI Foundry API Keys
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+            - Credential Access
+          platform: Azure
+          isIdempotent: true
     Privilege Escalation:
         - id: azure.persistence.backdoor-managed-identity-fic
           name: Backdoor Azure Managed Identity with Federated Identity Credential (FIC)
