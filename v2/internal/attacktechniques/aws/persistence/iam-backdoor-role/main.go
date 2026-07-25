@@ -44,9 +44,21 @@ Detonation:
 - Through [IAM Access Analyzer](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-resources.html#access-analyzer-iam-role),
 which generates a finding when a role can be assumed from a new AWS account or publicly.
 `,
-		Platform:                   stratus.AWS,
-		IsIdempotent:               true,
-		MitreAttackTactics:         []mitreattack.Tactic{mitreattack.Persistence},
+		Platform:           stratus.AWS,
+		IsIdempotent:       true,
+		MitreAttackTactics: []mitreattack.Tactic{mitreattack.Persistence},
+		FrameworkMappings: []stratus.FrameworkMappings{
+			{
+				Framework: stratus.ThreatTechniqueCatalogAWS,
+				Techniques: []stratus.TechniqueMapping{
+					{
+						Name: "Account Manipulation: Additional Cloud Roles",
+						ID:   "T1098.003",
+						URL:  "https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1098.003.html",
+					},
+				},
+			},
+		},
 		PrerequisitesTerraformCode: tf,
 		Detonate:                   detonate,
 		Revert:                     revert,
