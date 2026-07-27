@@ -122,26 +122,29 @@ func (m *FileSystemStateManager) Initialize() {
 	}
 }
 
-func (m *FileSystemStateManager) ExtractTechnique() error {
-	terraformDirectory := m.getTechniqueStateDirectory()
-	terraformFile := filepath.Join(terraformDirectory, StratusStateTerraformFileName)
-
-	if err := m.FileSystem.WriteFile(terraformFile, m.Technique.PrerequisitesTerraformCode, 0644); err != nil {
-		return err
+// writeSharedTerraformFiles writes the Terraform source files common to every
+// state backend into dir. Backend-specific files (e.g. the S3 backend.tf) stay
+// with the caller, keeping this the single source of truth for the shared
+// scaffolding so every StateManager stays in sync.
+func writeSharedTerraformFiles(fileSystem FileSystem, directory string, technique *stratus.AttackTechnique) error {
+	files := []struct {
+		name    string
+		content []byte
+	}{
+		{StratusStateTerraformFileName, technique.PrerequisitesTerraformCode},
+		{"config.tf", config.SharedTerraformConfigVariable},
+		{"correlation.tf", sharedCorrelationVariable},
 	}
-
-	// Inject shared variable definitions alongside the technique's main.tf
-	configFile := filepath.Join(terraformDirectory, "config.tf")
-	if err := m.FileSystem.WriteFile(configFile, config.SharedTerraformConfigVariable, 0644); err != nil {
-		return err
+	for _, file := range files {
+		if err := fileSystem.WriteFile(filepath.Join(directory, file.name), file.content, 0644); err != nil {
+			return err
+		}
 	}
-
-	correlationFile := filepath.Join(terraformDirectory, "correlation.tf")
-	if err := m.FileSystem.WriteFile(correlationFile, sharedCorrelationVariable, 0644); err != nil {
-		return err
-	}
-
 	return nil
+}
+
+func (m *FileSystemStateManager) ExtractTechnique() error {
+	return writeSharedTerraformFiles(m.FileSystem, m.getTechniqueStateDirectory(), m.Technique)
 }
 
 func (m *FileSystemStateManager) CleanupTechnique() error {

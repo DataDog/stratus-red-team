@@ -53,6 +53,11 @@ func TestS3StateManagerExtractTechniqueWritesBackendTf(t *testing.T) {
 	configTf, err := sm.fileSystem.ReadFile(sm.techniqueDir() + "/config.tf")
 	assert.Nil(t, err)
 	assert.NotEmpty(t, configTf)
+
+	// Check correlation.tf
+	correlationTf, err := sm.fileSystem.ReadFile(sm.techniqueDir() + "/correlation.tf")
+	assert.Nil(t, err)
+	assert.Contains(t, string(correlationTf), `variable "correlation"`)
 }
 
 func TestS3StateManagerBackendConfigs(t *testing.T) {
