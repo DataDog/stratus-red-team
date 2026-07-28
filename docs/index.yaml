@@ -326,6 +326,12 @@ AWS:
           isSlow: false
           mitreAttackTactics:
             - Persistence
+          frameworkmappings:
+            - framework: Threat Technique Catalog for AWS
+              techniques:
+                - name: 'Account Manipulation: Additional Cloud Roles'
+                  id: T1098.003
+                  url: https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1098.003.html
           platform: AWS
           isIdempotent: true
         - id: aws.persistence.iam-backdoor-user
