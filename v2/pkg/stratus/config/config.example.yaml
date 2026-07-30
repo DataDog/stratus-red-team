@@ -2,6 +2,23 @@
 # Place this file at ~/.stratus-red-team/config.yaml
 # or set STRATUS_CONFIG_PATH environment variable to point to it
 
+aws:
+  # Default configuration applied to all AWS techniques
+  default:
+    # Prepended to the names of Terraform-managed prerequisites
+    prefix: "security-testing-"
+    # Applied through the AWS provider's default_tags configuration
+    tags:
+      Environment: "test"
+      Owner: "security"
+      StratusCorrelationID: "<% .CorrelationID %>"
+
+  # Per-technique overrides merged on top of the defaults
+  techniques:
+    "aws.persistence.lambda-backdoor-function":
+      tags:
+        Purpose: "lambda-detection-validation"
+
 kubernetes:
   # Default pod configuration applied to all k8s techniques
   default:

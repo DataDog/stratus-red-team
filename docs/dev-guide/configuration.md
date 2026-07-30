@@ -2,7 +2,7 @@
 
 Stratus Red Team has a configuration system that lets users customize how techniques create resources (namespace, images, tolerations, etc.). This page explains how to consume the configuration in your technique.
 
-For now, only Kubernetes-specific keys are available, but it can be easily extended to handle other providers.
+AWS and Kubernetes configuration keys are currently available.
 
 ## In Terraform (recommended for prerequisites)
 
@@ -12,6 +12,14 @@ A shared `variable "config"` is automatically injected alongside your `main.tf` 
 locals {
   namespace = var.config.kubernetes.namespace != "" ? var.config.kubernetes.namespace : kubernetes_namespace.ns[0].metadata[0].name
   image     = var.config.kubernetes.pod.image != "" ? var.config.kubernetes.pod.image : "alpine:3.15"
+}
+
+provider "aws" {
+  default_tags {
+    tags = merge(var.config.aws.tags, {
+      StratusRedTeam = true
+    })
+  }
 }
 
 resource "kubernetes_pod" "pod" {
@@ -47,7 +55,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 
 ## Adding new config keys
 
-To add support for a new configuration section (e.g. AWS-specific config):
+To add support for a new configuration section:
 
 1. Add the new properties to the JSON schema (`pkg/stratus/config/config.schema.json`)
 2. Add the corresponding Terraform variable type to `pkg/stratus/config/config.tf`

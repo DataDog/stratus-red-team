@@ -5,9 +5,33 @@
     "type": "object",
     "additionalProperties": false,
     "properties": {
+        "aws": { "$ref": "#/$defs/aws" },
         "kubernetes": { "$ref": "#/$defs/kubernetes" }
     },
     "$defs": {
+        "aws": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "default": { "$ref": "#/$defs/awsTechniqueConfig" },
+                "techniques": {
+                    "type": "object",
+                    "propertyNames": { "pattern": "^aws\\." },
+                    "additionalProperties": { "$ref": "#/$defs/awsTechniqueConfig" }
+                }
+            }
+        },
+        "awsTechniqueConfig": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "prefix": { "type": "string" },
+                "tags": {
+                    "type": "object",
+                    "additionalProperties": { "type": "string" }
+                }
+            }
+        },
         "kubernetes": {
             "type": "object",
             "additionalProperties": false,

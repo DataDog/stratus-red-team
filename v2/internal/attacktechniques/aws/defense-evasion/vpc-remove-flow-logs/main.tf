@@ -11,14 +11,14 @@ provider "aws" {
   skip_credentials_validation = true
   skip_get_ec2_platforms      = true
   default_tags {
-    tags = {
+    tags = merge(var.config.aws.tags, {
       StratusRedTeam = true
-    }
+    })
   }
 }
 
 locals {
-  resource_prefix = "stratus-red-team-remove-flow-logs"
+  resource_prefix = "${var.config.aws.prefix}stratus-red-team-remove-flow-logs"
 }
 
 resource "aws_vpc" "vpc" {
@@ -33,7 +33,7 @@ resource "aws_flow_log" "flow-logs" {
 }
 
 resource "aws_cloudwatch_log_group" "logs" {
-  name = "/stratus-red-team/vpc-flow-logs"
+  name = "/${var.config.aws.prefix}stratus-red-team/vpc-flow-logs"
 }
 
 resource "aws_iam_role" "role" {
