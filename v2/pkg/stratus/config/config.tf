@@ -1,6 +1,10 @@
 variable "config" {
   type = object({
-    kubernetes = object({
+    aws = optional(object({
+      prefix = optional(string, "")
+      tags   = optional(map(string), {})
+    }), { prefix = "", tags = {} })
+    kubernetes = optional(object({
       namespace = optional(string, "")
       pod = optional(object({
         image            = optional(string, "")
@@ -15,9 +19,13 @@ variable "config" {
           effect   = string
         })), [])
       }), { image = "", labels = {}, annotations = {}, node_selector = {}, security_context = {}, tolerations = [] })
-    })
+    }), { namespace = "", pod = { image = "", labels = {}, annotations = {}, node_selector = {}, security_context = {}, tolerations = [] } })
   })
   default = {
+    aws = {
+      prefix = ""
+      tags   = {}
+    }
     kubernetes = {
       namespace = ""
       pod = {

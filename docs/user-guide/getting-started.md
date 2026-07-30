@@ -194,6 +194,21 @@ Tested with Minikube and AWS EKS.
 You can create a configuration file at `~/.stratus-red-team/config.yaml` (or use the `STRATUS_CONFIG_PATH` env var) to customize how Stratus Red Team creates resources. The configuration file is validated at startup.
 
 ```yaml
+aws:
+  # Default configuration applied to all AWS techniques
+  default:
+    # Prepended to the names of Terraform-managed prerequisites
+    prefix: "security-testing-"
+    tags:
+      Environment: "test"
+      Owner: "security"
+      StratusCorrelationID: "<% .CorrelationID %>"
+
+  techniques:
+    "aws.persistence.lambda-backdoor-function":
+      tags:
+        Purpose: "lambda-detection-validation"
+
 kubernetes:
   # Default configuration applied to all Kubernetes techniques
   default:
@@ -219,7 +234,12 @@ kubernetes:
         tolerations: ...
 ```
 
-This is currently used for Kubernetes techniques and allows you to:
+For AWS techniques, it allows you to:
+
+- **Add custom tags** to Terraform-managed prerequisites supported by the AWS provider's `default_tags`
+- **Prefix resource names** with a service-compatible value, including through templating
+
+For Kubernetes techniques, it allows you to:
 
 - **Use a specific namespace** instead of creating one, when your user cannot create namespaces
 - **Override container images**, when only images from private registries are allowed
@@ -235,11 +255,10 @@ The `default` section applies to all techniques. The `techniques` section allows
 Any string value in the config can reference the current detonation's correlation ID using `<%.CorrelationID%>`. The substitution is applied whenever Stratus reads the config to build a resource (at warmup for Terraform-built prerequisites, and at detonation for resources created directly by the technique's Go code):
 
 ```yaml
-kubernetes:
+aws:
   default:
-    pod:
-      labels:
-        detonation_id: "<% .CorrelationID %>"
+    tags:
+      StratusCorrelationID: "<% .CorrelationID %>"
 ```
 
 !!! note

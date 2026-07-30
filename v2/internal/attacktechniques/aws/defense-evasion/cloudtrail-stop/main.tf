@@ -11,9 +11,9 @@ provider "aws" {
   skip_credentials_validation = true
   skip_get_ec2_platforms      = true
   default_tags {
-    tags = {
+    tags = merge(var.config.aws.tags, {
       StratusRedTeam = true
-    }
+    })
   }
 }
 
@@ -24,7 +24,7 @@ resource "random_string" "suffix" {
 }
 
 locals {
-  resource_prefix = "stratus-red-team-ct-stop"
+  resource_prefix = "${var.config.aws.prefix}stratus-red-team-ct-stop"
 }
 
 locals {

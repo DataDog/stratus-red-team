@@ -10,9 +10,9 @@ provider "aws" {
   skip_region_validation      = true
   skip_credentials_validation = true
   default_tags {
-    tags = {
+    tags = merge(var.config.aws.tags, {
       StratusRedTeam = true
-    }
+    })
   }
 }
 
@@ -23,7 +23,7 @@ resource "random_string" "suffix" {
 }
 
 locals {
-  resource_prefix = "stratus-red-team-dns-delete"
+  resource_prefix = "${var.config.aws.prefix}stratus-red-team-dns-delete"
 }
 
 locals {
