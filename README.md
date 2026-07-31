@@ -140,6 +140,7 @@ Core maintainers: Christophe Tafani-Dereeper ([@christophetd](https://twitter.co
 Similar projects (see [how Stratus Red Team compares](https://stratus-red-team.cloud/comparison/)):
 - [Atomic Red Team](https://github.com/redcanaryco/atomic-red-team) by Red Canary
 - [Leonidas](https://github.com/FSecureLABS/leonidas) by F-Secure
+- [Darkmoon](https://github.com/ASCIT31/Dark-Moon) - an open source (GPL-3.0) autonomous AI penetration testing platform for web, API, Active Directory and Kubernetes.
 - [pacu](https://github.com/RhinoSecurityLabs/pacu) by Rhino Security Labs
 - [Amazon GuardDuty Tester](https://github.com/awslabs/amazon-guardduty-tester)
 - [CloudGoat](https://github.com/RhinoSecurityLabs/cloudgoat) by Rhino Security Labs
