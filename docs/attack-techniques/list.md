@@ -65,6 +65,7 @@ This page contains the list of all Stratus Attack Techniques.
 | [Delete Azure resource lock](./azure/azure.impact.resource-lock.md) | [Azure](./azure/index.md) | Impact |
 | [Backdoor Azure Managed Identity with Federated Identity Credential (FIC)](./azure/azure.persistence.backdoor-managed-identity-fic.md) | [Azure](./azure/index.md) | Persistence, Privilege Escalation |
 | [Create Azure VM Bastion shareable link](./azure/azure.persistence.create-bastion-shareable-link.md) | [Azure](./azure/index.md) | Persistence |
+| [Enable Local Authentication and Exfiltrate Azure AI Foundry API Keys](./azure/azure.persistence.exfiltrate-foundry-key.md) | [Azure](./azure/index.md) | Persistence, Credential Access |
 | [Elevate to User Access Administrator at Root Scope](./azure/azure.privilege-escalation.root-user-access-administrator.md) | [Azure](./azure/index.md) | Privilege Escalation |
 | [Create Admin EKS Access Entry](./EKS/eks.lateral-movement.create-access-entry.md) | [EKS](./EKS/index.md) | Lateral Movement |
 | [Backdoor aws-auth EKS ConfigMap](./EKS/eks.persistence.backdoor-aws-auth-configmap.md) | [EKS](./EKS/index.md) | Persistence, Privilege Escalation |
