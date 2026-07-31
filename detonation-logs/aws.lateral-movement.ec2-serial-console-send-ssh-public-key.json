@@ -1,0 +1,209 @@
+[
+   {
+      "awsRegion": "cniso-east-3r",
+      "eventCategory": "Management",
+      "eventID": "37ba412b-f943-44f2-ae48-4527f6e789d9",
+      "eventName": "EnableSerialConsoleAccess",
+      "eventSource": "ec2.amazonaws.com",
+      "eventTime": "2024-11-26T15:35:22Z",
+      "eventType": "AwsApiCall",
+      "eventVersion": "1.10",
+      "managementEvent": true,
+      "readOnly": false,
+      "recipientAccountId": "844015365555",
+      "requestID": "e110338f-cc06-4284-bf16-6528a7df1561",
+      "requestParameters": {
+         "EnableSerialConsoleAccessRequest": ""
+      },
+      "responseElements": {
+         "EnableSerialConsoleAccessResponse": {
+            "requestId": "e110338f-cc06-4284-bf16-6528a7df1561",
+            "serialConsoleAccessEnabled": true,
+            "xmlns": "http://ec2.amazonaws.com/doc/2016-11-15/"
+         }
+      },
+      "sourceIPAddress": "201.252.42.03",
+      "tlsDetails": {
+         "cipherSuite": "TLS_AES_128_GCM_SHA256",
+         "clientProvidedHostHeader": "ec2.cniso-east-3r.amazonaws.com",
+         "tlsVersion": "TLSv1.3"
+      },
+      "userAgent": "stratus-red-team_b0fedc91-bd4a-4ba1-a776-80e707fef2a0",
+      "userIdentity": {
+         "accessKeyId": "ASIA2HJRQF0DHNYEE9N1",
+         "accountId": "844015365555",
+         "arn": "arn:aws:sts::844015365555:assumed-role/AWSReservedSSOrandoml3I7nL6f7BmB@gmail.com",
+         "principalId": "AROAEMHZD694LU95MUYOP:randomca0L529zwNAY@gmail.com",
+         "sessionContext": {
+            "attributes": {
+               "creationDate": "2024-11-26T15:14:58Z",
+               "mfaAuthenticated": "false"
+            },
+            "sessionIssuer": {
+               "accountId": "844015365555",
+               "arn": "arn:aws:iam::844015365555:role/aws-reserved/sso.amazonaws.com/AWSReservedSSO_account-admin_599c9e90e350d2ff",
+               "principalId": "AROAEMHZD694LU95MUYOP",
+               "type": "Role",
+               "userName": "AWSReservedSSO_account-admin_599c9e90e350d2ff"
+            }
+         },
+         "type": "AssumedRole"
+      }
+   },
+   {
+      "awsRegion": "cniso-east-3r",
+      "eventCategory": "Management",
+      "eventID": "787b2464-f27b-4d4c-91bc-6396f2297d0e",
+      "eventName": "SendSerialConsoleSSHPublicKey",
+      "eventSource": "ec2-instance-connect.amazonaws.com",
+      "eventTime": "2024-11-26T15:35:23Z",
+      "eventType": "AwsApiCall",
+      "eventVersion": "1.08",
+      "managementEvent": true,
+      "readOnly": false,
+      "recipientAccountId": "844015365555",
+      "requestID": "c74b1e77-bc91-4174-b297-d06a71c89abf",
+      "requestParameters": {
+         "instanceId": "i-EFCb4e480CAbc4CF9",
+         "monitorMode": false,
+         "sSHPublicKey": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOtAlK45MAEWZ7MUY2QEmi3M6W+peGL3VCrc0qH54xRu",
+         "serialPort": 0
+      },
+      "responseElements": {
+         "requestId": "c74b1e77-bc91-4174-b297-d06a71c89abf",
+         "success": true
+      },
+      "sourceIPAddress": "201.252.42.03",
+      "tlsDetails": {
+         "cipherSuite": "TLS_AES_128_GCM_SHA256",
+         "clientProvidedHostHeader": "ec2-instance-connect.cniso-east-3r.amazonaws.com",
+         "tlsVersion": "TLSv1.3"
+      },
+      "userAgent": "stratus-red-team_b0fedc91-bd4a-4ba1-a776-80e707fef2a0",
+      "userIdentity": {
+         "accessKeyId": "ASIA2HJRQF0DHNYEE9N1",
+         "accountId": "844015365555",
+         "arn": "arn:aws:sts::844015365555:assumed-role/AWSReservedSSOrandoml3I7nL6f7BmB@gmail.com",
+         "principalId": "AROAEMHZD694LU95MUYOP:randomca0L529zwNAY@gmail.com",
+         "sessionContext": {
+            "attributes": {
+               "creationDate": "2024-11-26T15:14:58Z",
+               "mfaAuthenticated": "false"
+            },
+            "sessionIssuer": {
+               "accountId": "844015365555",
+               "arn": "arn:aws:iam::844015365555:role/aws-reserved/sso.amazonaws.com/AWSReservedSSO_account-admin_599c9e90e350d2ff",
+               "principalId": "AROAEMHZD694LU95MUYOP",
+               "type": "Role",
+               "userName": "AWSReservedSSO_account-admin_599c9e90e350d2ff"
+            },
+            "webIdFederationData": {}
+         },
+         "type": "AssumedRole"
+      }
+   },
+   {
+      "awsRegion": "cniso-east-3r",
+      "eventCategory": "Management",
+      "eventID": "e49972cb-b394-43e2-aab5-602f1fb56f85",
+      "eventName": "SendSerialConsoleSSHPublicKey",
+      "eventSource": "ec2-instance-connect.amazonaws.com",
+      "eventTime": "2024-11-26T15:35:23Z",
+      "eventType": "AwsApiCall",
+      "eventVersion": "1.08",
+      "managementEvent": true,
+      "readOnly": false,
+      "recipientAccountId": "844015365555",
+      "requestID": "d392c0ca-351f-472f-9ca3-b411beb9df9c",
+      "requestParameters": {
+         "instanceId": "i-B2ABDCa5b78E0f1dd",
+         "monitorMode": false,
+         "sSHPublicKey": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOtAlK45MAEWZ7MUY2QEmi3M6W+peGL3VCrc0qH54xRu",
+         "serialPort": 0
+      },
+      "responseElements": {
+         "requestId": "d392c0ca-351f-472f-9ca3-b411beb9df9c",
+         "success": true
+      },
+      "sourceIPAddress": "201.252.42.03",
+      "tlsDetails": {
+         "cipherSuite": "TLS_AES_128_GCM_SHA256",
+         "clientProvidedHostHeader": "ec2-instance-connect.cniso-east-3r.amazonaws.com",
+         "tlsVersion": "TLSv1.3"
+      },
+      "userAgent": "stratus-red-team_b0fedc91-bd4a-4ba1-a776-80e707fef2a0",
+      "userIdentity": {
+         "accessKeyId": "ASIA2HJRQF0DHNYEE9N1",
+         "accountId": "844015365555",
+         "arn": "arn:aws:sts::844015365555:assumed-role/AWSReservedSSOrandoml3I7nL6f7BmB@gmail.com",
+         "principalId": "AROAEMHZD694LU95MUYOP:randomca0L529zwNAY@gmail.com",
+         "sessionContext": {
+            "attributes": {
+               "creationDate": "2024-11-26T15:14:58Z",
+               "mfaAuthenticated": "false"
+            },
+            "sessionIssuer": {
+               "accountId": "844015365555",
+               "arn": "arn:aws:iam::844015365555:role/aws-reserved/sso.amazonaws.com/AWSReservedSSO_account-admin_599c9e90e350d2ff",
+               "principalId": "AROAEMHZD694LU95MUYOP",
+               "type": "Role",
+               "userName": "AWSReservedSSO_account-admin_599c9e90e350d2ff"
+            },
+            "webIdFederationData": {}
+         },
+         "type": "AssumedRole"
+      }
+   },
+   {
+      "awsRegion": "cniso-east-3r",
+      "eventCategory": "Management",
+      "eventID": "f4dc86c9-6b22-4643-a0e8-fcb97fcfae68",
+      "eventName": "SendSerialConsoleSSHPublicKey",
+      "eventSource": "ec2-instance-connect.amazonaws.com",
+      "eventTime": "2024-11-26T15:35:22Z",
+      "eventType": "AwsApiCall",
+      "eventVersion": "1.08",
+      "managementEvent": true,
+      "readOnly": false,
+      "recipientAccountId": "844015365555",
+      "requestID": "88c8e41e-7754-4377-983f-140f8ca5617e",
+      "requestParameters": {
+         "instanceId": "i-D46eD8FCdefED5aAE",
+         "monitorMode": false,
+         "sSHPublicKey": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOtAlK45MAEWZ7MUY2QEmi3M6W+peGL3VCrc0qH54xRu",
+         "serialPort": 0
+      },
+      "responseElements": {
+         "requestId": "88c8e41e-7754-4377-983f-140f8ca5617e",
+         "success": true
+      },
+      "sourceIPAddress": "201.252.42.03",
+      "tlsDetails": {
+         "cipherSuite": "TLS_AES_128_GCM_SHA256",
+         "clientProvidedHostHeader": "ec2-instance-connect.cniso-east-3r.amazonaws.com",
+         "tlsVersion": "TLSv1.3"
+      },
+      "userAgent": "stratus-red-team_b0fedc91-bd4a-4ba1-a776-80e707fef2a0",
+      "userIdentity": {
+         "accessKeyId": "ASIA2HJRQF0DHNYEE9N1",
+         "accountId": "844015365555",
+         "arn": "arn:aws:sts::844015365555:assumed-role/AWSReservedSSOrandoml3I7nL6f7BmB@gmail.com",
+         "principalId": "AROAEMHZD694LU95MUYOP:randomca0L529zwNAY@gmail.com",
+         "sessionContext": {
+            "attributes": {
+               "creationDate": "2024-11-26T15:14:58Z",
+               "mfaAuthenticated": "false"
+            },
+            "sessionIssuer": {
+               "accountId": "844015365555",
+               "arn": "arn:aws:iam::844015365555:role/aws-reserved/sso.amazonaws.com/AWSReservedSSO_account-admin_599c9e90e350d2ff",
+               "principalId": "AROAEMHZD694LU95MUYOP",
+               "type": "Role",
+               "userName": "AWSReservedSSO_account-admin_599c9e90e350d2ff"
+            },
+            "webIdFederationData": {}
+         },
+         "type": "AssumedRole"
+      }
+   }
+]
