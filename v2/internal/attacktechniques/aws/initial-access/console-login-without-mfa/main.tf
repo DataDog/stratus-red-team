@@ -10,6 +10,11 @@ provider "aws" {
   skip_region_validation      = true
   skip_credentials_validation = true
   skip_get_ec2_platforms      = true
+  default_tags {
+    tags = merge(var.config.aws.tags, {
+      StratusRedTeam = true
+    })
+  }
 }
 
 data "aws_caller_identity" "current" {}
@@ -21,7 +26,7 @@ resource "random_string" "suffix" {
 }
 
 locals {
-  resource_prefix = "stratus-red-team-nmfalu" # non-mfa login user
+  resource_prefix = "${var.config.aws.prefix}stratus-red-team-nmfalu" # non-mfa login user
 }
 
 resource "aws_iam_user" "console-user" {

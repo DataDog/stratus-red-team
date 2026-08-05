@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 
 	"github.com/spf13/viper"
+	"gopkg.in/yaml.v3"
 )
 
 const (
@@ -37,6 +38,7 @@ type Config interface {
 }
 
 type ConfigImpl struct {
+	aws        *AWSConfigImpl
 	kubernetes *KubernetesConfigImpl
 	v          *viper.Viper
 }
@@ -46,6 +48,7 @@ var _ Config = &ConfigImpl{}
 // LoadConfig loads configuration from file.
 func LoadConfig() (Config, error) {
 	v := newViper()
+	var raw map[string]any
 	configPath := getConfigPath()
 	if configPath != "" {
 		rawYAML, err := os.ReadFile(configPath)
@@ -55,13 +58,20 @@ func LoadConfig() (Config, error) {
 		if err := validateConfig(rawYAML); err != nil {
 			return nil, err
 		}
+		if err := yaml.Unmarshal(rawYAML, &raw); err != nil {
+			return nil, fmt.Errorf("parsing config YAML: %w", err)
+		}
 
 		v.SetConfigFile(configPath)
 		if err := v.ReadInConfig(); err != nil {
 			return nil, err
 		}
 	}
-	return &ConfigImpl{kubernetes: &KubernetesConfigImpl{v: v}, v: v}, nil
+	return &ConfigImpl{
+		aws:        &AWSConfigImpl{raw: raw},
+		kubernetes: &KubernetesConfigImpl{v: v},
+		v:          v,
+	}, nil
 }
 
 // getConfigPath returns the path to the config file, checking:
@@ -99,14 +109,16 @@ func (c *ConfigImpl) GetKubernetesConfig() KubernetesConfig {
 	return c.kubernetes
 }
 
-// buildMergedViper produces a Viper containing the merged technique config.
-// Each provider populates its own subtree via populateViperOverride.
+// buildMergedViper produces a Viper containing configuration for providers
+// whose keys are case-insensitive.
 func (c *ConfigImpl) buildMergedViper(techniqueID string, vars SubstitutionVars) *viper.Viper {
 	v := newViper()
-	if c == nil || c.kubernetes == nil {
+	if c == nil {
 		return v
 	}
-	c.kubernetes.populateViperOverride(c.v, v, techniqueID, vars)
+	if c.kubernetes != nil {
+		c.kubernetes.populateViperOverride(c.v, v, techniqueID, vars)
+	}
 	// Add here other providers config
 	return v
 }
@@ -123,6 +135,9 @@ func (c *ConfigImpl) GetTerraformVariables(techniqueID string, vars Substitution
 
 	merged := c.buildMergedViper(techniqueID, vars)
 	settings := merged.AllSettings()
+	if awsConfig := c.aws.getMergedConfig(techniqueID, vars); len(awsConfig) > 0 {
+		settings["aws"] = awsConfig
+	}
 	if len(settings) == 0 {
 		return nil
 	}

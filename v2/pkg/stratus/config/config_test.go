@@ -7,6 +7,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"gopkg.in/yaml.v3"
 )
 
 // TestKeyDelimiter documents the "::" Viper key delimiter used package-wide.
@@ -51,7 +52,13 @@ func newTestConfig(yamlStr string) *ConfigImpl {
 	v := newViper()
 	v.SetConfigType("yaml")
 	_ = v.ReadConfig(strings.NewReader(yamlStr))
-	return &ConfigImpl{kubernetes: &KubernetesConfigImpl{v: v}, v: v}
+	var raw map[string]any
+	_ = yaml.Unmarshal([]byte(yamlStr), &raw)
+	return &ConfigImpl{
+		aws:        &AWSConfigImpl{raw: raw},
+		kubernetes: &KubernetesConfigImpl{v: v},
+		v:          v,
+	}
 }
 
 func TestGetTerraformVariables(t *testing.T) {
