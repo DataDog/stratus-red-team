@@ -8,6 +8,8 @@ Stratus Red Team is mainly used from the CLI, but you can use it programmaticall
 
     So for instance, if you warm up a specific attack technique programmatically, running `stratus status` will show the technique is in `WARM` state.
 
+    If you isolate executions with `runner.WithCorrelationID`, `stratus status` only reports on that execution when the same correlation ID is set in its environment - see [Concurrent executions](./concurrent-executions.md).
+
 ## Installing Stratus Red Team as a dependency
 
 Run:

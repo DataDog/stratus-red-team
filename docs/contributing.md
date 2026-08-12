@@ -22,12 +22,32 @@ To generate the logs dataset using [Grimoire](https://github.com/DataDog/grimoir
 # Build your local Stratus Red Team version
 make
 
-# Generate cloud audit logs
-./bin/stratus warmup your-attack
-grimoire shell --command 'export STRATUS_RED_TEAM_DETONATION_ID=$GRIMOIRE_DETONATION_ID; ./bin/stratus detonate your-attack' -o /tmp/your-attack.json
-# Press Ctrl+C once you see the expected events
-./bin/stratus cleanup your-attack
+# Open a shell in which Grimoire collects the cloud audit logs
+grimoire shell -o /tmp/your-attack.json
 ```
+
+Then, inside that shell, run the whole lifecycle with Grimoire's detonation ID as the correlation ID:
+
+```bash
+export STRATUS_RED_TEAM_CORRELATION_ID=$GRIMOIRE_DETONATION_ID
+./bin/stratus warmup your-attack
+./bin/stratus detonate your-attack
+./bin/stratus cleanup your-attack
+exit  # Grimoire then looks for the events your commands generated
+```
+
+!!! warning
+
+    Export the correlation ID for **every** command of the lifecycle, not just `detonate`. It
+    determines where Stratus Red Team stores the execution's state, so a `detonate` that does not
+    see the same value as its `warmup` provisions a second, separate set of resources. See
+    [Concurrent executions](./user-guide/concurrent-executions.md).
+
+Setting the correlation ID is what lets Grimoire find the detonation events: Stratus Red Team
+replaces the user agent of the AWS calls it makes with `stratus-red-team_<correlation-id>`, so
+without it those calls would not carry Grimoire's identifier. Note that `warmup` and `cleanup` run
+inside the collection window too, so the dataset also contains their events - keep only the ones
+produced by the detonation.
 
 3. Anonymize the logs using [LogLicker](https://github.com/Permiso-io-tools/LogLicker):
 

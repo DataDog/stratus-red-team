@@ -97,6 +97,7 @@ nav:
           - detonate: user-guide/commands/detonate.md
           - revert: user-guide/commands/revert.md
           - cleanup: user-guide/commands/cleanup.md
+      - Concurrent Executions: user-guide/concurrent-executions.md
       - Troubleshooting: user-guide/troubleshooting.md
       - Programmatic Usage: user-guide/programmatic-usage.md
   - Attack Techniques Reference:
