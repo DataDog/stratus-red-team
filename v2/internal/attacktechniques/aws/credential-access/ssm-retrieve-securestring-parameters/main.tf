@@ -38,3 +38,7 @@ resource "aws_ssm_parameter" "parameters" {
 output "display" {
   value = "${local.num_parameters} SSM parameters ready under the SSM path ${local.prefix}"
 }
+
+output "ssm_parameter_path" {
+  value = local.prefix
+}

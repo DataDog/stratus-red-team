@@ -6,6 +6,7 @@ import (
 	"errors"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/ssm"
+	"github.com/aws/aws-sdk-go-v2/service/ssm/types"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
@@ -51,7 +52,12 @@ The following may be used to tune the detection, or validate findings:
 	})
 }
 
-func detonate(_ map[string]string, providers stratus.CloudProviders) error {
+func detonate(params map[string]string, providers stratus.CloudProviders) error {
+	ssmParameterPath := params["ssm_parameter_path"]
+	if ssmParameterPath == "" {
+		return errors.New("missing required Terraform output: ssm_parameter_path")
+	}
+
 	ssmClient := ssm.NewFromConfig(providers.AWS().GetConnection())
 
 	log.Println("Running ssm:DescribeParameters and ssm:GetParameters by batch of 10 to find all SSM Parameters in the current region")
@@ -65,13 +71,7 @@ func detonate(_ map[string]string, providers stratus.CloudProviders) error {
 		}
 
 		// Retrieve the value of SSM parameters by batch of 10 (maximum value supported by ssm:GetParameters)
-		var names []string
-		for i := range result.Parameters {
-			// only take into account parameters created by Stratus Red Team
-			if name := *result.Parameters[i].Name; strings.Index(name, "/credentials/stratus-red-team") == 0 {
-				names = append(names, name)
-			}
-		}
+		names := parameterNamesWithPrefix(result.Parameters, ssmParameterPath)
 
 		if len(names) == 0 {
 			continue
@@ -87,4 +87,14 @@ func detonate(_ map[string]string, providers stratus.CloudProviders) error {
 		log.Println("Successfully retrieved " + strconv.Itoa(len(response.Parameters)) + " SSM Parameters")
 	}
 	return nil
+}
+
+func parameterNamesWithPrefix(parameters []types.ParameterMetadata, prefix string) []string {
+	var names []string
+	for i := range parameters {
+		if name := aws.ToString(parameters[i].Name); strings.HasPrefix(name, prefix) {
+			names = append(names, name)
+		}
+	}
+	return names
 }
