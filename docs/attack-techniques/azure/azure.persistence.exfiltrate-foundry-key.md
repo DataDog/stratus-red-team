@@ -30,6 +30,7 @@ An attacker with sufficient permissions on a Cognitive Services account can flip
 
 <span style="font-variant: small-caps;">Detonation</span>:
 
+- Call `ListKeys` while local authentication is disabled (expected to fail)
 - Update the account to set `properties.disableLocalAuth` to `false`
 - Call `ListKeys` to retrieve the account's API keys
 

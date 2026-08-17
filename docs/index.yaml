@@ -252,6 +252,19 @@ AWS:
             - Impact
           platform: AWS
           isIdempotent: true
+        - id: aws.impact.ec2-deregister-ami
+          name: Deregister an Amazon EC2 AMI
+          isSlow: false
+          mitreAttackTactics:
+            - Impact
+          frameworkmappings:
+            - framework: Threat Technique Catalog for AWS
+              techniques:
+                - name: 'Data Destruction: AMI Image Deletion'
+                  id: T1485.A002
+                  url: https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1485.A002.html
+          platform: AWS
+          isIdempotent: false
         - id: aws.impact.s3-ransomware-batch-deletion
           name: S3 Ransomware through batch file deletion
           isSlow: false
@@ -543,19 +556,19 @@ EKS:
           isIdempotent: false
 GCP:
     Credential Access:
-        - id: gcp.credential-access.secretmanager-retrieve-secrets
-          name: Retrieve a High Number of Secret Manager secrets
-          isSlow: false
-          mitreAttackTactics:
-            - Credential Access
-          platform: GCP
-          isIdempotent: true
         - id: gcp.initial-access.use-compute-sa-outside-gcp
           name: Steal and Use the GCE Default Service Account Token from Outside Google Cloud
           isSlow: true
           mitreAttackTactics:
             - Credential Access
             - Initial Access
+          platform: GCP
+          isIdempotent: true
+        - id: gcp.credential-access.secretmanager-retrieve-secrets
+          name: Retrieve a High Number of Secret Manager secrets
+          isSlow: false
+          mitreAttackTactics:
+            - Credential Access
           platform: GCP
           isIdempotent: true
     Defense Evasion:

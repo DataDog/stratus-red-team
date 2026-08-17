@@ -1,0 +1,74 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.54.0, < 5.0.0" # 4.54.0 at least is required for proper AWS SSO support, see #626
+    }
+  }
+}
+provider "aws" {
+  skip_region_validation      = true
+  skip_credentials_validation = true
+  skip_get_ec2_platforms      = true
+  default_tags {
+    tags = {
+      StratusRedTeam = true
+    }
+  }
+}
+
+resource "random_string" "suffix" {
+  length    = 6
+  min_lower = 6
+  special   = false
+}
+
+locals {
+  resource_prefix = "stratus-red-team-deregister-ami"
+  ami_name        = format("%s-ami-%s", local.resource_prefix, random_string.suffix.result)
+}
+
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
+resource "aws_ebs_volume" "volume" {
+  availability_zone = data.aws_availability_zones.available.names[0]
+  size              = 1
+
+  tags = {
+    Name = "${local.resource_prefix}-ami"
+  }
+}
+
+resource "aws_ebs_snapshot" "snapshot" {
+  volume_id = aws_ebs_volume.volume.id
+}
+
+resource "aws_ami" "ami" {
+  name                = local.ami_name
+  virtualization_type = "hvm"
+  root_device_name    = "/dev/xvda"
+
+  ebs_block_device {
+    device_name = "/dev/xvda"
+    snapshot_id = aws_ebs_snapshot.snapshot.id
+    volume_size = 1
+  }
+}
+
+output "ami_id" {
+  value = aws_ami.ami.id
+}
+
+output "snapshot_id" {
+  value = aws_ebs_snapshot.snapshot.id
+}
+
+output "volume_id" {
+  value = aws_ebs_volume.volume.id
+}
+
+output "display" {
+  value = format("AMI %s is ready (snapshot %s, volume %s)", aws_ami.ami.id, aws_ebs_snapshot.snapshot.id, aws_ebs_volume.volume.id)
+}
