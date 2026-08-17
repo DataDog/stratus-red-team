@@ -487,6 +487,16 @@ func (m *FileSystemStateManager) WriteTerraformVariables(variables map[string]st
 
 func (m *FileSystemStateManager) GetTechniqueState() stratus.AttackTechniqueState {
 	rawState, _ := m.FileSystem.ReadFile(m.getTechniqueStateFile())
+	if len(rawState) > 0 || m.ExecutionSubdirectory == "" {
+		return stratus.AttackTechniqueState(rawState)
+	}
+
+	// [backward compatibility] If corrID is provided & no state is found, search in the flat layout
+	techniqueDirectory := m.getTechniqueDirectory()
+	if !m.flatStateIsOurs(techniqueDirectory, m.getTechniqueStateDirectory()) {
+		return ""
+	}
+	rawState, _ = m.FileSystem.ReadFile(filepath.Join(techniqueDirectory, techniqueStateArtifact.FileName))
 	return stratus.AttackTechniqueState(rawState)
 }
 

@@ -259,10 +259,14 @@ func (m *runnerImpl) WarmUp() (map[string]string, error) {
 
 	log.Println("Warming up " + m.Technique.ID)
 	overrideVars := m.buildTerraformVariables()
+	// Persist vars before apply to have them for destroy in case of failure
+	if err := m.StateManager.WriteTerraformVariables(overrideVars); err != nil {
+		return nil, fmt.Errorf("unable to persist Terraform variables: %w", err)
+	}
 	outputs, err := m.TerraformManager.TerraformInitAndApply(m.TerraformDir, overrideVars)
 	if err != nil {
 		if errors.Is(err, context.Canceled) {
-			// Resources may already exist, so keep the state that can still clean them up.
+			// Resources may already exist, keep the state/vars for cleanup
 			return nil, err
 		}
 		log.Println("Error during warm up. Cleaning up technique prerequisites with terraform destroy")
@@ -284,16 +288,9 @@ func (m *runnerImpl) WarmUp() (map[string]string, error) {
 		log.Println(display)
 	}
 
-	// Persist outputs and variables to disk
 	err = m.StateManager.WriteTerraformOutputs(outputs)
 	if err != nil {
 		return nil, fmt.Errorf("unable to persist Terraform outputs: %w", err)
-	}
-	if len(overrideVars) > 0 {
-		err = m.StateManager.WriteTerraformVariables(overrideVars)
-		if err != nil {
-			return nil, fmt.Errorf("unable to persist Terraform variables: %w", err)
-		}
 	}
 
 	return outputs, nil
