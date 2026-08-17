@@ -35,6 +35,7 @@ This page contains the list of all Stratus Attack Techniques.
 | [Exfiltrate RDS Snapshot by Sharing](./AWS/aws.exfiltration.rds-share-snapshot.md) | [AWS](./AWS/index.md) | Exfiltration |
 | [Backdoor an S3 Bucket via its Bucket Policy](./AWS/aws.exfiltration.s3-backdoor-bucket-policy.md) | [AWS](./AWS/index.md) | Exfiltration |
 | [Invoke Bedrock Model](./AWS/aws.impact.bedrock-invoke-model.md) | [AWS](./AWS/index.md) | Impact |
+| [Deregister an Amazon EC2 AMI](./AWS/aws.impact.ec2-deregister-ami.md) | [AWS](./AWS/index.md) | Impact |
 | [S3 Ransomware through batch file deletion](./AWS/aws.impact.s3-ransomware-batch-deletion.md) | [AWS](./AWS/index.md) | Impact |
 | [S3 Ransomware through client-side encryption](./AWS/aws.impact.s3-ransomware-client-side-encryption.md) | [AWS](./AWS/index.md) | Impact |
 | [S3 Ransomware through individual file deletion](./AWS/aws.impact.s3-ransomware-individual-deletion.md) | [AWS](./AWS/index.md) | Impact |
@@ -76,7 +77,6 @@ This page contains the list of all Stratus Attack Techniques.
 | [Create Hidden Scoped Role Assignment Through HiddenMembership AU](./entra-id/entra-id.persistence.hidden-au.md) | [Entra ID](./entra-id/index.md) | Persistence |
 | [Create Application](./entra-id/entra-id.persistence.new-application.md) | [Entra ID](./entra-id/index.md) | Persistence, Privilege Escalation |
 | [Create Sticky Backdoor User Through Restricted Management AU](./entra-id/entra-id.persistence.restricted-au.md) | [Entra ID](./entra-id/index.md) | Persistence |
-| [Retrieve a High Number of Secret Manager secrets](./GCP/gcp.credential-access.secretmanager-retrieve-secrets.md) | [GCP](./GCP/index.md) | Credential Access |
 | [Delete a Cloud DNS Logging Policy](./GCP/gcp.defense-evasion.delete-dns-logs.md) | [GCP](./GCP/index.md) | Defense Evasion |
 | [Disable Data Access Audit Logs for a GCP Service](./GCP/gcp.defense-evasion.disable-audit-logs.md) | [GCP](./GCP/index.md) | Defense Evasion |
 | [Attempt to Remove a GCP Project from its Organization](./GCP/gcp.defense-evasion.remove-project-from-organization.md) | [GCP](./GCP/index.md) | Defense Evasion |
@@ -107,5 +107,6 @@ This page contains the list of all Stratus Attack Techniques.
 | [Disable a GCP Log Sink](./GCP/gcp.defense-evasion.disable-logging-sink.md) | [GCP](./GCP/index.md) | Defense Evasion |
 | [Inject a Malicious Startup Script into a Vertex AI Workbench Instance](./GCP/gcp.execution.modify-vertex-notebook-startup.md) | [GCP](./GCP/index.md) | Execution, Privilege Escalation |
 | [Reduce Log Retention Period on a Cloud Logging Sink Bucket](./GCP/gcp.defense-evasion.reduce-sink-log-retention.md) | [GCP](./GCP/index.md) | Defense Evasion |
+| [Retrieve a High Number of Secret Manager secrets](./GCP/gcp.credential-access.secretmanager-retrieve-secrets.md) | [GCP](./GCP/index.md) | Credential Access |
 | [GCS Ransomware through client-side encryption](./GCP/gcp.impact.gcs-ransomware-client-side-encryption.md) | [GCP](./GCP/index.md) | Impact |
 | [GCS Ransomware through individual file deletion](./GCP/gcp.impact.gcs-ransomware-individual-deletion.md) | [GCP](./GCP/index.md) | Impact |
