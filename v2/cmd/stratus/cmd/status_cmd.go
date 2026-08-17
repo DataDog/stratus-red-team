@@ -3,6 +3,7 @@ package cmd
 import (
 	"github.com/datadog/stratus-red-team/v2/internal/state"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/runner"
 	"github.com/fatih/color"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/spf13/cobra"
@@ -34,8 +35,14 @@ func buildStatusCmd() *cobra.Command {
 func doStatusCmd(techniques []*stratus.AttackTechnique) {
 	t := GetDisplayTable()
 	t.AppendHeader(table.Row{"ID", "Name", "Status"})
+	// Resolve the same state layout the lifecycle commands use, so that a correlation ID in the
+	// environment reports on that execution rather than on the flat layout.
+	stateOpts := []state.ManagerOption{state.WithReadOnlyState()}
+	if subdirectory := runner.ExecutionSubdirectoryFromEnv(); subdirectory != "" {
+		stateOpts = append(stateOpts, state.WithExecutionSubdirectory(subdirectory))
+	}
 	for i := range techniques {
-		stateManager := state.NewFileSystemStateManager(techniques[i])
+		stateManager := state.NewFileSystemStateManager(techniques[i], stateOpts...)
 		techniqueState := stateManager.GetTechniqueState()
 		if techniqueState == "" {
 			techniqueState = stratus.AttackTechniqueStatusCold

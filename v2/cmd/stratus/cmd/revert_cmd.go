@@ -71,7 +71,7 @@ func doRevertCmd(techniques []*stratus.AttackTechnique) {
 func revertCmdWorker(techniques <-chan *stratus.AttackTechnique, errors chan<- error) {
 	for technique := range techniques {
 		if technique.Revert == nil {
-			log.Println("Warning: " + technique.ID + " has no revert function and cannot be reverted.")
+			log.Warnf("%s has no revert function and cannot be reverted.", technique.ID)
 			errors <- nil
 			continue
 		}

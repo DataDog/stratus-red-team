@@ -117,6 +117,26 @@ func Debug(msg string, args ...any) {
 	current.Load().Debug(msg, args...)
 }
 
+// Infof logs a formatted message at info level.
+func Infof(format string, v ...any) {
+	current.Load().Info(fmt.Sprintf(format, v...))
+}
+
+// Warnf logs a formatted message at warn level.
+func Warnf(format string, v ...any) {
+	current.Load().Warn(fmt.Sprintf(format, v...))
+}
+
+// Errorf logs a formatted message at error level.
+func Errorf(format string, v ...any) {
+	current.Load().Error(fmt.Sprintf(format, v...))
+}
+
+// Debugf logs a formatted message at debug level.
+func Debugf(format string, v ...any) {
+	current.Load().Debug(fmt.Sprintf(format, v...))
+}
+
 // With returns a logger derived from the active logger with the given
 // attributes attached. It does not modify the process-global logger.
 func With(args ...any) *slog.Logger {

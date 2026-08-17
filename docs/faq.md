@@ -8,7 +8,9 @@ If you don't have access to an administrator role but would still like to use St
 
 ## How does Stratus Red Team persist state?
 
-Stratus Red Team persists its state in `$HOME/.stratus-red-team`.
+Stratus Red Team persists its state in `$HOME/.stratus-red-team`, under one directory per attack technique.
+
+If you set a correlation ID, the state of that execution is stored one level deeper, in `$HOME/.stratus-red-team/<technique-id>/<correlation-id>`, so that concurrent executions of the same attack technique do not share a Terraform state. See [Concurrent executions](./user-guide/concurrent-executions.md).
 
 ## How can I add my own attack techniques to Stratus Red Team?
 

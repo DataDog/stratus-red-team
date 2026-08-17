@@ -3,7 +3,7 @@ package runner
 import (
 	"context"
 	"errors"
-	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -11,6 +11,7 @@ import (
 	"github.com/datadog/stratus-red-team/v2/internal/state"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/config"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/useragent"
 	"github.com/google/uuid"
 )
@@ -29,6 +30,9 @@ const EnvVarStratusRedTeamDetonationId = "STRATUS_RED_TEAM_DETONATION_ID"
 
 // Use an existing terraform binary path instead of letting the runner download it.
 const EnvVarStratusTerraformBinaryPath = "STRATUS_TERRAFORM_BINARY_PATH"
+
+// pluginCacheDirectoryName is the provider cache shared by every execution.
+const pluginCacheDirectoryName = "plugin-cache"
 
 // RunnerOption configures optional dependencies on a Runner.
 // When no options are provided, the runner uses its default implementations
@@ -56,19 +60,20 @@ func WithConfig(cfg config.Config) RunnerOption {
 }
 
 // WithCorrelationID sets an explicit correlation ID instead of generating one.
+//
+// Providing a correlation ID activates state isolation, enabling concurrent executions of the TTP.
 func WithCorrelationID(id uuid.UUID) RunnerOption {
-	return func(r *runnerImpl) { r.UniqueCorrelationID = id }
+	return func(r *runnerImpl) {
+		r.UniqueCorrelationID = id
+		r.correlationIDProvided = id != uuid.Nil
+	}
 }
 
 // WithS3Backend configures the runner to store both Terraform state and
 // Stratus internal state in an S3 bucket. Replaces the default filesystem
 // state manager and injects backend credentials into the TerraformManager.
 func WithS3Backend(cfg state.S3BackendConfig) RunnerOption {
-	return func(r *runnerImpl) {
-		s3State := state.NewS3StateManager(r.Technique, cfg)
-		r.StateManager = s3State
-		r.terraformBackendConfigs = s3State.BackendConfigs()
-	}
+	return func(r *runnerImpl) { r.s3BackendConfig = &cfg }
 }
 
 type runnerImpl struct {
@@ -83,6 +88,11 @@ type runnerImpl struct {
 	UniqueCorrelationID     uuid.UUID
 	Context                 context.Context
 	terraformBackendConfigs map[string]string
+	s3BackendConfig         *state.S3BackendConfig
+	// correlationIDProvided records that the caller supplied the correlation ID, as opposed
+	// to one being generated. Only a caller-supplied ID isolates state, since a generated one
+	// is different on every command and could never find the previous step's state.
+	correlationIDProvided bool
 }
 
 type Runner interface {
@@ -114,7 +124,7 @@ func NewRunnerWithContext(ctx context.Context, technique *stratus.AttackTechniqu
 	}
 
 	if runner.UniqueCorrelationID == uuid.Nil {
-		runner.UniqueCorrelationID = resolveCorrelationID()
+		runner.UniqueCorrelationID, runner.correlationIDProvided = resolveCorrelationID()
 	}
 
 	if runner.Config == nil {
@@ -125,8 +135,23 @@ func NewRunnerWithContext(ctx context.Context, technique *stratus.AttackTechniqu
 		runner.Config = cfg
 	}
 
-	if runner.StateManager == nil {
-		runner.StateManager = state.NewFileSystemStateManager(technique)
+	// Built after the correlation ID is resolved, since the state layout depends on it.
+	// An explicitly injected state manager always wins, whatever the option order.
+	var stateOpts []state.ManagerOption
+	if runner.correlationIDProvided {
+		stateOpts = append(stateOpts, state.WithExecutionSubdirectory(runner.UniqueCorrelationID.String()))
+	}
+	switch {
+	case runner.StateManager != nil:
+		if runner.s3BackendConfig != nil {
+			log.Warn("Both WithStateManager and WithS3Backend were provided, ignoring the S3 backend")
+		}
+	case runner.s3BackendConfig != nil:
+		s3State := state.NewS3StateManager(technique, *runner.s3BackendConfig, stateOpts...)
+		runner.StateManager = s3State
+		runner.terraformBackendConfigs = s3State.BackendConfigs()
+	default:
+		runner.StateManager = state.NewFileSystemStateManager(technique, stateOpts...)
 	}
 
 	if runner.TerraformManager == nil {
@@ -134,7 +159,9 @@ func NewRunnerWithContext(ctx context.Context, technique *stratus.AttackTechniqu
 		if envPath := os.Getenv(EnvVarStratusTerraformBinaryPath); envPath != "" {
 			terraformBinaryPath = envPath
 		}
-		var tfOpts []TerraformManagerOption
+		tfOpts := []TerraformManagerOption{
+			WithPluginCacheDirectory(filepath.Join(runner.StateManager.GetRootDirectory(), pluginCacheDirectoryName)),
+		}
 		if len(runner.terraformBackendConfigs) > 0 {
 			tfOpts = append(tfOpts, WithBackendConfigs(runner.terraformBackendConfigs))
 		}
@@ -154,28 +181,42 @@ func NewRunnerWithContext(ctx context.Context, technique *stratus.AttackTechniqu
 // resolveCorrelationID returns the correlation ID from the environment variable
 // STRATUS_RED_TEAM_CORRELATION_ID (or the deprecated STRATUS_RED_TEAM_DETONATION_ID)
 // if set and valid, otherwise generates a new one.
-func resolveCorrelationID() uuid.UUID {
+//
+// The second return value reports whether the ID was actually supplied by the user. A
+// generated ID must not isolate state: it differs on every command, so a subsequent
+// detonate or cleanup would never find the state its warmup wrote.
+func resolveCorrelationID() (uuid.UUID, bool) {
 	raw := os.Getenv(EnvVarStratusRedTeamCorrelationId)
 	envName := EnvVarStratusRedTeamCorrelationId
 	if raw == "" {
 		if raw = os.Getenv(EnvVarStratusRedTeamDetonationId); raw != "" {
 			envName = EnvVarStratusRedTeamDetonationId
-			log.Printf("WARNING: %s is deprecated, use %s instead", EnvVarStratusRedTeamDetonationId, EnvVarStratusRedTeamCorrelationId)
+			log.Warnf("%s is deprecated, use %s instead", EnvVarStratusRedTeamDetonationId, EnvVarStratusRedTeamCorrelationId)
 		}
 	}
 	if raw == "" {
-		return uuid.New()
+		return uuid.New(), false
 	}
 	parsed, err := uuid.Parse(raw)
 	if err != nil {
-		log.Printf("%s is not a valid UUID, using a random one: %s", envName, err.Error())
-		return uuid.New()
+		log.Warnf("%s is not a valid UUID, using a random one: %s", envName, err.Error())
+		return uuid.New(), false
 	}
-	return parsed
+	return parsed, true
+}
+
+// ExecutionSubdirectoryFromEnv returns the state sub-directory implied by the environment variable
+// (empty when no correlation ID is provided, the technique sub-directory otherwise).
+func ExecutionSubdirectoryFromEnv() string {
+	id, provided := resolveCorrelationID()
+	if !provided {
+		return ""
+	}
+	return id.String()
 }
 
 func (m *runnerImpl) initialize() {
-	m.TerraformDir = filepath.Join(m.StateManager.GetRootDirectory(), m.Technique.ID)
+	m.TerraformDir = m.StateManager.GetWorkingDirectory()
 	m.TechniqueState = m.StateManager.GetTechniqueState()
 	if m.TechniqueState == "" {
 		m.TechniqueState = stratus.AttackTechniqueStatusCold
@@ -194,7 +235,7 @@ func (m *runnerImpl) WarmUp() (map[string]string, error) {
 
 	err := m.StateManager.ExtractTechnique()
 	if err != nil {
-		return nil, errors.New("unable to extract Terraform file: " + err.Error())
+		return nil, fmt.Errorf("unable to extract Terraform file: %w", err)
 	}
 
 	// We don't want to warm up the technique
@@ -218,8 +259,16 @@ func (m *runnerImpl) WarmUp() (map[string]string, error) {
 
 	log.Println("Warming up " + m.Technique.ID)
 	overrideVars := m.buildTerraformVariables()
+	// Persist vars before apply to have them for destroy in case of failure
+	if err := m.StateManager.WriteTerraformVariables(overrideVars); err != nil {
+		return nil, fmt.Errorf("unable to persist Terraform variables: %w", err)
+	}
 	outputs, err := m.TerraformManager.TerraformInitAndApply(m.TerraformDir, overrideVars)
 	if err != nil {
+		if errors.Is(err, context.Canceled) {
+			// Resources may already exist, keep the state/vars for cleanup
+			return nil, err
+		}
 		log.Println("Error during warm up. Cleaning up technique prerequisites with terraform destroy")
 		_ = m.TerraformManager.TerraformDestroy(m.TerraformDir, overrideVars)
 		// Drop the technique directory and any managed artifacts so a failed
@@ -227,12 +276,9 @@ func (m *runnerImpl) WarmUp() (map[string]string, error) {
 		// the `resource` key of the tfstate file to an empty array but doesn't
 		// delete it.
 		if cleanupErr := m.StateManager.CleanupTechnique(); cleanupErr != nil {
-			log.Println("Warning: failed to remove technique state after failed warm up: " + cleanupErr.Error())
+			log.Warnf("failed to remove technique state after failed warm up: %s", cleanupErr.Error())
 		}
-		if errors.Is(err, context.Canceled) {
-			return nil, err
-		}
-		return nil, errors.New("unable to run terraform apply on prerequisite: " + errorMessageFromTerraformError(err))
+		return nil, fmt.Errorf("unable to run terraform apply on prerequisite: %s", errorMessageFromTerraformError(err))
 	}
 
 	// Resources are created, set state to warm
@@ -242,16 +288,9 @@ func (m *runnerImpl) WarmUp() (map[string]string, error) {
 		log.Println(display)
 	}
 
-	// Persist outputs and variables to disk
 	err = m.StateManager.WriteTerraformOutputs(outputs)
 	if err != nil {
-		return nil, errors.New("unable to persist Terraform outputs: " + err.Error())
-	}
-	if len(overrideVars) > 0 {
-		err = m.StateManager.WriteTerraformVariables(overrideVars)
-		if err != nil {
-			return nil, errors.New("unable to persist Terraform variables: " + err.Error())
-		}
+		return nil, fmt.Errorf("unable to persist Terraform outputs: %w", err)
 	}
 
 	return outputs, nil
@@ -301,7 +340,7 @@ func (m *runnerImpl) Revert() error {
 
 	outputs, err := m.StateManager.GetTerraformOutputs()
 	if err != nil {
-		return errors.New("unable to retrieve outputs of " + m.Technique.ID + ": " + err.Error())
+		return fmt.Errorf("unable to retrieve outputs of %s: %w", m.Technique.ID, err)
 	}
 
 	log.Println("Reverting detonation of technique " + m.Technique.ID)
@@ -309,7 +348,7 @@ func (m *runnerImpl) Revert() error {
 	if m.Technique.Revert != nil {
 		err = m.Technique.Revert(outputs, m.ProviderFactory)
 		if err != nil {
-			return errors.New("unable to revert detonation of " + m.Technique.ID + ": " + err.Error())
+			return fmt.Errorf("unable to revert detonation of %s: %w", m.Technique.ID, err)
 		}
 	}
 
@@ -331,7 +370,7 @@ func (m *runnerImpl) CleanUp() error {
 		err := m.Revert()
 		if err != nil {
 			if m.ShouldForce {
-				log.Println("Warning: failed to revert detonation of " + m.Technique.ID + ". Ignoring and cleaning up anyway as --force was used.")
+				log.Warnf("failed to revert detonation of %s. Ignoring and cleaning up anyway as --force was used.", m.Technique.ID)
 			} else {
 				return errors.New("unable to revert detonation of " + m.Technique.ID + " before cleaning up (use --force to cleanup anyway): " + err.Error())
 			}
@@ -342,14 +381,14 @@ func (m *runnerImpl) CleanUp() error {
 	if m.Technique.PrerequisitesTerraformCode != nil {
 		// Ensure TF files are on disk
 		if err := m.StateManager.ExtractTechnique(); err != nil {
-			return errors.New("unable to extract Terraform files for cleanup: " + err.Error())
+			return fmt.Errorf("unable to extract Terraform files for cleanup: %w", err)
 		}
 
 		// Load persisted Terraform variables. We don't use the variables from the config file, that
 		// may have changed since warmup, so we rely only on the persisted variables.
 		persistedVars, err := m.StateManager.GetTerraformVariables()
 		if err != nil {
-			log.Println("Warning: unable to load persisted Terraform variables: " + err.Error())
+			log.Warnf("unable to load persisted Terraform variables: %s", err.Error())
 		}
 
 		log.Println("Cleaning up technique prerequisites with terraform destroy")
@@ -358,16 +397,14 @@ func (m *runnerImpl) CleanUp() error {
 			if errors.Is(err, context.Canceled) {
 				return err
 			}
-			return errors.New("unable to cleanup TTP prerequisites: " + errorMessageFromTerraformError(err))
+			return fmt.Errorf("unable to cleanup TTP prerequisites: %s", errorMessageFromTerraformError(err))
 		}
 	}
 
 	m.setState(stratus.AttackTechniqueStatusCold)
 
-	// Remove terraform directory
-	err := m.StateManager.CleanupTechnique()
-	if err != nil {
-		return errors.New("unable to remove technique directory " + m.TerraformDir + ": " + err.Error())
+	if err := m.StateManager.CleanupTechnique(); err != nil {
+		return fmt.Errorf("unable to remove technique directory %s: %w", m.TerraformDir, err)
 	}
 
 	return nil
@@ -380,7 +417,7 @@ func (m *runnerImpl) GetState() stratus.AttackTechniqueState {
 func (m *runnerImpl) setState(state stratus.AttackTechniqueState) {
 	err := m.StateManager.SetTechniqueState(state)
 	if err != nil {
-		log.Println("Warning: unable to set technique state: " + err.Error())
+		log.Warnf("unable to set technique state: %s", err.Error())
 	}
 	m.TechniqueState = state
 }
@@ -393,12 +430,11 @@ func (m *runnerImpl) GetUniqueExecutionId() string {
 // buildTerraformVariables returns the terraform variables to use,
 // including the correlation metadata and any config-file overrides.
 func (m *runnerImpl) buildTerraformVariables() map[string]string {
-	correlationID := m.UniqueCorrelationID.String()
-	vars := m.Config.GetTerraformVariables(m.Technique.ID, config.SubstitutionVars{CorrelationID: correlationID})
+	vars := m.Config.GetTerraformVariables(m.Technique.ID, config.SubstitutionVars{CorrelationID: m.UniqueCorrelationID.String()})
 	if vars == nil {
 		vars = make(map[string]string)
 	}
-	vars[state.TerraformCorrelationVarName] = state.MarshalCorrelation(correlationID)
+	vars[state.TerraformCorrelationVarName] = state.MarshalCorrelation(m.UniqueCorrelationID)
 	return vars
 }
 

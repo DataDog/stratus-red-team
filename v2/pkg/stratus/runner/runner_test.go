@@ -3,6 +3,7 @@ package runner
 import (
 	"context"
 	"errors"
+	"path/filepath"
 	"testing"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -16,9 +17,9 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-const testCorrelationID = "11111111-2222-3333-4444-555555555555"
+var testCorrelationID = uuid.MustParse("11111111-2222-3333-4444-555555555555")
 
-func varsHaveCorrelation(id string) any {
+func varsHaveCorrelation(id uuid.UUID) any {
 	expected := state.MarshalCorrelation(id)
 	return mock.MatchedBy(func(vars map[string]string) bool {
 		return vars[state.TerraformCorrelationVarName] == expected
@@ -46,7 +47,7 @@ func TestRunnerWarmUp(t *testing.T) {
 			InitialTechniqueState: stratus.AttackTechniqueStatusCold,
 			PersistedOutputs:      map[string]string{"myoutput": "foo"},
 			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, outputs map[string]string, err error) {
-				terraform.AssertNotCalled(t, "TerraformInitAndApply")
+				terraform.AssertNotCalled(t, "TerraformInitAndApply", mock.Anything, mock.Anything)
 				state.AssertNotCalled(t, "ExtractTechnique")
 				assert.Nil(t, err)
 
@@ -77,7 +78,7 @@ func TestRunnerWarmUp(t *testing.T) {
 			InitialTechniqueState: stratus.AttackTechniqueStatusWarm,
 			PersistedOutputs:      map[string]string{"myoutput": "new"},
 			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, outputs map[string]string, err error) {
-				terraform.AssertNotCalled(t, "TerraformInitAndApply")
+				terraform.AssertNotCalled(t, "TerraformInitAndApply", mock.Anything, mock.Anything)
 				assert.Nil(t, err)
 				assert.Len(t, outputs, 1)
 				assert.Equal(t, "new", outputs["myoutput"])
@@ -102,7 +103,7 @@ func TestRunnerWarmUp(t *testing.T) {
 			InitialTechniqueState: stratus.AttackTechniqueStatusDetonated,
 			PersistedOutputs:      map[string]string{"myoutput": "old"},
 			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, outputs map[string]string, err error) {
-				terraform.AssertNotCalled(t, "TerraformInitAndApply")
+				terraform.AssertNotCalled(t, "TerraformInitAndApply", mock.Anything, mock.Anything)
 				assert.Nil(t, err)
 				assert.Len(t, outputs, 1)
 				assert.Equal(t, "old", outputs["myoutput"])
@@ -129,7 +130,7 @@ func TestRunnerWarmUp(t *testing.T) {
 		terraform := new(mocks.TerraformManager)
 
 		config.On("GetTerraformVariables", mock.Anything, mock.Anything).Return(map[string]string{})
-		state.On("GetRootDirectory").Return("/root")
+		state.On("GetWorkingDirectory").Return("/root/foo")
 		state.On("ExtractTechnique").Return(nil)
 		state.On("GetTechniqueState", mock.Anything).Return(scenario[i].InitialTechniqueState, nil)
 		state.On("GetTerraformOutputs").Return(scenario[i].PersistedOutputs, nil)
@@ -146,7 +147,7 @@ func TestRunnerWarmUp(t *testing.T) {
 			Config:              config,
 			TerraformManager:    terraform,
 			StateManager:        state,
-			UniqueCorrelationID: uuid.MustParse(testCorrelationID),
+			UniqueCorrelationID: testCorrelationID,
 		}
 		runner.initialize()
 		outputs, err := runner.WarmUp()
@@ -227,7 +228,7 @@ func TestRunnerDetonate(t *testing.T) {
 			terraform := new(mocks.TerraformManager)
 
 			config.On("GetTerraformVariables", mock.Anything, mock.Anything).Return(map[string]string{})
-			state.On("GetRootDirectory").Return("/root")
+			state.On("GetWorkingDirectory").Return("/root/sample-technique")
 			state.On("ExtractTechnique").Return(nil)
 			state.On("GetTechniqueState", mock.Anything).Return(scenario[i].TechniqueState, nil)
 			terraform.On("TerraformInitAndApply", mock.Anything, mock.Anything).Return(map[string]string{}, nil)
@@ -238,7 +239,7 @@ func TestRunnerDetonate(t *testing.T) {
 
 			var wasDetonated = false
 			runner := runnerImpl{
-				UniqueCorrelationID: uuid.MustParse(testCorrelationID),
+				UniqueCorrelationID: testCorrelationID,
 				Technique: &stratus.AttackTechnique{
 					ID: "sample-technique",
 					Detonate: func(map[string]string, stratus.CloudProviders) error {
@@ -262,9 +263,9 @@ func TestRunnerDetonate(t *testing.T) {
 			}
 
 			if scenario[i].ExpectWarmedUp {
-				terraform.AssertCalled(t, "TerraformInitAndApply", mock.Anything)
+				terraform.AssertCalled(t, "TerraformInitAndApply", mock.Anything, mock.Anything)
 			} else {
-				terraform.AssertNotCalled(t, "TerraformInitAndApply", mock.Anything)
+				terraform.AssertNotCalled(t, "TerraformInitAndApply", mock.Anything, mock.Anything)
 			}
 
 			if scenario[i].ExpectDetonated {
@@ -321,7 +322,7 @@ func TestRunnerRevert(t *testing.T) {
 	for i := range scenario {
 		t.Run(scenario[i].Name, func(t *testing.T) {
 			state := new(statemocks.StateManager)
-			state.On("GetRootDirectory").Return("/root")
+			state.On("GetWorkingDirectory").Return("/root/foo")
 			state.On("ExtractTechnique").Return(nil)
 			state.On("GetTerraformOutputs").Return(map[string]string{"foo": "bar"}, nil)
 			state.On("GetTechniqueState", mock.Anything).Return(scenario[i].TechniqueState)
@@ -385,7 +386,7 @@ func TestRunnerCleanup(t *testing.T) {
 			InitialTechniqueState: stratus.AttackTechniqueStatusCold,
 			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, err error) {
 				assert.NotNil(t, err)
-				terraform.AssertNotCalled(t, "TerraformDestroy")
+				terraform.AssertNotCalled(t, "TerraformDestroy", mock.Anything, mock.Anything)
 				state.AssertNotCalled(t, "CleanupTechnique")
 			},
 		},
@@ -446,9 +447,7 @@ func TestRunnerCleanup(t *testing.T) {
 			CheckExpectations: func(t *testing.T, terraform *mocks.TerraformManager, state *statemocks.StateManager, err error) {
 				assert.Nil(t, err, "revert error should not be propagated")
 
-				// The technique should have been marked as properly cleaned up
-				// We assume that the cleanup operation will anyway be a superset of revert, i.e. anything reverted / cleaned up in revert
-				// should also be in cleanup
+				// Cleanup is a superset of revert, so the technique ends up fully cleaned up.
 				state.AssertCalled(t, "SetTechniqueState", stratus.AttackTechniqueState(stratus.AttackTechniqueStatusCold))
 			},
 		},
@@ -459,7 +458,7 @@ func TestRunnerCleanup(t *testing.T) {
 		terraform := new(mocks.TerraformManager)
 
 		state.On("GetTerraformVariables").Return(map[string]string{}, nil)
-		state.On("GetRootDirectory").Return("/root")
+		state.On("GetWorkingDirectory").Return("/root/foo")
 		state.On("ExtractTechnique").Return(nil)
 		state.On("GetTechniqueState", mock.Anything).Return(scenario[i].InitialTechniqueState, nil)
 		state.On("SetTechniqueState", mock.Anything).Return(nil)
@@ -495,7 +494,7 @@ func TestNewRunnerWithOptions(t *testing.T) {
 	configMock := new(configmocks.Config)
 	correlationID := uuid.MustParse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee")
 
-	stateMock.On("GetRootDirectory").Return("/custom/root")
+	stateMock.On("GetWorkingDirectory").Return("/custom/root/test.technique")
 	stateMock.On("GetTechniqueState").Return(stratus.AttackTechniqueState(stratus.AttackTechniqueStatusCold))
 
 	technique := &stratus.AttackTechnique{ID: "test.technique"}
@@ -514,7 +513,7 @@ func TestNewRunnerWithOptions(t *testing.T) {
 	assert.Equal(t, correlationID.String(), r.GetUniqueExecutionId())
 
 	// Verify the injected state manager was actually called during init
-	stateMock.AssertCalled(t, "GetRootDirectory")
+	stateMock.AssertCalled(t, "GetWorkingDirectory")
 	stateMock.AssertCalled(t, "GetTechniqueState")
 }
 
@@ -525,11 +524,11 @@ func TestNewRunnerWithProviderFactory(t *testing.T) {
 	tfMock := new(mocks.TerraformManager)
 	configMock := new(configmocks.Config)
 
-	stateMock.On("GetRootDirectory").Return("/root")
+	stateMock.On("GetWorkingDirectory").Return("/root/test.provider-injection")
 	stateMock.On("GetTechniqueState").Return(stratus.AttackTechniqueState(stratus.AttackTechniqueStatusCold))
 
 	customProviders := stratus.CloudProvidersImpl{
-		UniqueCorrelationID: uuid.MustParse(testCorrelationID),
+		UniqueCorrelationID: testCorrelationID,
 	}
 
 	technique := &stratus.AttackTechnique{
@@ -577,7 +576,7 @@ func TestProviderCredentialInjection(t *testing.T) {
 	configMock := new(configmocks.Config)
 	correlationID := uuid.New()
 
-	stateMock.On("GetRootDirectory").Return("/root")
+	stateMock.On("GetWorkingDirectory").Return("/root/test.credential-injection")
 	stateMock.On("GetTechniqueState").Return(stratus.AttackTechniqueState(stratus.AttackTechniqueStatusCold))
 	stateMock.On("ExtractTechnique").Return(nil)
 	stateMock.On("GetTerraformOutputs").Return(map[string]string{}, nil)
@@ -635,4 +634,100 @@ func TestProviderCredentialInjection(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, "AKIAIOSFODNN7EXAMPLE", creds.AccessKeyID)
 	assert.Equal(t, "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY", creds.SecretAccessKey)
+}
+
+// Whether the correlation ID was *provided* decides the state layout, so it must be
+// distinguishable from a generated one. A generated ID differs on every command and could
+// never find the state written by a previous step.
+func TestResolveCorrelationID(t *testing.T) {
+	const providedID = "aabcdefa-1234-5678-9012-abcdef012345"
+	const otherID = "ffffffff-1234-5678-9012-abcdef012345"
+
+	scenario := []struct {
+		Name             string
+		CorrelationIDEnv string
+		DetonationIDEnv  string
+		ExpectedProvided bool
+		// Empty means the ID is generated, so only its presence can be asserted.
+		ExpectedID string
+	}{
+		{Name: "neither variable set", ExpectedProvided: false},
+		{Name: "correlation id set", CorrelationIDEnv: providedID, ExpectedProvided: true, ExpectedID: providedID},
+		{Name: "deprecated detonation id set", DetonationIDEnv: providedID, ExpectedProvided: true, ExpectedID: providedID},
+		{Name: "correlation id wins over deprecated", CorrelationIDEnv: providedID, DetonationIDEnv: otherID, ExpectedProvided: true, ExpectedID: providedID},
+		{Name: "invalid uuid is not provided", CorrelationIDEnv: "not-a-uuid", ExpectedProvided: false},
+		{Name: "empty value is not provided", CorrelationIDEnv: "", ExpectedProvided: false},
+	}
+
+	for i := range scenario {
+		t.Run(scenario[i].Name, func(t *testing.T) {
+			t.Setenv(EnvVarStratusRedTeamCorrelationId, scenario[i].CorrelationIDEnv)
+			t.Setenv(EnvVarStratusRedTeamDetonationId, scenario[i].DetonationIDEnv)
+
+			id, provided := resolveCorrelationID()
+
+			assert.Equal(t, scenario[i].ExpectedProvided, provided)
+			if scenario[i].ExpectedID != "" {
+				assert.Equal(t, scenario[i].ExpectedID, id.String())
+			} else {
+				assert.NotEqual(t, uuid.Nil, id)
+			}
+		})
+	}
+}
+
+// The layout decision is the whole point of correlation-scoped state, and every other test here
+// injects a state manager and so skips it. This exercises the real FileSystemStateManager.
+func TestRunnerStateLayoutFollowsCorrelationID(t *testing.T) {
+	const providedID = "aabcdefa-1234-5678-9012-abcdef012345"
+	technique := &stratus.AttackTechnique{ID: "aws.test.layout"}
+
+	scenario := []struct {
+		Name             string
+		CorrelationIDEnv string
+		DetonationIDEnv  string
+		Option           []RunnerOption
+		ExpectNestedDir  string
+	}{
+		{Name: "no correlation id keeps the flat layout"},
+		{Name: "correlation id from the environment nests", CorrelationIDEnv: providedID, ExpectNestedDir: providedID},
+		{Name: "deprecated variable nests too", DetonationIDEnv: providedID, ExpectNestedDir: providedID},
+		{Name: "WithCorrelationID nests", Option: []RunnerOption{WithCorrelationID(uuid.MustParse(providedID))}, ExpectNestedDir: providedID},
+		{Name: "WithCorrelationID(Nil) falls back to a generated id", Option: []RunnerOption{WithCorrelationID(uuid.Nil)}},
+		{Name: "an invalid correlation id does not isolate", CorrelationIDEnv: "not-a-uuid"},
+	}
+
+	for i := range scenario {
+		t.Run(scenario[i].Name, func(t *testing.T) {
+			home := t.TempDir()
+			t.Setenv("HOME", home)
+			t.Setenv(EnvVarStratusRedTeamCorrelationId, scenario[i].CorrelationIDEnv)
+			t.Setenv(EnvVarStratusRedTeamDetonationId, scenario[i].DetonationIDEnv)
+
+			opts := append([]RunnerOption{WithTerraformManager(new(mocks.TerraformManager)), WithConfig(new(configmocks.Config))}, scenario[i].Option...)
+			r := NewRunner(technique, StratusRunnerNoForce, opts...).(*runnerImpl)
+
+			expected := filepath.Join(home, ".stratus-red-team", technique.ID)
+			if scenario[i].ExpectNestedDir != "" {
+				expected = filepath.Join(expected, scenario[i].ExpectNestedDir)
+			}
+			assert.Equal(t, expected, r.TerraformDir)
+		})
+	}
+}
+
+// A generated correlation ID must never isolate state: it differs on every command, so the
+// working directory would move between warmup and cleanup.
+func TestRunnerGeneratedCorrelationIDKeepsFlatLayout(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	t.Setenv(EnvVarStratusRedTeamCorrelationId, "")
+	t.Setenv(EnvVarStratusRedTeamDetonationId, "")
+	technique := &stratus.AttackTechnique{ID: "aws.test.generated"}
+
+	first := NewRunner(technique, StratusRunnerNoForce, WithTerraformManager(new(mocks.TerraformManager)), WithConfig(new(configmocks.Config))).(*runnerImpl)
+	second := NewRunner(technique, StratusRunnerNoForce, WithTerraformManager(new(mocks.TerraformManager)), WithConfig(new(configmocks.Config))).(*runnerImpl)
+
+	assert.NotEqual(t, first.GetUniqueExecutionId(), second.GetUniqueExecutionId())
+	assert.Equal(t, first.TerraformDir, second.TerraformDir, "two commands must resolve to the same state")
 }
