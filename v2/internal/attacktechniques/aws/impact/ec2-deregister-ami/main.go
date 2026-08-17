@@ -21,7 +21,7 @@ func init() {
 		ID:           "aws.impact.ec2-deregister-ami",
 		FriendlyName: "Deregister an Amazon EC2 AMI",
 		Description: `
-Deregisters an EBS-backed AMI created by Stratus during warm-up.
+Deregisters an EBS-backed AMI. Once deregistered, the AMI can no longer be used to launch new EC2 instances, disrupting recovery, deployment, autoscaling or replacement workflows that depend on it.
 
 Warm-up:
 
@@ -31,7 +31,7 @@ Warm-up:
 
 Detonation:
 
-- Call <code>DeregisterImage</code> on the AMI created during warm-up
+- Call <code>DeregisterImage</code> on the AMI
 
 References:
 
@@ -43,7 +43,7 @@ Note: the AMI's backing EBS snapshot is not deleted during detonation.
 Cleanup still removes the remaining snapshot and volume after the AMI has been deregistered outside Terraform.
 `,
 		Detection: `
-Through CloudTrail's <code>DeregisterImage</code> event, when an AMI owned by the compromised account is deregistered:
+Through CloudTrail's <code>DeregisterImage</code> event, when an AMI is deregistered:
 
 <pre><code>"eventSource": "ec2.amazonaws.com",
 "eventName": "DeregisterImage",
