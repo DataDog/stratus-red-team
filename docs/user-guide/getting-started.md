@@ -239,6 +239,10 @@ For AWS techniques, it allows you to:
 - **Add custom tags** to Terraform-managed prerequisites supported by the AWS provider's `default_tags`
 - **Prefix resource names** with a service-compatible value, including through templating
 
+!!! warning
+
+    AWS `tags` and `prefix` settings currently apply only to Terraform-managed prerequisites. Resources created directly by technique Go code during detonation do not yet receive these tags or prefixed names. This is a known issue tracked in [#942](https://github.com/DataDog/stratus-red-team/issues/942).
+
 For Kubernetes techniques, it allows you to:
 
 - **Use a specific namespace** instead of creating one, when your user cannot create namespaces

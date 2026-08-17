@@ -53,6 +53,10 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 }
 ```
 
+!!! warning
+
+    AWS `tags` and `prefix` settings currently apply only to Terraform-managed prerequisites. Resources created directly by technique Go code during detonation do not yet receive these tags or prefixed names. This is a known issue tracked in [#942](https://github.com/DataDog/stratus-red-team/issues/942).
+
 ## Adding new config keys
 
 To add support for a new configuration section:
