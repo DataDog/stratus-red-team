@@ -1,0 +1,36 @@
+[
+   {
+      "awsRegion": "ca-isob-northsouth-1r",
+      "eventCategory": "Management",
+      "eventID": "62e290e2-ee95-4a7c-a9f8-db4ef462b12d",
+      "eventName": "UpdateAssumeRolePolicy",
+      "eventSource": "iam.amazonaws.com",
+      "eventTime": "2024-08-01T13:29:57Z",
+      "eventType": "AwsApiCall",
+      "eventVersion": "1.09",
+      "managementEvent": true,
+      "readOnly": false,
+      "recipientAccountId": "751203476945",
+      "requestID": "295ee6e3-1da9-416f-885d-ad65d876ef82",
+      "requestParameters": {
+         "policyDocument": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Principal\": {\n        \"Service\": \"ec2.amazonaws.com\"\n      },\n      \"Action\": \"sts:AssumeRole\"\n    },\n    {\n      \"Effect\": \"Allow\",\n      \"Principal\": {\n        \"AWS\": \"arn:aws:iam::193672423079:root\"\n      },\n      \"Action\": \"sts:AssumeRole\"\n    }\n  ]\n}",
+         "roleName": "stratus-red-team-backdoor-r-role"
+      },
+      "responseElements": null,
+      "sourceIPAddress": "225.178.039.250",
+      "tlsDetails": {
+         "cipherSuite": "TLS_AES_128_GCM_SHA256",
+         "clientProvidedHostHeader": "iam.amazonaws.com",
+         "tlsVersion": "TLSv1.3"
+      },
+      "userAgent": "stratus-red-team_180e078f-4ad3-40c5-9ec3-efff37e17b25",
+      "userIdentity": {
+         "accessKeyId": "AKIAMUV7B57OZM0RV05D",
+         "accountId": "751203476945",
+         "arn": "arn:aws:iam::751203476945:user/christophe",
+         "principalId": "AIDA7SLGLLJ9LWK18E4Y",
+         "type": "IAMUser",
+         "userName": "christophe"
+      }
+   }
+]
