@@ -1,0 +1,5 @@
+---
+schema-version: v1
+kind: mergequeue
+enable: false
+
