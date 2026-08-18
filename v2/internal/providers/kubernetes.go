@@ -50,8 +50,7 @@ func NewK8sProvider(correlationId uuid.UUID, opts ...K8sProviderOption) *K8sProv
 	}
 
 	if p.RestConfig == nil {
-		kubeconfig := GetKubeConfigPath()
-		restConfig, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
+		restConfig, err := buildKubeRestConfig()
 		if err != nil {
 			log.Fatalf("unable to build kube config: %v", err)
 		}
@@ -92,11 +91,23 @@ func getKubeConfigPath() string {
 		return kubeConfigFilePath
 	}
 
-	// Otherwise, return an empty string
-	// This will cause `clientcmd.BuildConfigFromFlags` called in `GetClient` will try to use
-	// in-cluster auth
-	// c.f. https://pkg.go.dev/k8s.io/client-go/tools/clientcmd#BuildConfigFromFlags
+	// Otherwise, return an empty string.
+	// This causes the loading rules used by buildKubeRestConfig to fall back to
+	// in-cluster auth.
 	return ""
+}
+
+// buildKubeRestConfig resolves the Kubernetes REST configuration the same way
+// kubectl does. It honors the KUBECONFIG environment variable - including when
+// it holds several ':'-separated paths, which are then merged together - and
+// otherwise falls back to $HOME/.kube/config, then to in-cluster credentials.
+// The current context is resolved across the merged files.
+func buildKubeRestConfig() (*rest.Config, error) {
+	loadingRules := clientcmd.NewDefaultClientConfigLoadingRules()
+	return clientcmd.NewNonInteractiveDeferredLoadingClientConfig(
+		loadingRules,
+		&clientcmd.ConfigOverrides{},
+	).ClientConfig()
 }
 
 // GetClient is used to authenticate with Kubernetes and build the client from a kubeconfig
