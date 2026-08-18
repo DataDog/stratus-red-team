@@ -58,12 +58,48 @@ kubernetes:
 			wantError: false,
 		},
 		{
+			name: "valid-aws-config",
+			yaml: `
+aws:
+  default:
+    prefix: "team-<% .CorrelationID %>-"
+    tags:
+      Environment: test
+      ExecutionID: "<% .CorrelationID %>"
+  techniques:
+    "aws.persistence.lambda-backdoor-function":
+      tags:
+        Owner: security
+`,
+			wantError: false,
+		},
+		{
 			name: "wrong-type-for-annotations",
 			yaml: `
 kubernetes:
   default:
     pod:
       annotations: "not-a-map"
+`,
+			wantError: true,
+		},
+		{
+			name: "wrong-type-for-aws-tags",
+			yaml: `
+aws:
+  default:
+    tags: "not-a-map"
+`,
+			wantError: true,
+		},
+		{
+			name: "non-aws-technique-key",
+			yaml: `
+aws:
+  techniques:
+    "gcp.test.technique":
+      tags:
+        Owner: security
 `,
 			wantError: true,
 		},

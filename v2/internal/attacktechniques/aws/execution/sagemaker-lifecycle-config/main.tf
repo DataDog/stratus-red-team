@@ -10,9 +10,9 @@ provider "aws" {
   skip_region_validation      = true
   skip_credentials_validation = true
   default_tags {
-    tags = {
+    tags = merge(var.config.aws.tags, {
       StratusRedTeam = true
-    }
+    })
   }
 }
 
@@ -21,7 +21,7 @@ provider "aws" {
 data "aws_caller_identity" "current" {}
 
 locals {
-  resource_prefix = "stratus-red-team-update-sagemaker-config-profile"
+  resource_prefix = "${var.config.aws.prefix}stratus-red-team-update-sagemaker-config-profile"
 }
 
 # --- 1. High-Privilege Target Role (The Goal of the Attack) ---

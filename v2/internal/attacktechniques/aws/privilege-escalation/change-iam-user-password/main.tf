@@ -10,14 +10,14 @@ provider "aws" {
   skip_region_validation      = true
   skip_credentials_validation = true
   default_tags {
-    tags = {
+    tags = merge(var.config.aws.tags, {
       StratusRedTeam = true
-    }
+    })
   }
 }
 
 locals {
-  resource_prefix = "stratus-red-team-update-login-profile"
+  resource_prefix = "${var.config.aws.prefix}stratus-red-team-update-login-profile"
 }
 
 resource "aws_iam_user" "legit-user" {

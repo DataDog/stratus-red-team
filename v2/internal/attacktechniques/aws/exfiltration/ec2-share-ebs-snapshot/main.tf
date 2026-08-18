@@ -11,9 +11,9 @@ provider "aws" {
   skip_credentials_validation = true
   skip_get_ec2_platforms      = true
   default_tags {
-    tags = {
+    tags = merge(var.config.aws.tags, {
       StratusRedTeam = true
-    }
+    })
   }
 }
 
@@ -26,7 +26,7 @@ resource "aws_ebs_volume" "volume" {
   size              = 1
 
   tags = {
-    Name = "StratusRedTeamVolume"
+    Name = "${var.config.aws.prefix}StratusRedTeamVolume"
   }
 }
 

@@ -11,20 +11,20 @@ provider "aws" {
   skip_credentials_validation = true
   skip_get_ec2_platforms      = true
   default_tags {
-    tags = {
+    tags = merge(var.config.aws.tags, {
       StratusRedTeam = true
-    }
+    })
   }
 }
 
 locals {
-  resource_prefix = "stratus-red-team-open-sg"
+  resource_prefix = "${var.config.aws.prefix}stratus-red-team-open-sg"
 }
 
 resource "aws_vpc" "vpc" {
   cidr_block = "10.0.0.0/16"
   tags = {
-    Name = "StratusRedTeamVpc",
+    Name = "${var.config.aws.prefix}StratusRedTeamVpc",
   }
 }
 

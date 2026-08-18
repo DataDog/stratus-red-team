@@ -11,15 +11,15 @@ provider "aws" {
   skip_credentials_validation = true
   skip_get_ec2_platforms      = true
   default_tags {
-    tags = {
+    tags = merge(var.config.aws.tags, {
       StratusRedTeam = true
-    }
+    })
   }
 }
 
 locals {
   num_parameters = 42 // arbitrary
-  prefix         = "/credentials/stratus-red-team/"
+  prefix         = "/credentials/${var.config.aws.prefix}stratus-red-team/"
 }
 
 resource "random_password" "secret" {
@@ -37,4 +37,8 @@ resource "aws_ssm_parameter" "parameters" {
 
 output "display" {
   value = "${local.num_parameters} SSM parameters ready under the SSM path ${local.prefix}"
+}
+
+output "ssm_parameter_path" {
+  value = local.prefix
 }
