@@ -1,0 +1,129 @@
+[
+   {
+      "awsRegion": "ap-isob-central-3r",
+      "eventCategory": "Management",
+      "eventID": "083dc4ad-e264-46bc-a407-d0dd31b58bdc",
+      "eventName": "AttachUserPolicy",
+      "eventSource": "iam.amazonaws.com",
+      "eventTime": "2024-08-01T13:33:28Z",
+      "eventType": "AwsApiCall",
+      "eventVersion": "1.09",
+      "managementEvent": true,
+      "readOnly": false,
+      "recipientAccountId": "229654561268",
+      "requestID": "710f2703-6e8a-46d5-9924-b12a3a681755",
+      "requestParameters": {
+         "policyArn": "arn:aws:iam::aws:policy/AdministratorAccess",
+         "userName": "malicious-iam-user"
+      },
+      "responseElements": null,
+      "sourceIPAddress": "075.050.255.67",
+      "tlsDetails": {
+         "cipherSuite": "TLS_AES_128_GCM_SHA256",
+         "clientProvidedHostHeader": "iam.amazonaws.com",
+         "tlsVersion": "TLSv1.3"
+      },
+      "userAgent": "stratus-red-team_6bf00313-712c-4fd2-9bdd-88f48a4b1282",
+      "userIdentity": {
+         "accessKeyId": "AKIAOZUDECYXYM4ONAN4",
+         "accountId": "229654561268",
+         "arn": "arn:aws:iam::229654561268:user/christophe",
+         "principalId": "AIDAZ49AHUAJ9OEK73O5",
+         "type": "IAMUser",
+         "userName": "christophe"
+      }
+   },
+   {
+      "awsRegion": "ap-isob-central-3r",
+      "eventCategory": "Management",
+      "eventID": "94faedcc-0fa4-46e6-9322-022e8e934f04",
+      "eventName": "CreateAccessKey",
+      "eventSource": "iam.amazonaws.com",
+      "eventTime": "2024-08-01T13:33:28Z",
+      "eventType": "AwsApiCall",
+      "eventVersion": "1.09",
+      "managementEvent": true,
+      "readOnly": false,
+      "recipientAccountId": "229654561268",
+      "requestID": "0ee5fc85-66bb-4602-a69e-9a5a2a3add30",
+      "requestParameters": {
+         "userName": "malicious-iam-user"
+      },
+      "responseElements": {
+         "accessKey": {
+            "accessKeyId": "AKIAXAFZN8JEPF6L682H",
+            "createDate": "Aug 1, 2024 1:33:28 PM",
+            "status": "Active",
+            "userName": "malicious-iam-user"
+         }
+      },
+      "sourceIPAddress": "075.050.255.67",
+      "tlsDetails": {
+         "cipherSuite": "TLS_AES_128_GCM_SHA256",
+         "clientProvidedHostHeader": "iam.amazonaws.com",
+         "tlsVersion": "TLSv1.3"
+      },
+      "userAgent": "stratus-red-team_6bf00313-712c-4fd2-9bdd-88f48a4b1282",
+      "userIdentity": {
+         "accessKeyId": "AKIAOZUDECYXYM4ONAN4",
+         "accountId": "229654561268",
+         "arn": "arn:aws:iam::229654561268:user/christophe",
+         "principalId": "AIDAZ49AHUAJ9OEK73O5",
+         "type": "IAMUser",
+         "userName": "christophe"
+      }
+   },
+   {
+      "awsRegion": "ap-isob-central-3r",
+      "eventCategory": "Management",
+      "eventID": "3346344c-5a3e-429e-8405-420f98f75d6e",
+      "eventName": "CreateUser",
+      "eventSource": "iam.amazonaws.com",
+      "eventTime": "2024-08-01T13:33:28Z",
+      "eventType": "AwsApiCall",
+      "eventVersion": "1.09",
+      "managementEvent": true,
+      "readOnly": false,
+      "recipientAccountId": "229654561268",
+      "requestID": "64ef9c47-6b64-4c0e-8c32-eb9ffaf8a658",
+      "requestParameters": {
+         "tags": [
+            {
+               "key": "StratusRedTeam",
+               "value": "true"
+            }
+         ],
+         "userName": "malicious-iam-user"
+      },
+      "responseElements": {
+         "user": {
+            "arn": "arn:aws:iam::229654561268:user/malicious-iam-user",
+            "createDate": "Aug 1, 2024 1:33:28 PM",
+            "path": "/",
+            "tags": [
+               {
+                  "key": "StratusRedTeam",
+                  "value": "true"
+               }
+            ],
+            "userId": "AIDAL1XMLVWIUOK8KAF0",
+            "userName": "malicious-iam-user"
+         }
+      },
+      "sourceIPAddress": "075.050.255.67",
+      "tlsDetails": {
+         "cipherSuite": "TLS_AES_128_GCM_SHA256",
+         "clientProvidedHostHeader": "iam.amazonaws.com",
+         "tlsVersion": "TLSv1.3"
+      },
+      "userAgent": "stratus-red-team_6bf00313-712c-4fd2-9bdd-88f48a4b1282",
+      "userIdentity": {
+         "accessKeyId": "AKIAOZUDECYXYM4ONAN4",
+         "accountId": "229654561268",
+         "arn": "arn:aws:iam::229654561268:user/christophe",
+         "principalId": "AIDAZ49AHUAJ9OEK73O5",
+         "type": "IAMUser",
+         "userName": "christophe"
+      }
+   }
+]

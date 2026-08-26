@@ -1,0 +1,35 @@
+[
+   {
+      "awsRegion": "megov-southcentral-3r",
+      "eventCategory": "Management",
+      "eventID": "a46a1a42-9ef1-48d4-9c61-507eb6d4019f",
+      "eventName": "UpdateLoginProfile",
+      "eventSource": "iam.amazonaws.com",
+      "eventTime": "2024-08-28T09:54:40Z",
+      "eventType": "AwsApiCall",
+      "eventVersion": "1.09",
+      "managementEvent": true,
+      "readOnly": false,
+      "recipientAccountId": "763751499319",
+      "requestID": "bd8967e5-b80d-48cd-b8b5-45c9905a4a7f",
+      "requestParameters": {
+         "userName": "stratus-red-team-update-login-profile-user"
+      },
+      "responseElements": null,
+      "sourceIPAddress": "212.3.253.233",
+      "tlsDetails": {
+         "cipherSuite": "TLS_AES_128_GCM_SHA256",
+         "clientProvidedHostHeader": "iam.amazonaws.com",
+         "tlsVersion": "TLSv1.3"
+      },
+      "userAgent": "stratus-red-team_33d1bcd6-0716-4e7f-a145-8a75625cf180",
+      "userIdentity": {
+         "accessKeyId": "AKIAV1MIS7NGMDMR83FC",
+         "accountId": "763751499319",
+         "arn": "arn:aws:iam::763751499319:user/christophe",
+         "principalId": "AIDAXYBG3LDVX65FGD9O",
+         "type": "IAMUser",
+         "userName": "christophe"
+      }
+   }
+]
