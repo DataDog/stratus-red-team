@@ -334,6 +334,19 @@ AWS:
           platform: AWS
           isIdempotent: true
     Persistence:
+        - id: aws.persistence.cognito-refresh-token-reuse
+          name: Reuse an Amazon Cognito Refresh Token
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+          frameworkmappings:
+            - framework: Threat Technique Catalog for AWS
+              techniques:
+                - name: 'Account Manipulation: Cognito Refresh Token Abuse'
+                  id: T1098.A006
+                  url: https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1098.A006.html
+          platform: AWS
+          isIdempotent: true
         - id: aws.persistence.iam-backdoor-role
           name: Backdoor an IAM Role
           isSlow: false
