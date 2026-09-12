@@ -18,7 +18,7 @@ type AzureProvider struct {
 	Credentials         azcore.TokenCredential
 	ClientOptions       *arm.ClientOptions
 	SubscriptionID      string
-	UniqueCorrelationId uuid.UUID // unique value injected in the user-agent, to differentiate Stratus Red Team executions
+	UniqueCorrelationId uuid.UUID // unique value injected in x-ms-client-request-id, to correlate Stratus Red Team executions in Azure Activity Logs
 }
 
 // AzureProviderOption configures optional overrides on an AzureProvider.
@@ -59,7 +59,7 @@ func NewAzureProvider(correlationId uuid.UUID, opts ...AzureProviderOption) *Azu
 
 	p.ClientOptions = &arm.ClientOptions{
 		ClientOptions: azcore.ClientOptions{
-			Telemetry: policy.TelemetryOptions{ApplicationID: correlationId.String(), Disabled: false},
+			PerCallPolicies: []policy.Policy{newCorrelationIDPolicy(correlationId)},
 		},
 	}
 	return p

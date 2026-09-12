@@ -154,7 +154,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	}
 
 	// Create FIC client for managed identity operations
-	ficClient, err := armmsi.NewFederatedIdentityCredentialsClient(subscriptionId, azureProvider.GetCredentials(), nil)
+	ficClient, err := armmsi.NewFederatedIdentityCredentialsClient(subscriptionId, azureProvider.GetCredentials(), azureProvider.ClientOptions)
 	if err != nil {
 		return fmt.Errorf("could not create FIC client: %w", err)
 	}
@@ -220,7 +220,7 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 	subscriptionId := azureProvider.SubscriptionID
 
 	// Create FIC client for managed identity operations
-	ficClient, err := armmsi.NewFederatedIdentityCredentialsClient(subscriptionId, azureProvider.GetCredentials(), nil)
+	ficClient, err := armmsi.NewFederatedIdentityCredentialsClient(subscriptionId, azureProvider.GetCredentials(), azureProvider.ClientOptions)
 	if err != nil {
 		return fmt.Errorf("could not create FIC client: %w", err)
 	}
@@ -273,7 +273,7 @@ func strPtr(s string) *string {
 // deleteOIDCContainer deletes the OIDC container from the storage account.
 func deleteOIDCContainer(azureProvider *providers.AzureProvider, blobServiceURL string) error {
 	ctx := context.Background()
-	blobClient, err := azblob.NewClient(blobServiceURL, azureProvider.GetCredentials(), nil)
+	blobClient, err := azblob.NewClient(blobServiceURL, azureProvider.GetCredentials(), &azblob.ClientOptions{ClientOptions: azureProvider.ClientOptions.ClientOptions})
 	if err != nil {
 		return fmt.Errorf("could not create blob client: %w", err)
 	}
@@ -284,7 +284,7 @@ func deleteOIDCContainer(azureProvider *providers.AzureProvider, blobServiceURL 
 // uploadOIDCDocuments creates the OIDC container and uploads the discovery document and JWKS.
 func uploadOIDCDocuments(azureProvider *providers.AzureProvider, blobServiceURL, issuerURL string, privateKey *rsa.PrivateKey, keyID string) error {
 	ctx := context.Background()
-	blobClient, err := azblob.NewClient(blobServiceURL, azureProvider.GetCredentials(), nil)
+	blobClient, err := azblob.NewClient(blobServiceURL, azureProvider.GetCredentials(), &azblob.ClientOptions{ClientOptions: azureProvider.ClientOptions.ClientOptions})
 	if err != nil {
 		return fmt.Errorf("could not create blob client: %w", err)
 	}

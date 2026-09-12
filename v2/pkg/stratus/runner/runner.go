@@ -199,8 +199,9 @@ func resolveCorrelationID() (uuid.UUID, bool) {
 	}
 	parsed, err := uuid.Parse(raw)
 	if err != nil {
-		log.Warnf("%s is not a valid UUID, using a random one: %s", envName, err.Error())
-		return uuid.New(), false
+		generated := uuid.New()
+		log.Warnf("%s is not a valid UUID (%s), using a random one: %s", envName, raw, generated.String())
+		return generated, false
 	}
 	return parsed, true
 }

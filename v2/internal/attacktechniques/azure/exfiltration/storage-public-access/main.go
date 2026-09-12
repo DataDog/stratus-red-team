@@ -105,7 +105,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	// Change container access level to public access (Container)
 	log.Println("Setting container " + containerName + " to Container access level (anonymous read access for containers and blobs)")
 	blobServiceURL := fmt.Sprintf("https://%s.blob.core.windows.net/", storageAccountName)
-	blobClient, err := azblob.NewClient(blobServiceURL, providers.Azure().GetCredentials(), nil)
+	blobClient, err := azblob.NewClient(blobServiceURL, providers.Azure().GetCredentials(), &azblob.ClientOptions{ClientOptions: providers.Azure().ClientOptions.ClientOptions})
 	if err != nil {
 		return fmt.Errorf("unable to create blob service client: %w", err)
 	}
@@ -155,7 +155,7 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 	// Set container access to Private
 	log.Println("Setting container " + containerName + " back to private access")
 	blobServiceURL := fmt.Sprintf("https://%s.blob.core.windows.net/", storageAccountName)
-	blobClient, err := azblob.NewClient(blobServiceURL, providers.Azure().GetCredentials(), nil)
+	blobClient, err := azblob.NewClient(blobServiceURL, providers.Azure().GetCredentials(), &azblob.ClientOptions{ClientOptions: providers.Azure().ClientOptions.ClientOptions})
 	if err != nil {
 		return fmt.Errorf("unable to create blob service client: %w", err)
 	}
