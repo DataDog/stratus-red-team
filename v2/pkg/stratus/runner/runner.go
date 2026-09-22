@@ -31,8 +31,18 @@ const EnvVarStratusRedTeamDetonationId = "STRATUS_RED_TEAM_DETONATION_ID"
 // Use an existing terraform binary path instead of letting the runner download it.
 const EnvVarStratusTerraformBinaryPath = "STRATUS_TERRAFORM_BINARY_PATH"
 
-// pluginCacheDirectoryName is the provider cache shared by every execution.
+// pluginCacheDirectoryName is the default provider cache shared by every execution.
 const pluginCacheDirectoryName = "plugin-cache"
+
+// resolvePluginCacheDirectory returns the explicitly configured provider cache directory, or the
+// default cache directory when TF_PLUGIN_CACHE_DIR is unset. An explicitly empty environment
+// variable opts out of the default shared cache.
+func resolvePluginCacheDirectory(stateRoot string) string {
+	if cacheDirectory, explicitlySet := os.LookupEnv(pluginCacheEnvVar); explicitlySet {
+		return cacheDirectory
+	}
+	return filepath.Join(stateRoot, pluginCacheDirectoryName)
+}
 
 // RunnerOption configures optional dependencies on a Runner.
 // When no options are provided, the runner uses its default implementations
@@ -159,8 +169,9 @@ func NewRunnerWithContext(ctx context.Context, technique *stratus.AttackTechniqu
 		if envPath := os.Getenv(EnvVarStratusTerraformBinaryPath); envPath != "" {
 			terraformBinaryPath = envPath
 		}
-		tfOpts := []TerraformManagerOption{
-			WithPluginCacheDirectory(filepath.Join(runner.StateManager.GetRootDirectory(), pluginCacheDirectoryName)),
+		var tfOpts []TerraformManagerOption
+		if cacheDirectory := resolvePluginCacheDirectory(runner.StateManager.GetRootDirectory()); cacheDirectory != "" {
+			tfOpts = append(tfOpts, WithPluginCacheDirectory(cacheDirectory))
 		}
 		if len(runner.terraformBackendConfigs) > 0 {
 			tfOpts = append(tfOpts, WithBackendConfigs(runner.terraformBackendConfigs))

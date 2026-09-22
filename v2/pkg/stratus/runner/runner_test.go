@@ -3,6 +3,7 @@ package runner
 import (
 	"context"
 	"errors"
+	"os"
 	"path/filepath"
 	"testing"
 
@@ -672,6 +673,53 @@ func TestResolveCorrelationID(t *testing.T) {
 			} else {
 				assert.NotEqual(t, uuid.Nil, id)
 			}
+		})
+	}
+}
+
+func TestResolvePluginCacheDirectory(t *testing.T) {
+	const stateRoot = "/state/root"
+
+	original, wasSet := os.LookupEnv(pluginCacheEnvVar)
+	t.Cleanup(func() {
+		if wasSet {
+			assert.NoError(t, os.Setenv(pluginCacheEnvVar, original))
+		} else {
+			assert.NoError(t, os.Unsetenv(pluginCacheEnvVar))
+		}
+	})
+
+	scenarios := []struct {
+		name  string
+		set   bool
+		value string
+		want  string
+	}{
+		{
+			name: "uses the default cache when the environment variable is unset",
+			want: filepath.Join(stateRoot, pluginCacheDirectoryName),
+		},
+		{
+			name: "allows an explicitly empty environment variable to disable the default cache",
+			set:  true,
+		},
+		{
+			name:  "uses an explicitly configured cache directory",
+			set:   true,
+			value: "/custom/plugin-cache",
+			want:  "/custom/plugin-cache",
+		},
+	}
+
+	for _, scenario := range scenarios {
+		t.Run(scenario.name, func(t *testing.T) {
+			if scenario.set {
+				assert.NoError(t, os.Setenv(pluginCacheEnvVar, scenario.value))
+			} else {
+				assert.NoError(t, os.Unsetenv(pluginCacheEnvVar))
+			}
+
+			assert.Equal(t, scenario.want, resolvePluginCacheDirectory(stateRoot))
 		})
 	}
 }
