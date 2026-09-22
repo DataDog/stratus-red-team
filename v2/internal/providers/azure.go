@@ -59,6 +59,7 @@ func NewAzureProvider(correlationId uuid.UUID, opts ...AzureProviderOption) *Azu
 
 	p.ClientOptions = &arm.ClientOptions{
 		ClientOptions: azcore.ClientOptions{
+			Telemetry: policy.TelemetryOptions{ApplicationID: correlationId.String(), Disabled: false},
 			PerCallPolicies: []policy.Policy{newCorrelationIDPolicy(correlationId)},
 		},
 	}
