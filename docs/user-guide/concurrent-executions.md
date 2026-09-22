@@ -58,13 +58,41 @@ The full correlation ID remains available as `var.correlation.id`, and in Go thr
 
 ## Provider cache
 
-Terraform documents its provider plugin cache as not concurrency safe, so Stratus Red Team runs
-`terraform init` one at a time within a process. Two Stratus processes initializing at the same
-time on the same machine are not covered; if that ever corrupts the cache, delete
-`$HOME/.stratus-red-team/plugin-cache` and it will be repopulated on the next run.
-
 Since each execution has its own Terraform working directory, provider plugins are shared through a
 cache at `$HOME/.stratus-red-team/plugin-cache` instead of being downloaded once per execution.
+
+!!! warning "The shared provider cache is not concurrency safe"
+
+    Terraform does not guarantee that its provider plugin cache is safe when `terraform init` runs
+    concurrently. Treat the cache as unsafe whenever two Terraform lifecycles can overlap,
+    including across separate Stratus Red Team processes. Stratus Red Team serializes `terraform
+    init` only within a process; that does not make the shared cache safe while another Terraform
+    process is using a provider. Concurrent use can fail with errors such as `text file busy`. See
+    [Terraform's provider-cache documentation](https://developer.hashicorp.com/terraform/cli/config/config-file#provider-plugin-cache).
+
+### Disable the shared provider cache
+
+For concurrent detonations, disable the cache by setting `TF_PLUGIN_CACHE_DIR` to an explicitly
+empty value before starting Stratus Red Team:
+
+```bash
+export TF_PLUGIN_CACHE_DIR=""
+```
+
+In Kubernetes, set the container environment variable to an empty string:
+
+```yaml
+- name: TF_PLUGIN_CACHE_DIR
+  value: ""
+```
+
+An **unset** variable retains Stratus Red Team's default shared cache. An explicitly empty variable
+opts out of that default, so Terraform installs providers in each execution's own working directory
+instead. This trades provider-download reuse for isolation and concurrency safety.
+
+If your Terraform CLI configuration file also sets `plugin_cache_dir`, remove that setting: an empty
+environment variable does not override a cache directory configured in `.terraformrc` or
+`TF_CLI_CONFIG_FILE`.
 
 ## Upgrading from a version without execution isolation
 

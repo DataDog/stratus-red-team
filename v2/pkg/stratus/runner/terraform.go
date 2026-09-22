@@ -187,6 +187,10 @@ func (m *TerraformManagerImpl) existingBinaryVersionSufficient() bool {
 // dropped by CleanEnv: tfexec rejects them outright, so without this a caller who had any of
 // them set would fail the whole run. Log variables are unaffected, tfexec overrides those itself.
 func (m *TerraformManagerImpl) configureEnvironment(tf *tfexec.Terraform) error {
+	return tf.SetEnv(m.terraformEnvironment())
+}
+
+func (m *TerraformManagerImpl) terraformEnvironment() map[string]string {
 	env := map[string]string{}
 	for _, entry := range os.Environ() {
 		parts := strings.SplitN(entry, "=", 2)
@@ -204,7 +208,7 @@ func (m *TerraformManagerImpl) configureEnvironment(tf *tfexec.Terraform) error 
 		env[pluginCacheEnvVar] = cacheDirectory
 	}
 
-	return tf.SetEnv(tfexec.CleanEnv(env))
+	return tfexec.CleanEnv(env)
 }
 
 // ensurePluginCacheDirectory returns the shared provider plugin cache, creating it if needed.
