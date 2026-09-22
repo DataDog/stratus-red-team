@@ -1,0 +1,46 @@
+[
+   {
+      "awsRegion": "megov-south-1r",
+      "eventCategory": "Management",
+      "eventID": "ded2f5af-f3a5-46d2-a170-a23206a32c36",
+      "eventName": "DeleteFlowLogs",
+      "eventSource": "ec2.amazonaws.com",
+      "eventTime": "2024-07-31T15:07:49Z",
+      "eventType": "AwsApiCall",
+      "eventVersion": "1.09",
+      "managementEvent": true,
+      "readOnly": false,
+      "recipientAccountId": "498376118699",
+      "requestID": "96d51d7f-c18d-45b9-8315-9aa0fde21e88",
+      "requestParameters": {
+         "DeleteFlowLogsRequest": {
+            "FlowLogId": {
+               "content": "fl-0e17aa62a21d4bbfe",
+               "tag": 1
+            }
+         }
+      },
+      "responseElements": {
+         "DeleteFlowLogsResponse": {
+            "requestId": "96d51d7f-c18d-45b9-8315-9aa0fde21e88",
+            "unsuccessful": "",
+            "xmlns": "http://ec2.amazonaws.com/doc/2016-11-15/"
+         }
+      },
+      "sourceIPAddress": "206.90.1.223",
+      "tlsDetails": {
+         "cipherSuite": "TLS_AES_128_GCM_SHA256",
+         "clientProvidedHostHeader": "ec2.megov-south-1r.amazonaws.com",
+         "tlsVersion": "TLSv1.3"
+      },
+      "userAgent": "stratus-red-team_5d25952b-37cb-46cc-a135-3407cbbca7bf",
+      "userIdentity": {
+         "accessKeyId": "AKIA5Q8Z0GHOBYSEN9D6",
+         "accountId": "498376118699",
+         "arn": "arn:aws:iam::498376118699:user/christophe",
+         "principalId": "AIDACKW2I5F25HSI3O4J",
+         "type": "IAMUser",
+         "userName": "christophe"
+      }
+   }
+]
