@@ -90,9 +90,6 @@ An **unset** variable retains Stratus Red Team's default shared cache. An explic
 opts out of that default, so Terraform installs providers in each execution's own working directory
 instead. This trades provider-download reuse for isolation and concurrency safety.
 
-If your Terraform CLI configuration file also sets `plugin_cache_dir`, remove that setting: an empty
-environment variable does not override a cache directory configured in `.terraformrc` or
-`TF_CLI_CONFIG_FILE`.
 
 ## Upgrading from a version without execution isolation
 
