@@ -9,6 +9,7 @@ import (
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/policy"
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resources/armresources"
+	"github.com/Azure/azure-sdk-for-go/sdk/storage/azblob"
 	"github.com/google/uuid"
 )
 
@@ -18,7 +19,7 @@ type AzureProvider struct {
 	Credentials         azcore.TokenCredential
 	ClientOptions       *arm.ClientOptions
 	SubscriptionID      string
-	UniqueCorrelationId uuid.UUID // unique value injected in the user-agent, to differentiate Stratus Red Team executions
+	UniqueCorrelationId uuid.UUID // unique value injected in x-ms-client-request-id, to correlate Stratus Red Team executions in Azure Activity Logs
 }
 
 // AzureProviderOption configures optional overrides on an AzureProvider.
@@ -59,7 +60,8 @@ func NewAzureProvider(correlationId uuid.UUID, opts ...AzureProviderOption) *Azu
 
 	p.ClientOptions = &arm.ClientOptions{
 		ClientOptions: azcore.ClientOptions{
-			Telemetry: policy.TelemetryOptions{ApplicationID: correlationId.String(), Disabled: false},
+			Telemetry:       policy.TelemetryOptions{ApplicationID: correlationId.String(), Disabled: false},
+			PerCallPolicies: []policy.Policy{newCorrelationIDPolicy(correlationId)},
 		},
 	}
 	return p
@@ -67,6 +69,17 @@ func NewAzureProvider(correlationId uuid.UUID, opts ...AzureProviderOption) *Azu
 
 func (m *AzureProvider) GetCredentials() azcore.TokenCredential {
 	return m.Credentials
+}
+
+// NewBlobClient builds an azblob client wired with the provider's credentials and
+// client options, so every blob request carries the Stratus correlation ID
+// (x-ms-client-request-id) and telemetry. Prefer this over calling azblob.NewClient
+// directly: data-plane clients use their own options type, and constructing them by
+// hand makes it easy to accidentally drop the correlation policy.
+func (m *AzureProvider) NewBlobClient(serviceURL string) (*azblob.Client, error) {
+	return azblob.NewClient(serviceURL, m.Credentials, &azblob.ClientOptions{
+		ClientOptions: m.ClientOptions.ClientOptions,
+	})
 }
 
 func (m *AzureProvider) IsAuthenticatedAgainstAzure() bool {

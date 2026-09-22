@@ -258,7 +258,7 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 // deleteOIDCContainer deletes the OIDC container from the storage account.
 func deleteOIDCContainer(azureProvider *providers.AzureProvider, blobServiceURL string) error {
 	ctx := context.Background()
-	blobClient, err := azblob.NewClient(blobServiceURL, azureProvider.GetCredentials(), nil)
+	blobClient, err := azureProvider.NewBlobClient(blobServiceURL)
 	if err != nil {
 		return fmt.Errorf("could not create blob client: %w", err)
 	}
@@ -269,7 +269,7 @@ func deleteOIDCContainer(azureProvider *providers.AzureProvider, blobServiceURL 
 // uploadOIDCDocuments creates the OIDC container and uploads the discovery document and JWKS.
 func uploadOIDCDocuments(azureProvider *providers.AzureProvider, blobServiceURL, issuerURL string, privateKey *rsa.PrivateKey, keyID string) error {
 	ctx := context.Background()
-	blobClient, err := azblob.NewClient(blobServiceURL, azureProvider.GetCredentials(), nil)
+	blobClient, err := azureProvider.NewBlobClient(blobServiceURL)
 	if err != nil {
 		return fmt.Errorf("could not create blob client: %w", err)
 	}

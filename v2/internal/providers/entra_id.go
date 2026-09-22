@@ -43,6 +43,7 @@ func NewEntraIdProvider(correlationId uuid.UUID, opts ...EntraIdProviderOption) 
 	p.ClientOptions = &arm.ClientOptions{
 		ClientOptions: azcore.ClientOptions{
 			Telemetry: policy.TelemetryOptions{ApplicationID: correlationId.String(), Disabled: false},
+			PerCallPolicies: []policy.Policy{newCorrelationIDPolicy(correlationId)},
 		},
 	}
 
