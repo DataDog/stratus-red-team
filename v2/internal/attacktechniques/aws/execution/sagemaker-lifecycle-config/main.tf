@@ -155,7 +155,7 @@ resource "aws_iam_role_policy_attachment" "low_priv_attach" {
 resource "aws_sagemaker_notebook_instance" "target_notebook" {
   name          = "${local.resource_prefix}-vuln-vm"
   role_arn      = aws_iam_role.high_priv_execution_role.arn
-  instance_type = "ml.t2.medium"
+  instance_type = "ml.t3.medium"
   # Set to skip root access to ensure only the role is the entry point
   root_access = "Disabled"
 }
