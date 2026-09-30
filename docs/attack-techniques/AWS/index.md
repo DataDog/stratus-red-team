@@ -24,6 +24,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 ## Persistence
   
+  - [Create an EC2 Key Pair with a Suspicious Name](./aws.persistence.ec2-create-suspicious-keypair.md)
+  
   - [Backdoor an IAM Role](./aws.persistence.iam-backdoor-role.md)
   
   - [Create an Access Key on an IAM User](./aws.persistence.iam-backdoor-user.md)

@@ -334,6 +334,19 @@ AWS:
           platform: AWS
           isIdempotent: true
     Persistence:
+        - id: aws.persistence.ec2-create-suspicious-keypair
+          name: Create an EC2 Key Pair with a Suspicious Name
+          isSlow: false
+          mitreAttackTactics:
+            - Persistence
+          frameworkmappings:
+            - framework: Threat Technique Catalog for AWS
+              techniques:
+                - name: 'Account Manipulation: Additional Cloud Credentials'
+                  id: T1098.001
+                  url: https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1098.001.html
+          platform: AWS
+          isIdempotent: true
         - id: aws.persistence.iam-backdoor-role
           name: Backdoor an IAM Role
           isSlow: false
