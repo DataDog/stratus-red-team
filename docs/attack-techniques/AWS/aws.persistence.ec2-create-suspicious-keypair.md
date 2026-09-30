@@ -5,7 +5,7 @@ title: Create an EC2 Key Pair with a Suspicious Name
 # Create an EC2 Key Pair with a Suspicious Name
 
 
-
+ <span class="smallcaps w3-badge w3-blue w3-round w3-text-white" title="This attack technique can be detonated multiple times">idempotent</span> 
 
 Platform: AWS
 
@@ -24,17 +24,17 @@ Platform: AWS
 ## Description
 
 
-Creates an EC2 key pair using a short, generic name previously observed being reused across
-unrelated compromised AWS environments. Attackers plant their own key pair so they can later
-launch or access EC2 instances without relying on the credentials they used to gain initial access.
+Creates an EC2 key pair with a name matching a known suspicious naming convention. Attackers
+plant their own key pair so they can later launch or access EC2 instances without relying on
+the credentials they used to gain initial access.
 
 <span style="font-variant: small-caps;">Warm-up</span>: None.
 
 <span style="font-variant: small-caps;">Detonation</span>:
 
-- Call ec2:DescribeInstances filtered by the key name, to check whether the environment has
-  been compromised before and the key pair is already in use.
-- Call ec2:CreateKeyPair to create a new key pair with a known suspicious name.
+- Call ec2:DescribeInstances filtered by the key name, to check whether the key pair is
+  already in use.
+- Call ec2:CreateKeyPair to create a new key pair whose name starts with "key".
 
 References:
 
@@ -49,12 +49,9 @@ stratus detonate aws.persistence.ec2-create-suspicious-keypair
 ## Detection
 
 
-Identify calls to the CloudTrail event <code>CreateKeyPair</code>, optionally preceded shortly before
-by a <code>DescribeInstances</code> call whose <code>requestParameters.filterSet</code> filters on
-<code>key-name</code>.
-
-Known suspicious key names observed reused across unrelated compromised environments include
-<code>xg1</code> and <code>temp_key_pair</code> — matching <code>requestParameters.keyName</code>
-against a list of such known-bad values is a high-confidence atomic indicator.
+Identify calls to the CloudTrail event <code>CreateKeyPair</code> where <code>requestParameters.keyName</code>
+starts with <code>key</code> and the caller authenticated with an IAM user access key
+(<code>userIdentity.accessKeyId</code> starting with <code>AKIA</code>) — a known suspicious
+naming convention for attacker-planted key pairs, as opposed to a descriptive, project-scoped name.
 
 

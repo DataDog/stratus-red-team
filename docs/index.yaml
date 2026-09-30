@@ -346,7 +346,7 @@ AWS:
                   id: T1098.001
                   url: https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1098.001.html
           platform: AWS
-          isIdempotent: false
+          isIdempotent: true
         - id: aws.persistence.iam-backdoor-role
           name: Backdoor an IAM Role
           isSlow: false
