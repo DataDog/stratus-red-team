@@ -29,7 +29,7 @@ launch or access EC2 instances without relying on the credentials they used to g
 
 By default, the key pair is named <code>stratus-red-team-keypair</code>. To simulate a known suspicious
 name observed being reused across unrelated compromised AWS environments (such as <code>xg1</code>),
-set the <code>STRATUS_RED_TEAM_KEYPAIR</code> environment variable to the desired key pair name.
+set the <code>STRATUS_RED_TEAM_KEY_PAIR</code> environment variable to the desired key pair name.
 
 <span style="font-variant: small-caps;">Warm-up</span>: None.
 

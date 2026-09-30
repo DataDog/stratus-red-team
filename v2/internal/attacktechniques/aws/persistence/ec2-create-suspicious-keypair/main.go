@@ -13,7 +13,7 @@ import (
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 )
 
-const EnvVarKeyPairName = "STRATUS_RED_TEAM_KEYPAIR"
+const EnvVarKeyPairName = "STRATUS_RED_TEAM_KEY_PAIR"
 const defaultKeyPairName = "stratus-red-team-keypair"
 
 func init() {
