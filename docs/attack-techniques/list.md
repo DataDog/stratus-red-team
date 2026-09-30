@@ -42,6 +42,7 @@ This page contains the list of all Stratus Attack Techniques.
 | [Console Login without MFA](./AWS/aws.initial-access.console-login-without-mfa.md) | [AWS](./AWS/index.md) | Initial Access |
 | [Usage of EC2 Serial Console to push SSH public key](./AWS/aws.lateral-movement.ec2-serial-console-send-ssh-public-key.md) | [AWS](./AWS/index.md) | Lateral Movement |
 | [Usage of EC2 Instance Connect on multiple instances](./AWS/aws.lateral-movement.ec2-instance-connect.md) | [AWS](./AWS/index.md) | Lateral Movement |
+| [Reuse an Amazon Cognito Refresh Token](./AWS/aws.persistence.cognito-refresh-token-reuse.md) | [AWS](./AWS/index.md) | Persistence |
 | [Backdoor an IAM Role](./AWS/aws.persistence.iam-backdoor-role.md) | [AWS](./AWS/index.md) | Persistence |
 | [Create an Access Key on an IAM User](./AWS/aws.persistence.iam-backdoor-user.md) | [AWS](./AWS/index.md) | Persistence, Privilege Escalation |
 | [Create an administrative IAM User](./AWS/aws.persistence.iam-create-admin-user.md) | [AWS](./AWS/index.md) | Persistence, Privilege Escalation |
