@@ -156,7 +156,7 @@ func UpdateAndRestartNotebook(
 	}
 
 	// WAIT: Wait for the status to transition to 'Stopped'.
-	log.Println("   Waiting for notebook to stop...")
+	log.Println("Waiting for notebook to stop...")
 	stopWaiter := sagemaker.NewNotebookInstanceStoppedWaiter(client)
 	err = stopWaiter.Wait(ctx,
 		&sagemaker.DescribeNotebookInstanceInput{
@@ -167,7 +167,7 @@ func UpdateAndRestartNotebook(
 	if err != nil {
 		return fmt.Errorf("failed while waiting for notebook to stop after initial stop: %w", err)
 	}
-	log.Println("   Notebook is stopped.")
+	log.Println("Notebook is stopped.")
 
 	// --- 2. Update the Notebook Instance with the new Lifecycle Config ---
 	log.Printf("2/4. Updating notebook instance with config: %s...", lifecycleConfigName)
@@ -181,7 +181,7 @@ func UpdateAndRestartNotebook(
 	if err != nil {
 		return fmt.Errorf("failed to update notebook instance configuration: %w", err)
 	}
-	log.Println("   Update initiation successful. Status is now 'Updating'.")
+	log.Println("Update initiation successful. Status is now 'Updating'.")
 
 	// --- 3. WAIT FOR UPDATE TO COMPLETE ---
 	// The notebook transitions back to 'Stopped' after a successful update.
@@ -196,7 +196,7 @@ func UpdateAndRestartNotebook(
 	if err != nil {
 		return fmt.Errorf("failed while waiting for notebook update to complete: %w", err)
 	}
-	log.Println("   Update complete. Notebook is back in 'Stopped' status.")
+	log.Println("Update complete. Notebook is back in 'Stopped' status.")
 
 	// --- 4. Start the Notebook Instance (Triggers OnStart script) ---
 	log.Printf("4/4. Starting notebook instance: %s...", notebookName)
@@ -209,6 +209,21 @@ func UpdateAndRestartNotebook(
 	if err != nil {
 		return fmt.Errorf("failed to initiate StartNotebookInstance: %w", err)
 	}
+
+	// Wait for InService: the OnStart script runs on entry, and revert needs
+	// the instance InService before it can stop it.
+	log.Println("Waiting for notebook to reach InService (lifecycle script runs on entry)...")
+	startWaiter := sagemaker.NewNotebookInstanceInServiceWaiter(client)
+	err = startWaiter.Wait(ctx,
+		&sagemaker.DescribeNotebookInstanceInput{
+			NotebookInstanceName: aws.String(notebookName),
+		},
+		600*time.Second,
+	)
+	if err != nil {
+		return fmt.Errorf("failed while waiting for notebook to reach InService: %w", err)
+	}
+	log.Println("Notebook is InService. Lifecycle script has run.")
 
 	log.Printf("Workflow complete. Notebook is now starting and running the lifecycle script.")
 	return nil
@@ -244,7 +259,7 @@ func DetachAndDeleteLifecycleConfig(
 	if err != nil {
 		return fmt.Errorf("failed while waiting for notebook to stop: %w", err)
 	}
-	log.Println("   Notebook is stopped.")
+	log.Println("Notebook is stopped.")
 
 	// --- 2. Detach the Lifecycle Configuration ---
 	// Update the Notebook Instance to use an empty LifecycleConfigName, effectively detaching it.
@@ -259,7 +274,7 @@ func DetachAndDeleteLifecycleConfig(
 	if err != nil {
 		return fmt.Errorf("failed to detach lifecycle configuration: %w", err)
 	}
-	log.Println("   Detach request successful. Status is now 'Updating'.")
+	log.Println("Detach request successful. Status is now 'Updating'.")
 
 	// --- 3. WAIT for Detach Update to Complete ---
 	// Must wait for the 'Updating' status to resolve back to 'Stopped' before deleting the config.
@@ -274,7 +289,7 @@ func DetachAndDeleteLifecycleConfig(
 	if err != nil {
 		return fmt.Errorf("failed while waiting for notebook detach update to complete: %w", err)
 	}
-	log.Println("   Detach update complete. Notebook is back in 'Stopped' status.")
+	log.Println("Detach update complete. Notebook is back in 'Stopped' status.")
 
 	// --- 4. Delete the Lifecycle Configuration ---
 	log.Println("4/4. Deleting the lifecycle configuration...")
