@@ -24,6 +24,7 @@ import (
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/exfiltration/ec2-security-group-open-port-22-ingress"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/exfiltration/ec2-share-ami"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/exfiltration/ec2-share-ebs-snapshot"
+	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/exfiltration/ec2-share-ebs-volume"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/exfiltration/rds-share-snapshot"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/exfiltration/s3-backdoor-bucket-policy"
 	_ "github.com/datadog/stratus-red-team/v2/internal/attacktechniques/aws/impact/bedrock-invoke-model"
