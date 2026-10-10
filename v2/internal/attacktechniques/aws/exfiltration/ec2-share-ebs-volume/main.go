@@ -25,9 +25,9 @@ func init() {
 				Framework: stratus.ThreatTechniqueCatalogAWS,
 				Techniques: []stratus.TechniqueMapping{
 					{
-						Name: "Modify Cloud Compute Infrastructure: Create Snapshot",
-						ID:   "T1578.001",
-						URL:  "https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1578.001.html",
+						Name: "Modify Cloud Compute Infrastructure",
+						ID:   "T1578",
+						URL:  "https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1578.html",
 					},
 				},
 			},
@@ -58,12 +58,13 @@ Through CloudTrail's <code>AssociateResourceShare</code> event (event source <co
   "resourceShareArn": "arn:aws:ram:us-east-1:111111111111:resource-share/24048254-7629-41e0-ba73-f129af0cc68d"
 }</code></pre>
 
-In the same event, the <code>PRINCIPAL</code> association in <code>responseElements.resourceShareAssociations</code> carries an
+In the same event <code>responseElements.resourceShareAssociations</code> carries an
 <code>external</code> flag indicating whether RAM treats the recipient principal as outside the owner's AWS Organizations
 boundary (see <a href="https://docs.aws.amazon.com/ram/latest/APIReference/API_ResourceShareAssociation.html">RAM API reference</a>).
-<code>"external": true</code> is a strong exfiltration signal. Note that RAM only recognizes a principal as in-organization
-when sharing with AWS Organizations is enabled (<code>ram:EnableSharingWithAwsOrganization</code>); when it is disabled,
-even an account in the same organization is reported as <code>external</code>.
+<code>"external": true</code>. 
+
+Note: RAM only recognizes a principal as in-organization when sharing with AWS Organizations is enabled (<code>ram:EnableSharingWithAwsOrganization</code>); when it is disabled,
+an account in the same organization is reported as <code>external</code>.
 
 <pre><code>"responseElements": {
   "resourceShareAssociations": [
@@ -80,8 +81,9 @@ even an account in the same organization is reported as <code>external</code>.
   ]
 }</code></pre>
 
-When the recipient account subsequently clones the shared volume, the <code>CopyVolumes</code> event is logged in
+When the recipient account clones the shared volume, the <code>CopyVolumes</code> event is logged in
 <b>both</b> the recipient account and the volume owner's account (see [AWS docs](https://docs.aws.amazon.com/ebs/latest/userguide/share-volume.html)).
+
 In the owner's account, <code>userIdentity.accountId</code> contains the attacker's account ID, <code>recipientAccountId</code> contains the
 victim's account ID where the volume was originally created, and <code>CopyVolumesRequest.SourceVolumeId</code> identifies the volume:
 
