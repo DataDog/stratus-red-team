@@ -19,14 +19,18 @@ Platform: AWS
 ## Description
 
 
-Simulates an attacker enumerating Bedrock models and then invoking the Anthropic Claude 3 Sonnet (<code>anthropic.claude-3-sonnet-20240229-v1:0</code>) model to run inference using an arbitrary prompt. LLMjacking is an attack vector where attackers use stolen cloud credentials to run large language models, leading to unauthorized inference.
+Simulates an attacker enumerating Bedrock models and then invoking an Anthropic Claude model to run inference using an arbitrary prompt. LLMjacking is an attack vector where attackers use stolen cloud credentials to run large language models, leading to unauthorized inference.
 
 <span style="font-variant: small-caps;">Warm-up</span>: None.
 
 <span style="font-variant: small-caps;">Detonation</span>:
 
-- If Anthropic Claude 3 Sonnet is not enabled, attempt to enable it using <code>PutUseCaseForModelAccess</code>, <code>ListFoundationModelAgreementOffers</code>, <code>CreateFoundationModelAgreement</code>, <code>PutFoundationModelEntitlement</code>
-- Call <code>bedrock:InvokeModel</code> to run inference using the model
+- Enumerate the Anthropic models of the current region and keep the active ones
+- Try up to 3 of them, cheapest first (Haiku before Sonnet before Opus, most recent version first), until one succeeds:
+	- If the model is not enabled, enable it using <code>PutUseCaseForModelAccess</code>, <code>ListFoundationModelAgreementOffers</code>, <code>CreateFoundationModelAgreement</code> and <code>PutFoundationModelEntitlement</code>
+	- Invoke the model, through an inference profile when it does not support on-demand invocation
+
+This requires the <code>bedrock:ListFoundationModels</code> and <code>bedrock:ListInferenceProfiles</code> permissions in addition to those needed to enable models. When an inference profile is used, <code>bedrock:InvokeModel</code> must be allowed on the profile and on the model in each of its destination regions.
 
 References:
 
@@ -38,7 +42,7 @@ References:
 
 !!! note
 
-	This technique attempts to enable and invoke the Bedrock model anthropic.claude-3-sonnet-20240229-v1:0. To do this, it creates a Bedrock use case request for Anthropic models with a fictitious company name, website and use-case:
+	This technique attempts to enable and invoke the selected Bedrock model. To do this, it creates a Bedrock use case request for Anthropic models with a fictitious company name, website and use-case:
 
 	- Company Name: <code>test</code>
 	- Company Website: <code>https://test.com</code>
@@ -47,14 +51,7 @@ References:
 	- Use Cases: <code>None of the Above. test</code>
 
 
-	It is expected that this will cause AWS to automatically send you an email entitled <code>You accepted an AWS Marketplace offer</code>. If you want to use a different Anthropic model, you can set the <code>STRATUS_RED_TEAM_BEDROCK_MODEL</code> environment variable to the model ID you want to use (see the list [here](https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html)). Since the inputs to <code>InvokeModel</code> are model-specific, you can only specify an Anthropic model:
-
-	- <code>anthropic.claude-v2</code>
-	- <code>anthropic.claude-v2:1</code>
-	- <code>anthropic.claude-3-sonnet-20240229-v1:0</code> (default)
-	- <code>anthropic.claude-3-5-sonnet-20240620-v1:0</code>
-	- <code>anthropic.claude-3-haiku-20240307-v1:0</code>
-	- <code>anthropic.claude-instant-v1</code>
+	It is expected that this will cause AWS to automatically send you an email entitled <code>You accepted an AWS Marketplace offer</code>. If you want to use a different Anthropic model, you can set the <code>STRATUS_RED_TEAM_BEDROCK_MODEL</code> environment variable to the model ID or inference profile ID you want to use (see the list [here](https://docs.aws.amazon.com/bedrock/latest/userguide/model-cards-anthropic.html)). In that case, no model is selected dynamically: the model is enabled using its base model ID and invoked using the provided ID. Since the inputs to <code>InvokeModel</code> are model-specific, you can only specify an Anthropic model.
 
 
 !!! note
