@@ -3,10 +3,10 @@ package aws
 import (
 	"context"
 	_ "embed"
-	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/ram"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 )
 
