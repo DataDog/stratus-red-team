@@ -113,7 +113,7 @@ Note that detonating this attack technique with Stratus Red Team does *not* simu
 	})
 }
 
-var ShareWithAccountId = "012345678912"
+var ShareWithAccountId = "193672423079"
 
 func detonate(params map[string]string, providers stratus.CloudProviders) error {
 	// associate the EBS volume with the RAM resource share
