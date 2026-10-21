@@ -113,14 +113,12 @@ Note that detonating this attack technique with Stratus Red Team does *not* simu
 The following CloudTrail events are generated when this technique is detonated[^1]:
 
 
-- `ec2:CopyVolumes`
-
 - `ram:AssociateResourceShare`
 
 
 ??? "View raw detonation logs"
 
-    ```json hl_lines="30 86"
+    ```json hl_lines="30"
 
     [
 	    {
@@ -193,71 +191,6 @@ The following CloudTrail events are generated when this technique is detonated[^
 	            "tlsVersion": "TLSv1.3",
 	            "cipherSuite": "TLS_AES_128_GCM_SHA256"
 	        }
-	    },
-	    {
-	        "eventVersion": "1.11",
-	        "userIdentity": {
-	            "type": "AssumedRole",
-	            "principalId": "AROATIHRI2VQWPSAFJ2LO:randomZWPRzAfS8aY2@gmail.com",
-	            "accountId": "763721234306",
-	            "onBehalfOf": {
-	                "userId": "92670c9793-3bb792e0-4882-4c8e-aa07-bf205e4798e3",
-	                "identityStoreArn": "arn:aws:identitystore::606202301209:identitystore/d-92670c9793"
-	            }
-	        },
-	        "eventTime": "2026-10-10T18:47:44Z",
-	        "eventSource": "ec2.amazonaws.com",
-	        "eventName": "CopyVolumes",
-	        "awsRegion": "cn-easteast-1r",
-	        "sourceIPAddress": "208.12.253.202",
-	        "userAgent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:156.0) Gecko/20100101 Firefox/156.0",
-	        "requestParameters": {
-	            "CopyVolumesRequest": {
-	                "VolumeType": "gp3",
-	                "Encrypted": false,
-	                "Size": 1,
-	                "Throughput": 125,
-	                "Iops": 3000,
-	                "ClientToken": "9bd41711-cd79-4b58-9e6e-ef9c70709936",
-	                "SourceVolumeId": "vol-0c741433d3ddb73c7"
-	            }
-	        },
-	        "responseElements": {
-	            "CopyVolumesResponse": {
-	                "xmlns": "http://ec2.amazonaws.com/doc/2016-11-15/",
-	                "requestId": "e5edb698-ea83-46c0-a442-a803cdefe7e1",
-	                "volumeSet": {
-	                    "item": {
-	                        "tagSet": "HIDDEN_DUE_TO_SECURITY_REASONS",
-	                        "volumeType": "gp3",
-	                        "encrypted": false,
-	                        "size": 1,
-	                        "createTime": "2026-10-10T18:47:44.000Z",
-	                        "iops": 3000,
-	                        "sourceVolumeId": "vol-0c741433d3ddb73c7",
-	                        "volumeId": "vol-00e49f20be4cd9c7b",
-	                        "throughput": 125,
-	                        "availabilityZone": "cn-easteast-1rb",
-	                        "multiAttachEnabled": false,
-	                        "status": "creating"
-	                    }
-	                }
-	            }
-	        },
-	        "requestID": "e5edb698-ea83-46c0-a442-a803cdefe7e1",
-	        "eventID": "e9b75d95-5ab8-3ef4-9554-8fb4341d4aec",
-	        "readOnly": false,
-	        "eventType": "AwsApiCall",
-	        "managementEvent": true,
-	        "recipientAccountId": "986293246532",
-	        "sharedEventID": "43ff1c73-c216-45a4-b1f5-44c2d7427e06",
-	        "eventCategory": "Management",
-	        "tlsDetails": {
-	            "tlsVersion": "TLSv1.3",
-	            "cipherSuite": "TLS_AES_128_GCM_SHA256",
-	            "clientProvidedHostHeader": "ec2.cn-easteast-1r.amazonaws.com"
-	        },
-	        "sessionCredentialFromConsole": "true"
 	    }
 	]
 	
