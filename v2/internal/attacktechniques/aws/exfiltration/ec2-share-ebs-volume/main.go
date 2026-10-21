@@ -47,6 +47,8 @@ Warm-up:
 Detonation:
 
 - Call ram:AssociateResourceShare to share the EBS volume with an external, fictitious AWS account
+
+Note: This technique shares an unencrypted EBS volume. Accounts with EBS encryption by default enabled may encrypt new volumes with the AWS managed key, which cannot be shared (see the <a href="https://docs.aws.amazon.com/ebs/latest/userguide/share-volume.html">AWS documentation</a>).
 `,
 		Detection: `
 Through CloudTrail's <code>AssociateResourceShare</code> event (event source <code>ram.amazonaws.com</code>), when
