@@ -108,6 +108,10 @@ resource "aws_instance" "instance" {
     network_interface_id = aws_network_interface.iface[count.index].id
   }
 
+  root_block_device {
+    tags = {}
+  }
+
   tags = {
     Name = "${local.resource_prefix}-instance-${count.index}"
   }

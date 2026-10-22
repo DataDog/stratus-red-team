@@ -99,6 +99,10 @@ resource "aws_instance" "dev" {
     device_index         = 0
     network_interface_id = aws_network_interface.iface.id
   }
+
+  root_block_device {
+    tags = {}
+  }
 }
 
 output "instance_id" {
