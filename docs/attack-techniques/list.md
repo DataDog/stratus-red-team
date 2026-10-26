@@ -32,6 +32,7 @@ This page contains the list of all Stratus Attack Techniques.
 | [Open Ingress Port 22 on a Security Group](./AWS/aws.exfiltration.ec2-security-group-open-port-22-ingress.md) | [AWS](./AWS/index.md) | Exfiltration |
 | [Exfiltrate an AMI by Sharing It](./AWS/aws.exfiltration.ec2-share-ami.md) | [AWS](./AWS/index.md) | Exfiltration |
 | [Exfiltrate EBS Snapshot by Sharing It](./AWS/aws.exfiltration.ec2-share-ebs-snapshot.md) | [AWS](./AWS/index.md) | Exfiltration |
+| [Share an EBS Volume for Cross-Account Cloning](./AWS/aws.exfiltration.ec2-share-ebs-volume.md) | [AWS](./AWS/index.md) | Exfiltration |
 | [Exfiltrate RDS Snapshot by Sharing](./AWS/aws.exfiltration.rds-share-snapshot.md) | [AWS](./AWS/index.md) | Exfiltration |
 | [Backdoor an S3 Bucket via its Bucket Policy](./AWS/aws.exfiltration.s3-backdoor-bucket-policy.md) | [AWS](./AWS/index.md) | Exfiltration |
 | [Invoke Bedrock Model](./AWS/aws.impact.bedrock-invoke-model.md) | [AWS](./AWS/index.md) | Impact |

@@ -3,6 +3,7 @@ package aws
 import (
 	"context"
 	_ "embed"
+
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/ec2/types"
 	"github.com/datadog/stratus-red-team/v2/internal/utils"

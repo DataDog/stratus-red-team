@@ -120,6 +120,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   
   - [Exfiltrate EBS Snapshot by Sharing It](./aws.exfiltration.ec2-share-ebs-snapshot.md)
   
+  - [Share an EBS Volume for Cross-Account Cloning](./aws.exfiltration.ec2-share-ebs-volume.md)
+  
   - [Exfiltrate RDS Snapshot by Sharing](./aws.exfiltration.rds-share-snapshot.md)
   
   - [Backdoor an S3 Bucket via its Bucket Policy](./aws.exfiltration.s3-backdoor-bucket-policy.md)
