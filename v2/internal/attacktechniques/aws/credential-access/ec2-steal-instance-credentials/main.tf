@@ -106,17 +106,16 @@ resource "aws_iam_instance_profile" "instance" {
   role = aws_iam_role.instance-role.name
 }
 
+data "aws_default_tags" "current" {}
+
 resource "aws_instance" "instance" {
   ami                  = data.aws_ami.amazon-2.id
   instance_type        = "t3.micro"
   iam_instance_profile = aws_iam_instance_profile.instance.name
+  volume_tags          = data.aws_default_tags.current.tags
   network_interface {
     device_index         = 0
     network_interface_id = aws_network_interface.iface.id
-  }
-
-  root_block_device {
-    tags = {}
   }
 }
 
