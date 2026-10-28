@@ -224,6 +224,19 @@ AWS:
                   url: https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1578.001.html
           platform: AWS
           isIdempotent: true
+        - id: aws.exfiltration.ec2-share-ebs-volume
+          name: Share an EBS Volume for Cross-Account Cloning
+          isSlow: false
+          mitreAttackTactics:
+            - Exfiltration
+          frameworkmappings:
+            - framework: Threat Technique Catalog for AWS
+              techniques:
+                - name: Modify Cloud Compute Infrastructure
+                  id: T1578
+                  url: https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1578.html
+          platform: AWS
+          isIdempotent: true
         - id: aws.exfiltration.rds-share-snapshot
           name: Exfiltrate RDS Snapshot by Sharing
           isSlow: true
