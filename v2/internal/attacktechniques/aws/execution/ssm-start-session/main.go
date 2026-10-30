@@ -10,6 +10,7 @@ import (
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"strings"
+	"time"
 )
 
 //go:embed main.tf
@@ -70,6 +71,11 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 
 	if err := utils.WaitForInstancesToRegisterInSSM(ssmClient, instanceIDs); err != nil {
 		return fmt.Errorf("failed to wait for instances to register in SSM: %v", err)
+	}
+
+	log.Println("Waiting for instances to accept Session Manager connections...")
+	if err := utils.WaitForInstancesToConnectToSessionManager(ssmClient, instanceIDs, 5*time.Minute); err != nil {
+		return fmt.Errorf("failed to wait for instances to connect to Session Manager: %v", err)
 	}
 
 	log.Println("Instances are ready and registered in SSM!")
