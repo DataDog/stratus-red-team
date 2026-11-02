@@ -218,3 +218,28 @@ func WaitForInstancesToRegisterInSSM(ssmClient *ssm.Client, instanceIds []string
 func WaitForInstanceToRegisterInSSM(ssmClient *ssm.Client, instanceId string) error {
 	return WaitForInstancesToRegisterInSSM(ssmClient, []string{instanceId})
 }
+
+// WaitForInstancesToConnectToSessionManager waits for a set of instances to accept Session Manager connections.
+// PingStatus=Online only reflects agent health pings; StartSession additionally needs the
+// agent's ssmmessages control channel, which can come up seconds to minutes later.
+func WaitForInstancesToConnectToSessionManager(ssmClient *ssm.Client, instanceIds []string, timeout time.Duration) error {
+	deadline := time.Now().Add(timeout)
+	for _, instanceId := range instanceIds {
+		for {
+			result, err := ssmClient.GetConnectionStatus(context.Background(), &ssm.GetConnectionStatusInput{
+				Target: aws.String(instanceId),
+			})
+			if err != nil {
+				return fmt.Errorf("unable to get Session Manager connection status of %s: %w", instanceId, err)
+			}
+			if result.Status == ssmtypes.ConnectionStatusConnected {
+				break
+			}
+			if time.Now().After(deadline) {
+				return fmt.Errorf("instance %s not connected to Session Manager after %s", instanceId, timeout)
+			}
+			time.Sleep(5 * time.Second)
+		}
+	}
+	return nil
+}
