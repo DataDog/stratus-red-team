@@ -31,7 +31,7 @@ See the documentation at **[stratus-red-team.cloud](https://stratus-red-team.clo
 
 ### Direct install
 
-Requires Go 1.23+
+Requires Go 1.26+
 
 ```
 go install -v github.com/datadog/stratus-red-team/v2/cmd/stratus@latest
