@@ -110,14 +110,15 @@ Sample successful event (shortened for clarity):
 ```
 
 
-When impersonation fails, the generated event **does not contain** the identity of the caller, as explained in the
+For a failed read-only impersonation request, the caller's principal email may be redacted. Google Cloud
+does not redact it under this rule when the caller is a service account, as explained in the
 [GCP documentation](https://cloud.google.com/logging/docs/audit#user-id):
 
 > Audit logging doesn't redact the caller's principal email address for any access that succeeds or for any write operation.
 > For read-only operations that fail with a "permission denied" error, Audit Logging might redact the caller's principal
 > email address unless the caller is a service account.
 
-Sample **unsuccessful** event (shortened for clarity):
+Sample **unsuccessful** event with a redacted caller (shortened for clarity):
 
 ```json hl_lines="5 6 13 38"
 {
