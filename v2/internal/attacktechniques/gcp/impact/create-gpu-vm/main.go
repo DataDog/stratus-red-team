@@ -4,12 +4,13 @@ import (
 	"context"
 	_ "embed"
 	"fmt"
-	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 	"strings"
+	"time"
 
 	compute "cloud.google.com/go/compute/apiv1"
 	"cloud.google.com/go/compute/apiv1/computepb"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 )
 
@@ -18,6 +19,7 @@ var tf []byte
 
 const defaultZone = "us-central1-a"
 const acceleratorType = "nvidia-tesla-t4"
+const instanceOperationTimeout = 5 * time.Minute
 
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
@@ -73,6 +75,14 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	ctx := context.Background()
 	projectId := gcp.GetProjectId()
 	suffix := params["suffix"]
+	networkSelfLink := strings.TrimSpace(params["network_self_link"])
+	if networkSelfLink == "" {
+		return fmt.Errorf("network_self_link prerequisite output is empty")
+	}
+	subnetworkSelfLink := strings.TrimSpace(params["subnetwork_self_link"])
+	if subnetworkSelfLink == "" {
+		return fmt.Errorf("subnetwork_self_link prerequisite output is empty")
+	}
 
 	instancesClient, err := compute.NewInstancesRESTClient(ctx, gcp.Options())
 	if err != nil {
@@ -86,7 +96,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 
 	log.Printf("Creating GPU-enabled instance %s in zone %s\n", instanceName, defaultZone)
 
-	_, err = instancesClient.Insert(ctx, &computepb.InsertInstanceRequest{
+	op, err := instancesClient.Insert(ctx, &computepb.InsertInstanceRequest{
 		Project: projectId,
 		Zone:    defaultZone,
 		InstanceResource: &computepb.Instance{
@@ -101,7 +111,8 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 				},
 			}},
 			NetworkInterfaces: []*computepb.NetworkInterface{{
-				Network: ptr("global/networks/default"),
+				Network:    ptr(networkSelfLink),
+				Subnetwork: ptr(subnetworkSelfLink),
 			}},
 			GuestAccelerators: []*computepb.AcceleratorConfig{{
 				AcceleratorType:  ptr(acceleratorType),
@@ -114,15 +125,25 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	})
 
 	if err != nil {
-		if strings.Contains(err.Error(), "quota") || strings.Contains(err.Error(), "QUOTA") || strings.Contains(err.Error(), "Quota") {
-			log.Println("Note: Instance creation failed due to GPU quota restrictions, but the GCP audit log was still generated and is sufficient to trigger detection rules")
-			return nil
-		}
-		return fmt.Errorf("instance creation failed: %w", err)
+		return handleInstanceCreationError(err)
+	}
+
+	waitCtx, cancel := context.WithTimeout(ctx, instanceOperationTimeout)
+	defer cancel()
+	if err = op.Wait(waitCtx); err != nil {
+		return handleInstanceCreationError(err)
 	}
 
 	log.Printf("Successfully created GPU-enabled instance %s\n", instanceName)
 	return nil
+}
+
+func handleInstanceCreationError(err error) error {
+	if strings.Contains(strings.ToLower(err.Error()), "quota") {
+		log.Println("Note: Instance creation failed due to GPU quota restrictions, but the GCP audit log was still generated and is sufficient to trigger detection rules")
+		return nil
+	}
+	return fmt.Errorf("instance creation failed: %w", err)
 }
 
 func revert(params map[string]string, providers stratus.CloudProviders) error {
@@ -153,7 +174,9 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 		return fmt.Errorf("failed to delete GPU instance: %w", err)
 	}
 
-	if err = op.Wait(ctx); err != nil {
+	waitCtx, cancel := context.WithTimeout(ctx, instanceOperationTimeout)
+	defer cancel()
+	if err = op.Wait(waitCtx); err != nil {
 		return fmt.Errorf("failed waiting for GPU instance deletion to complete: %w", err)
 	}
 
