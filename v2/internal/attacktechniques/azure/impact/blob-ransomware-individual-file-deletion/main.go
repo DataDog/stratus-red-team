@@ -4,8 +4,9 @@ import (
 	"context"
 	_ "embed"
 	"fmt"
+	"io"
+
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
-	"os"
 
 	"github.com/datadog/stratus-red-team/v2/internal/utils"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
@@ -120,23 +121,35 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 }
 
 func downloadAllBlobs(client *azblob.Client) error {
-	f, err := os.OpenFile(os.DevNull, os.O_WRONLY, 0)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
 	blobMap, err := utils.ListAllBlobVersions(client)
 	if err != nil {
 		return err
 	}
 	for containerName, versionMap := range blobMap {
 		for blobName := range versionMap {
-			_, err := client.DownloadFile(context.Background(), containerName, blobName, f, nil)
-			if err != nil {
-				return fmt.Errorf("error when downloading blob %s in container %s: %w", blobName, containerName, err)
+			if err := downloadBlob(client, containerName, blobName); err != nil {
+				return err
 			}
 		}
+	}
+	return nil
+}
+
+func downloadBlob(client *azblob.Client, containerName, blobName string) error {
+	ctx := context.Background()
+	response, err := client.DownloadStream(ctx, containerName, blobName, nil)
+	if err != nil {
+		return fmt.Errorf("error when downloading blob %s in container %s: %w", blobName, containerName, err)
+	}
+
+	reader := response.NewRetryReader(ctx, nil)
+	_, readErr := io.Copy(io.Discard, reader)
+	closeErr := reader.Close()
+	if readErr != nil {
+		return fmt.Errorf("error when reading blob %s in container %s: %w", blobName, containerName, readErr)
+	}
+	if closeErr != nil {
+		return fmt.Errorf("error when closing blob %s in container %s: %w", blobName, containerName, closeErr)
 	}
 	return nil
 }
