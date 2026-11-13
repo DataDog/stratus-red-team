@@ -3,11 +3,14 @@ package gcp
 import (
 	"context"
 	_ "embed"
+	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 	"strconv"
+	"strings"
 	"sync"
+
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 
 	compute "cloud.google.com/go/compute/apiv1"
 	"cloud.google.com/go/compute/apiv1/computepb"
@@ -82,7 +85,11 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	gcp := providers.GCP()
 	ctx := context.Background()
 	projectId := gcp.GetProjectId()
-	suffix := params["suffix"]
+
+	requests, err := buildInsertInstanceRequests(params, projectId)
+	if err != nil {
+		return err
+	}
 
 	instancesClient, err := compute.NewInstancesRESTClient(ctx, gcp.Options())
 	if err != nil {
@@ -95,34 +102,16 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	var errors []error
 	var created int
 
-	for _, zone := range targetZones {
+	for _, request := range requests {
 		wg.Add(1)
-		go func(zone string) {
+		go func(request *computepb.InsertInstanceRequest) {
 			defer wg.Done()
-			instanceName := fmt.Sprintf("stratus-red-team-%s-%s", suffix, zone)
-			machineType := fmt.Sprintf("zones/%s/machineTypes/e2-micro", zone)
+			zone := request.Zone
+			instanceName := request.InstanceResource.GetName()
 
 			log.Printf("Creating instance %s in zone %s\n", instanceName, zone)
 
-			op, err := instancesClient.Insert(ctx, &computepb.InsertInstanceRequest{
-				Project: projectId,
-				Zone:    zone,
-				InstanceResource: &computepb.Instance{
-					Name:        &instanceName,
-					MachineType: &machineType,
-					Disks: []*computepb.AttachedDisk{{
-						AutoDelete: ptr(true),
-						Boot:       ptr(true),
-						InitializeParams: &computepb.AttachedDiskInitializeParams{
-							SourceImage: ptr("projects/debian-cloud/global/images/family/debian-12"),
-							DiskSizeGb:  ptr(int64(10)),
-						},
-					}},
-					NetworkInterfaces: []*computepb.NetworkInterface{{
-						Network: ptr("global/networks/default"),
-					}},
-				},
-			})
+			op, err := instancesClient.Insert(ctx, request)
 
 			if err != nil {
 				mu.Lock()
@@ -143,7 +132,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 			mu.Lock()
 			created++
 			mu.Unlock()
-		}(zone)
+		}(request)
 	}
 
 	wg.Wait()
@@ -158,6 +147,61 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 
 	log.Printf("Successfully initiated creation of %d instances across %d zones\n", created, len(targetZones))
 	return nil
+}
+
+func buildInsertInstanceRequests(params map[string]string, projectId string) ([]*computepb.InsertInstanceRequest, error) {
+	suffix := params["suffix"]
+	network := params["network"]
+	if network == "" {
+		return nil, fmt.Errorf("missing network from Terraform outputs")
+	}
+
+	subnetworksJSON, err := strconv.Unquote(`"` + params["subnetworks"] + `"`)
+	if err != nil {
+		return nil, fmt.Errorf("failed to decode subnetworks from Terraform outputs: %w", err)
+	}
+	subnetworksByRegion := map[string]string{}
+	if err := json.Unmarshal([]byte(subnetworksJSON), &subnetworksByRegion); err != nil {
+		return nil, fmt.Errorf("failed to decode subnetworks from Terraform outputs: %w", err)
+	}
+
+	requests := make([]*computepb.InsertInstanceRequest, 0, len(targetZones))
+	for _, zone := range targetZones {
+		separator := strings.LastIndex(zone, "-")
+		if separator <= 0 {
+			return nil, fmt.Errorf("failed to derive region from target zone %q", zone)
+		}
+		region := zone[:separator]
+		subnetwork := subnetworksByRegion[region]
+		if subnetwork == "" {
+			return nil, fmt.Errorf("missing subnetwork for region %q", region)
+		}
+
+		instanceName := fmt.Sprintf("stratus-red-team-%s-%s", suffix, zone)
+		machineType := fmt.Sprintf("zones/%s/machineTypes/e2-micro", zone)
+		requests = append(requests, &computepb.InsertInstanceRequest{
+			Project: projectId,
+			Zone:    zone,
+			InstanceResource: &computepb.Instance{
+				Name:        &instanceName,
+				MachineType: &machineType,
+				Disks: []*computepb.AttachedDisk{{
+					AutoDelete: ptr(true),
+					Boot:       ptr(true),
+					InitializeParams: &computepb.AttachedDiskInitializeParams{
+						SourceImage: ptr("projects/debian-cloud/global/images/family/debian-12"),
+						DiskSizeGb:  ptr(int64(10)),
+					},
+				}},
+				NetworkInterfaces: []*computepb.NetworkInterface{{
+					Network:    &network,
+					Subnetwork: &subnetwork,
+				}},
+			},
+		})
+	}
+
+	return requests, nil
 }
 
 func revert(params map[string]string, providers stratus.CloudProviders) error {
