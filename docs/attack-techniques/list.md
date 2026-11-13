@@ -40,6 +40,7 @@ This page contains the list of all Stratus Attack Techniques.
 | [S3 Ransomware through batch file deletion](./AWS/aws.impact.s3-ransomware-batch-deletion.md) | [AWS](./AWS/index.md) | Impact |
 | [S3 Ransomware through client-side encryption](./AWS/aws.impact.s3-ransomware-client-side-encryption.md) | [AWS](./AWS/index.md) | Impact |
 | [S3 Ransomware through individual file deletion](./AWS/aws.impact.s3-ransomware-individual-deletion.md) | [AWS](./AWS/index.md) | Impact |
+| [Register an Attacker-Controlled Cognito User and Obtain AWS Credentials](./AWS/aws.initial-access.cognito-self-signup.md) | [AWS](./AWS/index.md) | Initial Access |
 | [Console Login without MFA](./AWS/aws.initial-access.console-login-without-mfa.md) | [AWS](./AWS/index.md) | Initial Access |
 | [Usage of EC2 Serial Console to push SSH public key](./AWS/aws.lateral-movement.ec2-serial-console-send-ssh-public-key.md) | [AWS](./AWS/index.md) | Lateral Movement |
 | [Usage of EC2 Instance Connect on multiple instances](./AWS/aws.lateral-movement.ec2-instance-connect.md) | [AWS](./AWS/index.md) | Lateral Movement |
