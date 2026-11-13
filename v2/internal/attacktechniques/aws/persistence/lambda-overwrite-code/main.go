@@ -12,10 +12,13 @@ import (
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 	"io"
 	"strings"
+	"time"
 )
 
 //go:embed main.tf
 var tf []byte
+
+const lambdaUpdateWaitDuration = 2 * time.Minute
 
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
@@ -72,6 +75,22 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 		return fmt.Errorf("unable to update lambda code for %s: %w", functionName, err)
 	}
 
+	if err := waitForLambdaCodeUpdate(lambdaClient, functionName, "during detonation", lambdaUpdateWaitDuration); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func waitForLambdaCodeUpdate(lambdaClient *lambda.Client, functionName string, phase string, waitDuration time.Duration) error {
+	waitContext, cancel := context.WithTimeout(context.Background(), waitDuration)
+	defer cancel()
+
+	if err := lambda.NewFunctionUpdatedV2Waiter(lambdaClient).Wait(waitContext, &lambda.GetFunctionInput{
+		FunctionName: &functionName,
+	}, waitDuration); err != nil {
+		return fmt.Errorf("unable to complete lambda code update %s for %s: %w", phase, functionName, err)
+	}
 	return nil
 }
 
@@ -81,6 +100,10 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 	bucketName := params["bucket_name"]
 	bucketKey := params["bucket_object_key"]
 	lambdaClient := lambda.NewFromConfig(providers.AWS().GetConnection())
+
+	if err := waitForLambdaCodeUpdate(lambdaClient, functionName, "before revert", lambdaUpdateWaitDuration); err != nil {
+		return err
+	}
 
 	log.Println("Reverting the code of the Lambda function " + functionName)
 
@@ -93,6 +116,10 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 
 	if err != nil {
 		return fmt.Errorf("unable to revert lambda code for %s: %w", functionName, err)
+	}
+
+	if err := waitForLambdaCodeUpdate(lambdaClient, functionName, "during revert", lambdaUpdateWaitDuration); err != nil {
+		return err
 	}
 
 	return nil
