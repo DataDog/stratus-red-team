@@ -73,7 +73,7 @@ resource "azurerm_windows_virtual_machine" "lab_windows_vm" {
   name                = "srt-vm-vmrc"
   resource_group_name = azurerm_resource_group.lab_environment.name
   location            = azurerm_resource_group.lab_environment.location
-  size                = "Standard_F2"
+  size                = "Standard_D2s_v3"
   admin_username      = "local_admin_user"
   admin_password      = random_password.password.result
   user_data           = base64encode(var.correlation.short)
