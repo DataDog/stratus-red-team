@@ -9,6 +9,17 @@ terraform {
 
 data "google_compute_default_service_account" "default" {}
 
+resource "google_compute_network" "vpc" {
+  name                    = "stratus-red-team-csa-vpc-${var.correlation.short}"
+  auto_create_subnetworks = false
+}
+
+resource "google_compute_subnetwork" "subnet" {
+  name          = "stratus-red-team-csa-subnet-${var.correlation.short}"
+  ip_cidr_range = "10.10.0.0/24"
+  region        = "us-east1"
+  network       = google_compute_network.vpc.id
+}
 
 resource "google_compute_instance" "target" {
   name         = "stratus-red-team-csa-${var.correlation.short}"
@@ -23,7 +34,8 @@ resource "google_compute_instance" "target" {
   }
 
   network_interface {
-    network = "default"
+    network    = google_compute_network.vpc.id
+    subnetwork = google_compute_subnetwork.subnet.id
   }
 
   metadata = {
