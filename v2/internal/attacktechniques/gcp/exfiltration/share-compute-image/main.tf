@@ -8,9 +8,9 @@ terraform {
 }
 
 locals {
+  region     = coalesce(data.google_client_config.this.region, "us-east1")
   disk-name  = "stratus-red-team-victim-image-disk-${var.correlation.short}"
   image-name = "stratus-red-team-victim-image-${var.correlation.short}"
-  zone       = "us-east1-b"
 }
 
 data "google_compute_image" "debian" {
@@ -18,11 +18,17 @@ data "google_compute_image" "debian" {
   project = "debian-cloud"
 }
 
+data "google_client_config" "this" {}
+
+data "google_compute_zones" "available" {
+  region = local.region
+}
+
 resource "google_compute_disk" "this" {
   name  = local.disk-name
   type  = "pd-standard"
   size  = 10
-  zone  = local.zone
+  zone  = data.google_compute_zones.available.names[0]
   image = data.google_compute_image.debian.self_link
 }
 
