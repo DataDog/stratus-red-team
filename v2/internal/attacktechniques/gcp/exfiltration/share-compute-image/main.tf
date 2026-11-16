@@ -8,15 +8,33 @@ terraform {
 }
 
 locals {
+  region     = coalesce(data.google_client_config.this.region, "us-east1")
+  disk-name  = "stratus-red-team-victim-image-disk-${var.correlation.short}"
   image-name = "stratus-red-team-victim-image-${var.correlation.short}"
 }
 
-resource "google_compute_image" "this" {
-  name = local.image-name
+data "google_compute_image" "debian" {
+  family  = "debian-12"
+  project = "debian-cloud"
+}
 
-  raw_disk {
-    source = "https://storage.googleapis.com/bosh-gce-raw-stemcells/bosh-stemcell-97.98-google-kvm-ubuntu-xenial-go_agent-raw-1557960142.tar.gz"
-  }
+data "google_client_config" "this" {}
+
+data "google_compute_zones" "available" {
+  region = local.region
+}
+
+resource "google_compute_disk" "this" {
+  name  = local.disk-name
+  type  = "pd-standard"
+  size  = 10
+  zone  = data.google_compute_zones.available.names[0]
+  image = data.google_compute_image.debian.self_link
+}
+
+resource "google_compute_image" "this" {
+  name        = local.image-name
+  source_disk = google_compute_disk.this.self_link
 }
 
 output "image_name" {
