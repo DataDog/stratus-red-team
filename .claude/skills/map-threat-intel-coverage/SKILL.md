@@ -19,7 +19,7 @@ Turn a threat-intel article into a saved markdown coverage report plus a list of
 - **Local file path**: read with `Read`.
 - **Pasted text**: use as-is.
 
-Derive a short slug from the title/URL (e.g. `storm-2949`) for the output filename.
+Derive a short slug from the title/URL (e.g. `storm-2949` or `tradetraitor`) for the output filename.
 
 ## Workflow
 
@@ -57,6 +57,8 @@ A TTP is **in scope** if and only if the attacker action is performed against a 
 2. Requested an OAuth token from IMDS at `169.254.169.254/metadata/identity/oauth2/token` (cloud identity surface)
 3. Created an EKS access entry granting cluster-admin (EKS control plane)
 4. Used Azure VM Run Command to execute a PowerShell script — the *invocation* is control-plane even though the script runs on-host
+5. Abuse of Azure App Registrations, Service Principals, or Entra ID Role assignments (IAM control plane)
+6. Persistence via modified Azure Logic Apps or Automation Runbooks (Cloud SaaS/PaaS management)
 
 **OUT (endpoint / on-host):**
 1. Disabled Defender real-time protection via PowerShell on the compromised VM (host-level)
