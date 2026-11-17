@@ -6,6 +6,8 @@ Note that some Stratus attack techniques may correspond to more than a single AT
 
 ## Initial Access
   
+  - [Register an Attacker-Controlled Cognito User and Obtain AWS Credentials](./aws.initial-access.cognito-self-signup.md)
+  
   - [Console Login without MFA](./aws.initial-access.console-login-without-mfa.md)
   
 
