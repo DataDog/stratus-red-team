@@ -1,0 +1,48 @@
+[
+   {
+      "awsRegion": "me-central-3r",
+      "eventCategory": "Management",
+      "eventID": "6897ff63-d738-445c-9e86-43e5b1f8e12f",
+      "eventName": "ModifySnapshotAttribute",
+      "eventSource": "ec2.amazonaws.com",
+      "eventTime": "2024-08-01T12:28:02Z",
+      "eventType": "AwsApiCall",
+      "eventVersion": "1.09",
+      "managementEvent": true,
+      "readOnly": false,
+      "recipientAccountId": "756680937392",
+      "requestID": "aeddc4a7-2043-405e-8b19-5a913367249e",
+      "requestParameters": {
+         "attributeType": "CREATE_VOLUME_PERMISSION",
+         "createVolumePermission": {
+            "add": {
+               "items": [
+                  {
+                     "userId": "098797384747"
+                  }
+               ]
+            }
+         },
+         "snapshotId": "snap-041993b54a9b3af6f"
+      },
+      "responseElements": {
+         "_return": true,
+         "requestId": "aeddc4a7-2043-405e-8b19-5a913367249e"
+      },
+      "sourceIPAddress": "253.76.43.253",
+      "tlsDetails": {
+         "cipherSuite": "TLS_AES_128_GCM_SHA256",
+         "clientProvidedHostHeader": "ec2.me-central-3r.amazonaws.com",
+         "tlsVersion": "TLSv1.3"
+      },
+      "userAgent": "stratus-red-team_7fcd50f2-f1da-4c82-bb7d-38b82021b080",
+      "userIdentity": {
+         "accessKeyId": "AKIAYLJU0B35TFSNKCS2",
+         "accountId": "756680937392",
+         "arn": "arn:aws:iam::756680937392:user/christophe",
+         "principalId": "AIDA7ETKRIUXU83QKECM",
+         "type": "IAMUser",
+         "userName": "christophe"
+      }
+   }
+]
