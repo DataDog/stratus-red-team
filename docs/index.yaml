@@ -318,6 +318,19 @@ AWS:
           platform: AWS
           isIdempotent: false
     Initial Access:
+        - id: aws.initial-access.cognito-self-signup
+          name: Register an Attacker-Controlled Cognito User and Obtain AWS Credentials
+          isSlow: false
+          mitreAttackTactics:
+            - Initial Access
+          frameworkmappings:
+            - framework: Threat Technique Catalog for AWS
+              techniques:
+                - name: 'Valid Accounts: Cloud Accounts'
+                  id: T1078.004
+                  url: https://aws-samples.github.io/threat-technique-catalog-for-aws/Techniques/T1078.004.html
+          platform: AWS
+          isIdempotent: true
         - id: aws.initial-access.console-login-without-mfa
           name: Console Login without MFA
           isSlow: false
