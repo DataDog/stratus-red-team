@@ -4,15 +4,22 @@ import (
 	"context"
 	_ "embed"
 	"errors"
-	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
+	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/lambda"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus"
+	"github.com/datadog/stratus-red-team/v2/pkg/stratus/log"
 	"github.com/datadog/stratus-red-team/v2/pkg/stratus/mitreattack"
 )
 
 //go:embed main.tf
 var tf []byte
+
+// lambdaUpdateWaitDuration bounds how long we wait for the function's
+// LastUpdateStatus to return to Successful. UpdateFunctionConfiguration is
+// asynchronous: without this wait, an immediate revert 409s with
+// ResourceConflictException (an update is already in progress).
+const lambdaUpdateWaitDuration = 2 * time.Minute
 
 func init() {
 	stratus.GetRegistry().RegisterAttackTechnique(&stratus.AttackTechnique{
@@ -66,7 +73,26 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 		return errors.New("unable to update function configuration: " + err.Error())
 	}
 
+	if err := waitForFunctionUpdate(lambdaClient, lambdaArn, "during detonation"); err != nil {
+		return err
+	}
+
 	log.Println("Added simulated malicious layer to Lambda function ", lambdaArn)
+	return nil
+}
+
+// waitForFunctionUpdate blocks until the function's LastUpdateStatus is
+// Successful again. GetFunction accepts a name, ARN or partial ARN; we always
+// pass the full ARN from the Terraform outputs.
+func waitForFunctionUpdate(lambdaClient *lambda.Client, functionArn string, phase string) error {
+	waitContext, cancel := context.WithTimeout(context.Background(), lambdaUpdateWaitDuration)
+	defer cancel()
+
+	if err := lambda.NewFunctionUpdatedV2Waiter(lambdaClient).Wait(waitContext, &lambda.GetFunctionInput{
+		FunctionName: &functionArn,
+	}, lambdaUpdateWaitDuration); err != nil {
+		return errors.New("unable to complete function configuration update "+phase+" for "+functionArn+": "+err.Error())
+	}
 	return nil
 }
 
@@ -74,6 +100,12 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 	ctx := context.Background()
 	lambdaArn := params["lambda_arn"]
 	lambdaClient := lambda.NewFromConfig(providers.AWS().GetConnection())
+
+	// In case the detonation update is still settling when revert runs
+	// (e.g. after a detonation wait timeout), let it finish first.
+	if err := waitForFunctionUpdate(lambdaClient, lambdaArn, "before revert"); err != nil {
+		return err
+	}
 
 	// Update the function configuration with an empty list of layers
 	_, err := lambdaClient.UpdateFunctionConfiguration(ctx, &lambda.UpdateFunctionConfigurationInput{
@@ -84,6 +116,11 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 	if err != nil {
 		return errors.New("unable to update function configuration: " + err.Error())
 	}
+
+	if err := waitForFunctionUpdate(lambdaClient, lambdaArn, "during revert"); err != nil {
+		return err
+	}
+
 	log.Printf("Layers have been removed from the Lambda function %s\n", lambdaArn)
 	return nil
 }
